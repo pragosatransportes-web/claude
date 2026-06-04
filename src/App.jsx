@@ -1311,12 +1311,88 @@ function PgCust({veic,mots,man,port,conj}) {
   );
 }
 
+async function parseMapsUrl(url) {
+  // Extract origin/destination from Google Maps URL
+  try {
+    // Format: /maps/dir/Origin/Destination/
+    const m1=url.match(/maps\/dir\/([^\/\?@]+)\/([^\/\?@]+)/);
+    if(m1) return {orig:decodeURIComponent(m1[1].replace(/\+/g,' ')),dest:decodeURIComponent(m1[2].replace(/\+/g,' '))};
+    // Format: ?origin=...&destination=...
+    const u=new URL(url.startsWith('http')?url:'https://x.com/?'+url);
+    const o=u.searchParams.get('origin')||u.searchParams.get('saddr');
+    const d=u.searchParams.get('destination')||u.searchParams.get('daddr');
+    if(o&&d) return {orig:decodeURIComponent(o),dest:decodeURIComponent(d)};
+  } catch(e){}
+  return null;
+}
+
+async function geocodePlace(place) {
+  const coordM=place.match(/^(-?\d+\.?\d*)[,\s]+(-?\d+\.?\d*)$/);
+  if(coordM) return {lat:parseFloat(coordM[1]),lon:parseFloat(coordM[2])};
+  const r=await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(place)}&format=json&limit=1&countrycodes=pt`);
+  const d=await r.json();
+  if(d.length) return {lat:parseFloat(d[0].lat),lon:parseFloat(d[0].lon),name:d[0].display_name.split(',')[0]};
+  const r2=await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(place)}&format=json&limit=1`);
+  const d2=await r2.json();
+  if(d2.length) return {lat:parseFloat(d2[0].lat),lon:parseFloat(d2[0].lon),name:d2[0].display_name.split(',')[0]};
+  throw new Error(`Local não encontrado: ${place}`);
+}
+
+async function osrmRoute(o,d) {
+  const url=`https://router.project-osrm.org/route/v1/driving/${o.lon},${o.lat};${d.lon},${d.lat}?alternatives=true&overview=false&steps=false`;
+  const r=await fetch(url);
+  const data=await r.json();
+  if(data.code!=='Ok') throw new Error('Erro no cálculo de rota OSRM');
+  return data.routes.map((rt,i)=>({
+    index:i,
+    km:Math.round(rt.distance/1000),
+    minutos:Math.round(rt.duration/60),
+    horas:Math.round((rt.duration*1.2)/3600*4)/4, // +20% arredondado a 0.25h
+    portEstimada:Math.round(rt.distance/1000*0.09*100)/100,
+  }));
+}
+
 function PgFret({fret,setFret}) {
-  const e0={nome:"",cli:"",orig:"",dest:"",ki:"0",kv:"0",ti:"0",tv:"0",tc:"0",td2:"0",te:"0",cons:"0.32",pc:"1.58",pi:"0",pv:"0",outros:[],od:"",ov:"",preco:"0",ch:"0"};
+  const e0={nome:"",cli:"",orig:"",dest:"",mapsUrl:"",ki:"0",kv:"0",ti:"0",tv:"0",tc:"0",td2:"0",te:"0",cons:"0.32",pc:"1.58",pi:"0",pv:"0",outros:[],od:"",ov:"",preco:"0",ch:"0"};
   const[f,setF]=useState(e0);
   const[show,setShow]=useState(false);
+  const[loadingRoute,setLoadingRoute]=useState(false);
+  const[routeModal,setRouteModal]=useState(null);
+  const[routeError,setRouteError]=useState("");
 
   function up(v) { setF(x=>({...x,...v})); }
+
+  async function calcRoute() {
+    if(!f.mapsUrl.trim()&&!f.orig.trim()&&!f.dest.trim()){setRouteError("Cola um link Google Maps ou preenche Origem e Destino.");return;}
+    setLoadingRoute(true);setRouteError("");
+    try {
+      let orig=f.orig,dest=f.dest;
+      if(f.mapsUrl.trim()){
+        const parsed=await parseMapsUrl(f.mapsUrl.trim());
+        if(parsed){orig=parsed.orig;dest=parsed.dest;}
+        else{setRouteError("Não foi possível extrair Origem/Destino do link. Usa um link completo google.com/maps/dir/...");setLoadingRoute(false);return;}
+      }
+      if(!orig||!dest){setRouteError("Preenche Origem e Destino.");setLoadingRoute(false);return;}
+      const [oCoord,dCoord]=await Promise.all([geocodePlace(orig),geocodePlace(dest)]);
+      const routes=await osrmRoute(oCoord,dCoord);
+      up({orig:oCoord.name||orig,dest:dCoord.name||dest});
+      if(routes.length===1){
+        applyRoute(routes[0]);
+      } else {
+        setRouteModal(routes);
+      }
+    } catch(e){setRouteError("Erro: "+e.message);}
+    setLoadingRoute(false);
+  }
+
+  function applyRoute(rt) {
+    up({
+      ki:String(rt.km),kv:String(rt.km),
+      ti:String(rt.horas),tv:String(rt.horas),
+      pi:String(rt.portEstimada),pv:String(rt.portEstimada),
+    });
+    setRouteModal(null);
+  }
 
   const c=useMemo(()=>{
     const ki=nv(f.ki), kv=nv(f.kv), kmC=ki+kv;
@@ -1363,6 +1439,26 @@ function PgFret({fret,setFret}) {
       <button style={{...BA,marginBottom:18}} onClick={()=>setShow(x=>!x)}>
         {show?"✕ Fechar":"+ Novo Frete"}
       </button>
+      {routeModal && (
+        <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.7)",zIndex:1000,display:"flex",alignItems:"center",justifyContent:"center"}}>
+          <div style={{background:sf,border:`1px solid ${bd}`,borderRadius:12,padding:24,minWidth:400,maxWidth:500}}>
+            <div style={{fontWeight:900,fontSize:16,color:ac,marginBottom:4}}>🗺️ Múltiplas Rotas Disponíveis</div>
+            <p style={{fontSize:12,color:mu,marginBottom:16}}>Selecciona a rota a utilizar:</p>
+            {routeModal.map((rt,i)=>(
+              <div key={i} onClick={()=>applyRoute(rt)} style={{background:s2,border:`1px solid ${bd}`,borderRadius:8,padding:"12px 16px",marginBottom:8,cursor:"pointer",transition:"border-color .2s"}}
+                onMouseOver={e=>e.currentTarget.style.borderColor=ac} onMouseOut={e=>e.currentTarget.style.borderColor=bd}>
+                <div style={{fontWeight:700,color:tx,marginBottom:4}}>Rota {i+1}</div>
+                <div style={{display:"flex",gap:20,fontSize:12}}>
+                  <span>📏 <strong style={{color:bl}}>{rt.km} km</strong></span>
+                  <span>⏱ <strong style={{color:ac}}>{rt.horas.toFixed(2)} h</strong> <span style={{color:mu}}>(+20%)</span></span>
+                  <span>🛣️ Portagens est. <strong style={{color:pu}}>€ {rt.portEstimada.toFixed(2)}</strong></span>
+                </div>
+              </div>
+            ))}
+            <button style={{...BB,marginTop:8,fontSize:12,width:"100%"}} onClick={()=>setRouteModal(null)}>Cancelar</button>
+          </div>
+        </div>
+      )}
       {show && (
         <div style={C}>
           <div style={{fontWeight:900,fontSize:20,color:ac,marginBottom:14}}>CALCULADORA DE FRETE</div>
@@ -1371,6 +1467,24 @@ function PgFret({fret,setFret}) {
             <div><label style={LB}>Nome do Frete</label><input style={IN} value={f.nome} onChange={e=>up({nome:e.target.value})} placeholder="Lisboa → Porto #1"/></div>
             <div><label style={LB}>Cliente</label><input style={IN} value={f.cli} onChange={e=>up({cli:e.target.value})} placeholder="Empresa XYZ"/></div>
           </div>
+
+          <div style={{background:"rgba(59,130,246,.06)",border:"1px solid rgba(59,130,246,.2)",borderRadius:8,padding:"12px 14px",marginBottom:12}}>
+            <div style={{fontSize:11,color:bl,fontWeight:800,textTransform:"uppercase",marginBottom:8}}>🗺️ Calcular Rota Automaticamente</div>
+            <div style={{display:"flex",gap:8,alignItems:"flex-end"}}>
+              <div style={{flex:1}}>
+                <label style={LB}>Link Google Maps (google.com/maps/dir/...)</label>
+                <input style={IN} value={f.mapsUrl} onChange={e=>up({mapsUrl:e.target.value})} placeholder="https://www.google.com/maps/dir/Lisboa/Porto"/>
+              </div>
+              <button style={{...BA,whiteSpace:"nowrap",opacity:loadingRoute?.6:1}} disabled={loadingRoute} onClick={calcRoute}>
+                {loadingRoute?"⏳ A calcular...":"🗺️ Calcular"}
+              </button>
+            </div>
+            {routeError && <div style={{fontSize:11,color:rd,marginTop:6}}>⚠️ {routeError}</div>}
+            <div style={{fontSize:10,color:mu,marginTop:6}}>
+              Preenche Origem e Destino abaixo, ou cola um link completo do Google Maps. Portagens estimadas a €0.09/km (editável).
+            </div>
+          </div>
+
           <div style={G2}>
             <div><label style={LB}>Origem</label><input style={IN} value={f.orig} onChange={e=>up({orig:e.target.value})} placeholder="Lisboa"/></div>
             <div><label style={LB}>Destino</label><input style={IN} value={f.dest} onChange={e=>up({dest:e.target.value})} placeholder="Porto"/></div>
@@ -1378,13 +1492,13 @@ function PgFret({fret,setFret}) {
           <div style={{fontSize:11,color:bl,textTransform:"uppercase",fontWeight:800,margin:"14px 0 8px",paddingBottom:4,borderBottom:`1px solid ${s2}`}}>📍 Distâncias (km)</div>
           <div style={G3}>
             <div><label style={LB}>KM Ida (carregado)</label><input style={IN} type="number" value={f.ki} onChange={e=>up({ki:e.target.value})}/></div>
-            <div><label style={LB}>KM Volta (vazio)</label><input style={IN} type="number" value={f.kv} onChange={e=>up({kv:e.target.value})}/></div>
+            <div><label style={LB}>KM Volta (vazio) <span style={{color:mu,textTransform:"none",fontSize:9}}>= ida por defeito</span></label><input style={IN} type="number" value={f.kv} onChange={e=>up({kv:e.target.value})}/></div>
             <div><label style={LB}>Total Ciclo</label><input style={roSt} value={c.kmC+" km"} readOnly/></div>
           </div>
-          <div style={{fontSize:11,color:bl,textTransform:"uppercase",fontWeight:800,margin:"14px 0 8px",paddingBottom:4,borderBottom:`1px solid ${s2}`}}>⏱ Tempos (horas — 1h30 = 1.5)</div>
+          <div style={{fontSize:11,color:bl,textTransform:"uppercase",fontWeight:800,margin:"14px 0 8px",paddingBottom:4,borderBottom:`1px solid ${s2}`}}>⏱ Tempos (horas — 1h30 = 1.5) · +20% já incluído na ida</div>
           <div style={G3}>
             <div><label style={LB}>Viagem Ida</label><input style={IN} type="number" step="0.25" value={f.ti} onChange={e=>up({ti:e.target.value})}/></div>
-            <div><label style={LB}>Viagem Volta</label><input style={IN} type="number" step="0.25" value={f.tv} onChange={e=>up({tv:e.target.value})}/></div>
+            <div><label style={LB}>Viagem Volta <span style={{color:mu,textTransform:"none",fontSize:9}}>= ida por defeito</span></label><input style={IN} type="number" step="0.25" value={f.tv} onChange={e=>up({tv:e.target.value})}/></div>
             <div><label style={LB}>Tempo Carga</label><input style={IN} type="number" step="0.25" value={f.tc} onChange={e=>up({tc:e.target.value})}/></div>
           </div>
           <div style={G3}>
@@ -1399,9 +1513,13 @@ function PgFret({fret,setFret}) {
             <div><label style={LB}>Custo Combustível</label><input style={{...roSt,color:or}} value={euro(c.cCo)+"  ("+c.lt.toFixed(0)+" L)"} readOnly/></div>
           </div>
           <div style={{fontSize:11,color:bl,textTransform:"uppercase",fontWeight:800,margin:"14px 0 8px",paddingBottom:4,borderBottom:`1px solid ${s2}`}}>🛣️ Portagens</div>
+          <div style={{fontSize:10,color:mu,marginBottom:8}}>
+            Valores estimados a €0.09/km (pesado classe 4). Editáveis.
+            <a href="https://portagens.infraestruturasdeportugal.pt" target="_blank" rel="noreferrer" style={{color:bl,marginLeft:6}}>Calcular exacto →</a>
+          </div>
           <div style={G3}>
             <div><label style={LB}>Portagens Ida (€)</label><input style={IN} type="number" step="0.01" value={f.pi} onChange={e=>up({pi:e.target.value})}/></div>
-            <div><label style={LB}>Portagens Volta (€)</label><input style={IN} type="number" step="0.01" value={f.pv} onChange={e=>up({pv:e.target.value})}/></div>
+            <div><label style={LB}>Portagens Volta (€) <span style={{color:mu,textTransform:"none",fontSize:9}}>= ida por defeito</span></label><input style={IN} type="number" step="0.01" value={f.pv} onChange={e=>up({pv:e.target.value})}/></div>
             <div><label style={LB}>Total Portagens</label><input style={{...roSt,color:pu}} value={euro(c.cPo)} readOnly/></div>
           </div>
           <div style={{fontSize:11,color:bl,textTransform:"uppercase",fontWeight:800,margin:"14px 0 8px",paddingBottom:4,borderBottom:`1px solid ${s2}`}}>🏗️ Custos Fixos Imputados</div>
