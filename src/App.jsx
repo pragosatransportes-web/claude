@@ -1,4 +1,6 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
+import { db } from "./firebase";
+import { ref, get, set } from "firebase/database";
 
 const bg="#0b0e14",sf="#13181f",s2="#1a2230",bd="#1e2d3d";
 const ac="#e8a020",bl="#3b82f6",rd="#ef4444",gn="#22c55e",pu="#a78bfa",or="#fb923c";
@@ -68,6 +70,7 @@ function Th({cols}) {
   return <thead><tr>{cols.map(h=><th key={h} style={TH}>{h}</th>)}</tr></thead>;
 }
 
+
 export default function App() {
   const[pg,setPg]=useState("dash");
   const[veic,setVeic]=useState(V0);
@@ -77,6 +80,42 @@ export default function App() {
   const[gas,setGas]=useState(G0);
   const[conj,setConj]=useState(S0);
   const[fret,setFret]=useState([]);
+  const[saving,setSaving]=useState(false);
+  const[loaded,setLoaded]=useState(false);
+  const[toast,setToast]=useState(null);
+
+  function showToast(msg,ok=true){
+    setToast({msg,ok});
+    setTimeout(()=>setToast(null),3000);
+  }
+
+  useEffect(()=>{
+    get(ref(db,"frota/dados")).then(snap=>{
+      if(snap.exists()){
+        const x=snap.val();
+        if(x.veic?.length) setVeic(x.veic);
+        if(x.mots?.length) setMots(x.mots);
+        if(x.man?.length)  setMan(x.man);
+        if(x.port?.length) setPort(x.port);
+        if(x.gas?.length)  setGas(x.gas);
+        if(x.conj?.length) setConj(x.conj);
+        if(x.fret?.length) setFret(x.fret);
+      }
+      setLoaded(true);
+    });
+  },[]);
+
+  async function guardar(){
+    setSaving(true);
+    try {
+      await set(ref(db,"frota/dados"),{veic,mots,man,port,gas,conj,fret});
+      setSaving(false);
+      showToast("✅ Dados guardados com sucesso!");
+    } catch(e) {
+      setSaving(false);
+      showToast("❌ Erro: "+e.message, false);
+    }
+  }
 
   const tM=useMemo(()=>man.reduce((s,m)=>s+nv(m.custo),0),[man]);
   const tP=useMemo(()=>port.reduce((s,p)=>s+nv(p.valor),0),[port]);
@@ -92,6 +131,11 @@ export default function App() {
 
   return (
     <div style={{display:"flex",minHeight:"100vh",background:bg,color:tx,fontFamily:"system-ui,sans-serif"}}>
+      {toast && (
+        <div style={{position:"fixed",top:20,right:20,zIndex:9999,background:toast.ok?"rgba(34,197,94,.95)":"rgba(239,68,68,.95)",color:"#fff",padding:"14px 20px",borderRadius:10,fontWeight:700,fontSize:14,boxShadow:"0 4px 20px rgba(0,0,0,.4)"}}>
+          {toast.msg}
+        </div>
+      )}
       <nav style={{width:188,minHeight:"100vh",background:sf,borderRight:`1px solid ${bd}`,display:"flex",flexDirection:"column",position:"fixed",top:0,left:0}}>
         <div style={{padding:"18px 14px 12px",borderBottom:`1px solid ${bd}`}}>
           <div style={{fontSize:22,fontWeight:900,color:ac}}>FROTA</div>
@@ -106,7 +150,10 @@ export default function App() {
         </div>
         <div style={{padding:"12px 14px",borderTop:`1px solid ${bd}`}}>
           <div style={{fontSize:9,color:mu,textTransform:"uppercase",marginBottom:3}}>Total Geral</div>
-          <div style={{fontSize:19,fontWeight:900,color:ac}}>{euro(tM+tP+tG+tD)}</div>
+          <div style={{fontSize:19,fontWeight:900,color:ac,marginBottom:10}}>{euro(tM+tP+tG+tD)}</div>
+          <button onClick={guardar} style={{...BA,width:"100%",opacity:saving?0.6:1}} disabled={saving}>
+            {saving?"A guardar...":"💾 Guardar"}
+          </button>
         </div>
       </nav>
       <main style={{marginLeft:188,flex:1,padding:28}}>
