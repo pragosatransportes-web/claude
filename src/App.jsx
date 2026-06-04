@@ -1312,8 +1312,17 @@ function PgCust({veic,mots,man,port,conj}) {
 }
 
 async function parseMapsUrl(url) {
-  // Extract origin/destination from Google Maps URL
   try {
+    // Extract coordinates from data parameter: !1d{lon}!2d{lat}
+    const coordMatches=[...url.matchAll(/!1d(-?\d+\.\d+)!2d(-?\d+\.\d+)/g)];
+    if(coordMatches.length>=2) {
+      return {
+        origCoord:{lon:parseFloat(coordMatches[0][1]),lat:parseFloat(coordMatches[0][2])},
+        destCoord:{lon:parseFloat(coordMatches[1][1]),lat:parseFloat(coordMatches[1][2])},
+      };
+    }
+    // Try @lat,lon in URL
+    const centerM=url.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
     // Format: /maps/dir/Origin/Destination/
     const m1=url.match(/maps\/dir\/([^\/\?@]+)\/([^\/\?@]+)/);
     if(m1) return {orig:decodeURIComponent(m1[1].replace(/\+/g,' ')),dest:decodeURIComponent(m1[2].replace(/\+/g,' '))};
@@ -1366,21 +1375,30 @@ function PgFret({fret,setFret}) {
     if(!f.mapsUrl.trim()&&!f.orig.trim()&&!f.dest.trim()){setRouteError("Cola um link Google Maps ou preenche Origem e Destino.");return;}
     setLoadingRoute(true);setRouteError("");
     try {
-      let orig=f.orig,dest=f.dest;
+      let oCoord=null, dCoord=null, origName=f.orig, destName=f.dest;
       if(f.mapsUrl.trim()){
         const parsed=await parseMapsUrl(f.mapsUrl.trim());
-        if(parsed){orig=parsed.orig;dest=parsed.dest;}
-        else{setRouteError("Não foi possível extrair Origem/Destino do link. Usa um link completo google.com/maps/dir/...");setLoadingRoute(false);return;}
+        if(!parsed){setRouteError("Não foi possível extrair dados do link. Usa um link completo google.com/maps/dir/...");setLoadingRoute(false);return;}
+        if(parsed.origCoord&&parsed.destCoord){
+          // Direct coordinates from URL — no geocoding needed
+          oCoord=parsed.origCoord;
+          dCoord=parsed.destCoord;
+        } else {
+          origName=parsed.orig;
+          destName=parsed.dest;
+        }
       }
-      if(!orig||!dest){setRouteError("Preenche Origem e Destino.");setLoadingRoute(false);return;}
-      const [oCoord,dCoord]=await Promise.all([geocodePlace(orig),geocodePlace(dest)]);
+      if(!oCoord||!dCoord){
+        if(!origName||!destName){setRouteError("Preenche Origem e Destino.");setLoadingRoute(false);return;}
+        const [oc,dc]=await Promise.all([geocodePlace(origName),geocodePlace(destName)]);
+        oCoord=oc; dCoord=dc;
+        origName=oc.name||origName; destName=dc.name||destName;
+      }
       const routes=await osrmRoute(oCoord,dCoord);
-      up({orig:oCoord.name||orig,dest:dCoord.name||dest});
-      if(routes.length===1){
-        applyRoute(routes[0]);
-      } else {
-        setRouteModal(routes);
-      }
+      if(origName) up({orig:origName});
+      if(destName) up({dest:destName});
+      if(routes.length===1){applyRoute(routes[0]);}
+      else{setRouteModal(routes);}
     } catch(e){setRouteError("Erro: "+e.message);}
     setLoadingRoute(false);
   }
