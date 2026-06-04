@@ -12,27 +12,149 @@ const nv=v=>parseFloat(String(v||"0").replace(",","."))||0;
 const drC=d=>d?nv(d.salario)+nv(d.subRef)+nv(d.subTranp)+nv(d.seguro):0;
 
 const V0=[
-  {id:1,matricula:"AA-01-BB",tipo:"trator", marca:"Volvo",   modelo:"FH16",  ano:2021},
-  {id:2,matricula:"CC-02-DD",tipo:"reboque",marca:"Schmitz", modelo:"S.KO",  ano:2020},
-  {id:3,matricula:"EE-03-FF",tipo:"camiao", marca:"Mercedes",modelo:"Actros",ano:2022},
+  {id:1,numEquip:"70030",matricula:"BG52ZE",tipo:"Trator",marca:"Volvo",modelo:"T FH750",ano:2024,tara:10247,pbTotal:44000,categoria:"T. Especial"},
+  {id:2,numEquip:"5270",matricula:"AV-55672",tipo:"Porta-Máquinas",marca:"Invepe",modelo:"RPM 133",ano:2017,tara:12500,pbTotal:77200,categoria:"T. Especial"},
+  {id:3,numEquip:"5269",matricula:"94-TA-46",tipo:"Trator",marca:"Volvo",modelo:"T FH 540",ano:2017,tara:10437,pbTotal:40000,categoria:"T. Especial"},
+  {id:4,numEquip:"5204",matricula:"SE-1082",tipo:"Porta-Máquinas",marca:"A.R.B.",modelo:"SPM 3D/8,95",ano:2008,tara:8140,pbTotal:33500,categoria:"T. Especial"},
+  {id:5,numEquip:"5380",matricula:"BE10MB",tipo:"Trator",marca:"Volvo",modelo:"FH 500",ano:2023,tara:7866,pbTotal:44000,categoria:"T. Especial"},
+  {id:6,numEquip:"5115",matricula:"L-154494",tipo:"Porta-Máquinas",marca:"Kaiser",modelo:"S530 3F",ano:2000,tara:10600,pbTotal:33500,categoria:"T. Especial"},
+  {id:7,numEquip:"70035",matricula:"92-81-PA",tipo:"Rígido Água",marca:"Volvo",modelo:"FM 7",ano:2000,tara:11700,pbTotal:26000,categoria:"T. Especial"},
+  {id:8,numEquip:"5323",matricula:"29-15-ZF",tipo:"Rígido Cola",marca:"Volvo",modelo:"FM9",ano:2004,tara:10920,pbTotal:19000,categoria:"T. Especial"},
+  {id:9,numEquip:"5245",matricula:"19-FT-63",tipo:"Rígido Cola",marca:"Iveco",modelo:"Eurocarga 220",ano:2008,tara:7060,pbTotal:12000,categoria:"T. Especial"},
+  {id:10,numEquip:"5297",matricula:"25-ZO-44",tipo:"Carro Grua",marca:"Volvo",modelo:"FMX 500",ano:2019,tara:18484,pbTotal:32000,categoria:"T. Especial"},
+  {id:11,numEquip:"5276",matricula:"L-190357",tipo:"Reboque-Estrado",marca:"Joluso",modelo:"RR-2D-6.5",ano:2009,tara:3290,pbTotal:18000,categoria:"T. Especial"},
+  {id:12,numEquip:"5316",matricula:"AD27MD",tipo:"Carro Grua",marca:"Volvo",modelo:"FM 4 420",ano:2020,tara:17220,pbTotal:26000,categoria:"T. Especial"},
+  {id:13,numEquip:"70028",matricula:"BH50VS",tipo:"Carro Grua",marca:"Volvo",modelo:"FMX 500",ano:2024,tara:23380,pbTotal:32000,categoria:"T. Especial"},
+  {id:14,numEquip:"5122",matricula:"13-96-QP",tipo:"Rígido Cola",marca:"Volvo",modelo:"FL 10",ano:2000,tara:10300,pbTotal:19000,categoria:"T. Especial"},
+  {id:15,numEquip:"5173",matricula:"77-56-AB",tipo:"Rígido Água",marca:"Mercedes",modelo:"26,29 K/38",ano:1992,tara:12680,pbTotal:26000,categoria:"T. Especial"},
+  {id:16,numEquip:"5109",matricula:"12-92-OR",tipo:"Rígido Água",marca:"Mercedes",modelo:"Ategos 26,28 B",ano:1999,tara:11500,pbTotal:26000,categoria:"T. Especial"},
+  {id:17,numEquip:"5368",matricula:"57-74-PF",tipo:"Rígido Água",marca:"Volvo",modelo:"FM 7",ano:2000,tara:12640,pbTotal:26000,categoria:"T. Especial"},
+  {id:18,numEquip:"5211",matricula:"15-95-PE",tipo:"Rígido Cola",marca:"Volvo",modelo:"FM 7",ano:2000,tara:13520,pbTotal:26000,categoria:"T. Especial"},
+  {id:19,numEquip:"5104",matricula:"39-70-OE",tipo:"Rígido Cola",marca:"Mercedes",modelo:"Ategos 26.28 B",ano:1999,tara:11600,pbTotal:26000,categoria:"T. Especial"},
+  {id:20,numEquip:"5254",matricula:"L-130016",tipo:"Reboque-Estrado",marca:"Fruehauf",modelo:"EBP",ano:1996,tara:5200,pbTotal:33500,categoria:"T. Especial"},
+  {id:21,numEquip:"844",matricula:"P-81998",tipo:"Porta-Sílos",marca:"Lecinena",modelo:"2E-RD",ano:2001,tara:4650,pbTotal:29000,categoria:"T. Especial"},
+  {id:22,numEquip:"875",matricula:"L-37858",tipo:"Estrado",marca:"Metalofabril",modelo:"SR2",ano:1976,tara:5380,pbTotal:30550,categoria:"T. Especial"},
+  {id:23,numEquip:"876",matricula:"L-155299",tipo:"Estrado",marca:"Montenegro",modelo:"SPL 3S 13.62",ano:2001,tara:7000,pbTotal:34000,categoria:"T. Especial"},
+  {id:24,numEquip:"877",matricula:"L-137878",tipo:"Porta-Máquinas",marca:"Carsul",modelo:"12,0-PM-BED",ano:1998,tara:8930,pbTotal:34420,categoria:"T. Especial"},
+  {id:25,numEquip:"40142",matricula:"L-219995",tipo:"Semi-Reboque",marca:"Galucho",modelo:"SBG3",ano:2025,tara:7300,pbTotal:38000,categoria:"T. Basculantes"},
+  {id:26,numEquip:"5381",matricula:"BE11MB",tipo:"Trator",marca:"Volvo",modelo:"FH 500",ano:2023,tara:7866,pbTotal:44000,categoria:"T. Basculantes"},
+  {id:27,numEquip:"5330",matricula:"L-209506",tipo:"Semi-Reboque",marca:"Galucho",modelo:"SGB3",ano:2021,tara:14000,pbTotal:41000,categoria:"T. Basculantes"},
+  {id:28,numEquip:"5379",matricula:"BE09MB",tipo:"Trator",marca:"Volvo",modelo:"FH 500",ano:2023,tara:7866,pbTotal:44000,categoria:"T. Basculantes"},
+  {id:29,numEquip:"40143",matricula:"L-219996",tipo:"Semi-Reboque",marca:"Galucho",modelo:"SGB3",ano:2025,tara:7100,pbTotal:41000,categoria:"T. Basculantes"},
+  {id:30,numEquip:"5378",matricula:"BE08MB",tipo:"Trator",marca:"Volvo",modelo:"FH 500",ano:2023,tara:7866,pbTotal:44000,categoria:"T. Basculantes"},
+  {id:31,numEquip:"40144",matricula:"L-219997",tipo:"Semi-Reboque",marca:"Galucho",modelo:"SGB3",ano:2025,tara:7100,pbTotal:41000,categoria:"T. Basculantes"},
+  {id:32,numEquip:"5258",matricula:"44-QI-50",tipo:"Trator",marca:"Volvo",modelo:"T FH-38",ano:2015,tara:8230,pbTotal:40000,categoria:"T. Basculantes"},
+  {id:33,numEquip:"5303",matricula:"L-207078",tipo:"Semi-Reboque",marca:"Galucho",modelo:"SGB3",ano:2020,tara:7020,pbTotal:41000,categoria:"T. Basculantes"},
+  {id:34,numEquip:"5295",matricula:"25-ZO-41",tipo:"Trator",marca:"Volvo",modelo:"FH D13K",ano:2019,tara:8358,pbTotal:44000,categoria:"T. Basculantes"},
+  {id:35,numEquip:"70029",matricula:"L-215831",tipo:"Semi-Reboque",marca:"Galucho",modelo:"SGB3",ano:2024,tara:7100,pbTotal:41000,categoria:"T. Basculantes"},
+  {id:36,numEquip:"5259",matricula:"44-QI-51",tipo:"Trator",marca:"Volvo",modelo:"T FH-38",ano:2015,tara:8230,pbTotal:40000,categoria:"T. Basculantes"},
+  {id:37,numEquip:"5269",matricula:"25-ZO-49",tipo:"Trator",marca:"Volvo",modelo:"FH D13K",ano:2019,tara:8358,pbTotal:44000,categoria:"T. Basculantes"},
+  {id:38,numEquip:"5337",matricula:"L-210305",tipo:"Semi-Reboque",marca:"Galucho",modelo:"SGB3",ano:2021,tara:14000,pbTotal:38000,categoria:"T. Basculantes"},
+  {id:39,numEquip:"70259",matricula:"74-TC-56",tipo:"Trator",marca:"Volvo",modelo:"T FH",ano:2017,tara:8103,pbTotal:40000,categoria:"T. Basculantes"},
+  {id:40,numEquip:"5302",matricula:"L-207077",tipo:"Semi-Reboque",marca:"Galucho",modelo:"SGB3",ano:2020,tara:7020,pbTotal:34000,categoria:"T. Basculantes"},
+  {id:41,numEquip:"5348",matricula:"AN90AV",tipo:"Basculante Rígido",marca:"Volvo",modelo:"FMX 460",ano:2021,tara:15040,pbTotal:32000,categoria:"T. Basculantes"},
+  {id:42,numEquip:"70024",matricula:"BG56ZE",tipo:"Basculante Rígido",marca:"Volvo",modelo:"FMX 460",ano:2024,tara:10660,pbTotal:32000,categoria:"T. Basculantes"},
+  {id:43,numEquip:"5298",matricula:"25-ZO-42",tipo:"Basculante Rígido",marca:"Volvo",modelo:"FMX 460",ano:2019,tara:10642,pbTotal:32000,categoria:"T. Basculantes"},
+  {id:44,numEquip:"70027",matricula:"BG53ZE",tipo:"Basculante Rígido",marca:"Volvo",modelo:"FMX 460",ano:2024,tara:10660,pbTotal:32000,categoria:"T. Basculantes"},
+  {id:45,numEquip:"70025",matricula:"BG55ZE",tipo:"Basculante Rígido",marca:"Volvo",modelo:"FMX 460",ano:2024,tara:10660,pbTotal:32000,categoria:"T. Basculantes"},
+  {id:46,numEquip:"70023",matricula:"BG51ZE",tipo:"Basculante Rígido",marca:"Volvo",modelo:"FMX 460",ano:2024,tara:15020,pbTotal:32000,categoria:"T. Basculantes"},
+  {id:47,numEquip:"70026",matricula:"BG54ZE",tipo:"Basculante Rígido",marca:"Volvo",modelo:"FMX 460",ano:2024,tara:10660,pbTotal:32000,categoria:"T. Basculantes"},
+  {id:48,numEquip:"5347",matricula:"AN87AV",tipo:"Basculante Rígido",marca:"Volvo",modelo:"FMX 460",ano:2021,tara:15040,pbTotal:32000,categoria:"T. Basculantes"},
+  {id:49,numEquip:"5206",matricula:"42-FF-75",tipo:"Basculante Rígido",marca:"Volvo",modelo:"FM 13",ano:2008,tara:14520,pbTotal:32000,categoria:"T. Basculantes"},
+  {id:50,numEquip:"5299",matricula:"25-ZO-51",tipo:"Basculante Rígido",marca:"Volvo",modelo:"FMX 460",ano:2019,tara:15020,pbTotal:32000,categoria:"T. Basculantes"},
+  {id:51,numEquip:"5205",matricula:"42-FF-74",tipo:"Basculante Rígido",marca:"Volvo",modelo:"FM 13",ano:2008,tara:14520,pbTotal:32000,categoria:"T. Basculantes"},
+  {id:52,numEquip:"70022",matricula:"BG50ZE",tipo:"Basculante Rígido",marca:"Volvo",modelo:"FMX 380",ano:2024,tara:13120,pbTotal:26000,categoria:"T. Basculantes"},
+  {id:53,numEquip:"70021",matricula:"BG57ZE",tipo:"Basculante Rígido",marca:"Volvo",modelo:"FMX 380",ano:2024,tara:13120,pbTotal:26000,categoria:"T. Basculantes"},
+  {id:54,numEquip:"5194",matricula:"24-FA-85",tipo:"Basculante Rígido",marca:"Volvo",modelo:"FM 9",ano:2007,tara:12700,pbTotal:26000,categoria:"T. Basculantes"},
+  {id:55,numEquip:"5195",matricula:"24-FA-86",tipo:"Basculante Rígido",marca:"Volvo",modelo:"FM 9",ano:2007,tara:12850,pbTotal:26000,categoria:"T. Basculantes"},
+  {id:56,numEquip:"5196",matricula:"24-FA-87",tipo:"Basculante Rígido",marca:"Volvo",modelo:"FM 9",ano:2007,tara:12700,pbTotal:26000,categoria:"T. Basculantes"},
+  {id:57,numEquip:"5197",matricula:"24-FA-88",tipo:"Basculante Rígido",marca:"Volvo",modelo:"FM 9",ano:2007,tara:12850,pbTotal:26000,categoria:"T. Basculantes"},
+  {id:58,numEquip:"5106",matricula:"28-58-OJ",tipo:"Basculante Rígido",marca:"Volvo",modelo:"FL 10",ano:1999,tara:12480,pbTotal:31500,categoria:"T. Basculantes"},
+  {id:59,numEquip:"867",matricula:"AJ50GD",tipo:"Trator",marca:"MAN",modelo:"TGS 18.430",ano:2021,tara:7705,pbTotal:44000,categoria:"T. Basculantes"},
+  {id:60,numEquip:"862",matricula:"L-209374",tipo:"Semi-Reboque",marca:"Galucho",modelo:"SGB3",ano:2021,tara:7100,pbTotal:41000,categoria:"T. Basculantes"},
+  {id:61,numEquip:"864",matricula:"AJ-48-BP",tipo:"Trator",marca:"Volvo",modelo:"TGS 18,430",ano:2021,tara:7705,pbTotal:44000,categoria:"T. Basculantes"},
+  {id:62,numEquip:"848",matricula:"L-188051",tipo:"Semi-Reboque",marca:"INVEPE",modelo:"BAS 8 AL",ano:2008,tara:5360,pbTotal:33500,categoria:"T. Basculantes"},
+  {id:63,numEquip:"866",matricula:"AJ-50-BP",tipo:"Trator",marca:"MAN",modelo:"TGS 18.430",ano:2021,tara:7706,pbTotal:44000,categoria:"T. Basculantes"},
+  {id:64,numEquip:"40145",matricula:"L-219998",tipo:"Semi-Reboque",marca:"MAN",modelo:"SGB3",ano:2025,tara:7100,pbTotal:38000,categoria:"T. Basculantes"},
+  {id:65,numEquip:"891",matricula:"BA-61-UH",tipo:"Trator",marca:"MAN",modelo:"TGS 18.470",ano:2023,tara:7611,pbTotal:44000,categoria:"T. Basculantes"},
+  {id:66,numEquip:"873",matricula:"L-159175",tipo:"Semi-Reboque",marca:"Basben",modelo:"SB20SM",ano:2001,tara:4700,pbTotal:31500,categoria:"T. Basculantes"},
+  {id:67,numEquip:"896",matricula:"L-198571",tipo:"Semi-Reboque",marca:"Invepe",modelo:"SR3",ano:2015,tara:0,pbTotal:0,categoria:"T. Basculantes"},
+  {id:68,numEquip:"892",matricula:"BB-06-OD",tipo:"Trator",marca:"MAN",modelo:"TGS 18.430",ano:2023,tara:7611,pbTotal:44000,categoria:"T. Basculantes"},
+  {id:69,numEquip:"40146",matricula:"L-219999",tipo:"Semi-Reboque",marca:"Galucho",modelo:"SGB 3",ano:2025,tara:7100,pbTotal:41000,categoria:"T. Basculantes"},
+  {id:70,numEquip:"893",matricula:"BD-87-AZ",tipo:"Trator",marca:"MAN",modelo:"TGS 18.430",ano:2023,tara:7616,pbTotal:44000,categoria:"T. Basculantes"},
+  {id:71,numEquip:"861",matricula:"L-209373",tipo:"Semi-Reboque",marca:"Galucho",modelo:"SGB 3",ano:2021,tara:14000,pbTotal:41000,categoria:"T. Basculantes"},
+  {id:72,numEquip:"865",matricula:"AJ-49-BP",tipo:"Trator",marca:"MAN",modelo:"TFS 18.430",ano:2021,tara:7706,pbTotal:44000,categoria:"T. Basculantes"},
+  {id:73,numEquip:"863",matricula:"L-209375",tipo:"Semi-Reboque",marca:"Galucho",modelo:"SGB 3",ano:2021,tara:14000,pbTotal:41000,categoria:"T. Basculantes"},
+  {id:74,numEquip:"868",matricula:"AJ-15-MG",tipo:"Trator",marca:"MAN",modelo:"TGS 18.430",ano:2021,tara:7706,pbTotal:44000,categoria:"T. Basculantes"},
+  {id:75,numEquip:"860",matricula:"L-198570",tipo:"Semi-Reboque",marca:"INVEPE",modelo:"SR3",ano:2015,tara:6000,pbTotal:36000,categoria:"T. Basculantes"},
+  {id:76,numEquip:"849",matricula:"L-188158",tipo:"Semi-Reboque",marca:"Invepe",modelo:"BAS 8 AL",ano:2008,tara:5360,pbTotal:33500,categoria:"T. Basculantes"},
+  {id:77,numEquip:"870",matricula:"L-183985",tipo:"Semi-Reboque",marca:"MONTENEGRO",modelo:"SVF-2G-18AE",ano:2007,tara:5650,pbTotal:31000,categoria:"T. Basculantes"},
+  {id:78,numEquip:"70109",matricula:"L-215832",tipo:"Semi-Reboque",marca:"Galucho",modelo:"SGB3",ano:2024,tara:7300,pbTotal:38000,categoria:"T. Basculantes"},
+  {id:79,numEquip:"5331",matricula:"L-209507",tipo:"Semi-Reboque",marca:"Galucho",modelo:"SGB3",ano:2021,tara:14000,pbTotal:38000,categoria:"T. Basculantes"},
+  {id:80,numEquip:"894",matricula:"L-183989",tipo:"Semi-Reboque",marca:"MONTENEGRO",modelo:"SVF-2G-18AE",ano:2007,tara:5650,pbTotal:31000,categoria:"T. Basculantes"},
+  {id:81,numEquip:"856",matricula:"25-ZO-43",tipo:"Trator",marca:"VOLVO",modelo:"T FH",ano:2019,tara:8055,pbTotal:44000,categoria:"T. Cisternas"},
+  {id:82,numEquip:"815",matricula:"L-170277",tipo:"Cisterna",marca:"Hermans",modelo:"S AL 2C 31 T",ano:2004,tara:4970,pbTotal:34000,categoria:"T. Cisternas"},
+  {id:83,numEquip:"858",matricula:"75-ZS-76",tipo:"Trator",marca:"MAN",modelo:"TGX 18.510",ano:2020,tara:8406,pbTotal:44000,categoria:"T. Cisternas"},
+  {id:84,numEquip:"818",matricula:"L-174917",tipo:"Cisterna",marca:"HERMANNS",modelo:"Chosal S AL 2C",ano:2005,tara:4970,pbTotal:34000,categoria:"T. Cisternas"},
+  {id:85,numEquip:"859",matricula:"75-ZS-77",tipo:"Trator",marca:"MAN",modelo:"TGX 18.510",ano:2020,tara:8406,pbTotal:44000,categoria:"T. Cisternas"},
+  {id:86,numEquip:"836",matricula:"SE-1144",tipo:"Cisterna",marca:"Omeps",modelo:"S 122",ano:2008,tara:3350,pbTotal:30000,categoria:"T. Cisternas"},
+  {id:87,numEquip:"881",matricula:"AT-05-RJ",tipo:"Trator",marca:"MAN",modelo:"TGX 18.510",ano:2022,tara:8098,pbTotal:44000,categoria:"T. Cisternas"},
+  {id:88,numEquip:"841",matricula:"SE-1349",tipo:"Cisterna",marca:"Hermanns",modelo:"Chosal S-AL-2C",ano:2008,tara:5640,pbTotal:34000,categoria:"T. Cisternas"},
+  {id:89,numEquip:"857",matricula:"25-ZO-46",tipo:"Trator",marca:"Volvo",modelo:"T FH",ano:2019,tara:8055,pbTotal:44000,categoria:"T. Cisternas"},
+  {id:90,numEquip:"845",matricula:"SE-2067",tipo:"Cisterna",marca:"Hermans",modelo:"SALB 42",ano:2010,tara:6550,pbTotal:34000,categoria:"T. Cisternas"},
+  {id:91,numEquip:"883",matricula:"AT-07-RJ",tipo:"Trator",marca:"MAN",modelo:"TGX 18.510",ano:2022,tara:8098,pbTotal:44000,categoria:"T. Cisternas"},
+  {id:92,numEquip:"854",matricula:"LE - 2306",tipo:"Cisterna",marca:"Kassbohrer",modelo:"K.SSK40",ano:2017,tara:5800,pbTotal:36000,categoria:"T. Cisternas"},
+  {id:93,numEquip:"884",matricula:"AT-08-RJ",tipo:"Trator",marca:"MAN",modelo:"TGX 18.510",ano:2022,tara:8098,pbTotal:44000,categoria:"T. Cisternas"},
+  {id:94,numEquip:"834",matricula:"SE-992",tipo:"Cisterna",marca:"HERMANNS",modelo:"S-AL-2C-31-T",ano:2008,tara:5640,pbTotal:34000,categoria:"T. Cisternas"},
+  {id:95,numEquip:"885",matricula:"AT-54-JF",tipo:"Trator",marca:"MAN",modelo:"TGX 18.510",ano:2022,tara:8093,pbTotal:44000,categoria:"T. Cisternas"},
+  {id:96,numEquip:"832",matricula:"SE-916",tipo:"Cisterna",marca:"Hermans",modelo:"S-AL-2C-33-T",ano:2008,tara:5810,pbTotal:34000,categoria:"T. Cisternas"},
+  {id:97,numEquip:"886",matricula:"AT-55-JF",tipo:"Trator",marca:"MAN",modelo:"TGX 18.510",ano:2022,tara:8093,pbTotal:44000,categoria:"T. Cisternas"},
+  {id:98,numEquip:"839",matricula:"SE-1347",tipo:"Cisterna",marca:"HERMANNS",modelo:"S-AL-2C-31-T",ano:2008,tara:5640,pbTotal:34000,categoria:"T. Cisternas"},
+  {id:99,numEquip:"887",matricula:"AT-57-JF",tipo:"Trator",marca:"MAN",modelo:"TGX 18.510",ano:2022,tara:8093,pbTotal:44000,categoria:"T. Cisternas"},
+  {id:100,numEquip:"855",matricula:"LE - 3158",tipo:"Cisterna",marca:"Kassbohrer",modelo:"K.SSK40",ano:2019,tara:5590,pbTotal:36000,categoria:"T. Cisternas"},
+  {id:101,numEquip:"888",matricula:"AT-59-JF",tipo:"Trator",marca:"MAN",modelo:"TGX 18.510",ano:2022,tara:8098,pbTotal:44000,categoria:"T. Cisternas"},
+  {id:102,numEquip:"829",matricula:"SE-886",tipo:"Cisterna",marca:"Hermans",modelo:"S-AL-2C-31-T",ano:2008,tara:4970,pbTotal:34000,categoria:"T. Cisternas"},
+  {id:103,numEquip:"889",matricula:"AT-60-JF",tipo:"Trator",marca:"MAN",modelo:"TGX 18.510",ano:2022,tara:8093,pbTotal:44000,categoria:"T. Cisternas"},
+  {id:104,numEquip:"825",matricula:"L-183518",tipo:"Cisterna",marca:"Hermans",modelo:"S-AL-2C-33-T",ano:2007,tara:5640,pbTotal:34000,categoria:"T. Cisternas"},
+  {id:105,numEquip:"890",matricula:"AU-01-EM",tipo:"Trator",marca:"MAN",modelo:"TGX 18.510",ano:2022,tara:8098,pbTotal:44000,categoria:"T. Cisternas"},
+  {id:106,numEquip:"830",matricula:"SE-906",tipo:"Cisterna",marca:"Hermans",modelo:"S-AL-2C-33-T",ano:2008,tara:5810,pbTotal:34000,categoria:"T. Cisternas"},
+  {id:107,numEquip:"852",matricula:"74TC55",tipo:"Trator",marca:"MAN",modelo:"F TH",ano:2017,tara:8103,pbTotal:40000,categoria:"T. Cisternas"},
+  {id:108,numEquip:"882",matricula:"AT06RJ",tipo:"Trator",marca:"MAN",modelo:"TGX 18.510",ano:2022,tara:8098,pbTotal:0,categoria:"T. Cisternas"},
 ];
 const D0=[
-  {id:1,nome:"João Silva",  salario:1800,subRef:220,subTranp:100,seguro:80,veiculoId:1},
-  {id:2,nome:"Maria Santos",salario:1750,subRef:220,subTranp:100,seguro:80,veiculoId:3},
+  {id:1, nome:"Vitor Januário",      salario:0,subRef:0,subTranp:0,seguro:0,veiculoId:1,  ativo:true},
+  {id:2, nome:"Amilcar Carreira",    salario:0,subRef:0,subTranp:0,seguro:0,veiculoId:3,  ativo:true},
+  {id:3, nome:"David Nunes",         salario:0,subRef:0,subTranp:0,seguro:0,veiculoId:5,  ativo:true},
+  {id:4, nome:"Agostinho Louro",     salario:0,subRef:0,subTranp:0,seguro:0,veiculoId:26, ativo:true},
+  {id:5, nome:"Nuno Amaro",          salario:0,subRef:0,subTranp:0,seguro:0,veiculoId:28, ativo:true},
+  {id:6, nome:"Carmino Calixto",     salario:0,subRef:0,subTranp:0,seguro:0,veiculoId:30, ativo:true},
+  {id:7, nome:"Bernardo Fale",       salario:0,subRef:0,subTranp:0,seguro:0,veiculoId:36, ativo:true},
+  {id:8, nome:"Celso Cristo",        salario:0,subRef:0,subTranp:0,seguro:0,veiculoId:34, ativo:true},
+  {id:9, nome:"João Maximiano",      salario:0,subRef:0,subTranp:0,seguro:0,veiculoId:37, ativo:true},
+  {id:10,nome:"Francisco Leitão",    salario:0,subRef:0,subTranp:0,seguro:0,veiculoId:39, ativo:true},
+  {id:11,nome:"João Almeida",        salario:0,subRef:0,subTranp:0,seguro:0,veiculoId:41, ativo:true},
+  {id:12,nome:"José Miguel Ferreira",salario:0,subRef:0,subTranp:0,seguro:0,veiculoId:43, ativo:true},
+  {id:13,nome:"Andressa Oliveira",   salario:0,subRef:0,subTranp:0,seguro:0,veiculoId:45, ativo:true},
+  {id:14,nome:"Pedro Henriques",     salario:0,subRef:0,subTranp:0,seguro:0,veiculoId:46, ativo:true},
+  {id:15,nome:"Tó Luis",             salario:0,subRef:0,subTranp:0,seguro:0,veiculoId:48, ativo:true},
+  {id:16,nome:"Luis Bernardo",       salario:0,subRef:0,subTranp:0,seguro:0,veiculoId:53, ativo:true},
+  {id:17,nome:"Adriano Machado",     salario:0,subRef:0,subTranp:0,seguro:0,veiculoId:50, ativo:true},
+  {id:18,nome:"Carlos Cerejo",       salario:0,subRef:0,subTranp:0,seguro:0,veiculoId:42, ativo:true},
+  {id:19,nome:"Mário Gomes",         salario:0,subRef:0,subTranp:0,seguro:0,veiculoId:44, ativo:true},
+  {id:20,nome:"Cátia Romão",         salario:0,subRef:0,subTranp:0,seguro:0,veiculoId:52, ativo:true},
+  {id:21,nome:"Rúben Ferreira",      salario:0,subRef:0,subTranp:0,seguro:0,veiculoId:51, ativo:true},
+  {id:22,nome:"Alex",                salario:0,subRef:0,subTranp:0,seguro:0,veiculoId:55, ativo:true},
+  {id:23,nome:"José Pascoal",        salario:0,subRef:0,subTranp:0,seguro:0,veiculoId:19, ativo:true},
+  {id:24,nome:"Paulo Fritz",         salario:0,subRef:0,subTranp:0,seguro:0,veiculoId:8,  ativo:true},
+  {id:25,nome:"Tiago Faria",         salario:0,subRef:0,subTranp:0,seguro:0,veiculoId:9,  ativo:true},
+  {id:26,nome:"Adriano Sousa",       salario:0,subRef:0,subTranp:0,seguro:0,veiculoId:10, ativo:true},
+  {id:27,nome:"José Pereira",        salario:0,subRef:0,subTranp:0,seguro:0,veiculoId:12, ativo:true},
+  {id:28,nome:"Ricardo Machado",     salario:0,subRef:0,subTranp:0,seguro:0,veiculoId:13, ativo:true},
 ];
-const M0=[
-  {id:1,veiculoId:1,data:"2025-03-10",tipo:"Revisão Geral",desc:"Óleo + filtros",   custo:420, estado:"ok"},
-  {id:2,veiculoId:3,data:"2025-04-22",tipo:"Pneus",        desc:"4 pneus dianteiros",custo:1200,estado:"ok"},
-];
-const T0=[
-  {id:1,veiculoId:1,mes:"2025-05",valor:380,via:"A1/A2"},
-  {id:2,veiculoId:3,mes:"2025-05",valor:210,via:"A1/A6"},
-];
-const G0=[
-  {id:1,veiculoId:1,data:"2025-05-03",local:"Galp A1",litros:450,preco:1.589,custo:715.05,km:245800},
-  {id:2,veiculoId:3,data:"2025-05-05",local:"BP Lisboa",litros:320,preco:1.562,custo:499.84,km:182300},
-];
-const S0=[{id:1,tratorId:1,reboqueId:2,nome:"Conjunto Norte"}];
+const M0=[];
+const T0=[];
+const G0=[];
+const S0=[];
 
 const C={background:sf,border:`1px solid ${bd}`,borderRadius:10,padding:18,marginBottom:16};
 const IN={background:bg,border:`1px solid ${bd}`,color:tx,borderRadius:7,padding:"8px 10px",fontSize:13,fontFamily:"inherit",outline:"none",width:"100%",boxSizing:"border-box"};
@@ -61,9 +183,21 @@ function Badge({e}) {
 }
 
 function Tipo({t}) {
-  const map={trator:["rgba(59,130,246,.15)",bl,"Trator"],reboque:["rgba(232,160,32,.15)",ac,"Reboque"],camiao:["rgba(34,197,94,.12)",gn,"Camião"]};
-  const[bg2,c,lb]=map[t]||["#333","#aaa",t];
-  return <span style={{display:"inline-block",padding:"2px 8px",borderRadius:4,fontSize:10,fontWeight:700,background:bg2,color:c}}>{lb}</span>;
+  const map={
+    "Trator":["rgba(59,130,246,.15)",bl],
+    "Semi-Reboque":["rgba(232,160,32,.15)",ac],
+    "Cisterna":["rgba(167,139,250,.15)",pu],
+    "Basculante Rígido":["rgba(34,197,94,.12)",gn],
+    "Porta-Máquinas":["rgba(251,146,60,.15)",or],
+    "Rígido Grua":["rgba(239,68,68,.15)",rd],
+    "Rígido Cola":["rgba(100,116,139,.15)","#94a3b8"],
+    "Rígido Água":["rgba(59,130,246,.1)",bl],
+    "Reboque-Estrado":["rgba(232,160,32,.1)",ac],
+    "Porta-Sílos":["rgba(167,139,250,.1)",pu],
+    "Estrado":["rgba(100,116,139,.1)","#94a3b8"],
+  };
+  const[bg2,c]=map[t]||["rgba(100,116,139,.1)","#94a3b8"];
+  return <span style={{display:"inline-block",padding:"2px 8px",borderRadius:4,fontSize:10,fontWeight:700,background:bg2,color:c}}>{t||"—"}</span>;
 }
 
 function Th({cols}) {
@@ -93,8 +227,8 @@ export default function App() {
     get(ref(db,"frota/dados")).then(snap=>{
       if(snap.exists()){
         const x=snap.val();
-        if(x.veic?.length) setVeic(x.veic);
-        if(x.mots?.length) setMots(x.mots);
+        if(x.veic?.length >= V0.length) setVeic(x.veic);
+        if(x.mots?.length >= D0.length) setMots(x.mots);
         if(x.man?.length)  setMan(x.man);
         if(x.port?.length) setPort(x.port);
         if(x.gas?.length)  setGas(x.gas);
@@ -124,7 +258,7 @@ export default function App() {
 
   const pages=[
     ["dash","📊","Dashboard"],["imp","📥","Importar"],
-    ["veic","🚛","Viaturas"],["conj","🔗","Conjuntos"],["mot","👤","Motoristas"],
+    ["veic","🚛","Equipamentos"],["conj","🔗","Conjuntos"],["mot","👤","Motoristas"],
     ["man","🔧","Manutenção"],["port","🛣️","Portagens"],["gas","⛽","Gasóleo"],
     ["cust","📐","Custos Base"],["fret","📦","Frete"],
   ];
@@ -161,7 +295,7 @@ export default function App() {
         {pg==="imp"  && <PgImp  veic={veic} setMan={setMan} setPort={setPort} setGas={setGas}/>}
         {pg==="veic" && <PgVeic veic={veic} setVeic={setVeic}/>}
         {pg==="conj" && <PgConj veic={veic} mots={mots} man={man} port={port} gas={gas} conj={conj} setConj={setConj}/>}
-        {pg==="mot"  && <PgMot  mots={mots} setMots={setMots} veic={veic} tD={tD}/>}
+        {pg==="mot"  && <PgMot  mots={mots} setMots={setMots} veic={veic} setVeic={setVeic} tD={tD}/>}
         {pg==="man"  && <PgMan  man={man} setMan={setMan} veic={veic} tM={tM}/>}
         {pg==="port" && <PgPort port={port} setPort={setPort} veic={veic} tP={tP}/>}
         {pg==="gas"  && <PgGas  gas={gas} setGas={setGas} veic={veic} tG={tG}/>}
@@ -180,7 +314,7 @@ function PgDash({veic,man,port,gas,mots,fret,tM,tP,tG}) {
       <h2 style={{fontSize:28,fontWeight:900,margin:"0 0 4px"}}>Dashboard</h2>
       <p style={{fontSize:13,color:mu,marginBottom:20}}>Visão consolidada da frota</p>
       <div style={G4}>
-        <Lbl t={["Viaturas",veic.length,bl,veic.filter(v=>v.tipo==="trator").length+" trat · "+veic.filter(v=>v.tipo==="reboque").length+" reb"]}/>
+        <Lbl t={["Viaturas",veic.length,bl,veic.filter(v=>v.categoria==="T. Especial").length+" Esp · "+veic.filter(v=>v.categoria==="T. Basculantes").length+" Basc · "+veic.filter(v=>v.categoria==="T. Cisternas").length+" Cist"]}/>
         <Lbl t={["Manutenção",euro(tM),ac,man.length+" registos"]}/>
         <Lbl t={["Portagens",euro(tP),pu,port.length+" lançamentos"]}/>
         <Lbl t={["Gasóleo",euro(tG),or,gas.reduce((s,g)=>s+nv(g.litros),0).toFixed(0)+" L"]}/>
@@ -391,60 +525,138 @@ function PgImp({veic,setMan,setPort,setGas}) {
   );
 }
 
+const TIPOS=["Trator","Semi-Reboque","Cisterna","Basculante Rígido","Carro Grua","Porta-Máquinas","Rígido Grua","Rígido Cola","Rígido Água","Reboque-Estrado","Porta-Sílos","Estrado","Outro"];
+const CATS=["T. Especial","T. Basculantes","T. Cisternas"];
+
 function PgVeic({veic,setVeic}) {
-  const[f,setF]=useState({matricula:"",tipo:"camiao",marca:"",modelo:"",ano:String(new Date().getFullYear())});
+  const f0={numEquip:"",matricula:"",tipo:"Trator",marca:"",modelo:"",ano:String(new Date().getFullYear()),tara:"",pbTotal:"",categoria:"T. Especial"};
+  const[f,setF]=useState(f0);
+  const[search,setSearch]=useState("");
+  const[editId,setEditId]=useState(null);
+  const[editF,setEditF]=useState(null);
 
   function add() {
     if(!f.matricula.trim()||!f.marca.trim()) return;
-    setVeic(v=>[...v,{id:Date.now(),matricula:f.matricula,tipo:f.tipo,marca:f.marca,modelo:f.modelo,ano:Number(f.ano)}]);
-    setF({matricula:"",tipo:"camiao",marca:"",modelo:"",ano:String(new Date().getFullYear())});
+    setVeic(v=>[...v,{id:Date.now(),numEquip:f.numEquip,matricula:f.matricula,tipo:f.tipo,marca:f.marca,modelo:f.modelo,ano:Number(f.ano),tara:nv(f.tara),pbTotal:nv(f.pbTotal),categoria:f.categoria}]);
+    setF(f0);
   }
+
+  function startEdit(v) {
+    setEditId(v.id);
+    setEditF({...v,tara:String(v.tara||""),pbTotal:String(v.pbTotal||""),ano:String(v.ano||"")});
+  }
+
+  function saveEdit() {
+    setVeic(vs=>vs.map(v=>v.id===editId?{...v,...editF,ano:Number(editF.ano),tara:nv(editF.tara),pbTotal:nv(editF.pbTotal)}:v));
+    setEditId(null);setEditF(null);
+  }
+
+  const filtered=veic.filter(v=>
+    !search || v.matricula.toLowerCase().includes(search.toLowerCase()) ||
+    v.marca.toLowerCase().includes(search.toLowerCase()) ||
+    v.numEquip?.toLowerCase().includes(search.toLowerCase()) ||
+    v.tipo?.toLowerCase().includes(search.toLowerCase())
+  );
+
+  const inSE={...IN,padding:"4px 6px",fontSize:11};
 
   return (
     <div>
-      <h2 style={{fontSize:28,fontWeight:900,margin:"0 0 4px"}}>Viaturas</h2>
-      <p style={{fontSize:13,color:mu,marginBottom:20}}>Parque automóvel</p>
+      <h2 style={{fontSize:28,fontWeight:900,margin:"0 0 4px"}}>Equipamentos</h2>
+      <p style={{fontSize:13,color:mu,marginBottom:20}}>Parque automóvel — {veic.length} equipamentos</p>
       <div style={C}>
-        <div style={{fontWeight:700,fontSize:14,marginBottom:12}}>Registar Viatura</div>
-        <div style={G3}>
+        <div style={{fontWeight:700,fontSize:14,marginBottom:12}}>Registar Equipamento</div>
+        <div style={G4}>
+          <div><label style={LB}>Nº Equip</label><input style={IN} value={f.numEquip} onChange={e=>setF({...f,numEquip:e.target.value})} placeholder="70030"/></div>
           <div><label style={LB}>Matrícula</label><input style={IN} value={f.matricula} onChange={e=>setF({...f,matricula:e.target.value})} placeholder="AA-00-BB"/></div>
-          <div><label style={LB}>Tipo</label><select style={SE} value={f.tipo} onChange={e=>setF({...f,tipo:e.target.value})}><option value="camiao">Camião</option><option value="trator">Trator</option><option value="reboque">Reboque</option></select></div>
+          <div><label style={LB}>Categoria</label><select style={SE} value={f.categoria} onChange={e=>setF({...f,categoria:e.target.value})}>{CATS.map(c=><option key={c} value={c}>{c}</option>)}</select></div>
+          <div><label style={LB}>Tipo</label><select style={SE} value={f.tipo} onChange={e=>setF({...f,tipo:e.target.value})}>{TIPOS.map(t=><option key={t} value={t}>{t}</option>)}</select></div>
+        </div>
+        <div style={G4}>
           <div><label style={LB}>Marca</label><input style={IN} value={f.marca} onChange={e=>setF({...f,marca:e.target.value})} placeholder="Volvo"/></div>
+          <div><label style={LB}>Modelo</label><input style={IN} value={f.modelo} onChange={e=>setF({...f,modelo:e.target.value})} placeholder="FH 500"/></div>
+          <div><label style={LB}>Ano</label><input style={IN} type="number" value={f.ano} onChange={e=>setF({...f,ano:e.target.value})}/></div>
+          <div><label style={LB}>Tara (kg)</label><input style={IN} type="number" value={f.tara} onChange={e=>setF({...f,tara:e.target.value})}/></div>
         </div>
         <div style={G3}>
-          <div><label style={LB}>Modelo</label><input style={IN} value={f.modelo} onChange={e=>setF({...f,modelo:e.target.value})} placeholder="FH16"/></div>
-          <div><label style={LB}>Ano</label><input style={IN} type="number" value={f.ano} onChange={e=>setF({...f,ano:e.target.value})}/></div>
+          <div><label style={LB}>PB Total (kg)</label><input style={IN} type="number" value={f.pbTotal} onChange={e=>setF({...f,pbTotal:e.target.value})}/></div>
           <div style={{display:"flex",alignItems:"flex-end"}}><button style={BA} onClick={add}>+ Adicionar</button></div>
         </div>
       </div>
+
+      {editId && editF && (
+        <div style={{background:"rgba(232,160,32,.07)",border:"1px solid rgba(232,160,32,.3)",borderRadius:10,padding:18,marginBottom:16}}>
+          <div style={{fontWeight:800,fontSize:14,color:ac,marginBottom:12}}>✏️ Editar Equipamento</div>
+          <div style={G4}>
+            <div><label style={LB}>Nº Equip</label><input style={IN} value={editF.numEquip||""} onChange={e=>setEditF({...editF,numEquip:e.target.value})}/></div>
+            <div><label style={LB}>Matrícula</label><input style={IN} value={editF.matricula||""} onChange={e=>setEditF({...editF,matricula:e.target.value})}/></div>
+            <div><label style={LB}>Categoria</label><select style={SE} value={editF.categoria||""} onChange={e=>setEditF({...editF,categoria:e.target.value})}>{CATS.map(c=><option key={c} value={c}>{c}</option>)}</select></div>
+            <div><label style={LB}>Tipo</label><select style={SE} value={editF.tipo||""} onChange={e=>setEditF({...editF,tipo:e.target.value})}>{TIPOS.map(t=><option key={t} value={t}>{t}</option>)}</select></div>
+          </div>
+          <div style={G4}>
+            <div><label style={LB}>Marca</label><input style={IN} value={editF.marca||""} onChange={e=>setEditF({...editF,marca:e.target.value})}/></div>
+            <div><label style={LB}>Modelo</label><input style={IN} value={editF.modelo||""} onChange={e=>setEditF({...editF,modelo:e.target.value})}/></div>
+            <div><label style={LB}>Ano</label><input style={IN} type="number" value={editF.ano||""} onChange={e=>setEditF({...editF,ano:e.target.value})}/></div>
+            <div><label style={LB}>Tara (kg)</label><input style={IN} type="number" value={editF.tara||""} onChange={e=>setEditF({...editF,tara:e.target.value})}/></div>
+          </div>
+          <div style={G3}>
+            <div><label style={LB}>PB Total (kg)</label><input style={IN} type="number" value={editF.pbTotal||""} onChange={e=>setEditF({...editF,pbTotal:e.target.value})}/></div>
+          </div>
+          <div style={{display:"flex",gap:10,marginTop:8}}>
+            <button style={BA} onClick={saveEdit}>✓ Guardar Alterações</button>
+            <button style={{...BB,fontSize:12}} onClick={()=>{setEditId(null);setEditF(null);}}>Cancelar</button>
+          </div>
+        </div>
+      )}
+
       <div style={C}>
-        <div style={{fontWeight:800,fontSize:14,marginBottom:12}}>{veic.length} Viaturas</div>
-        <table style={{width:"100%",borderCollapse:"collapse",fontSize:13}}>
-          <Th cols={["Matrícula","Tipo","Marca","Modelo","Ano"]}/>
-          <tbody>
-            {veic.map(v=>(
-              <tr key={v.id}>
-                <td style={TD}><strong>{v.matricula}</strong></td>
-                <td style={TD}><Tipo t={v.tipo}/></td>
-                <td style={TD}>{v.marca}</td>
-                <td style={TD}>{v.modelo}</td>
-                <td style={TD}>{v.ano}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12,gap:12}}>
+          <strong style={{fontSize:14}}>{filtered.length} / {veic.length} equipamentos</strong>
+          <input style={{...IN,width:240}} placeholder="Pesquisar matrícula, marca, tipo..." value={search} onChange={e=>setSearch(e.target.value)}/>
+        </div>
+        <div style={{overflowX:"auto"}}>
+          <table style={{width:"100%",borderCollapse:"collapse",fontSize:12}}>
+            <Th cols={["Nº Equip","Matrícula","Categoria","Tipo","Marca","Modelo","Ano","Tara kg","PB Total kg",""]}/>
+            <tbody>
+              {filtered.map(v=>(
+                <tr key={v.id} style={{background:editId===v.id?"rgba(232,160,32,.05)":""}}>
+                  <td style={TD}><strong>{v.numEquip}</strong></td>
+                  <td style={TD}><strong>{v.matricula}</strong></td>
+                  <td style={TD}><span style={{fontSize:10,color:mu}}>{v.categoria}</span></td>
+                  <td style={TD}><Tipo t={v.tipo}/></td>
+                  <td style={TD}>{v.marca}</td>
+                  <td style={TD}>{v.modelo}</td>
+                  <td style={TD}>{v.ano}</td>
+                  <td style={TD}>{v.tara?Number(v.tara).toLocaleString("pt-PT"):""}</td>
+                  <td style={TD}>{v.pbTotal?Number(v.pbTotal).toLocaleString("pt-PT"):""}</td>
+                  <td style={TD}>
+                    <button onClick={()=>editId===v.id?setEditId(null):startEdit(v)} style={{padding:"3px 10px",borderRadius:5,fontSize:10,fontWeight:700,cursor:"pointer",border:`1px solid ${bd}`,background:editId===v.id?ac:s2,color:editId===v.id?"#000":mu}}>
+                      {editId===v.id?"✕":"✏️"}
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
 }
 
 function PgConj({veic,mots,man,port,gas,conj,setConj}) {
-  const[f,setF]=useState({nome:"",tratorId:"",reboqueId:""});
+  const[f,setF]=useState({motoristaId:"",reboqueId:""});
+
+  function selMot(motId) {
+    const mot=mots.find(m=>m.id===Number(motId));
+    setF(x=>({...x,motoristaId:motId,tratorId:mot?.veiculoId||""}));
+  }
 
   function add() {
-    if(!f.tratorId||!f.reboqueId) return;
-    setConj(s=>[...s,{id:Date.now(),nome:f.nome,tratorId:Number(f.tratorId),reboqueId:Number(f.reboqueId)}]);
-    setF({nome:"",tratorId:"",reboqueId:""});
+    const mot=mots.find(m=>m.id===Number(f.motoristaId));
+    if(!mot||!f.reboqueId) return;
+    setConj(s=>[...s,{id:Date.now(),nome:mot.nome,tratorId:mot.veiculoId||null,reboqueId:Number(f.reboqueId),motoristaId:mot.id}]);
+    setF({motoristaId:"",reboqueId:""});
   }
 
   function cost(s) {
@@ -464,14 +676,31 @@ function PgConj({veic,mots,man,port,gas,conj,setConj}) {
   return (
     <div>
       <h2 style={{fontSize:28,fontWeight:900,margin:"0 0 4px"}}>Conjuntos</h2>
-      <p style={{fontSize:13,color:mu,marginBottom:20}}>Trator + Reboque — custos agregados</p>
+      <p style={{fontSize:13,color:mu,marginBottom:20}}>Trator + Equipamento rebocado — conjugação manual</p>
       <div style={C}>
         <div style={G3}>
-          <div><label style={LB}>Nome</label><input style={IN} value={f.nome} onChange={e=>setF({...f,nome:e.target.value})} placeholder="Conjunto Norte"/></div>
-          <div><label style={LB}>Trator</label><select style={SE} value={f.tratorId} onChange={e=>setF({...f,tratorId:e.target.value})}><option value="">-- selecionar --</option>{veic.filter(v=>v.tipo==="trator").map(v=><option key={v.id} value={v.id}>{v.matricula}</option>)}</select></div>
-          <div><label style={LB}>Reboque</label><select style={SE} value={f.reboqueId} onChange={e=>setF({...f,reboqueId:e.target.value})}><option value="">-- selecionar --</option>{veic.filter(v=>v.tipo==="reboque").map(v=><option key={v.id} value={v.id}>{v.matricula}</option>)}</select></div>
+          <div>
+            <label style={LB}>Motorista</label>
+            <select style={SE} value={f.motoristaId} onChange={e=>selMot(e.target.value)}>
+              <option value="">-- selecionar motorista --</option>
+              {mots.filter(m=>m.ativo!==false).map(m=>{
+                const v=veic.find(x=>x.id===m.veiculoId);
+                return <option key={m.id} value={m.id}>{m.nome}{v?" · "+v.matricula:""}</option>;
+              })}
+            </select>
+          </div>
+          <div>
+            <label style={LB}>Equipamento Rebocado</label>
+            <select style={SE} value={f.reboqueId} onChange={e=>setF(x=>({...x,reboqueId:e.target.value}))}>
+              <option value="">-- selecionar --</option>
+              {["Porta-Máquinas","Porta-Sílos","Estrado","Cisterna","Reboque-Estrado","Semi-Reboque"].map(cat=>{
+                const items=veic.filter(v=>v.tipo===cat);
+                return items.length>0 ? <optgroup key={cat} label={cat}>{items.map(v=><option key={v.id} value={v.id}>{v.matricula} · {v.marca} {v.modelo} ({v.numEquip})</option>)}</optgroup> : null;
+              })}
+            </select>
+          </div>
+          <div style={{display:"flex",alignItems:"flex-end"}}><button style={BA} onClick={add}>+ Criar Conjunto</button></div>
         </div>
-        <button style={BA} onClick={add}>+ Criar Conjunto</button>
       </div>
       {conj.map(s=>{
         const cv=cost(s);
@@ -480,7 +709,7 @@ function PgConj({veic,mots,man,port,gas,conj,setConj}) {
             <div style={{fontWeight:800,color:ac,fontSize:15,marginBottom:8}}>🔗 {s.nome||"Conjunto #"+s.id}</div>
             <div style={{fontSize:12,color:mu,marginBottom:10}}>
               <span style={{color:bl}}>Trator:</span> {cv.tr?cv.tr.matricula:"—"} &nbsp;|&nbsp;
-              <span style={{color:ac}}>Reboque:</span> {cv.rb?cv.rb.matricula:"—"}
+              <span style={{color:ac}}>Rebocado:</span> {cv.rb?cv.rb.matricula+" ("+cv.rb.tipo+")":"—"}
               {cv.dr && <span> &nbsp;|&nbsp; <span style={{color:gn}}>Motorista:</span> {cv.dr.nome}</span>}
             </div>
             <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
@@ -508,19 +737,45 @@ function PgConj({veic,mots,man,port,gas,conj,setConj}) {
   );
 }
 
-function PgMot({mots,setMots,veic,tD}) {
+function PgMot({mots,setMots,veic,setVeic,tD}) {
   const[f,setF]=useState({nome:"",salario:"",subRef:"",subTranp:"",seguro:"",veiculoId:""});
+  const[tab,setTab]=useState("ativo");
+  const[editId,setEditId]=useState(null);
+  const[editF,setEditF]=useState(null);
 
   function add() {
-    if(!f.nome.trim()||!f.salario) return;
-    setMots(d=>[...d,{id:Date.now(),nome:f.nome,salario:nv(f.salario),subRef:nv(f.subRef),subTranp:nv(f.subTranp),seguro:nv(f.seguro),veiculoId:Number(f.veiculoId)||null}]);
+    if(!f.nome.trim()) return;
+    setMots(d=>[...d,{id:Date.now(),nome:f.nome,salario:nv(f.salario),subRef:nv(f.subRef),subTranp:nv(f.subTranp),seguro:nv(f.seguro),veiculoId:Number(f.veiculoId)||null,ativo:true}]);
     setF({nome:"",salario:"",subRef:"",subTranp:"",seguro:"",veiculoId:""});
   }
+
+  function startEdit(d) {
+    const v=veic.find(x=>x.id===d.veiculoId);
+    setEditId(d.id);
+    setEditF({veiculoId:String(d.veiculoId||""),tipoVeic:v?.tipo||""});
+  }
+
+  function saveEdit() {
+    const vid=Number(editF.veiculoId)||null;
+    setMots(ds=>ds.map(d=>d.id===editId?{...d,veiculoId:vid}:d));
+    if(vid && editF.tipoVeic) {
+      setVeic(vs=>vs.map(v=>v.id===vid?{...v,tipo:editF.tipoVeic}:v));
+    }
+    setEditId(null);
+  }
+
+  function toggleAtivo(id) {
+    setMots(d=>d.map(m=>m.id===id?{...m,ativo:!m.ativo}:m));
+  }
+
+  const lista=mots.filter(m=>tab==="ativo"?m.ativo!==false:m.ativo===false);
+  const ativos=mots.filter(m=>m.ativo!==false);
+  const inativos=mots.filter(m=>m.ativo===false);
 
   return (
     <div>
       <h2 style={{fontSize:28,fontWeight:900,margin:"0 0 4px"}}>Motoristas</h2>
-      <p style={{fontSize:13,color:mu,marginBottom:20}}>Salários e encargos mensais</p>
+      <p style={{fontSize:13,color:mu,marginBottom:20}}>Gestão de motoristas e encargos mensais</p>
       <div style={C}>
         <div style={{fontWeight:700,fontSize:14,marginBottom:12}}>Adicionar Motorista</div>
         <div style={G3}>
@@ -531,30 +786,68 @@ function PgMot({mots,setMots,veic,tD}) {
         <div style={G4}>
           <div><label style={LB}>Sub. Transporte (€)</label><input style={IN} type="number" value={f.subTranp} onChange={e=>setF({...f,subTranp:e.target.value})}/></div>
           <div><label style={LB}>Seguro Acid. (€)</label><input style={IN} type="number" value={f.seguro} onChange={e=>setF({...f,seguro:e.target.value})}/></div>
-          <div><label style={LB}>Viatura</label><select style={SE} value={f.veiculoId} onChange={e=>setF({...f,veiculoId:e.target.value})}><option value="">-- nenhuma --</option>{veic.map(v=><option key={v.id} value={v.id}>{v.matricula}</option>)}</select></div>
+          <div><label style={LB}>Viatura</label><select style={SE} value={f.veiculoId} onChange={e=>setF({...f,veiculoId:e.target.value})}><option value="">-- nenhuma --</option>{veic.filter(v=>v.tipo==="Trator").map(v=><option key={v.id} value={v.id}>{v.matricula} ({v.numEquip})</option>)}</select></div>
           <div style={{display:"flex",alignItems:"flex-end"}}><button style={BA} onClick={add}>+ Adicionar</button></div>
         </div>
       </div>
       <div style={C}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
-          <strong style={{fontSize:14}}>{mots.length} Motoristas</strong>
-          <strong style={{color:gn}}>Total/mês: {euro(tD)}</strong>
+          <div style={{display:"flex",gap:6}}>
+            <button onClick={()=>setTab("ativo")} style={{padding:"5px 14px",borderRadius:7,fontSize:11,fontWeight:700,cursor:"pointer",border:`1px solid ${bd}`,background:tab==="ativo"?gn:s2,color:tab==="ativo"?"#000":mu}}>Ativos ({ativos.length})</button>
+            <button onClick={()=>setTab("inativo")} style={{padding:"5px 14px",borderRadius:7,fontSize:11,fontWeight:700,cursor:"pointer",border:`1px solid ${bd}`,background:tab==="inativo"?rd:s2,color:tab==="inativo"?"#fff":mu}}>Inativos ({inativos.length})</button>
+          </div>
+          {tab==="ativo" && <strong style={{color:gn}}>Total/mês: {euro(tD)}</strong>}
         </div>
+        {editId && editF && (
+          <div style={{background:"rgba(59,130,246,.07)",border:"1px solid rgba(59,130,246,.3)",borderRadius:10,padding:16,marginBottom:12}}>
+            <div style={{fontWeight:800,fontSize:13,color:bl,marginBottom:10}}>✏️ Editar correspondência</div>
+            <div style={G3}>
+              <div>
+                <label style={LB}>Viatura Atribuída</label>
+                <select style={SE} value={editF.veiculoId} onChange={e=>{
+                  const v=veic.find(x=>x.id===Number(e.target.value));
+                  setEditF({...editF,veiculoId:e.target.value,tipoVeic:v?.tipo||""});
+                }}>
+                  <option value="">-- nenhuma --</option>
+                  {veic.filter(v=>v.tipo==="Trator"||v.tipo==="Carro Grua").map(v=><option key={v.id} value={v.id}>{v.matricula} · {v.tipo} ({v.numEquip})</option>)}
+                </select>
+              </div>
+              <div>
+                <label style={LB}>Tipo do Veículo</label>
+                <select style={SE} value={editF.tipoVeic} onChange={e=>setEditF({...editF,tipoVeic:e.target.value})}>
+                  {TIPOS.map(t=><option key={t} value={t}>{t}</option>)}
+                </select>
+              </div>
+              <div style={{display:"flex",alignItems:"flex-end",gap:8}}>
+                <button style={BA} onClick={saveEdit}>✓ Guardar</button>
+                <button style={{...BB,fontSize:12}} onClick={()=>setEditId(null)}>Cancelar</button>
+              </div>
+            </div>
+          </div>
+        )}
         <table style={{width:"100%",borderCollapse:"collapse",fontSize:13}}>
-          <Th cols={["Nome","Viatura","Salário","Sub. Ref.","Sub. Transp.","Seguro","Total/mês"]}/>
+          <Th cols={["Nome","Viatura","Salário","Sub. Ref.","Sub. Transp.","Seguro","Total/mês","Estado",""]}/>
           <tbody>
-            {mots.map(d=>{
+            {lista.map(d=>{
               const v=veic.find(x=>x.id===d.veiculoId);
               const t=drC(d);
               return (
-                <tr key={d.id}>
+                <tr key={d.id} style={{opacity:d.ativo===false?0.5:1,background:editId===d.id?"rgba(59,130,246,.05)":""}}>
                   <td style={TD}><strong>{d.nome}</strong></td>
-                  <td style={TD}>{v?<span>{v.matricula} <Tipo t={v.tipo}/></span>:"—"}</td>
+                  <td style={TD}>{v?<span style={{fontSize:12}}>{v.matricula} <Tipo t={v.tipo}/></span>:"—"}</td>
                   <td style={TD}>{euro(d.salario)}</td>
                   <td style={TD}>{euro(d.subRef)}</td>
                   <td style={TD}>{euro(d.subTranp)}</td>
                   <td style={TD}>{euro(d.seguro)}</td>
                   <td style={TD}><strong style={{color:gn}}>{euro(t)}</strong></td>
+                  <td style={TD}>
+                    <button onClick={()=>toggleAtivo(d.id)} style={{padding:"3px 10px",borderRadius:5,fontSize:10,fontWeight:700,cursor:"pointer",border:"none",background:d.ativo===false?"rgba(34,197,94,.15)":"rgba(239,68,68,.15)",color:d.ativo===false?gn:rd}}>
+                      {d.ativo===false?"Reativar":"Inativar"}
+                    </button>
+                  </td>
+                  <td style={TD}>
+                    <button onClick={()=>editId===d.id?setEditId(null):startEdit(d)} style={{padding:"3px 8px",borderRadius:5,fontSize:10,fontWeight:700,cursor:"pointer",border:`1px solid ${bd}`,background:editId===d.id?bl:s2,color:editId===d.id?"#fff":mu}}>✏️</button>
+                  </td>
                 </tr>
               );
             })}
@@ -566,13 +859,19 @@ function PgMot({mots,setMots,veic,tD}) {
 }
 
 function PgMan({man,setMan,veic,tM}) {
-  const[f,setF]=useState({veiculoId:"",data:"",tipo:"",desc:"",custo:"",estado:"ok"});
+  const f0={veiculoId:"",data:"",tipo:"",desc:"",custo:"",estado:"ok"};
+  const[f,setF]=useState(f0);
+  const[editId,setEditId]=useState(null);
+  const[editF,setEditF]=useState(null);
 
   function add() {
     if(!f.veiculoId||!f.tipo.trim()||!f.data) return;
     setMan(m=>[...m,{id:Date.now(),veiculoId:Number(f.veiculoId),data:f.data,tipo:f.tipo,desc:f.desc,custo:nv(f.custo),estado:f.estado}]);
-    setF({veiculoId:"",data:"",tipo:"",desc:"",custo:"",estado:"ok"});
+    setF(f0);
   }
+  function startEdit(m){setEditId(m.id);setEditF({...m,veiculoId:String(m.veiculoId),custo:String(m.custo||"")});}
+  function saveEdit(){setMan(ms=>ms.map(m=>m.id===editId?{...m,...editF,veiculoId:Number(editF.veiculoId),custo:nv(editF.custo)}:m));setEditId(null);}
+  function del(id){setMan(ms=>ms.filter(m=>m.id!==id));}
 
   return (
     <div>
@@ -592,6 +891,25 @@ function PgMan({man,setMan,veic,tM}) {
         </div>
         <button style={BA} onClick={add}>+ Adicionar Registo</button>
       </div>
+      {editId && editF && (
+        <div style={{background:"rgba(232,160,32,.07)",border:"1px solid rgba(232,160,32,.3)",borderRadius:10,padding:18,marginBottom:16}}>
+          <div style={{fontWeight:800,fontSize:14,color:ac,marginBottom:12}}>✏️ Editar Registo</div>
+          <div style={G3}>
+            <div><label style={LB}>Viatura</label><select style={SE} value={editF.veiculoId} onChange={e=>setEditF({...editF,veiculoId:e.target.value})}><option value="">--</option>{veic.map(v=><option key={v.id} value={v.id}>{v.matricula}</option>)}</select></div>
+            <div><label style={LB}>Data</label><input style={IN} type="date" value={editF.data||""} onChange={e=>setEditF({...editF,data:e.target.value})}/></div>
+            <div><label style={LB}>Tipo</label><input style={IN} value={editF.tipo||""} onChange={e=>setEditF({...editF,tipo:e.target.value})}/></div>
+          </div>
+          <div style={G3}>
+            <div><label style={LB}>Descrição</label><input style={IN} value={editF.desc||""} onChange={e=>setEditF({...editF,desc:e.target.value})}/></div>
+            <div><label style={LB}>Custo (€)</label><input style={IN} type="number" value={editF.custo||""} onChange={e=>setEditF({...editF,custo:e.target.value})}/></div>
+            <div><label style={LB}>Estado</label><select style={SE} value={editF.estado||"ok"} onChange={e=>setEditF({...editF,estado:e.target.value})}><option value="ok">Concluído</option><option value="warn">Pendente</option><option value="danger">Urgente</option></select></div>
+          </div>
+          <div style={{display:"flex",gap:10,marginTop:8}}>
+            <button style={BA} onClick={saveEdit}>✓ Guardar</button>
+            <button style={{...BB,fontSize:12}} onClick={()=>setEditId(null)}>Cancelar</button>
+          </div>
+        </div>
+      )}
       <div style={C}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
           <strong style={{fontSize:14}}>{man.length} Registos</strong>
@@ -599,18 +917,24 @@ function PgMan({man,setMan,veic,tM}) {
         </div>
         <div style={{overflowX:"auto"}}>
           <table style={{width:"100%",borderCollapse:"collapse",fontSize:13}}>
-            <Th cols={["Matrícula","Data","Tipo","Descrição","Custo","Estado"]}/>
+            <Th cols={["Matrícula","Data","Tipo","Descrição","Custo","Estado",""]}/>
             <tbody>
               {man.map(m=>{
                 const v=veic.find(x=>x.id===m.veiculoId);
                 return (
-                  <tr key={m.id}>
+                  <tr key={m.id} style={{background:editId===m.id?"rgba(232,160,32,.05)":""}}>
                     <td style={TD}><strong>{v?v.matricula:"—"}</strong></td>
                     <td style={TD}>{m.data}</td>
                     <td style={TD}>{m.tipo}</td>
                     <td style={TD}>{m.desc||m.descricao||""}</td>
                     <td style={TD}>{euro(m.custo)}</td>
                     <td style={TD}><Badge e={m.estado}/></td>
+                    <td style={TD}>
+                      <div style={{display:"flex",gap:4}}>
+                        <button onClick={()=>editId===m.id?setEditId(null):startEdit(m)} style={{padding:"3px 8px",borderRadius:5,fontSize:10,fontWeight:700,cursor:"pointer",border:`1px solid ${bd}`,background:editId===m.id?ac:s2,color:editId===m.id?"#000":mu}}>✏️</button>
+                        <button onClick={()=>del(m.id)} style={{padding:"3px 8px",borderRadius:5,fontSize:10,fontWeight:700,cursor:"pointer",border:"none",background:"rgba(239,68,68,.15)",color:rd}}>🗑</button>
+                      </div>
+                    </td>
                   </tr>
                 );
               })}
@@ -623,13 +947,19 @@ function PgMan({man,setMan,veic,tM}) {
 }
 
 function PgPort({port,setPort,veic,tP}) {
-  const[f,setF]=useState({veiculoId:"",mes:"",via:"",valor:""});
+  const f0={veiculoId:"",mes:"",via:"",valor:""};
+  const[f,setF]=useState(f0);
+  const[editId,setEditId]=useState(null);
+  const[editF,setEditF]=useState(null);
 
   function add() {
     if(!f.veiculoId||!f.mes||!f.valor) return;
     setPort(p=>[...p,{id:Date.now(),veiculoId:Number(f.veiculoId),mes:f.mes,via:f.via,valor:nv(f.valor)}]);
-    setF({veiculoId:"",mes:"",via:"",valor:""});
+    setF(f0);
   }
+  function startEdit(p){setEditId(p.id);setEditF({...p,veiculoId:String(p.veiculoId),valor:String(p.valor||"")});}
+  function saveEdit(){setPort(ps=>ps.map(p=>p.id===editId?{...p,...editF,veiculoId:Number(editF.veiculoId),valor:nv(editF.valor)}:p));setEditId(null);}
+  function del(id){setPort(ps=>ps.filter(p=>p.id!==id));}
 
   return (
     <div>
@@ -645,22 +975,43 @@ function PgPort({port,setPort,veic,tP}) {
         </div>
         <button style={BA} onClick={add}>+ Lançar</button>
       </div>
+      {editId && editF && (
+        <div style={{background:"rgba(167,139,250,.07)",border:"1px solid rgba(167,139,250,.3)",borderRadius:10,padding:18,marginBottom:16}}>
+          <div style={{fontWeight:800,fontSize:14,color:pu,marginBottom:12}}>✏️ Editar Portagem</div>
+          <div style={G4}>
+            <div><label style={LB}>Viatura</label><select style={SE} value={editF.veiculoId} onChange={e=>setEditF({...editF,veiculoId:e.target.value})}><option value="">--</option>{veic.map(v=><option key={v.id} value={v.id}>{v.matricula}</option>)}</select></div>
+            <div><label style={LB}>Mês</label><input style={IN} type="month" value={editF.mes||""} onChange={e=>setEditF({...editF,mes:e.target.value})}/></div>
+            <div><label style={LB}>Via</label><input style={IN} value={editF.via||""} onChange={e=>setEditF({...editF,via:e.target.value})}/></div>
+            <div><label style={LB}>Valor (€)</label><input style={IN} type="number" value={editF.valor||""} onChange={e=>setEditF({...editF,valor:e.target.value})}/></div>
+          </div>
+          <div style={{display:"flex",gap:10,marginTop:8}}>
+            <button style={BA} onClick={saveEdit}>✓ Guardar</button>
+            <button style={{...BB,fontSize:12}} onClick={()=>setEditId(null)}>Cancelar</button>
+          </div>
+        </div>
+      )}
       <div style={C}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
           <strong style={{fontSize:14}}>{port.length} Registos</strong>
           <strong style={{color:pu}}>{euro(tP)}</strong>
         </div>
         <table style={{width:"100%",borderCollapse:"collapse",fontSize:13}}>
-          <Th cols={["Matrícula","Mês","Via","Valor"]}/>
+          <Th cols={["Matrícula","Mês","Via","Valor",""]}/>
           <tbody>
             {port.map(p=>{
               const v=veic.find(x=>x.id===p.veiculoId);
               return (
-                <tr key={p.id}>
+                <tr key={p.id} style={{background:editId===p.id?"rgba(167,139,250,.05)":""}}>
                   <td style={TD}><strong>{v?v.matricula:"—"}</strong></td>
                   <td style={TD}>{p.mes}</td>
                   <td style={TD}>{p.via}</td>
                   <td style={{...TD,color:pu,fontWeight:600}}>{euro(p.valor)}</td>
+                  <td style={TD}>
+                    <div style={{display:"flex",gap:4}}>
+                      <button onClick={()=>editId===p.id?setEditId(null):startEdit(p)} style={{padding:"3px 8px",borderRadius:5,fontSize:10,fontWeight:700,cursor:"pointer",border:`1px solid ${bd}`,background:editId===p.id?pu:s2,color:editId===p.id?"#fff":mu}}>✏️</button>
+                      <button onClick={()=>del(p.id)} style={{padding:"3px 8px",borderRadius:5,fontSize:10,fontWeight:700,cursor:"pointer",border:"none",background:"rgba(239,68,68,.15)",color:rd}}>🗑</button>
+                    </div>
+                  </td>
                 </tr>
               );
             })}
@@ -672,15 +1023,25 @@ function PgPort({port,setPort,veic,tP}) {
 }
 
 function PgGas({gas,setGas,veic,tG}) {
-  const[f,setF]=useState({veiculoId:"",data:"",local:"",litros:"",preco:"",km:""});
+  const f0={veiculoId:"",data:"",local:"",litros:"",preco:"",km:""};
+  const[f,setF]=useState(f0);
+  const[editId,setEditId]=useState(null);
+  const[editF,setEditF]=useState(null);
   const tL=gas.reduce((s,g)=>s+nv(g.litros),0);
 
   function add() {
     if(!f.veiculoId||!f.litros) return;
     const lt=nv(f.litros), pr=nv(f.preco);
     setGas(g=>[...g,{id:Date.now(),veiculoId:Number(f.veiculoId),data:f.data,local:f.local,litros:lt,preco:pr,custo:lt*pr,km:nv(f.km)||""}]);
-    setF({veiculoId:"",data:"",local:"",litros:"",preco:"",km:""});
+    setF(f0);
   }
+  function startEdit(g){setEditId(g.id);setEditF({...g,veiculoId:String(g.veiculoId),litros:String(g.litros||""),preco:String(g.preco||""),km:String(g.km||"")});}
+  function saveEdit(){
+    const lt=nv(editF.litros),pr=nv(editF.preco);
+    setGas(gs=>gs.map(g=>g.id===editId?{...g,...editF,veiculoId:Number(editF.veiculoId),litros:lt,preco:pr,custo:lt*pr,km:nv(editF.km)||""}:g));
+    setEditId(null);
+  }
+  function del(id){setGas(gs=>gs.filter(g=>g.id!==id));}
 
   return (
     <div>
@@ -705,15 +1066,34 @@ function PgGas({gas,setGas,veic,tG}) {
           <div style={{display:"flex",alignItems:"flex-end"}}><button style={BA} onClick={add}>+ Adicionar</button></div>
         </div>
       </div>
+      {editId && editF && (
+        <div style={{background:"rgba(251,146,60,.07)",border:"1px solid rgba(251,146,60,.3)",borderRadius:10,padding:18,marginBottom:16}}>
+          <div style={{fontWeight:800,fontSize:14,color:or,marginBottom:12}}>✏️ Editar Abastecimento</div>
+          <div style={G3}>
+            <div><label style={LB}>Viatura</label><select style={SE} value={editF.veiculoId} onChange={e=>setEditF({...editF,veiculoId:e.target.value})}><option value="">--</option>{veic.map(v=><option key={v.id} value={v.id}>{v.matricula}</option>)}</select></div>
+            <div><label style={LB}>Data</label><input style={IN} type="date" value={editF.data||""} onChange={e=>setEditF({...editF,data:e.target.value})}/></div>
+            <div><label style={LB}>Local</label><input style={IN} value={editF.local||""} onChange={e=>setEditF({...editF,local:e.target.value})}/></div>
+          </div>
+          <div style={G4}>
+            <div><label style={LB}>Litros</label><input style={IN} type="number" value={editF.litros||""} onChange={e=>setEditF({...editF,litros:e.target.value})}/></div>
+            <div><label style={LB}>€/Litro</label><input style={IN} type="number" step="0.001" value={editF.preco||""} onChange={e=>setEditF({...editF,preco:e.target.value})}/></div>
+            <div><label style={LB}>KM</label><input style={IN} type="number" value={editF.km||""} onChange={e=>setEditF({...editF,km:e.target.value})}/></div>
+          </div>
+          <div style={{display:"flex",gap:10,marginTop:8}}>
+            <button style={BA} onClick={saveEdit}>✓ Guardar</button>
+            <button style={{...BB,fontSize:12}} onClick={()=>setEditId(null)}>Cancelar</button>
+          </div>
+        </div>
+      )}
       <div style={C}>
         <div style={{overflowX:"auto"}}>
           <table style={{width:"100%",borderCollapse:"collapse",fontSize:13}}>
-            <Th cols={["Matrícula","Data","Local","Litros","€/L","Custo","KM"]}/>
+            <Th cols={["Matrícula","Data","Local","Litros","€/L","Custo","KM",""]}/>
             <tbody>
               {gas.map(g=>{
                 const v=veic.find(x=>x.id===g.veiculoId);
                 return (
-                  <tr key={g.id}>
+                  <tr key={g.id} style={{background:editId===g.id?"rgba(251,146,60,.05)":""}}>
                     <td style={TD}><strong>{v?v.matricula:"—"}</strong></td>
                     <td style={TD}>{g.data}</td>
                     <td style={TD}>{g.local}</td>
@@ -721,6 +1101,12 @@ function PgGas({gas,setGas,veic,tG}) {
                     <td style={TD}>€ {nv(g.preco).toFixed(3)}</td>
                     <td style={{...TD,color:or,fontWeight:600}}>{euro(g.custo)}</td>
                     <td style={TD}>{g.km?Number(g.km).toLocaleString("pt-PT")+" km":""}</td>
+                    <td style={TD}>
+                      <div style={{display:"flex",gap:4}}>
+                        <button onClick={()=>editId===g.id?setEditId(null):startEdit(g)} style={{padding:"3px 8px",borderRadius:5,fontSize:10,fontWeight:700,cursor:"pointer",border:`1px solid ${bd}`,background:editId===g.id?or:s2,color:editId===g.id?"#000":mu}}>✏️</button>
+                        <button onClick={()=>del(g.id)} style={{padding:"3px 8px",borderRadius:5,fontSize:10,fontWeight:700,cursor:"pointer",border:"none",background:"rgba(239,68,68,.15)",color:rd}}>🗑</button>
+                      </div>
+                    </td>
                   </tr>
                 );
               })}
