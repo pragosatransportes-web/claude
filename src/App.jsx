@@ -222,6 +222,65 @@ const CUSTOS2026=[
   {ne:"40144",mat:"L-219997",port:0,seg:202.28,fin:0,amort:0,rep:0,out:0,gas:0,tot:202.28,mes:50.57,h:0.2554},
 ];
 
+const CUSTOS_PTSA=[
+  {ne:"807",folha:"REBOQUES",gas:0.0,rep:0.0,port:0.0,pess:0.0,amort:0.0,out:2.98,tot:2.98,nM:1,med:2.98,mt:{"jan":2.98}},
+  {ne:"815",folha:"REBOQUES",gas:0.0,rep:847.61,port:0.0,pess:0.0,amort:0.0,out:12.37,tot:859.98,nM:3,med:286.66,mt:{"jan":123.84,"fev":729.88,"abr":6.26}},
+  {ne:"818",folha:"REBOQUES",gas:0.0,rep:4122.46,port:0.0,pess:0.0,amort:0.0,out:12.37,tot:4134.83,nM:4,med:1033.71,mt:{"jan":2.98,"fev":3.13,"mar":2584.06,"abr":1544.66}},
+  {ne:"825",folha:"REBOQUES",gas:0.0,rep:126.81,port:0.0,pess:0.0,amort:0.0,out:12.37,tot:139.18,nM:3,med:46.39,mt:{"jan":83.66,"fev":3.13,"abr":52.39}},
+  {ne:"829",folha:"REBOQUES",gas:0.0,rep:1352.86,port:0.0,pess:0.0,amort:0.0,out:12.37,tot:1365.23,nM:3,med:455.08,mt:{"jan":687.88,"fev":137.63,"abr":539.72}},
+  {ne:"830",folha:"REBOQUES",gas:0.0,rep:106.8,port:0.0,pess:0.0,amort:0.0,out:42.83,tot:149.63,nM:4,med:37.41,mt:{"jan":33.44,"fev":3.13,"mar":74.3,"abr":38.76}},
+  {ne:"832",folha:"REBOQUES",gas:0.0,rep:2889.58,port:0.0,pess:0.0,amort:0.0,out:42.83,tot:2932.41,nM:3,med:977.47,mt:{"jan":2226.68,"fev":699.47,"abr":6.26}},
+  {ne:"834",folha:"REBOQUES",gas:0.0,rep:484.25,port:0.0,pess:0.0,amort:0.0,out:42.83,tot:527.08,nM:4,med:131.77,mt:{"jan":55.48,"fev":3.13,"mar":30.46,"abr":438.01}},
+  {ne:"836",folha:"REBOQUES",gas:0.0,rep:247.75,port:0.0,pess:0.0,amort:198.08,out:42.83,tot:488.66,nM:4,med:122.17,mt:{"jan":54.15,"fev":124.15,"mar":51.17,"abr":259.19}},
+  {ne:"839",folha:"REBOQUES",gas:0.0,rep:166.7,port:0.0,pess:0.0,amort:0.0,out:12.37,tot:179.07,nM:4,med:44.77,mt:{"jan":75.42,"fev":3.13,"mar":27.63,"abr":72.89}},
+  {ne:"841",folha:"REBOQUES",gas:0.0,rep:1122.26,port:0.0,pess:0.0,amort:0.0,out:12.37,tot:1134.63,nM:4,med:283.66,mt:{"jan":2.98,"fev":3.13,"mar":588.8,"abr":539.72}},
+  {ne:"844",folha:"REBOQUES",gas:0.0,rep:0.0,port:0.0,pess:0.0,amort:0.0,out:42.83,tot:42.83,nM:3,med:14.28,mt:{"jan":2.98,"fev":33.59,"abr":6.26}},
+  {ne:"845",folha:"REBOQUES",gas:0.0,rep:359.13,port:0.0,pess:0.0,amort:0.0,out:12.37,tot:371.5,nM:3,med:123.83,mt:{"jan":2.98,"fev":3.13,"abr":365.39}},
+  {ne:"849",folha:"REBOQUES",gas:0.0,rep:745.7,port:5.37,pess:0.0,amort:0.0,out:12.37,tot:763.44,nM:3,med:254.48,mt:{"jan":8.35,"fev":748.83,"abr":6.26}},
+  {ne:"854",folha:"REBOQUES",gas:0.0,rep:465.08,port:0.0,pess:0.0,amort:2110.68,out:12.37,tot:2588.13,nM:4,med:647.03,mt:{"jan":548.24,"fev":576.33,"mar":589.18,"abr":874.38}},
+  {ne:"855",folha:"REBOQUES",gas:0.0,rep:275.59,port:0.0,pess:0.0,amort:2421.71,out:12.37,tot:2709.67,nM:4,med:677.42,mt:{"jan":709.3,"fev":763.08,"mar":625.61,"abr":611.68}},
+  {ne:"860",folha:"REBOQUES",gas:0.0,rep:564.18,port:0.0,pess:0.0,amort:328.76,out:12.37,tot:905.31,nM:4,med:226.33,mt:{"jan":294.62,"fev":391.18,"mar":84.93,"abr":134.58}},
+  {ne:"861",folha:"REBOQUES",gas:0.0,rep:242.1,port:0.0,pess:0.0,amort:1042.42,out:146.02,tot:1430.54,nM:4,med:357.63,mt:{"jan":298.06,"fev":272.16,"mar":269.29,"abr":591.03}},
+  {ne:"862",folha:"REBOQUES",gas:0.0,rep:1431.84,port:0.0,pess:0.0,amort:1042.42,out:146.02,tot:2620.28,nM:4,med:655.07,mt:{"jan":298.06,"fev":1253.53,"mar":750.22,"abr":318.47}},
+  {ne:"863",folha:"REBOQUES",gas:0.0,rep:533.0,port:0.0,pess:0.0,amort:1042.42,out:146.02,tot:1721.44,nM:4,med:430.36,mt:{"jan":831.06,"fev":272.16,"mar":269.29,"abr":348.93}},
+  {ne:"870",folha:"REBOQUES",gas:0.0,rep:0.0,port:0.0,pess:0.0,amort:143.02,out:73.29,tot:216.31,nM:4,med:54.08,mt:{"jan":39.93,"fev":36.5,"mar":97.87,"abr":42.01}},
+  {ne:"871",folha:"REBOQUES",gas:0.0,rep:0.0,port:0.0,pess:0.0,amort:75.6,out:50.47,tot:126.07,nM:4,med:31.52,mt:{"jan":22.51,"fev":20.77,"mar":57.63,"abr":25.16}},
+  {ne:"872",folha:"REBOQUES",gas:0.0,rep:0.0,port:0.0,pess:0.0,amort:32.87,out:0.0,tot:32.87,nM:4,med:8.22,mt:{"jan":8.49,"fev":7.67,"mar":8.49,"abr":8.22}},
+  {ne:"873",folha:"REBOQUES",gas:0.0,rep:0.0,port:0.0,pess:0.0,amort:88.76,out:12.37,tot:101.13,nM:4,med:25.28,mt:{"jan":25.91,"fev":23.84,"mar":22.93,"abr":28.45}},
+  {ne:"874",folha:"REBOQUES",gas:0.0,rep:0.0,port:0.0,pess:0.0,amort:32.87,out:0.0,tot:32.87,nM:4,med:8.22,mt:{"jan":8.49,"fev":7.67,"mar":8.49,"abr":8.22}},
+  {ne:"875",folha:"REBOQUES",gas:0.0,rep:0.0,port:0.0,pess:0.0,amort:49.32,out:12.37,tot:61.69,nM:4,med:15.42,mt:{"jan":15.72,"fev":14.64,"mar":12.74,"abr":18.59}},
+  {ne:"876",folha:"REBOQUES",gas:0.0,rep:239.18,port:0.0,pess:0.0,amort:147.95,out:51.22,tot:438.35,nM:4,med:109.59,mt:{"jan":41.2,"fev":96.88,"mar":38.22,"abr":262.05}},
+  {ne:"877",folha:"REBOQUES",gas:0.0,rep:4222.12,port:0.0,pess:0.0,amort:410.95,out:58.8,tot:4691.87,nM:4,med:1172.97,mt:{"jan":109.14,"fev":693.35,"mar":1406.04,"abr":2483.34}},
+  {ne:"880",folha:"REBOQUES",gas:0.0,rep:1774.4,port:0.0,pess:0.0,amort:1067.08,out:189.54,tot:3031.02,nM:4,med:757.75,mt:{"jan":311.86,"fev":2056.07,"mar":275.66,"abr":387.43}},
+  {ne:"894",folha:"REBOQUES",gas:0.0,rep:0.0,port:0.0,pess:0.0,amort:32.87,out:42.83,tot:75.7,nM:4,med:18.92,mt:{"jan":11.47,"fev":41.26,"mar":8.49,"abr":14.48}},
+  {ne:"896",folha:"REBOQUES",gas:0.0,rep:3773.46,port:0.0,pess:0.0,amort:164.4,out:12.37,tot:3950.23,nM:4,med:987.56,mt:{"jan":45.45,"fev":3665.31,"mar":61.09,"abr":178.38}},
+  {ne:"897",folha:"REBOQUES",gas:0.0,rep:403.76,port:0.0,pess:0.0,amort:1256.28,out:732.35,tot:2392.39,nM:4,med:598.1,mt:{"jan":536.67,"fev":861.79,"mar":416.03,"abr":577.9}},
+  {ne:"898",folha:"REBOQUES",gas:0.0,rep:192.65,port:0.0,pess:0.0,amort:1256.28,out:732.38,tot:2181.31,nM:4,med:545.33,mt:{"jan":631.03,"fev":458.04,"mar":416.04,"abr":676.2}},
+  {ne:"852",folha:"CARROS",gas:11899.55,rep:1815.11,port:1248.59,pess:8361.8,amort:3240.4,out:434.97,tot:27000.42,nM:4,med:6750.1,mt:{"jan":4351.42,"fev":6927.51,"mar":6841.08,"abr":8880.41}},
+  {ne:"856",folha:"CARROS",gas:12931.32,rep:964.64,port:1341.89,pess:10046.11,amort:3076.02,out:784.82,tot:29144.8,nM:4,med:7286.2,mt:{"jan":7868.39,"fev":7290.41,"mar":3696.64,"abr":10289.36}},
+  {ne:"857",folha:"CARROS",gas:21371.28,rep:901.26,port:3230.8,pess:12023.27,amort:3076.02,out:1404.45,tot:42007.08,nM:4,med:10501.77,mt:{"jan":10395.46,"fev":8222.55,"mar":11525.08,"abr":11863.99}},
+  {ne:"858",folha:"CARROS",gas:11027.7,rep:0.0,port:1773.08,pess:10547.7,amort:3024.65,out:774.11,tot:27147.24,nM:4,med:6786.81,mt:{"jan":6027.38,"fev":8999.1,"mar":6391.54,"abr":5729.22}},
+  {ne:"859",folha:"CARROS",gas:15881.9,rep:2321.05,port:2764.92,pess:11732.69,amort:3024.65,out:873.33,tot:36598.54,nM:4,med:9149.64,mt:{"jan":9760.43,"fev":7917.1,"mar":9751.21,"abr":9169.8}},
+  {ne:"864",folha:"CARROS",gas:12997.44,rep:4642.96,port:1584.92,pess:8615.98,amort:2791.31,out:546.74,tot:31179.35,nM:4,med:7794.84,mt:{"jan":7803.35,"fev":8969.1,"mar":8440.86,"abr":5966.04}},
+  {ne:"865",folha:"CARROS",gas:7106.98,rep:5225.11,port:731.8,pess:7253.41,amort:2791.31,out:576.62,tot:23685.23,nM:4,med:5921.31,mt:{"jan":4993.88,"fev":6827.81,"mar":5432.77,"abr":6430.77}},
+  {ne:"866",folha:"CARROS",gas:14615.91,rep:20.86,port:1403.42,pess:9863.85,amort:2791.31,out:3774.43,tot:32469.78,nM:4,med:8117.44,mt:{"jan":6218.1,"fev":7432.43,"mar":11301.81,"abr":7517.44}},
+  {ne:"867",folha:"CARROS",gas:6908.19,rep:7200.02,port:838.49,pess:5480.33,amort:2791.31,out:541.31,tot:23759.65,nM:4,med:5939.91,mt:{"jan":12215.41,"fev":6075.41,"mar":4422.56,"abr":1046.27}},
+  {ne:"868",folha:"CARROS",gas:15052.67,rep:6834.91,port:1455.9,pess:9896.29,amort:2791.31,out:563.99,tot:36595.07,nM:4,med:9148.77,mt:{"jan":9390.65,"fev":7369.83,"mar":8201.98,"abr":11632.61}},
+  {ne:"881",folha:"CARROS",gas:14132.72,rep:557.94,port:60.25,pess:13510.81,amort:3803.99,out:1472.55,tot:33538.26,nM:4,med:8384.57,mt:{"jan":6697.29,"fev":7645.1,"mar":9428.05,"abr":9767.82}},
+  {ne:"882",folha:"CARROS",gas:12533.93,rep:2333.4,port:1259.47,pess:8937.36,amort:3803.99,out:1445.74,tot:30313.89,nM:4,med:7578.47,mt:{"jan":3140.63,"fev":5762.54,"mar":12280.81,"abr":9129.91}},
+  {ne:"883",folha:"CARROS",gas:18079.1,rep:1261.96,port:2260.74,pess:12904.25,amort:3803.99,out:1506.66,tot:39816.7,nM:4,med:9954.17,mt:{"jan":9205.8,"fev":9129.68,"mar":10264.68,"abr":11216.54}},
+  {ne:"884",folha:"CARROS",gas:14051.66,rep:1426.07,port:1382.03,pess:12715.22,amort:3803.99,out:1618.15,tot:34997.12,nM:4,med:8749.28,mt:{"jan":9470.28,"fev":9009.82,"mar":9977.48,"abr":6539.54}},
+  {ne:"885",folha:"CARROS",gas:14582.59,rep:0.0,port:1494.91,pess:12306.87,amort:3272.7,out:1222.99,tot:32880.06,nM:4,med:8220.01,mt:{"jan":7083.11,"fev":8097.05,"mar":7038.67,"abr":10661.23}},
+  {ne:"886",folha:"CARROS",gas:15537.18,rep:247.55,port:1298.06,pess:13172.86,amort:3803.99,out:1280.34,tot:35339.98,nM:4,med:8835.0,mt:{"jan":7886.89,"fev":8053.62,"mar":8680.74,"abr":10718.73}},
+  {ne:"887",folha:"CARROS",gas:12502.22,rep:6228.43,port:1963.75,pess:8848.78,amort:3803.99,out:1599.18,tot:34946.35,nM:4,med:8736.59,mt:{"jan":9788.69,"fev":2263.85,"mar":11030.38,"abr":11863.43}},
+  {ne:"888",folha:"CARROS",gas:11262.4,rep:220.74,port:1195.07,pess:10136.0,amort:3803.99,out:1291.21,tot:27909.41,nM:4,med:6977.35,mt:{"jan":6069.97,"fev":7604.55,"mar":9256.14,"abr":4978.75}},
+  {ne:"889",folha:"CARROS",gas:17992.3,rep:4337.72,port:2581.45,pess:13871.47,amort:3803.99,out:1879.63,tot:44466.56,nM:4,med:11116.64,mt:{"jan":7642.07,"fev":11771.04,"mar":11675.1,"abr":13378.35}},
+  {ne:"890",folha:"CARROS",gas:15663.64,rep:832.92,port:1628.91,pess:13102.34,amort:3803.99,out:1448.36,tot:36480.16,nM:4,med:9120.04,mt:{"jan":7264.03,"fev":7892.44,"mar":10931.83,"abr":10391.86}},
+  {ne:"891",folha:"CARROS",gas:13122.37,rep:2299.32,port:59.31,pess:9790.65,amort:2843.92,out:1336.83,tot:29452.4,nM:4,med:7363.1,mt:{"jan":4712.38,"fev":5462.83,"mar":10101.79,"abr":9175.4}},
+  {ne:"892",folha:"CARROS",gas:15683.65,rep:1890.85,port:1813.09,pess:10841.67,amort:2843.92,out:1159.38,tot:34232.56,nM:4,med:8558.14,mt:{"jan":7045.11,"fev":9251.21,"mar":8827.05,"abr":9109.19}},
+  {ne:"893",folha:"CARROS",gas:7382.71,rep:2686.15,port:760.39,pess:3924.67,amort:2843.92,out:1199.02,tot:18796.86,nM:4,med:4699.22,mt:{"jan":4830.44,"fev":6499.72,"mar":2664.76,"abr":4801.94}},
+];
+
 const C={background:sf,border:`1px solid ${bd}`,borderRadius:10,padding:18,marginBottom:16};
 const IN={background:bg,border:`1px solid ${bd}`,color:tx,borderRadius:7,padding:"8px 10px",fontSize:13,fontFamily:"inherit",outline:"none",width:"100%",boxSizing:"border-box"};
 const SE={background:bg,border:`1px solid ${bd}`,color:tx,borderRadius:7,padding:"8px 10px",fontSize:13,fontFamily:"inherit",outline:"none",width:"100%",boxSizing:"border-box"};
@@ -1689,6 +1748,7 @@ function PgFret({fret,setFret}) {
 }
 
 function PgAnl({veic}) {
+  const[tab,setTab]=useState("ptsa");
   const[search,setSearch]=useState("");
   const[sort,setSort]=useState("tot");
   const[order,setOrder]=useState("desc");
@@ -1718,11 +1778,85 @@ function PgAnl({veic}) {
     </th>;
   }
 
+  // PTSA rows
+  const ptsaRows=useMemo(()=>CUSTOS_PTSA.map(c=>({...c,veiculo:veic.find(x=>x.numEquip===c.ne)||null}))
+    .filter(c=>!search||c.ne.includes(search)||(c.veiculo?.matricula||"").toLowerCase().includes(search.toLowerCase()))
+    .sort((a,b)=>order==="desc"?b[sort]-a[sort]:a[sort]-b[sort]),[search,sort,order,veic]);
+
   return (
     <div>
       <h2 style={{fontSize:28,fontWeight:900,margin:"0 0 4px"}}>Análise de Custos 2026</h2>
-      <p style={{fontSize:13,color:mu,marginBottom:20}}>Período: 01/01/2026 — 30/04/2026 · 4 meses · 198 h/mês · {rows.length} equipamentos</p>
+      <p style={{fontSize:13,color:mu,marginBottom:16}}>Período: 01/01/2026 — 30/04/2026</p>
+      <div style={{display:"flex",gap:6,marginBottom:20}}>
+        {[["ptsa","🏗️ PTSA (Custos Reais/mês)"],["pesados","🚛 Pesados Mercadorias"]].map(([id,lb])=>(
+          <button key={id} onClick={()=>{setTab(id);setSearch("");setSort(id==="ptsa"?"med":"tot");}} style={{padding:"8px 18px",borderRadius:8,fontSize:13,fontWeight:700,cursor:"pointer",border:`1px solid ${bd}`,background:tab===id?bl:s2,color:tab===id?"#fff":mu}}>{lb}</button>
+        ))}
+      </div>
 
+      {tab==="ptsa" && (
+        <>
+          <div style={G4}>
+            <Lbl t={["Equipamentos PTSA",ptsaRows.length,bl,CUSTOS_PTSA.filter(c=>c.folha==="CARROS").length+" carros · "+CUSTOS_PTSA.filter(c=>c.folha==="REBOQUES").length+" reboques"]}/>
+            <Lbl t={["Total 4 meses",euro(ptsaRows.reduce((s,c)=>s+c.tot,0)),rd]}/>
+            <Lbl t={["Média Mensal Total",euro(ptsaRows.reduce((s,c)=>s+c.med,0)),ac]}/>
+            <Lbl t={["Gasóleo + Pessoal",euro(ptsaRows.reduce((s,c)=>s+c.gas+c.pess,0)),or]}/>
+          </div>
+          <div style={C}>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12,gap:12}}>
+              <strong style={{fontSize:13}}>{ptsaRows.length} equipamentos</strong>
+              <input style={{...IN,width:260}} placeholder="Pesquisar nº equip, matrícula..." value={search} onChange={e=>setSearch(e.target.value)}/>
+            </div>
+            <div style={{overflowX:"auto"}}>
+              <table style={{width:"100%",borderCollapse:"collapse",fontSize:11}}>
+                <thead><tr>
+                  <th style={TH}>Nº Equip</th><th style={TH}>Matrícula</th><th style={TH}>Tipo</th><th style={TH}>Folha</th>
+                  <th style={{...TH,color:bl}}>JAN</th><th style={{...TH,color:bl}}>FEV</th><th style={{...TH,color:bl}}>MAR</th><th style={{...TH,color:bl}}>ABR</th>
+                  <Th2 col="tot" label="Total 4M"/><Th2 col="med" label="Média/mês"/>
+                  <Th2 col="gas" label="Gasóleo"/><Th2 col="rep" label="Reparações"/>
+                  <Th2 col="pess" label="Pessoal"/><Th2 col="amort" label="Amortiz."/>
+                </tr></thead>
+                <tbody>
+                  {ptsaRows.map(c=>{
+                    const matched=!!c.veiculo;
+                    return <tr key={c.ne} style={{background:matched?"":"rgba(239,68,68,.04)"}}>
+                      <td style={TD}><strong style={{color:matched?ac:mu}}>{c.ne}</strong></td>
+                      <td style={TD}><strong>{c.veiculo?.matricula||"—"}</strong></td>
+                      <td style={TD}>{c.veiculo?<Tipo t={c.veiculo.tipo}/>:<span style={{fontSize:9,color:mu}}>não mapeado</span>}</td>
+                      <td style={TD}><span style={{fontSize:9,color:mu}}>{c.folha}</span></td>
+                      <td style={{...TD,color:bl}}>{c.mt.jan?euro(c.mt.jan):"—"}</td>
+                      <td style={{...TD,color:bl}}>{c.mt.fev?euro(c.mt.fev):"—"}</td>
+                      <td style={{...TD,color:bl}}>{c.mt.mar?euro(c.mt.mar):"—"}</td>
+                      <td style={{...TD,color:bl}}>{c.mt.abr?euro(c.mt.abr):"—"}</td>
+                      <td style={{...TD,color:rd,fontWeight:700}}>{euro(c.tot)}</td>
+                      <td style={{...TD,color:ac,fontWeight:700}}>{euro(c.med)}</td>
+                      <td style={{...TD,color:or}}>{c.gas>0?euro(c.gas):"—"}</td>
+                      <td style={{...TD,color:rd}}>{c.rep>0?euro(c.rep):"—"}</td>
+                      <td style={TD}>{c.pess>0?euro(c.pess):"—"}</td>
+                      <td style={TD}>{c.amort>0?euro(c.amort):"—"}</td>
+                    </tr>;
+                  })}
+                </tbody>
+                <tfoot><tr style={{background:s2}}>
+                  <td style={{...TD,fontWeight:700}} colSpan={4}>TOTAL</td>
+                  <td style={{...TD,color:bl,fontWeight:700}}>{euro(ptsaRows.reduce((s,c)=>s+(c.mt.jan||0),0))}</td>
+                  <td style={{...TD,color:bl,fontWeight:700}}>{euro(ptsaRows.reduce((s,c)=>s+(c.mt.fev||0),0))}</td>
+                  <td style={{...TD,color:bl,fontWeight:700}}>{euro(ptsaRows.reduce((s,c)=>s+(c.mt.mar||0),0))}</td>
+                  <td style={{...TD,color:bl,fontWeight:700}}>{euro(ptsaRows.reduce((s,c)=>s+(c.mt.abr||0),0))}</td>
+                  <td style={{...TD,color:rd,fontWeight:800}}>{euro(ptsaRows.reduce((s,c)=>s+c.tot,0))}</td>
+                  <td style={{...TD,color:ac,fontWeight:800}}>{euro(ptsaRows.reduce((s,c)=>s+c.med,0))}</td>
+                  <td style={{...TD,color:or,fontWeight:700}}>{euro(ptsaRows.reduce((s,c)=>s+c.gas,0))}</td>
+                  <td style={{...TD,color:rd,fontWeight:700}}>{euro(ptsaRows.reduce((s,c)=>s+c.rep,0))}</td>
+                  <td style={{...TD,fontWeight:700}}>{euro(ptsaRows.reduce((s,c)=>s+c.pess,0))}</td>
+                  <td style={{...TD,fontWeight:700}}>{euro(ptsaRows.reduce((s,c)=>s+c.amort,0))}</td>
+                </tr></tfoot>
+              </table>
+            </div>
+            <div style={{fontSize:10,color:mu,marginTop:8}}>▼ clica nos cabeçalhos para ordenar · <span style={{color:rd}}>rosa</span> = não mapeado na app</div>
+          </div>
+        </>
+      )}
+
+      {tab==="pesados" && (<>
       <div style={G4}>
         <Lbl t={["Custo Total 4 meses",euro(totGeral),rd]}/>
         <Lbl t={["Custo Médio/mês",euro(totMes),ac,"por equipamento: "+euro(totMes/Math.max(rows.length,1))]}/>
@@ -1797,6 +1931,7 @@ function PgAnl({veic}) {
           ▼ clica nos cabeçalhos para ordenar · equipamentos a rosa não estão mapeados na app
         </div>
       </div>
+      </>)}
     </div>
   );
 }
