@@ -1362,12 +1362,14 @@ async function osrmRoute(o,d) {
 }
 
 function PgFret({fret,setFret}) {
-  const e0={nome:"",cli:"",orig:"",dest:"",mapsUrl:"",ki:"0",kv:"0",ti:"0",tv:"0",tc:"0",td2:"0",te:"0",cons:"0.32",pc:"1.58",pi:"0",pv:"0",outros:[],od:"",ov:"",preco:"0",ch:"0"};
+  const e0={nome:"",cli:"",orig:"",dest:"",mapsUrl:"",ki:"0",kv:"0",ti:"0",tv:"0",tc:"0",td2:"0",te:"0",cons:"0.32",pc:"1.58",pi:"0",pv:"0",outros:[],od:"",ov:"",preco:"0",ch:"0",tons:"0",priceMode:"frete",priceInput:"0"};
   const[f,setF]=useState(e0);
   const[show,setShow]=useState(false);
   const[loadingRoute,setLoadingRoute]=useState(false);
   const[routeModal,setRouteModal]=useState(null);
   const[routeError,setRouteError]=useState("");
+  const[tonsModal,setTonsModal]=useState(false);
+  const[tonsInput,setTonsInput]=useState("");
 
   function up(v) { setF(x=>({...x,...v})); }
 
@@ -1420,8 +1422,20 @@ function PgFret({fret,setFret}) {
     const cOu=(f.outros||[]).reduce((s,o)=>s+nv(o.v),0);
     const cFi=hC*nv(f.ch);
     const tot=cFi+cCo+cPo+cOu;
-    const pr=nv(f.preco), mg=pr-tot, mgP=pr>0?mg/pr:0;
-    return {kmC,ki,kv,hC,lt,cCo,cPo,cOu,cFi,tot,pr,mg,mgP,kP:ki>0?tot/ki:0,rH:hC>0?mg/hC:0,tImp:nv(f.tc)+nv(f.td2)+nv(f.te),pVaz:kmC>0?(kv/kmC)*100:0};
+    const tons=nv(f.tons);
+    const pi=nv(f.priceInput);
+    // Calculate preco based on mode
+    let pr=0;
+    if(f.priceMode==="frete") pr=pi;
+    else if(f.priceMode==="hora") pr=pi*hC;
+    else if(f.priceMode==="tonelada") pr=pi*tons;
+    const mg=pr-tot, mgP=pr>0?mg/pr:0;
+    const precoHora=hC>0?pr/hC:0;
+    const precoTon=tons>0?pr/tons:0;
+    return {kmC,ki,kv,hC,lt,cCo,cPo,cOu,cFi,tot,pr,mg,mgP,tons,
+      precoHora,precoTon,precoFrete:pr,
+      kP:ki>0?tot/ki:0,rH:hC>0?mg/hC:0,
+      tImp:nv(f.tc)+nv(f.td2)+nv(f.te),pVaz:kmC>0?(kv/kmC)*100:0};
   },[f]);
 
   function save() {
@@ -1563,27 +1577,77 @@ function PgFret({fret,setFret}) {
               ))}
             </div>
           )}
-          <div style={{fontSize:11,color:bl,textTransform:"uppercase",fontWeight:800,margin:"14px 0 8px",paddingBottom:4,borderBottom:`1px solid ${s2}`}}>💶 Preço ao Cliente</div>
+          <div style={{fontSize:11,color:bl,textTransform:"uppercase",fontWeight:800,margin:"14px 0 8px",paddingBottom:4,borderBottom:`1px solid ${s2}`}}>⚖️ Carga</div>
           <div style={G3}>
-            <div><label style={LB}>Preço Cobrado (€)</label><input style={{...IN,color:gn,fontWeight:700,fontSize:16}} type="number" step="0.01" value={f.preco} onChange={e=>up({preco:e.target.value})}/></div>
+            <div><label style={LB}>Toneladas</label><input style={IN} type="number" step="0.1" value={f.tons} onChange={e=>up({tons:e.target.value})} placeholder="0.0"/></div>
+          </div>
+
+          <div style={{fontSize:11,color:bl,textTransform:"uppercase",fontWeight:800,margin:"14px 0 8px",paddingBottom:4,borderBottom:`1px solid ${s2}`}}>💶 Preço ao Cliente</div>
+
+          {tonsModal && (
+            <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.7)",zIndex:1000,display:"flex",alignItems:"center",justifyContent:"center"}}>
+              <div style={{background:sf,border:`1px solid ${bd}`,borderRadius:12,padding:24,minWidth:320}}>
+                <div style={{fontWeight:900,fontSize:15,color:ac,marginBottom:12}}>⚖️ Qual o peso da carga?</div>
+                <label style={LB}>Toneladas</label>
+                <input style={{...IN,fontSize:18,fontWeight:700}} type="number" step="0.1" value={tonsInput} onChange={e=>setTonsInput(e.target.value)} autoFocus/>
+                <div style={{display:"flex",gap:8,marginTop:14}}>
+                  <button style={BA} onClick={()=>{up({tons:tonsInput});setTonsModal(false);}}>✓ Confirmar</button>
+                  <button style={{...BB,fontSize:12}} onClick={()=>setTonsModal(false)}>Sem peso</button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          <div style={{display:"flex",gap:8,marginBottom:12}}>
+            {[["frete","€/Frete"],["hora","€/Hora"],["tonelada","€/Tonelada"]].map(([m,lb])=>(
+              <button key={m} onClick={()=>up({priceMode:m,priceInput:"0"})} style={{padding:"7px 16px",borderRadius:7,fontSize:12,fontWeight:700,cursor:"pointer",border:`1px solid ${bd}`,background:f.priceMode===m?gn:s2,color:f.priceMode===m?"#000":mu}}>
+                {lb}
+              </button>
+            ))}
+          </div>
+
+          <div style={G3}>
+            <div>
+              <label style={LB}>
+                {f.priceMode==="frete"?"Preço Total (€)":f.priceMode==="hora"?"Preço por Hora (€/h)":"Preço por Tonelada (€/ton)"}
+              </label>
+              <input style={{...IN,color:gn,fontWeight:700,fontSize:16}} type="number" step="0.01" value={f.priceInput}
+                onChange={e=>{
+                  up({priceInput:e.target.value});
+                  if(f.priceMode==="frete"&&nv(e.target.value)>0){
+                    setTonsInput(f.tons||"");
+                    if(!nv(f.tons)) setTonsModal(true);
+                  }
+                }}/>
+            </div>
             <div><label style={LB}>Custo Total</label><input style={{...roSt,color:rd,fontWeight:700}} value={euro(c.tot)} readOnly/></div>
             <div><label style={LB}>Margem</label><input style={{...roSt,color:ac2,fontWeight:700}} value={euro(c.mg)+"  ("+pct(c.mgP)+")"} readOnly/></div>
           </div>
+
           <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:10,padding:14,background:bg,borderRadius:10,border:`1px solid ${bd}`,margin:"14px 0"}}>
-            {[["Custo/km carregado",euro(c.kP),ac],["Rentabilidade/hora",euro(c.rH),c.rH>=0?gn:rd],["KM Ciclo",c.kmC+" km",bl],["Litros consumidos",c.lt.toFixed(0)+" L",or],["Total portagens",euro(c.cPo),pu],["Margem %",pct(c.mgP),ac2]].map(([lb,vl,co])=>(
+            {[
+              ["€ / Frete",euro(c.precoFrete),gn],
+              ["€ / Hora",c.hC>0?euro(c.precoHora):"—",bl],
+              ["€ / Tonelada",c.tons>0?euro(c.precoTon):"—",ac],
+              ["Custo/km carregado",euro(c.kP),or],
+              ["KM Ciclo",c.kmC+" km",bl],
+              ["Margem %",pct(c.mgP),ac2],
+            ].map(([lb,vl,co])=>(
               <div key={lb} style={{textAlign:"center"}}>
                 <div style={{fontSize:9,color:mu,textTransform:"uppercase",letterSpacing:"0.08em",marginBottom:3}}>{lb}</div>
                 <div style={{fontSize:20,fontWeight:900,color:co}}>{vl}</div>
               </div>
             ))}
           </div>
+
           <div style={{background:"rgba(59,130,246,.05)",border:"1px solid rgba(59,130,246,.18)",borderRadius:10,padding:"12px 14px",marginBottom:14}}>
             <div style={{fontSize:11,fontWeight:800,color:bl,textTransform:"uppercase",marginBottom:8}}>🔍 Análise</div>
             {c.mgP<0 && <div style={{fontSize:12,color:rd,marginBottom:4}}>⚠️ Frete a prejuízo! Preço mínimo: {euro(c.tot)}</div>}
-            {c.mgP>=0 && c.mgP<0.1 && <div style={{fontSize:12,color:ac,marginBottom:4}}>⚠️ Margem baixa ({pct(c.mgP)}). Considere renegociar.</div>}
+            {c.mgP>=0 && c.mgP<0.1 && <div style={{fontSize:12,color:ac,marginBottom:4}}>⚠️ Margem baixa ({pct(c.mgP)}). Considera renegociar.</div>}
             {c.mgP>=0.1 && <div style={{fontSize:12,color:gn,marginBottom:4}}>✅ Margem saudável: {pct(c.mgP)}</div>}
-            {c.kmC>0 && <div style={{fontSize:12,color:mu,marginBottom:4}}>🔄 Retorno vazio: <strong style={{color:tx}}>{c.pVaz.toFixed(1)}%</strong> dos km sem carga</div>}
-            {c.hC>0 && <div style={{fontSize:12,color:mu}}>⏱ Tempo improdutivo: <strong style={{color:tx}}>{c.tImp.toFixed(1)}h</strong></div>}
+            {c.tons>0 && <div style={{fontSize:12,color:mu,marginBottom:4}}>⚖️ {c.tons} ton · <strong style={{color:tx}}>{euro(c.precoTon)}/ton</strong></div>}
+            {c.hC>0 && <div style={{fontSize:12,color:mu,marginBottom:4}}>⏱ {c.hC.toFixed(2)}h · <strong style={{color:tx}}>{euro(c.precoHora)}/h</strong></div>}
+            {c.kmC>0 && <div style={{fontSize:12,color:mu}}>🔄 Retorno vazio: <strong style={{color:tx}}>{c.pVaz.toFixed(1)}%</strong> dos km sem carga</div>}
           </div>
           <div style={{display:"flex",gap:10}}>
             <button style={BA} onClick={save}>💾 Guardar Frete</button>
