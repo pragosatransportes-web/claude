@@ -385,7 +385,7 @@ export default function App() {
     ["dash","📊","Dashboard"],["imp","📥","Importar"],
     ["veic","🚛","Equipamentos"],["conj","🔗","Conjuntos"],["mot","👤","Motoristas"],
     ["man","🔧","Manutenção"],["port","🛣️","Portagens"],["gas","⛽","Gasóleo"],
-    ["cust","📐","Custos Base"],["fret","📦","Frete"],["anl","📊","Análise 2026"],
+    ["fret","📦","Frete"],["anl","💰","Custos 2026"],
   ];
 
   return (
@@ -424,7 +424,6 @@ export default function App() {
         {pg==="man"  && <PgMan  man={man} setMan={setMan} veic={veic} tM={tM}/>}
         {pg==="port" && <PgPort port={port} setPort={setPort} veic={veic} tP={tP}/>}
         {pg==="gas"  && <PgGas  gas={gas} setGas={setGas} veic={veic} tG={tG}/>}
-        {pg==="cust" && <PgCust veic={veic} mots={mots} man={man} port={port} conj={conj}/>}
         {pg==="fret" && <PgFret fret={fret} setFret={setFret}/>}
         {pg==="anl"  && <PgAnl  veic={veic}/>}
       </main>
@@ -1785,13 +1784,109 @@ function PgAnl({veic}) {
 
   return (
     <div>
-      <h2 style={{fontSize:28,fontWeight:900,margin:"0 0 4px"}}>Análise de Custos 2026</h2>
+      <h2 style={{fontSize:28,fontWeight:900,margin:"0 0 4px"}}>Custos 2026</h2>
       <p style={{fontSize:13,color:mu,marginBottom:16}}>Período: 01/01/2026 — 30/04/2026</p>
       <div style={{display:"flex",gap:6,marginBottom:20}}>
-        {[["ptsa","🏗️ PTSA (Custos Reais/mês)"],["pesados","🚛 Pesados Mercadorias"]].map(([id,lb])=>(
+        {[["dash","📊 Dashboard"],["ptsa","🚛 Pragosa Transportes"],["pesados","🏗️ Construções Pragosa"]].map(([id,lb])=>(
           <button key={id} onClick={()=>{setTab(id);setSearch("");setSort(id==="ptsa"?"med":"tot");}} style={{padding:"8px 18px",borderRadius:8,fontSize:13,fontWeight:700,cursor:"pointer",border:`1px solid ${bd}`,background:tab===id?bl:s2,color:tab===id?"#fff":mu}}>{lb}</button>
         ))}
       </div>
+
+      {tab==="dash" && (() => {
+        const TIPOS_DASH=["Trator","Semi-Reboque","Cisterna","Basculante Rígido","Carro Grua","Porta-Máquinas","Rígido Grua","Rígido Cola","Rígido Água","Reboque-Estrado","Porta-Sílos","Estrado"];
+
+        // Pragosa Transportes (PTSA) — by tipo from V0
+        const ptByTipo={};
+        CUSTOS_PTSA.forEach(c=>{
+          const v=veic.find(x=>x.numEquip===c.ne);
+          if(!v) return;
+          const t=v.tipo||"Outro";
+          if(!ptByTipo[t]) ptByTipo[t]={count:0,totMes:0,totGas:0,totRep:0,totPess:0,totAmort:0};
+          ptByTipo[t].count++;
+          ptByTipo[t].totMes+=c.med;
+          ptByTipo[t].totGas+=c.gas/4;
+          ptByTipo[t].totRep+=c.rep/4;
+          ptByTipo[t].totPess+=c.pess/4;
+          ptByTipo[t].totAmort+=c.amort/4;
+        });
+
+        // Construções Pragosa (CUSTOS2026) — by tipo from V0
+        const cpByTipo={};
+        CUSTOS2026.forEach(c=>{
+          const v=veic.find(x=>x.numEquip===c.ne);
+          if(!v) return;
+          const t=v.tipo||"Outro";
+          if(!cpByTipo[t]) cpByTipo[t]={count:0,totMes:0,totGas:0,totRep:0,totPort:0};
+          cpByTipo[t].count++;
+          cpByTipo[t].totMes+=c.mes;
+          cpByTipo[t].totGas+=c.gas/4;
+          cpByTipo[t].totRep+=c.rep/4;
+          cpByTipo[t].totPort+=c.port/4;
+        });
+
+        const allTipos=[...new Set([...Object.keys(ptByTipo),...Object.keys(cpByTipo)])].sort();
+
+        return (
+          <div>
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:20}}>
+              {/* Pragosa Transportes */}
+              <div style={C}>
+                <div style={{fontWeight:800,fontSize:15,color:bl,marginBottom:14}}>🚛 Pragosa Transportes — Custo Médio Mensal por Tipo</div>
+                <table style={{width:"100%",borderCollapse:"collapse",fontSize:12}}>
+                  <Th cols={["Tipo","Equip.","Média/mês","Gasóleo/m","Reparações/m","Pessoal/m","Amortiz./m"]}/>
+                  <tbody>
+                    {allTipos.filter(t=>ptByTipo[t]).map(t=>{
+                      const d=ptByTipo[t];
+                      const medEq=d.count>0?d.totMes/d.count:0;
+                      return <tr key={t}>
+                        <td style={TD}><Tipo t={t}/></td>
+                        <td style={TD}>{d.count}</td>
+                        <td style={{...TD,color:ac,fontWeight:700}}>{euro(medEq)}</td>
+                        <td style={{...TD,color:or}}>{euro(d.totGas/d.count)}</td>
+                        <td style={{...TD,color:rd}}>{euro(d.totRep/d.count)}</td>
+                        <td style={TD}>{euro(d.totPess/d.count)}</td>
+                        <td style={TD}>{euro(d.totAmort/d.count)}</td>
+                      </tr>;
+                    })}
+                  </tbody>
+                  <tfoot><tr style={{background:s2}}>
+                    <td style={{...TD,fontWeight:700}} colSpan={2}>TOTAL</td>
+                    <td style={{...TD,color:ac,fontWeight:800}}>{euro(Object.values(ptByTipo).reduce((s,d)=>s+d.totMes,0)/Math.max(Object.values(ptByTipo).reduce((s,d)=>s+d.count,0),1))}</td>
+                    <td colSpan={4} style={TD}></td>
+                  </tr></tfoot>
+                </table>
+              </div>
+
+              {/* Construções Pragosa */}
+              <div style={C}>
+                <div style={{fontWeight:800,fontSize:15,color:ac,marginBottom:14}}>🏗️ Construções Pragosa — Custo Médio Mensal por Tipo</div>
+                <table style={{width:"100%",borderCollapse:"collapse",fontSize:12}}>
+                  <Th cols={["Tipo","Equip.","Média/mês","Gasóleo/m","Reparações/m","Portagens/m"]}/>
+                  <tbody>
+                    {allTipos.filter(t=>cpByTipo[t]).map(t=>{
+                      const d=cpByTipo[t];
+                      const medEq=d.count>0?d.totMes/d.count:0;
+                      return <tr key={t}>
+                        <td style={TD}><Tipo t={t}/></td>
+                        <td style={TD}>{d.count}</td>
+                        <td style={{...TD,color:ac,fontWeight:700}}>{euro(medEq)}</td>
+                        <td style={{...TD,color:or}}>{euro(d.totGas/d.count)}</td>
+                        <td style={{...TD,color:rd}}>{euro(d.totRep/d.count)}</td>
+                        <td style={{...TD,color:pu}}>{euro(d.totPort/d.count)}</td>
+                      </tr>;
+                    })}
+                  </tbody>
+                  <tfoot><tr style={{background:s2}}>
+                    <td style={{...TD,fontWeight:700}} colSpan={2}>TOTAL</td>
+                    <td style={{...TD,color:ac,fontWeight:800}}>{euro(Object.values(cpByTipo).reduce((s,d)=>s+d.totMes,0)/Math.max(Object.values(cpByTipo).reduce((s,d)=>s+d.count,0),1))}</td>
+                    <td colSpan={3} style={TD}></td>
+                  </tr></tfoot>
+                </table>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
 
       {tab==="ptsa" && (
         <>
