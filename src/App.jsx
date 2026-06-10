@@ -1330,44 +1330,41 @@ function parseRepsolPDF(lines, veic) {
 
   const results=[];
 
-  let valorCount=0;
   for(let i=rsIdx;i<lines.length;i++){
     const line=lines[i].trim();
-    if(i<rsIdx+5) console.log(`[Repsol] line[${i}]=${JSON.stringify(line)}`);
 
-    // Linha VALOR: começa com "VALOR " seguido de "-" ou dígito
     if(/^VALOR\s+[-\d]/.test(line)){
-      valorCount++;
-      if(valorCount<=3) console.log("[Repsol] VALOR line matched:",JSON.stringify(line));
-      const valParts=line.replace(/^VALOR\s+/,"").split(/\s+/).filter(Boolean);
-      const gross=gasColIdx<valParts.length?numPt(valParts[gasColIdx]):0;
+      // Preservar "-" para manter alinhamento de colunas (ADBLUE | DIESEL+10 | GASOLEO | TOTAL)
+      const valParts=line.replace(/^VALOR\s+/,"").split(/\s+/);
+      const grossStr=gasColIdx<valParts.length?valParts[gasColIdx]:"-";
+      const gross=grossStr==="-"?0:numPt(grossStr);
 
-      // Matrícula na linha seguinte: "[dígitos_cartão]   [MATRÍCULA]"
       let mat="";
       if(i+1<lines.length){
         const nl=lines[i+1].trim();
-        // Remover número de cartão (sequência de dígitos no início)
         mat=nl.replace(/^\d+\s+/,"").split(/\s+/)[0]||"";
       }
       if(!mat||mat.length<4||!/[A-Z0-9]/.test(mat)){i++;continue;}
 
-      // Litros: procurar QUANTID nas próximas linhas
       let litros=0;
-      for(let j=i+2;j<Math.min(i+7,lines.length);j++){
+      for(let j=i+2;j<Math.min(i+8,lines.length);j++){
         const qln=lines[j].trim();
-        if(!/QUANTID/.test(qln)&&j===i+2)continue; // skip card line if no QUANTID yet
+        if(!/QUANTID/.test(qln)&&j===i+2)continue;
         if(/QUANTID/.test(qln)){
-          // Valor pode estar na mesma linha: "9065   QUANTID. 428,02"
           let qText=qln.replace(/.*QUANTID\.\s*/,"").trim();
           if(!qText||qText==="-"){
-            // Valor na linha seguinte
-            if(j+1<lines.length){
-              qText=lines[j+1].trim().replace(/^\d+\s+/,"");
-            }
+            if(j+1<lines.length) qText=lines[j+1].trim().replace(/^\d+\s+/,"");
           }
-          // Primeiro valor numérico = litros de gasóleo
-          const qVals=qText.split(/\s+/).filter(v=>v!=="-"&&/[\d,]/.test(v));
-          if(qVals.length>0)litros=numPt(qVals[0]);
+          // Preservar "-" para alinhamento de colunas; usar gasColIdx
+          const qAll=qText.split(/\s+/).filter(s=>s.length>0);
+          if(gasColIdx<qAll.length && qAll[gasColIdx]!=="-" && /[\d,]/.test(qAll[gasColIdx])){
+            litros=numPt(qAll[gasColIdx]);
+          } else {
+            // Fallback para viaturas com apenas um combustível
+            const nums=qAll.filter(v=>v!=="-"&&/[\d,]/.test(v));
+            if(nums.length>0) litros=numPt(nums[nums.length-1]);
+          }
+          console.log("[Repsol]",mat,"gross=",gross,"litros=",litros,"qText=",JSON.stringify(qText));
           break;
         }
       }
@@ -1377,7 +1374,7 @@ function parseRepsolPDF(lines, veic) {
         const veh=veic.find(x=>normMat(x.matricula)===normMat(mat));
         results.push({mat,mes,litros,custo:net,preco:litros>0?Math.round(net/litros*1000)/1000:0,tipo:"GASOLEO",veiculoId:veh?.id||null,known:!!veh});
       }
-      i++; // avança para não reprocessar linha da matrícula
+      i++;
     }
   }
   return{mes,results};
