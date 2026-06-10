@@ -1314,29 +1314,31 @@ function parseRepsolPDF(lines, veic) {
 
   // Encontrar "Resumo cart" e cabeçalho de produtos
   const rsIdx=lines.findIndex(l=>/Resumo cart/i.test(l));
+  console.log("[Repsol] rsIdx=",rsIdx,"mes=",mes);
   if(rsIdx<0)return{mes,results:[]};
 
-  // Cabeçalho de produtos: linha após Resumo que contém GASOLEO e TOTAL BONIF
-  // Ex: "EFITEC 95 PREM   GASOLEO   GASOLINA 95   TOTAL BONIF."
-  // Ex: "ADBLUE REPSOL   DIESEL E+10   GASOLEO   TOTAL BONIF."
-  let gasColIdx=2; // fallback
+  let gasColIdx=2;
   for(let j=rsIdx;j<Math.min(rsIdx+6,lines.length);j++){
     if(/GASOLEO/.test(lines[j])&&/TOTAL BONIF/.test(lines[j])){
       const cols=lines[j].split(/\s{2,}/).map(s=>s.trim()).filter(Boolean);
       const idx=cols.findIndex(c=>/^GASOLEO/.test(c));
       if(idx>=0)gasColIdx=idx;
+      console.log("[Repsol] header cols=",cols,"gasColIdx=",gasColIdx);
       break;
     }
   }
 
   const results=[];
 
+  let valorCount=0;
   for(let i=rsIdx;i<lines.length;i++){
     const line=lines[i].trim();
+    if(i<rsIdx+5) console.log(`[Repsol] line[${i}]=${JSON.stringify(line)}`);
 
     // Linha VALOR: começa com "VALOR " seguido de "-" ou dígito
-    // Ex: "VALOR - 745,43 89,57 63,81"
     if(/^VALOR\s+[-\d]/.test(line)){
+      valorCount++;
+      if(valorCount<=3) console.log("[Repsol] VALOR line matched:",JSON.stringify(line));
       const valParts=line.replace(/^VALOR\s+/,"").split(/\s+/).filter(Boolean);
       const gross=gasColIdx<valParts.length?numPt(valParts[gasColIdx]):0;
 
