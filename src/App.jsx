@@ -1322,9 +1322,11 @@ function parseRepsolPDF(lines, veic) {
       }
       if(vals.length>=6){
         const veh=veic.find(x=>normMat(x.matricula)===normMat(mat));
+        const dcto={"GASOLEO":0.16,"DIESEL E+10":0.17,"ADBLUE":0.10};
         [[4,5,"GASOLEO"],[2,3,"DIESEL E+10"],[0,1,"ADBLUE"]].forEach(([vi,qi,tipo])=>{
           const lit=numPt(vals[qi]);
-          const cst=numPt(vals[vi]);
+          const gross=numPt(vals[vi]);
+          const cst=Math.round((gross-lit*dcto[tipo])*100)/100;
           if(lit>0) results.push({mat,mes,litros:lit,custo:cst,preco:lit>0?Math.round(cst/lit*1000)/1000:0,tipo,veiculoId:veh?.id||null,known:!!veh});
         });
       }
