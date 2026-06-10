@@ -11,14 +11,10 @@
             "id": "56474a7c59606a9e",
             "type": "leaf",
             "state": {
-              "type": "markdown",
-              "state": {
-                "file": "02 Reuniões/2026/2026-06-09 - Comissão Executiva - Weekly.md",
-                "mode": "source",
-                "source": false
-              },
+              "type": "empty",
+              "state": {},
               "icon": "lucide-file",
-              "title": "2026-06-09 - Comissão Executiva - Weekly"
+              "title": "Nova aba"
             }
           }
         ]
@@ -94,7 +90,6 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "02 Reuniões/2026/2026-06-09 - Comissão Executiva - Weekly.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -104,7 +99,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "Backlinks para 2026-06-09 - Comissão Executiva - Weekly"
+              "title": "Links inversos"
             }
           },
           {
@@ -113,12 +108,11 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "02 Reuniões/2026/2026-06-09 - Comissão Executiva - Weekly.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "Links externos de 2026-06-09 - Comissão Executiva - Weekly"
+              "title": "Links Externos"
             }
           },
           {
@@ -156,13 +150,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "02 Reuniões/2026/2026-06-09 - Comissão Executiva - Weekly.md",
+                "file": "09 Templatescliente.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Índice de 2026-06-09 - Comissão Executiva - Weekly"
+              "title": "Índice de 09 Templatescliente"
             }
           }
         ]
@@ -183,6 +177,10 @@
       "bases:Criar nova base": false
     }
   },
-  "active": "56474a7c59606a9e",
-  "lastOpenFiles": []
+  "active": "2758e5524653ddab",
+  "lastOpenFiles": [
+    "Dashboard.md",
+    "10 Decisões",
+    "02 Reuniões/2026/2026-06-09 - Comissão Executiva - Weekly.md"
+  ]
 }

@@ -4,7 +4,7 @@ cssclass: dashboard
 
 # Dashboard — Construções Pragosa
 
-> Centro de controlo operacional · [[00 Sistema/CLAUDE.md|Ver contexto]]
+> Centro de controlo operacional · [[00 Sistema/CLAUDE]]
 
 ---
 
@@ -13,20 +13,23 @@ cssclass: dashboard
 ### Diário
 [[01 Diário/2026/2026-06-10]]
 
-### Reuniões Recentes
-```dataview
-TABLE data, cliente, projeto
-FROM "02 Reuniões"
-SORT data DESC
-LIMIT 8
-```
-
 ### Tarefas Urgentes
 ```tasks
 not done
 (priority is high) OR (due before tomorrow)
 sort by due
 limit 10
+```
+
+---
+
+## Reuniões Recentes
+
+```dataview
+TABLE data, cliente, projeto
+FROM "02 Reuniões"
+SORT data DESC
+LIMIT 8
 ```
 
 ---
@@ -77,40 +80,7 @@ limit 15
 
 ---
 
-## Reuniões Esta Semana
-
-```dataview
-TABLE cliente, projeto
-FROM "02 Reuniões"
-WHERE data >= date(today) - dur(7 days)
-SORT data DESC
-```
-
----
-
 ## Estratégia
 
 - [[07 Estratégia/OKRs]]
 - [[07 Estratégia/Planeamento]]
-
----
-
-## Pessoas
-
-```dataview
-TABLE cargo, empresa
-FROM "03 Pessoas"
-SORT file.name ASC
-LIMIT 20
-```
-
----
-
-## Inbox
-
-```dataview
-LIST
-FROM "Inbox"
-SORT file.ctime DESC
-LIMIT 15
-```
