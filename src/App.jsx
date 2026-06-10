@@ -1071,11 +1071,37 @@ function PgMan({man,setMan,veic,tM}) {
   );
 }
 
+function parseCsvViaVerde(text, veic) {
+  const lines = text.split(/\r?\n/).slice(8);
+  const totals = {};
+  for (const line of lines) {
+    if (!line.trim()) continue;
+    const cols = line.split(";");
+    const mat = (cols[1]||"").trim();
+    if (!mat) continue;
+    const rawDate = (cols[3]||cols[6]||"").trim();
+    const m = rawDate.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+    if (!m) continue;
+    const mes = `${m[3]}-${m[2]}`;
+    const val = parseFloat((cols[9]||"").trim().replace(",","."));
+    if (isNaN(val)||val<=0) continue;
+    const k = `${mat}|${mes}`;
+    totals[k]=(totals[k]||0)+val;
+  }
+  return Object.entries(totals).map(([k,total])=>{
+    const [mat,mes]=k.split("|");
+    const norm=s=>s.replace(/[-\s]/g,"").toUpperCase();
+    const v=veic.find(x=>norm(x.matricula)===norm(mat));
+    return {mat,mes,valor:Math.round(total*100)/100,veiculoId:v?v.id:null,known:!!v};
+  }).sort((a,b)=>a.mes.localeCompare(b.mes)||a.mat.localeCompare(b.mat));
+}
+
 function PgPort({port,setPort,veic,tP}) {
   const f0={veiculoId:"",mes:"",via:"",valor:""};
   const[f,setF]=useState(f0);
   const[editId,setEditId]=useState(null);
   const[editF,setEditF]=useState(null);
+  const[prev,setPrev]=useState(null); // pré-visualização CSV
 
   function add() {
     if(!f.veiculoId||!f.mes||!f.valor) return;
@@ -1086,10 +1112,72 @@ function PgPort({port,setPort,veic,tP}) {
   function saveEdit(){setPort(ps=>ps.map(p=>p.id===editId?{...p,...editF,veiculoId:Number(editF.veiculoId),valor:nv(editF.valor)}:p));setEditId(null);}
   function del(id){setPort(ps=>ps.filter(p=>p.id!==id));}
 
+  function onCsvFile(e) {
+    const file=e.target.files?.[0]; if(!file) return;
+    const reader=new FileReader();
+    reader.onload=ev=>{
+      const rows=parseCsvViaVerde(ev.target.result,veic);
+      setPrev(rows.length?rows:null);
+      if(!rows.length) alert("Nenhum registo válido encontrado.");
+    };
+    reader.readAsText(file,"ISO-8859-1");
+    e.target.value="";
+  }
+
+  function confirmImport() {
+    if(!prev) return;
+    const novos=prev.filter(r=>r.veiculoId).map(r=>({
+      id:Date.now()+Math.random(),
+      veiculoId:r.veiculoId,
+      mes:r.mes,
+      via:"Via Verde",
+      valor:r.valor
+    }));
+    setPort(p=>[...p,...novos]);
+    setPrev(null);
+  }
+
   return (
     <div>
       <h2 style={{fontSize:28,fontWeight:900,margin:"0 0 4px"}}>Portagens</h2>
       <p style={{fontSize:13,color:mu,marginBottom:20}}>Via Verde — lançamento mensal</p>
+
+      {/* Importação CSV */}
+      <div style={{...C,marginBottom:16,borderColor:"rgba(167,139,250,.3)"}}>
+        <div style={{fontWeight:700,fontSize:14,marginBottom:8,color:pu}}>📂 Importar CSV Via Verde</div>
+        <label style={{display:"inline-block",padding:"8px 16px",background:s2,border:`1px solid ${bd}`,borderRadius:7,cursor:"pointer",fontSize:13,color:tx}}>
+          Selecionar ficheiro CSV
+          <input type="file" accept=".csv,.CSV" style={{display:"none"}} onChange={onCsvFile}/>
+        </label>
+        {prev && (
+          <div style={{marginTop:14}}>
+            <div style={{fontWeight:700,fontSize:13,marginBottom:8}}>
+              Pré-visualização — {prev.length} matrículas · Total: {euro(prev.reduce((s,r)=>s+r.valor,0))}
+            </div>
+            <table style={{width:"100%",borderCollapse:"collapse",fontSize:12,marginBottom:12}}>
+              <Th cols={["Matrícula","Mês","Total (€)","Estado"]}/>
+              <tbody>
+                {prev.map((r,i)=>(
+                  <tr key={i}>
+                    <td style={TD}><strong>{r.mat}</strong></td>
+                    <td style={TD}>{r.mes}</td>
+                    <td style={{...TD,color:pu,fontWeight:600}}>{euro(r.valor)}</td>
+                    <td style={TD}>{r.known?<span style={{color:gn}}>✓ encontrada</span>:<span style={{color:rd}}>⚠ não encontrada</span>}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            {prev.some(r=>!r.known) && (
+              <div style={{fontSize:11,color:or,marginBottom:8}}>⚠ Matrículas a vermelho não existem na frota e serão ignoradas na importação.</div>
+            )}
+            <div style={{display:"flex",gap:10}}>
+              <button style={BA} onClick={confirmImport}>✓ Importar {prev.filter(r=>r.known).length} registos</button>
+              <button style={{...BB,fontSize:12}} onClick={()=>setPrev(null)}>Cancelar</button>
+            </div>
+          </div>
+        )}
+      </div>
+
       <div style={C}>
         <div style={{fontWeight:700,fontSize:14,marginBottom:12}}>Lançar Portagem</div>
         <div style={G4}>
