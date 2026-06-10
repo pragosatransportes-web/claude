@@ -1,58 +1,48 @@
-# Dashboard Executivo
+---
+cssclass: dashboard
+---
 
-> Centro de controlo da empresa
+# Dashboard — Construções Pragosa
+
+> Centro de controlo operacional · [[00 Sistema/CLAUDE.md|Ver contexto]]
 
 ---
 
-# Hoje
+## Hoje
 
-## Diário de hoje
-[[<% tp.date.now("YYYY-MM-DD") %>]]
+### Diário
+[[01 Diário/2026/2026-06-10]]
 
-## Reuniões Recentes
-
+### Reuniões Recentes
 ```dataview
 TABLE data, cliente, projeto
 FROM "02 Reuniões"
 SORT data DESC
-LIMIT 10
+LIMIT 8
 ```
 
-## Próximas Prioridades
-
+### Tarefas Urgentes
 ```tasks
 not done
-sort by priority
-limit 15
+(priority is high) OR (due before tomorrow)
+sort by due
+limit 10
 ```
 
 ---
 
-# Clientes
-
-## Clientes ativos
+## Obras e Clientes
 
 ```dataview
-TABLE estado, responsável
-FROM "04 Clientes"
+TABLE estado, responsável, data_fim_prevista
+FROM "04 Obras e Clientes"
+WHERE estado = "ativa"
 SORT file.name ASC
 ```
 
-## Últimas reuniões com clientes
-
-```dataview
-TABLE data, cliente
-FROM "02 Reuniões"
-WHERE contains(tags, "cliente")
-SORT data DESC
-LIMIT 10
-```
-
 ---
 
-# Projetos
-
-## Projetos ativos
+## Projetos
 
 ```dataview
 TABLE estado, prioridade, responsável
@@ -61,81 +51,33 @@ WHERE estado = "ativo"
 SORT prioridade DESC
 ```
 
-## Projetos sem atualização recente
+---
 
-```dataview
-TABLE file.mtime as "Última Atualização"
-FROM "05 Projetos"
-SORT file.mtime ASC
-LIMIT 10
-```
+## Operações
+
+| Área | Link |
+|------|------|
+| Construções | [[06 Operações/Construções Pragosa]] |
+| Indústria / Pedreiras | [[06 Operações/Indústria]] |
+| Cisternas | [[06 Operações/Cisternas]] |
+| Combustíveis e Mobilizações | [[06 Operações/Combustíveis, Custos e Mobilizações]] |
+| Manutenções | [[06 Operações/Manutenções]] |
+| KPIs | [[06 Operações/KPIs]] |
 
 ---
 
-# Operações
-
-## Produção
-
-[[06 Operações/Produção]]
-
-## Mercado
-
-[[06 Operações/Mercado]]
-
-## KPIs
-
-[[06 Operações/KPIs]]
-
----
-
-# Decisões Estratégicas
-
-## Últimas decisões
-
-```dataview
-TABLE data, impacto
-FROM "90 Decisões"
-SORT data DESC
-LIMIT 15
-```
-
----
-
-# Pessoas
-
-## Pessoas mais envolvidas
-
-```dataview
-TABLE cargo, empresa
-FROM "03 Pessoas"
-SORT file.name ASC
-```
-
----
-
-# Tarefas
-
-## Urgentes
-
-```tasks
-not done
-(priority is high) OR (due before tomorrow)
-sort by due
-```
-
-## Esta semana
+## Tarefas Esta Semana
 
 ```tasks
 not done
 due before next week
 sort by due
+limit 15
 ```
 
 ---
 
-# Reuniões
-
-## Esta semana
+## Reuniões Esta Semana
 
 ```dataview
 TABLE cliente, projeto
@@ -146,21 +88,29 @@ SORT data DESC
 
 ---
 
-# Estratégia
+## Estratégia
 
-[[07 Estratégia/Objetivos]]
-
-[[07 Estratégia/OKRs]]
-
-[[07 Estratégia/Planeamento Anual]]
+- [[07 Estratégia/OKRs]]
+- [[07 Estratégia/Planeamento]]
 
 ---
 
-# Inbox
+## Pessoas
+
+```dataview
+TABLE cargo, empresa
+FROM "03 Pessoas"
+SORT file.name ASC
+LIMIT 20
+```
+
+---
+
+## Inbox
 
 ```dataview
 LIST
-FROM "99 Inbox"
+FROM "Inbox"
 SORT file.ctime DESC
-LIMIT 20
+LIMIT 15
 ```
