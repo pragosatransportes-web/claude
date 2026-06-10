@@ -1301,11 +1301,45 @@ function PgPort({port,setPort,veic,tP}) {
   );
 }
 
+function parseRepsolPDF(lines, veic) {
+  const numPt=s=>parseFloat(String(s||"").replace(/\./g,"").replace(",","."))||0;
+  const normMat=s=>s.replace(/[-\s]/g,"").toUpperCase();
+  let mes="";
+  const pl=lines.find(l=>l.match(/Periodo\s+\d{2}-\d{2}-\d{4}/));
+  if(pl){const m=pl.match(/(\d{2})-(\d{2})-(\d{4})/);if(m)mes=`${m[3]}-${m[2]}`;}
+  const results=[];
+  let i=0;
+  while(i<lines.length){
+    const m=lines[i].match(/^(70\d{14})\s+(\S+)\s+VALOR$/);
+    if(m){
+      const mat=m[2];i++;
+      if(i<lines.length&&lines[i].trim().endsWith("QUANTID."))i++;
+      const vals=[];
+      while(vals.length<8&&i<lines.length){
+        const v=lines[i].trim();
+        if(v==="-"||/^[\d.,]+$/.test(v)){vals.push(v);i++;}
+        else break;
+      }
+      if(vals.length>=6){
+        const veh=veic.find(x=>normMat(x.matricula)===normMat(mat));
+        [[4,5,"GASOLEO"],[2,3,"DIESEL E+10"],[0,1,"ADBLUE"]].forEach(([vi,qi,tipo])=>{
+          const lit=numPt(vals[qi]);
+          const cst=numPt(vals[vi]);
+          if(lit>0) results.push({mat,mes,litros:lit,custo:cst,preco:lit>0?Math.round(cst/lit*1000)/1000:0,tipo,veiculoId:veh?.id||null,known:!!veh});
+        });
+      }
+    } else i++;
+  }
+  return {mes,results};
+}
+
 function PgGas({gas,setGas,veic,tG}) {
   const f0={veiculoId:"",data:"",local:"",litros:"",preco:"",km:""};
   const[f,setF]=useState(f0);
   const[editId,setEditId]=useState(null);
   const[editF,setEditF]=useState(null);
+  const[pdfPrev,setPdfPrev]=useState(null);
+  const[pdfLoading,setPdfLoading]=useState(false);
   const tL=gas.reduce((s,g)=>s+nv(g.litros),0);
 
   function add() {
@@ -1322,6 +1356,46 @@ function PgGas({gas,setGas,veic,tG}) {
   }
   function del(id){setGas(gs=>gs.filter(g=>g.id!==id));}
 
+  async function handlePDF(file) {
+    if(!window.pdfjsLib){alert("PDF.js não disponível. Tenta recarregar a página.");return;}
+    window.pdfjsLib.GlobalWorkerOptions.workerSrc="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+    setPdfLoading(true);
+    try {
+      const buf=await file.arrayBuffer();
+      const pdf=await window.pdfjsLib.getDocument({data:buf}).promise;
+      const allLines=[];
+      for(let p=1;p<=pdf.numPages;p++){
+        const page=await pdf.getPage(p);
+        const tc=await page.getTextContent();
+        const byY={};
+        tc.items.forEach(item=>{
+          const y=Math.round(item.transform[5]);
+          if(!byY[y])byY[y]=[];
+          byY[y].push({x:item.transform[4],str:item.str});
+        });
+        Object.keys(byY).map(Number).sort((a,b)=>b-a).forEach(y=>{
+          const line=byY[y].sort((a,b)=>a.x-b.x).map(i=>i.str).join(" ").trim();
+          if(line) allLines.push(line);
+        });
+      }
+      const {mes,results}=parseRepsolPDF(allLines,veic);
+      if(!results.length){alert("Nenhum registo encontrado. Confirma que é uma fatura Repsol Solred.");setPdfLoading(false);return;}
+      setPdfPrev({mes,results});
+    } catch(e){alert("Erro ao ler PDF: "+e.message);}
+    setPdfLoading(false);
+  }
+
+  function importPDF() {
+    const lastDay=pdfPrev.mes?pdfPrev.mes+"-"+(new Date(pdfPrev.mes+"-01").toISOString().slice(0,7)===pdfPrev.mes?new Date(new Date(pdfPrev.mes+"-01").getFullYear(),new Date(pdfPrev.mes+"-01").getMonth()+1,0).getDate():"30"):"";
+    const toAdd=pdfPrev.results.filter(r=>r.known&&r.litros>0).map(r=>({
+      id:Date.now()+Math.random(),veiculoId:r.veiculoId,
+      data:lastDay,local:"Repsol Solred",
+      litros:r.litros,preco:r.preco,custo:r.custo,km:"",
+    }));
+    setGas(g=>[...g,...toAdd]);
+    setPdfPrev(null);
+  }
+
   return (
     <div>
       <h2 style={{fontSize:28,fontWeight:900,margin:"0 0 4px"}}>Gasóleo</h2>
@@ -1331,6 +1405,44 @@ function PgGas({gas,setGas,veic,tG}) {
         <Lbl t={["Litros Total",tL.toFixed(0)+" L",bl]}/>
         <Lbl t={["Preço Médio/L","€ "+(tL>0?tG/tL:0).toFixed(3),gn]}/>
       </div>
+      {/* Importação PDF Repsol */}
+      <div style={{...C,marginBottom:16,borderColor:"rgba(251,146,60,.3)"}}>
+        <div style={{fontWeight:700,fontSize:14,marginBottom:8,color:or}}>📄 Importar Fatura Repsol (PDF)</div>
+        <label style={{display:"inline-block",padding:"8px 16px",background:s2,border:`1px solid ${bd}`,borderRadius:7,cursor:pdfLoading?"not-allowed":"pointer",fontSize:13,color:pdfLoading?mu:tx,opacity:pdfLoading?.6:1}}>
+          {pdfLoading?"A processar PDF...":"Selecionar fatura .pdf"}
+          <input type="file" accept=".pdf" style={{display:"none"}} disabled={pdfLoading} onChange={e=>{const f=e.target.files?.[0];if(f)handlePDF(f);e.target.value="";}}/>
+        </label>
+        {pdfPrev && (
+          <div style={{marginTop:14}}>
+            <div style={{fontWeight:700,fontSize:13,marginBottom:6}}>
+              Período: <span style={{color:or}}>{pdfPrev.mes}</span> — {pdfPrev.results.length} registos ({pdfPrev.results.filter(r=>r.known).length} viaturas encontradas)
+            </div>
+            <div style={{overflowX:"auto",marginBottom:12}}>
+              <table style={{width:"100%",borderCollapse:"collapse",fontSize:12}}>
+                <Th cols={["Matrícula","Tipo","Litros","Custo (€)","€/L","Estado"]}/>
+                <tbody>
+                  {pdfPrev.results.map((r,i)=>(
+                    <tr key={i}>
+                      <td style={TD}><strong>{r.mat}</strong></td>
+                      <td style={TD}>{r.tipo}</td>
+                      <td style={TD}>{r.litros.toFixed(2)} L</td>
+                      <td style={{...TD,color:or,fontWeight:600}}>{euro(r.custo)}</td>
+                      <td style={TD}>€ {r.preco.toFixed(3)}</td>
+                      <td style={TD}>{r.known?<span style={{color:gn}}>✓ encontrada</span>:<span style={{color:rd}}>⚠ não encontrada</span>}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            {pdfPrev.results.some(r=>!r.known)&&<div style={{fontSize:11,color:or,marginBottom:8}}>⚠ Viaturas a vermelho não encontradas na frota — serão ignoradas.</div>}
+            <div style={{display:"flex",gap:10}}>
+              <button style={BA} onClick={importPDF}>✓ Importar {pdfPrev.results.filter(r=>r.known).length} registos</button>
+              <button style={{...BB,fontSize:12}} onClick={()=>setPdfPrev(null)}>Cancelar</button>
+            </div>
+          </div>
+        )}
+      </div>
+
       <div style={C}>
         <div style={{fontWeight:700,fontSize:14,marginBottom:12}}>Registar Abastecimento</div>
         <div style={G3}>
