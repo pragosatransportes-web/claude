@@ -1304,58 +1304,81 @@ function PgPort({port,setPort,veic,tP}) {
 function parseRepsolPDF(lines, veic) {
   const numPt=s=>parseFloat(String(s||"").replace(/\./g,"").replace(",","."))||0;
   const normMat=s=>s.replace(/[-\s]/g,"").toUpperCase();
-  const isVal=s=>{const t=s.trim();return t==="-"||/^[\d.]+,\d+$/.test(t)||/^\d+$/.test(t);};
 
-  // Período: "Periodo 01-05-2026 A 31-05-2026"
+  // Período
   let mes="";
-  const pl=lines.find(l=>/Periodo/i.test(l)&&/\d{2}-\d{2}-\d{4}/.test(l));
-  if(pl){const m=pl.match(/(\d{2})-(\d{2})-(\d{4})/);if(m)mes=`${m[3]}-${m[2]}`;}
+  for(const ln of lines){
+    const m=ln.match(/(\d{2})-(\d{2})-(\d{4})/);
+    if(m&&/Periodo/i.test(ln)){mes=`${m[3]}-${m[2]}`;break;}
+  }
+
+  // Encontrar "Resumo cart" e cabeçalho de produtos
+  const rsIdx=lines.findIndex(l=>/Resumo cart/i.test(l));
+  if(rsIdx<0)return{mes,results:[]};
+
+  // Cabeçalho de produtos: linha após Resumo que contém GASOLEO e TOTAL BONIF
+  // Ex: "EFITEC 95 PREM   GASOLEO   GASOLINA 95   TOTAL BONIF."
+  // Ex: "ADBLUE REPSOL   DIESEL E+10   GASOLEO   TOTAL BONIF."
+  let gasColIdx=2; // fallback
+  for(let j=rsIdx;j<Math.min(rsIdx+6,lines.length);j++){
+    if(/GASOLEO/.test(lines[j])&&/TOTAL BONIF/.test(lines[j])){
+      const cols=lines[j].split(/\s{2,}/).map(s=>s.trim()).filter(Boolean);
+      const idx=cols.findIndex(c=>/^GASOLEO/.test(c));
+      if(idx>=0)gasColIdx=idx;
+      break;
+    }
+  }
 
   const results=[];
-  let i=0;
-  while(i<lines.length){
-    const line=lines[i];
-    // Match VALOR line: contains "VALOR" and a plate-like token
-    // Card num may appear as "7078 8496 6678 0434" (with spaces) → strip leading digits/spaces
-    if(/\bVALOR\b/.test(line)&&!/NÚM|DESIGNA|DIESEL|ADBLUE|GASOL/.test(line)){
-      // Remove card number part (groups of 4 digits at start) and "VALOR"
-      const stripped=line.replace(/^[\d\s]{10,25}/,"").replace(/\bVALOR\b/,"").trim();
-      // First token is the plate (may have trailing designação code after space)
-      const mat=stripped.split(/\s+/)[0];
-      if(mat&&mat.length>=4&&/[A-Z0-9]/.test(mat)){
-        i++;
-        // Skip QUANTID line (may be ". QUANTID." or "0857 QUANTID.")
-        if(i<lines.length&&/QUANTID/.test(lines[i]))i++;
-        // Collect up to 8 values (one per line or all on one line)
-        const vals=[];
-        while(vals.length<8&&i<lines.length){
-          const v=lines[i].trim();
-          // If multiple values on one line (space-separated), split them
-          const parts=v.split(/\s+/);
-          if(parts.every(p=>isVal(p))){
-            vals.push(...parts.filter(p=>p));
-            i++;
-          } else if(isVal(v)){
-            vals.push(v);i++;
-          } else break;
-        }
-        if(vals.length>=6){
-          const veh=veic.find(x=>normMat(x.matricula)===normMat(mat));
-          const dcto={"GASOLEO":0.16,"DIESEL E+10":0.17,"ADBLUE":0.10};
-          [[4,5,"GASOLEO"],[2,3,"DIESEL E+10"],[0,1,"ADBLUE"]].forEach(([vi,qi,tipo])=>{
-            if(vi>=vals.length||qi>=vals.length)return;
-            const lit=numPt(vals[qi]);
-            const gross=numPt(vals[vi]);
-            const cst=Math.round((gross-lit*dcto[tipo])*100)/100;
-            if(lit>0)results.push({mat,mes,litros:lit,custo:cst,preco:lit>0?Math.round(cst/lit*1000)/1000:0,tipo,veiculoId:veh?.id||null,known:!!veh});
-          });
-        }
-        continue;
+
+  for(let i=rsIdx;i<lines.length;i++){
+    const line=lines[i].trim();
+
+    // Linha VALOR: começa com "VALOR " seguido de "-" ou dígito
+    // Ex: "VALOR - 745,43 89,57 63,81"
+    if(/^VALOR\s+[-\d]/.test(line)){
+      const valParts=line.replace(/^VALOR\s+/,"").split(/\s+/).filter(Boolean);
+      const gross=gasColIdx<valParts.length?numPt(valParts[gasColIdx]):0;
+
+      // Matrícula na linha seguinte: "[dígitos_cartão]   [MATRÍCULA]"
+      let mat="";
+      if(i+1<lines.length){
+        const nl=lines[i+1].trim();
+        // Remover número de cartão (sequência de dígitos no início)
+        mat=nl.replace(/^\d+\s+/,"").split(/\s+/)[0]||"";
       }
+      if(!mat||mat.length<4||!/[A-Z0-9]/.test(mat)){i++;continue;}
+
+      // Litros: procurar QUANTID nas próximas linhas
+      let litros=0;
+      for(let j=i+2;j<Math.min(i+7,lines.length);j++){
+        const qln=lines[j].trim();
+        if(!/QUANTID/.test(qln)&&j===i+2)continue; // skip card line if no QUANTID yet
+        if(/QUANTID/.test(qln)){
+          // Valor pode estar na mesma linha: "9065   QUANTID. 428,02"
+          let qText=qln.replace(/.*QUANTID\.\s*/,"").trim();
+          if(!qText||qText==="-"){
+            // Valor na linha seguinte
+            if(j+1<lines.length){
+              qText=lines[j+1].trim().replace(/^\d+\s+/,"");
+            }
+          }
+          // Primeiro valor numérico = litros de gasóleo
+          const qVals=qText.split(/\s+/).filter(v=>v!=="-"&&/[\d,]/.test(v));
+          if(qVals.length>0)litros=numPt(qVals[0]);
+          break;
+        }
+      }
+
+      if(gross>0){
+        const net=litros>0?Math.round((gross-litros*0.16)*100)/100:gross;
+        const veh=veic.find(x=>normMat(x.matricula)===normMat(mat));
+        results.push({mat,mes,litros,custo:net,preco:litros>0?Math.round(net/litros*1000)/1000:0,tipo:"GASOLEO",veiculoId:veh?.id||null,known:!!veh});
+      }
+      i++; // avança para não reprocessar linha da matrícula
     }
-    i++;
   }
-  return {mes,results};
+  return{mes,results};
 }
 
 function PgGas({gas,setGas,veic,tG}) {
