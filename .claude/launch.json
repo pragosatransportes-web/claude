@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "avarias-app",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["-y", "http-server", "C:\\Users\\ana.fialho\\manuten-o", "-p", "8123", "-c-1"],
+      "port": 8123
+    },
+    {
+      "name": "frota-app",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "C:\\Users\\ana.fialho\\frota-app", "run", "dev", "--", "--port", "8124"],
+      "port": 8124
+    }
+  ]
+}
