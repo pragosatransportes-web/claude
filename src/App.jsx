@@ -9,7 +9,7 @@ const tx="#e2e8f0",mu="#64748b";
 const euro=v=>"€ "+Number(v||0).toLocaleString("pt-PT",{minimumFractionDigits:2,maximumFractionDigits:2});
 const pct=v=>(Number(v||0)*100).toFixed(1)+"%";
 const nv=v=>parseFloat(String(v||"0").replace(",","."))||0;
-const drC=d=>d?nv(d.salario)+nv(d.subRef)+nv(d.subTranp)+nv(d.seguro):0;
+const drC=d=>d?nv(d.salario)+nv(d.despesas):0;
 
 const V0=[
   {id:1,numEquip:"70030",matricula:"BG52ZE",tipo:"Trator",marca:"Volvo",modelo:"T FH750",ano:2024,tara:10247,pbTotal:44000,categoria:"T. Especial"},
@@ -122,34 +122,34 @@ const V0=[
   {id:108,numEquip:"882",matricula:"AT06RJ",tipo:"Trator",marca:"MAN",modelo:"TGX 18.510",ano:2022,tara:8098,pbTotal:0,categoria:"T. Cisternas"},
 ];
 const D0=[
-  {id:1, nome:"Vitor Januário",      salario:0,subRef:0,subTranp:0,seguro:0,veiculoId:1,  ativo:true},
-  {id:2, nome:"Amilcar Carreira",    salario:0,subRef:0,subTranp:0,seguro:0,veiculoId:3,  ativo:true},
-  {id:3, nome:"David Nunes",         salario:0,subRef:0,subTranp:0,seguro:0,veiculoId:5,  ativo:true},
-  {id:4, nome:"Agostinho Louro",     salario:0,subRef:0,subTranp:0,seguro:0,veiculoId:26, ativo:true},
-  {id:5, nome:"Nuno Amaro",          salario:0,subRef:0,subTranp:0,seguro:0,veiculoId:28, ativo:true},
-  {id:6, nome:"Carmino Calixto",     salario:0,subRef:0,subTranp:0,seguro:0,veiculoId:30, ativo:true},
-  {id:7, nome:"Bernardo Fale",       salario:0,subRef:0,subTranp:0,seguro:0,veiculoId:36, ativo:true},
-  {id:8, nome:"Celso Cristo",        salario:0,subRef:0,subTranp:0,seguro:0,veiculoId:34, ativo:true},
-  {id:9, nome:"João Maximiano",      salario:0,subRef:0,subTranp:0,seguro:0,veiculoId:37, ativo:true},
-  {id:10,nome:"Francisco Leitão",    salario:0,subRef:0,subTranp:0,seguro:0,veiculoId:39, ativo:true},
-  {id:11,nome:"João Almeida",        salario:0,subRef:0,subTranp:0,seguro:0,veiculoId:41, ativo:true},
-  {id:12,nome:"José Miguel Ferreira",salario:0,subRef:0,subTranp:0,seguro:0,veiculoId:43, ativo:true},
-  {id:13,nome:"Andressa Oliveira",   salario:0,subRef:0,subTranp:0,seguro:0,veiculoId:45, ativo:true},
-  {id:14,nome:"Pedro Henriques",     salario:0,subRef:0,subTranp:0,seguro:0,veiculoId:46, ativo:true},
-  {id:15,nome:"Tó Luis",             salario:0,subRef:0,subTranp:0,seguro:0,veiculoId:48, ativo:true},
-  {id:16,nome:"Luis Bernardo",       salario:0,subRef:0,subTranp:0,seguro:0,veiculoId:53, ativo:true},
-  {id:17,nome:"Adriano Machado",     salario:0,subRef:0,subTranp:0,seguro:0,veiculoId:50, ativo:true},
-  {id:18,nome:"Carlos Cerejo",       salario:0,subRef:0,subTranp:0,seguro:0,veiculoId:42, ativo:true},
-  {id:19,nome:"Mário Gomes",         salario:0,subRef:0,subTranp:0,seguro:0,veiculoId:44, ativo:true},
-  {id:20,nome:"Cátia Romão",         salario:0,subRef:0,subTranp:0,seguro:0,veiculoId:52, ativo:true},
-  {id:21,nome:"Rúben Ferreira",      salario:0,subRef:0,subTranp:0,seguro:0,veiculoId:51, ativo:true},
-  {id:22,nome:"Alex",                salario:0,subRef:0,subTranp:0,seguro:0,veiculoId:55, ativo:true},
-  {id:23,nome:"José Pascoal",        salario:0,subRef:0,subTranp:0,seguro:0,veiculoId:19, ativo:true},
-  {id:24,nome:"Paulo Fritz",         salario:0,subRef:0,subTranp:0,seguro:0,veiculoId:8,  ativo:true},
-  {id:25,nome:"Tiago Faria",         salario:0,subRef:0,subTranp:0,seguro:0,veiculoId:9,  ativo:true},
-  {id:26,nome:"Adriano Sousa",       salario:0,subRef:0,subTranp:0,seguro:0,veiculoId:10, ativo:true},
-  {id:27,nome:"José Pereira",        salario:0,subRef:0,subTranp:0,seguro:0,veiculoId:12, ativo:true},
-  {id:28,nome:"Ricardo Machado",     salario:0,subRef:0,subTranp:0,seguro:0,veiculoId:13, ativo:true},
+  {id:1, nome:"Vitor Januário",      salario:0,despesas:0,ferias:0,veiculoId:1,  ativo:true},
+  {id:2, nome:"Amilcar Carreira",    salario:0,despesas:0,ferias:0,veiculoId:3,  ativo:true},
+  {id:3, nome:"David Nunes",         salario:0,despesas:0,ferias:0,veiculoId:5,  ativo:true},
+  {id:4, nome:"Agostinho Louro",     salario:0,despesas:0,ferias:0,veiculoId:26, ativo:true},
+  {id:5, nome:"Nuno Amaro",          salario:0,despesas:0,ferias:0,veiculoId:28, ativo:true},
+  {id:6, nome:"Carmino Calixto",     salario:0,despesas:0,ferias:0,veiculoId:30, ativo:true},
+  {id:7, nome:"Bernardo Fale",       salario:0,despesas:0,ferias:0,veiculoId:36, ativo:true},
+  {id:8, nome:"Celso Cristo",        salario:0,despesas:0,ferias:0,veiculoId:34, ativo:true},
+  {id:9, nome:"João Maximiano",      salario:0,despesas:0,ferias:0,veiculoId:37, ativo:true},
+  {id:10,nome:"Francisco Leitão",    salario:0,despesas:0,ferias:0,veiculoId:39, ativo:true},
+  {id:11,nome:"João Almeida",        salario:0,despesas:0,ferias:0,veiculoId:41, ativo:true},
+  {id:12,nome:"José Miguel Ferreira",salario:0,despesas:0,ferias:0,veiculoId:43, ativo:true},
+  {id:13,nome:"Andressa Oliveira",   salario:0,despesas:0,ferias:0,veiculoId:45, ativo:true},
+  {id:14,nome:"Pedro Henriques",     salario:0,despesas:0,ferias:0,veiculoId:46, ativo:true},
+  {id:15,nome:"Tó Luis",             salario:0,despesas:0,ferias:0,veiculoId:48, ativo:true},
+  {id:16,nome:"Luis Bernardo",       salario:0,despesas:0,ferias:0,veiculoId:53, ativo:true},
+  {id:17,nome:"Adriano Machado",     salario:0,despesas:0,ferias:0,veiculoId:50, ativo:true},
+  {id:18,nome:"Carlos Cerejo",       salario:0,despesas:0,ferias:0,veiculoId:42, ativo:true},
+  {id:19,nome:"Mário Gomes",         salario:0,despesas:0,ferias:0,veiculoId:44, ativo:true},
+  {id:20,nome:"Cátia Romão",         salario:0,despesas:0,ferias:0,veiculoId:52, ativo:true},
+  {id:21,nome:"Rúben Ferreira",      salario:0,despesas:0,ferias:0,veiculoId:51, ativo:true},
+  {id:22,nome:"Alex",                salario:0,despesas:0,ferias:0,veiculoId:55, ativo:true},
+  {id:23,nome:"José Pascoal",        salario:0,despesas:0,ferias:0,veiculoId:19, ativo:true},
+  {id:24,nome:"Paulo Fritz",         salario:0,despesas:0,ferias:0,veiculoId:8,  ativo:true},
+  {id:25,nome:"Tiago Faria",         salario:0,despesas:0,ferias:0,veiculoId:9,  ativo:true},
+  {id:26,nome:"Adriano Sousa",       salario:0,despesas:0,ferias:0,veiculoId:10, ativo:true},
+  {id:27,nome:"José Pereira",        salario:0,despesas:0,ferias:0,veiculoId:12, ativo:true},
+  {id:28,nome:"Ricardo Machado",     salario:0,despesas:0,ferias:0,veiculoId:13, ativo:true},
 ];
 const M0=[];
 const T0=[];
@@ -862,16 +862,19 @@ function PgConj({veic,mots,man,port,gas,conj,setConj}) {
   );
 }
 
+function normNome(s){return String(s||"").normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/\s+/g," ").trim().toUpperCase();}
+
 function PgMot({mots,setMots,veic,setVeic,tD}) {
-  const[f,setF]=useState({nome:"",salario:"",subRef:"",subTranp:"",seguro:"",veiculoId:""});
+  const[f,setF]=useState({nome:"",salario:"",despesas:"",ferias:"",veiculoId:""});
   const[tab,setTab]=useState("ativo");
   const[editId,setEditId]=useState(null);
   const[editF,setEditF]=useState(null);
+  const[salPrev,setSalPrev]=useState(null); // pré-visualização importação salários
 
   function add() {
     if(!f.nome.trim()) return;
-    setMots(d=>[...d,{id:Date.now(),nome:f.nome,salario:nv(f.salario),subRef:nv(f.subRef),subTranp:nv(f.subTranp),seguro:nv(f.seguro),veiculoId:Number(f.veiculoId)||null,ativo:true}]);
-    setF({nome:"",salario:"",subRef:"",subTranp:"",seguro:"",veiculoId:""});
+    setMots(d=>[...d,{id:Date.now(),nome:f.nome,salario:nv(f.salario),despesas:nv(f.despesas),ferias:nv(f.ferias),veiculoId:Number(f.veiculoId)||null,ativo:true}]);
+    setF({nome:"",salario:"",despesas:"",ferias:"",veiculoId:""});
   }
 
   function startEdit(d) {
@@ -901,16 +904,80 @@ function PgMot({mots,setMots,veic,setVeic,tD}) {
     <div>
       <h2 style={{fontSize:28,fontWeight:900,margin:"0 0 4px"}}>Motoristas</h2>
       <p style={{fontSize:13,color:mu,marginBottom:20}}>Gestão de motoristas e encargos mensais</p>
+      {/* Importação Excel */}
+      <div style={{...C,marginBottom:16,borderColor:"rgba(34,197,94,.3)"}}>
+        <div style={{fontWeight:700,fontSize:14,marginBottom:8,color:gn}}>📂 Importar Salários — Excel</div>
+        <label style={{display:"inline-block",padding:"8px 16px",background:s2,border:`1px solid ${bd}`,borderRadius:7,cursor:"pointer",fontSize:13,color:tx}}>
+          Selecionar ficheiro .xlsx
+          <input type="file" accept=".xlsx,.xls" style={{display:"none"}} onChange={e=>{
+            const file=e.target.files?.[0]; if(!file) return;
+            if(!window.XLSX){alert("Biblioteca XLSX não disponível.");return;}
+            const reader=new FileReader();
+            reader.onload=ev=>{
+              const wb=window.XLSX.read(ev.target.result,{type:"array"});
+              const ws=wb.Sheets[wb.SheetNames[0]];
+              const rows=window.XLSX.utils.sheet_to_json(ws,{header:1,defval:""});
+              // Cabeçalho na linha 3 (índice 3), dados a partir do índice 4
+              const data=rows.slice(4).filter(r=>r[1]);
+              const parsed=data.map(r=>({
+                nomeExcel:String(r[1]||"").trim(),
+                salario:parseFloat(String(r[9]||"0").replace(",","."))||0,
+                ferias:parseFloat(String(r[13]||"0").replace(",","."))||0,
+              })).filter(r=>r.nomeExcel && r.salario>0);
+              const result=parsed.map(r=>{
+                const mot=mots.find(m=>normNome(m.nome)===normNome(r.nomeExcel));
+                return {...r,motId:mot?.id||null,nomeApp:mot?.nome||null};
+              });
+              setSalPrev(result.length?result:null);
+              if(!result.length) alert("Nenhum registo válido encontrado.");
+            };
+            reader.readAsArrayBuffer(file);
+            e.target.value="";
+          }}/>
+        </label>
+        {salPrev && (
+          <div style={{marginTop:14}}>
+            <div style={{fontWeight:700,fontSize:13,marginBottom:8}}>
+              Pré-visualização — {salPrev.length} registos
+            </div>
+            <table style={{width:"100%",borderCollapse:"collapse",fontSize:12,marginBottom:12}}>
+              <Th cols={["Nome Excel","Nome App","Salário (€)","Saldo Férias","Estado"]}/>
+              <tbody>
+                {salPrev.map((r,i)=>(
+                  <tr key={i}>
+                    <td style={TD}>{r.nomeExcel}</td>
+                    <td style={TD}>{r.nomeApp||"—"}</td>
+                    <td style={{...TD,color:gn,fontWeight:600}}>{euro(r.salario)}</td>
+                    <td style={TD}>{r.ferias}</td>
+                    <td style={TD}>{r.motId?<span style={{color:gn}}>✓ encontrado</span>:<span style={{color:rd}}>⚠ não encontrado</span>}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            {salPrev.some(r=>!r.motId) && <div style={{fontSize:11,color:or,marginBottom:8}}>⚠ Motoristas a vermelho não foram encontrados e serão ignorados.</div>}
+            <div style={{display:"flex",gap:10}}>
+              <button style={BA} onClick={()=>{
+                setMots(ms=>ms.map(m=>{
+                  const r=salPrev.find(x=>x.motId===m.id);
+                  return r?{...m,salario:r.salario,ferias:r.ferias}:m;
+                }));
+                setSalPrev(null);
+              }}>✓ Importar {salPrev.filter(r=>r.motId).length} motoristas</button>
+              <button style={{...BB,fontSize:12}} onClick={()=>setSalPrev(null)}>Cancelar</button>
+            </div>
+          </div>
+        )}
+      </div>
+
       <div style={C}>
         <div style={{fontWeight:700,fontSize:14,marginBottom:12}}>Adicionar Motorista</div>
         <div style={G3}>
           <div><label style={LB}>Nome</label><input style={IN} value={f.nome} onChange={e=>setF({...f,nome:e.target.value})}/></div>
-          <div><label style={LB}>Salário Base (€)</label><input style={IN} type="number" value={f.salario} onChange={e=>setF({...f,salario:e.target.value})}/></div>
-          <div><label style={LB}>Sub. Refeição (€)</label><input style={IN} type="number" value={f.subRef} onChange={e=>setF({...f,subRef:e.target.value})}/></div>
+          <div><label style={LB}>Salário (€)</label><input style={IN} type="number" value={f.salario} onChange={e=>setF({...f,salario:e.target.value})}/></div>
+          <div><label style={LB}>Despesas (€)</label><input style={IN} type="number" value={f.despesas} onChange={e=>setF({...f,despesas:e.target.value})}/></div>
         </div>
-        <div style={G4}>
-          <div><label style={LB}>Sub. Transporte (€)</label><input style={IN} type="number" value={f.subTranp} onChange={e=>setF({...f,subTranp:e.target.value})}/></div>
-          <div><label style={LB}>Seguro Acid. (€)</label><input style={IN} type="number" value={f.seguro} onChange={e=>setF({...f,seguro:e.target.value})}/></div>
+        <div style={G3}>
+          <div><label style={LB}>Saldo Férias (dias)</label><input style={IN} type="number" value={f.ferias} onChange={e=>setF({...f,ferias:e.target.value})}/></div>
           <div><label style={LB}>Viatura</label><select style={SE} value={f.veiculoId} onChange={e=>setF({...f,veiculoId:e.target.value})}><option value="">-- nenhuma --</option>{veic.filter(v=>v.tipo==="Trator").map(v=><option key={v.id} value={v.id}>{v.matricula} ({v.numEquip})</option>)}</select></div>
           <div style={{display:"flex",alignItems:"flex-end"}}><button style={BA} onClick={add}>+ Adicionar</button></div>
         </div>
@@ -951,7 +1018,7 @@ function PgMot({mots,setMots,veic,setVeic,tD}) {
           </div>
         )}
         <table style={{width:"100%",borderCollapse:"collapse",fontSize:13}}>
-          <Th cols={["Nome","Viatura","Salário","Sub. Ref.","Sub. Transp.","Seguro","Total/mês","Estado",""]}/>
+          <Th cols={["Nome","Viatura","Salário","Despesas","Férias","Total/mês","Estado",""]}/>
           <tbody>
             {lista.map(d=>{
               const v=veic.find(x=>x.id===d.veiculoId);
@@ -961,9 +1028,8 @@ function PgMot({mots,setMots,veic,setVeic,tD}) {
                   <td style={TD}><strong>{d.nome}</strong></td>
                   <td style={TD}>{v?<span style={{fontSize:12}}>{v.matricula} <Tipo t={v.tipo}/></span>:"—"}</td>
                   <td style={TD}>{euro(d.salario)}</td>
-                  <td style={TD}>{euro(d.subRef)}</td>
-                  <td style={TD}>{euro(d.subTranp)}</td>
-                  <td style={TD}>{euro(d.seguro)}</td>
+                  <td style={TD}>{euro(d.despesas)}</td>
+                  <td style={TD}>{d.ferias||0} dias</td>
                   <td style={TD}><strong style={{color:gn}}>{euro(t)}</strong></td>
                   <td style={TD}>
                     <button onClick={()=>toggleAtivo(d.id)} style={{padding:"3px 10px",borderRadius:5,fontSize:10,fontWeight:700,cursor:"pointer",border:"none",background:d.ativo===false?"rgba(34,197,94,.15)":"rgba(239,68,68,.15)",color:d.ativo===false?gn:rd}}>
