@@ -1365,6 +1365,7 @@ function PgGas({gas,setGas,veic,tG}) {
   const[editF,setEditF]=useState(null);
   const[pdfPrev,setPdfPrev]=useState(null);
   const[pdfLoading,setPdfLoading]=useState(false);
+  const[pdfDebug,setPdfDebug]=useState(null);
   const tL=gas.reduce((s,g)=>s+nv(g.litros),0);
 
   function add() {
@@ -1404,7 +1405,8 @@ function PgGas({gas,setGas,veic,tG}) {
         });
       }
       const {mes,results}=parseRepsolPDF(allLines,veic);
-      if(!results.length){alert("Nenhum registo encontrado. Confirma que é uma fatura Repsol Solred.");setPdfLoading(false);return;}
+      setPdfDebug(allLines.slice(0,120));
+      if(!results.length){setPdfLoading(false);return;}
       setPdfPrev({mes,results});
     } catch(e){alert("Erro ao ler PDF: "+e.message);}
     setPdfLoading(false);
@@ -1437,6 +1439,17 @@ function PgGas({gas,setGas,veic,tG}) {
           {pdfLoading?"A processar PDF...":"Selecionar fatura .pdf"}
           <input type="file" accept=".pdf" style={{display:"none"}} disabled={pdfLoading} onChange={e=>{const f=e.target.files?.[0];if(f)handlePDF(f);e.target.value="";}}/>
         </label>
+        {pdfDebug && !pdfPrev && (
+          <div style={{marginTop:14,background:"#0f172a",borderRadius:7,padding:12,maxHeight:400,overflowY:"auto"}}>
+            <div style={{color:"#94a3b8",fontSize:11,marginBottom:6}}>DEBUG — primeiras {pdfDebug.length} linhas extraídas do PDF:</div>
+            {pdfDebug.map((l,i)=>(
+              <div key={i} style={{fontFamily:"monospace",fontSize:11,color:"#e2e8f0",whiteSpace:"pre-wrap",borderBottom:"1px solid #1e293b",padding:"2px 0"}}>
+                <span style={{color:"#475569",marginRight:8}}>{String(i).padStart(3,"0")}</span>{l}
+              </div>
+            ))}
+            <button style={{...BB,fontSize:11,marginTop:8}} onClick={()=>setPdfDebug(null)}>Fechar debug</button>
+          </div>
+        )}
         {pdfPrev && (
           <div style={{marginTop:14}}>
             <div style={{fontWeight:700,fontSize:13,marginBottom:6}}>
