@@ -1304,33 +1304,56 @@ function PgPort({port,setPort,veic,tP}) {
 function parseRepsolPDF(lines, veic) {
   const numPt=s=>parseFloat(String(s||"").replace(/\./g,"").replace(",","."))||0;
   const normMat=s=>s.replace(/[-\s]/g,"").toUpperCase();
+  const isVal=s=>{const t=s.trim();return t==="-"||/^[\d.]+,\d+$/.test(t)||/^\d+$/.test(t);};
+
+  // Período: "Periodo 01-05-2026 A 31-05-2026"
   let mes="";
-  const pl=lines.find(l=>l.match(/Periodo\s+\d{2}-\d{2}-\d{4}/));
+  const pl=lines.find(l=>/Periodo/i.test(l)&&/\d{2}-\d{2}-\d{4}/.test(l));
   if(pl){const m=pl.match(/(\d{2})-(\d{2})-(\d{4})/);if(m)mes=`${m[3]}-${m[2]}`;}
+
   const results=[];
   let i=0;
   while(i<lines.length){
-    const m=lines[i].match(/^(70\d{14})\s+(\S+)\s+VALOR$/);
-    if(m){
-      const mat=m[2];i++;
-      if(i<lines.length&&lines[i].trim().endsWith("QUANTID."))i++;
-      const vals=[];
-      while(vals.length<8&&i<lines.length){
-        const v=lines[i].trim();
-        if(v==="-"||/^[\d.,]+$/.test(v)){vals.push(v);i++;}
-        else break;
+    const line=lines[i];
+    // Match VALOR line: contains "VALOR" and a plate-like token
+    // Card num may appear as "7078 8496 6678 0434" (with spaces) → strip leading digits/spaces
+    if(/\bVALOR\b/.test(line)&&!/NÚM|DESIGNA|DIESEL|ADBLUE|GASOL/.test(line)){
+      // Remove card number part (groups of 4 digits at start) and "VALOR"
+      const stripped=line.replace(/^[\d\s]{10,25}/,"").replace(/\bVALOR\b/,"").trim();
+      // First token is the plate (may have trailing designação code after space)
+      const mat=stripped.split(/\s+/)[0];
+      if(mat&&mat.length>=4&&/[A-Z0-9]/.test(mat)){
+        i++;
+        // Skip QUANTID line (may be ". QUANTID." or "0857 QUANTID.")
+        if(i<lines.length&&/QUANTID/.test(lines[i]))i++;
+        // Collect up to 8 values (one per line or all on one line)
+        const vals=[];
+        while(vals.length<8&&i<lines.length){
+          const v=lines[i].trim();
+          // If multiple values on one line (space-separated), split them
+          const parts=v.split(/\s+/);
+          if(parts.every(p=>isVal(p))){
+            vals.push(...parts.filter(p=>p));
+            i++;
+          } else if(isVal(v)){
+            vals.push(v);i++;
+          } else break;
+        }
+        if(vals.length>=6){
+          const veh=veic.find(x=>normMat(x.matricula)===normMat(mat));
+          const dcto={"GASOLEO":0.16,"DIESEL E+10":0.17,"ADBLUE":0.10};
+          [[4,5,"GASOLEO"],[2,3,"DIESEL E+10"],[0,1,"ADBLUE"]].forEach(([vi,qi,tipo])=>{
+            if(vi>=vals.length||qi>=vals.length)return;
+            const lit=numPt(vals[qi]);
+            const gross=numPt(vals[vi]);
+            const cst=Math.round((gross-lit*dcto[tipo])*100)/100;
+            if(lit>0)results.push({mat,mes,litros:lit,custo:cst,preco:lit>0?Math.round(cst/lit*1000)/1000:0,tipo,veiculoId:veh?.id||null,known:!!veh});
+          });
+        }
+        continue;
       }
-      if(vals.length>=6){
-        const veh=veic.find(x=>normMat(x.matricula)===normMat(mat));
-        const dcto={"GASOLEO":0.16,"DIESEL E+10":0.17,"ADBLUE":0.10};
-        [[4,5,"GASOLEO"],[2,3,"DIESEL E+10"],[0,1,"ADBLUE"]].forEach(([vi,qi,tipo])=>{
-          const lit=numPt(vals[qi]);
-          const gross=numPt(vals[vi]);
-          const cst=Math.round((gross-lit*dcto[tipo])*100)/100;
-          if(lit>0) results.push({mat,mes,litros:lit,custo:cst,preco:lit>0?Math.round(cst/lit*1000)/1000:0,tipo,veiculoId:veh?.id||null,known:!!veh});
-        });
-      }
-    } else i++;
+    }
+    i++;
   }
   return {mes,results};
 }
