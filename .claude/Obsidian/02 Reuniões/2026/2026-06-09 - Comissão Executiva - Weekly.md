@@ -6,7 +6,7 @@ projeto:
 participantes:
   - "[[03 Pessoas/João Machado Pragosa]]"
   - "[[03 Pessoas/João Jordão]]"
-  - "[[03 Pessoas/Ana Fialho]]"
+  - "[[03 Pessoas/Rita Fialho]]"
 estado: concluída
 tags:
   - reunião
@@ -17,12 +17,12 @@ tags:
 # Reunião — Comissão Executiva Weekly · 2026-06-09
 
 ## Resumo Executivo
-Reunião semanal da comissão executiva. Apresentação de temas operacionais por [[03 Pessoas/Ana Fialho]]. Identificada ocorrência atípica com viatura AT60JF em operações de cisternas na Cimpor.
+Reunião semanal da comissão executiva. Apresentação de temas operacionais por [[03 Pessoas/Rita Fialho]]. Identificada ocorrência atípica com viatura AT60JF em operações de cisternas na Cimpor.
 
 ## Participantes
 - [[03 Pessoas/João Machado Pragosa]]
 - [[03 Pessoas/João Jordão]]
-- [[03 Pessoas/Ana Fialho]] *(apresentação)*
+- [[03 Pessoas/Rita Fialho]] *(apresentação)*
 
 ## Apresentação de Temas
 Apresentação feita por Ana Fialho.
