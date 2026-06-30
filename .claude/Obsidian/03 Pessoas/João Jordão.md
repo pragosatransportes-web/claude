@@ -1,9 +1,9 @@
 ---
 tipo: pessoa
 empresa: Construções Pragosa, S.A.
-cargo:
-email:
-telefone:
+cargo: Diretor Comercial Betão
+email: joao.jordao@pragosa.pt
+telefone: "966597846"
 tags:
   - pessoa
   - executivo

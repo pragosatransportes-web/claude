@@ -7,7 +7,7 @@ participantes:
   - "[[03 Pessoas/Rita Fialho]]"
   - "[[03 Pessoas/Gil Santos]]"
   - "[[03 Pessoas/Hugo Carreira]]"
-  - "[[03 Pessoas/Verónica]]"
+  - "[[03 Pessoas/Verónica Marques]]"
   - "[[03 Pessoas/João Silva]]"
   - "[[03 Pessoas/Joana Pragosa]]"
 periodicidade: quinzenal
@@ -106,7 +106,7 @@ Reunião quinzenal de acompanhamento operacional de obras, mobilizações, custo
 - [[03 Pessoas/Rita Fialho]] *(Logística)*
 - [[03 Pessoas/Gil Santos]] *(DTI)*
 - [[03 Pessoas/Hugo Carreira]] *(Controlo de Gestão)*
-- [[03 Pessoas/Verónica]] *(Controlo de Gestão)*
+- [[03 Pessoas/Verónica Marques]] *(Controlo de Gestão)*
 - [[03 Pessoas/João Silva]] *(Manutenção)*
 - [[03 Pessoas/Joana Pragosa]] *(Administração)*
 - Nuno Amado *(Armazém — QR contentores)*

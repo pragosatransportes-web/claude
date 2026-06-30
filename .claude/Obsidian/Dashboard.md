@@ -69,6 +69,14 @@ SORT prioridade DESC
 
 ---
 
+## Frota
+
+| Painel | Link |
+|------|------|
+| 🚛 Tacógrafos | [[08 Conhecimento/Frota/Dashboard Tacógrafos]] |
+
+---
+
 ## Tarefas Esta Semana
 
 ```tasks

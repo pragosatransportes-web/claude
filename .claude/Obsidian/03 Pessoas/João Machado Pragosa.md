@@ -1,9 +1,9 @@
 ---
 tipo: pessoa
 empresa: Construções Pragosa, S.A.
-cargo:
-email:
-telefone:
+cargo: Administração
+email: joao.m.pragosa@pragosa.pt
+telefone: "963615376"
 tags:
   - pessoa
   - executivo
