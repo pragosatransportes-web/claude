@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cruzamento de Horas Extra · PHC × Excel</title>
+<script src="xlsx.full.min.js"></script>
+<style>
+  :root{
+    --bg:#f4f6f9; --card:#ffffff; --ink:#1f2933; --muted:#66727f; --line:#e2e8f0;
+    --brand:#0b5394; --brand2:#0a4574;
+    --ok:#e6f4ea; --ok-ink:#1a7f37; --ok-line:#bfe3c9;
+    --warn:#fff4e0; --warn-ink:#b06a00; --warn-line:#ffdca8;
+    --bad:#fde8e8; --bad-ink:#c0392b; --bad-line:#f7c6c2;
+    --info:#eef2ff; --info-ink:#3949ab; --info-line:#c9d3f7;
+    --zero:#f7f9fb;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:"Segoe UI",system-ui,Arial,sans-serif;background:var(--bg);color:var(--ink);font-size:14px}
+  header{background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;padding:20px 26px}
+  header h1{margin:0;font-size:20px;font-weight:650}
+  header p{margin:4px 0 0;opacity:.85;font-size:13px}
+  .wrap{max-width:1280px;margin:0 auto;padding:22px 26px 60px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px;margin-bottom:20px;box-shadow:0 1px 2px rgba(16,24,40,.04)}
+  h2{font-size:15px;margin:0 0 14px;font-weight:650}
+  .drops{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:760px){.drops{grid-template-columns:1fr}}
+  .drop{border:2px dashed var(--line);border-radius:10px;padding:20px;text-align:center;cursor:pointer;transition:.15s;background:#fbfcfe}
+  .drop:hover,.drop.hot{border-color:var(--brand);background:#f0f6fc}
+  .drop .tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--brand);background:#e8f1fb;padding:3px 9px;border-radius:20px;margin-bottom:8px}
+  .drop .fn{font-weight:600;margin-top:6px;word-break:break-all}
+  .drop .hint{color:var(--muted);font-size:12px;margin-top:6px}
+  .drop.loaded{border-style:solid;border-color:var(--ok-line);background:var(--ok)}
+  .drop.loaded .tag{color:var(--ok-ink);background:#d5ebdb}
+  .drop.err{border-style:solid;border-color:var(--bad-line);background:var(--bad)}
+  .opts{display:flex;flex-wrap:wrap;gap:18px;align-items:center;margin-top:16px}
+  .opt{display:flex;align-items:center;gap:8px}
+  .opt input{width:16px;height:16px;accent-color:var(--brand)}
+  .btn{background:var(--brand);color:#fff;border:0;border-radius:8px;padding:10px 18px;font-size:14px;font-weight:600;cursor:pointer}
+  .btn:disabled{background:#b8c2cc;cursor:not-allowed}
+  .btn.ghost{background:#eef2f6;color:var(--ink);border:1px solid var(--line)}
+  .period{font-size:12px;color:var(--muted);margin-top:10px}
+  .kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+  @media(max-width:860px){.kpis{grid-template-columns:repeat(2,1fr)}}
+  .kpi{background:#fbfcfe;border:1px solid var(--line);border-radius:10px;padding:14px}
+  .kpi .n{font-size:24px;font-weight:700}
+  .kpi .l{font-size:12px;color:var(--muted);margin-top:2px}
+  .kpi.bad .n{color:var(--bad-ink)} .kpi.warn .n{color:var(--warn-ink)} .kpi.ok .n{color:var(--ok-ink)}
+  .toolbar{display:flex;flex-wrap:wrap;gap:14px;align-items:center;margin-bottom:12px}
+  .toolbar input[type=text]{padding:8px 12px;border:1px solid var(--line);border-radius:8px;font-size:13px;min-width:200px}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line)}
+  th{background:#f8fafc;font-weight:650;font-size:12px;color:var(--muted);position:sticky;top:0;cursor:pointer;user-select:none;white-space:nowrap}
+  th.num,td.num{text-align:right}
+  tr.emp{cursor:pointer}
+  tr.emp:hover{background:#f6f9fc}
+  .badge{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;white-space:nowrap}
+  .b-both{background:var(--ok);color:var(--ok-ink)}
+  .b-phc{background:var(--bad);color:var(--bad-ink)}
+  .b-man{background:var(--warn);color:var(--warn-ink)}
+  .dif-pos{color:var(--ok-ink);font-weight:600}.dif-neg{color:var(--bad-ink);font-weight:600}.dif-zero{color:var(--muted)}
+  .pill{display:inline-block;min-width:20px;text-align:center;font-weight:700;font-size:11px;padding:2px 6px;border-radius:6px}
+  .pill.warn{background:var(--warn);color:var(--warn-ink)}
+  .detail td{background:#fbfcfe;padding:14px 16px}
+  .cr{display:inline-block;width:12px;color:var(--muted);font-size:10px}
+  tr.open{background:#eef4fb}
+  .dhead{font-weight:650;font-size:13px;margin:0 0 8px;display:flex;align-items:center;gap:8px}
+  .divtbl{width:auto;min-width:440px;border:1px solid var(--line);border-radius:8px;overflow:hidden;margin:0 0 16px}
+  .divtbl th{position:static;background:#eef2f6;cursor:default;color:var(--ink);font-size:11px}
+  .divtbl th,.divtbl td{padding:6px 12px;font-size:12px}
+  .divtbl tr:last-child td{border-bottom:0}
+  .divtbl td.est-phc{color:var(--bad-ink);font-weight:600}
+  .divtbl td.est-man{color:var(--warn-ink);font-weight:600}
+  .divtbl td.est-dif{color:var(--warn-ink)}
+  .nodiv{color:var(--ok-ink);font-size:12px;font-weight:600;margin-bottom:12px}
+  .daygrid{display:flex;flex-wrap:wrap;gap:5px}
+  .day{width:52px;border:1px solid var(--line);border-radius:7px;padding:5px 3px;text-align:center;font-size:11px;background:var(--zero);position:relative}
+  .day .d{font-weight:700;font-size:11px;color:var(--muted)}
+  .day .wd{font-size:9px;color:#9aa5b1;text-transform:uppercase}
+  .day .v{margin-top:3px;font-size:11px;font-weight:600;line-height:1.25}
+  .day.weekend{background:#f0f2f6}
+  .day.match{background:var(--ok);border-color:var(--ok-line)}
+  .day.diff{background:var(--warn);border-color:var(--warn-line)}
+  .day.onlyphc{background:var(--bad);border-color:var(--bad-line)}
+  .day.onlyman{background:var(--warn);border-color:var(--warn-line)}
+  .day .st{display:block;font-size:9px;font-weight:700;color:var(--info-ink)}
+  .legend{display:flex;flex-wrap:wrap;gap:14px;font-size:12px;color:var(--muted);margin-top:6px}
+  .legend span{display:inline-flex;align-items:center;gap:6px}
+  .sw{width:14px;height:14px;border-radius:4px;border:1px solid var(--line);display:inline-block}
+  .hidden{display:none}
+  .empty{color:var(--muted);text-align:center;padding:30px}
+  .err-msg{background:var(--bad);color:var(--bad-ink);border:1px solid var(--bad-line);border-radius:8px;padding:12px;font-size:13px;margin-top:12px}
+  small.mono{font-family:Consolas,monospace;color:var(--muted)}
+</style>
+</head>
+<body>
+<header>
+  <h1>Cruzamento de Horas Extra</h1>
+  <p>PHC × Excel manual · mês de vencimento de dia 21 a 20 · Construções Pragosa</p>
+</header>
+<div class="wrap">
+
+  <div class="card">
+    <h2>1 · Carregar ficheiros</h2>
+    <div class="drops">
+      <div class="drop" id="dropPHC" data-slot="phc">
+        <span class="tag">Ficheiro PHC</span>
+        <div>Arrasta ou clica para escolher</div>
+        <div class="hint">Exportação do PHC (uma folha, colunas Dia21…Dia20)</div>
+        <div class="fn" id="fnPHC"></div>
+      </div>
+      <div class="drop" id="dropMAN" data-slot="man">
+        <span class="tag">Ficheiro Excel manual</span>
+        <div>Arrasta ou clica para escolher</div>
+        <div class="hint">Mapa semanal preenchido à mão (várias folhas por semana)</div>
+        <div class="fn" id="fnMAN"></div>
+      </div>
+    </div>
+    <input type="file" id="fileInput" accept=".xlsx,.xls" class="hidden" multiple>
+    <div class="opts">
+      <label class="opt"><input type="checkbox" id="optSat" checked> Contar horas de sábado/domingo (H.TRAB.) como extra</label>
+    </div>
+    <div class="period" id="periodInfo"></div>
+    <div style="margin-top:16px;display:flex;gap:10px">
+      <button class="btn" id="btnRun" disabled>Cruzar dados</button>
+      <button class="btn ghost" id="btnReset">Limpar</button>
+    </div>
+    <div id="loadErr"></div>
+  </div>
+
+  <div id="results" class="hidden">
+    <div class="card">
+      <h2>2 · Resumo</h2>
+      <div class="kpis" id="kpis"></div>
+      <div class="legend" style="margin-top:16px">
+        <span><i class="sw" style="background:var(--ok)"></i> Igual nos dois</span>
+        <span><i class="sw" style="background:var(--warn)"></i> Valores diferentes</span>
+        <span><i class="sw" style="background:var(--bad)"></i> Só num ficheiro</span>
+        <span><i class="sw" style="background:var(--zero)"></i> Sem horas</span>
+        <span><i class="sw" style="background:var(--info)"></i> FE = Férias · BM = Baixa médica</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>3 · Por funcionário</h2>
+      <div class="toolbar">
+        <input type="text" id="search" placeholder="Procurar nº ou nome…">
+        <label class="opt"><input type="checkbox" id="onlyDiff"> Mostrar só com divergências</label>
+        <button class="btn ghost" id="btnCsv">Exportar divergências (CSV)</button>
+        <span style="color:var(--muted);font-size:12px">Clica numa linha para ver o detalhe por dia</span>
+      </div>
+      <div style="overflow:auto;max-height:70vh">
+        <table id="tbl">
+          <thead><tr>
+            <th data-k="num">Nº</th>
+            <th data-k="name">Nome</th>
+            <th data-k="pres">Presença</th>
+            <th class="num" data-k="phc">Tot. PHC</th>
+            <th class="num" data-k="man">Tot. Manual</th>
+            <th class="num" data-k="dif">Dif.</th>
+            <th class="num" data-k="ndiff">Dias div.</th>
+            <th class="num" data-k="noct">H. not. (man)</th>
+          </tr></thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* ---------- utilidades ---------- */
+const $=s=>document.querySelector(s);
+const norm=s=>String(s??"").normalize("NFD").replace(/[̀-ͯ]/g,"").toUpperCase().trim();
+const WEEKDAYS=["SEGUNDA","TERCA","QUARTA","QUINTA","SEXTA","SABADO","DOMINGO","SEG","TER","QUA","QUI","SEX","SAB","DOM"];
+const isWeekdayLabel=v=>{const n=norm(v);return WEEKDAYS.some(w=>n===w||n.startsWith(w));};
+const isSatSun=v=>{const n=norm(v);return n.startsWith("SAB")||n.startsWith("DOM");};
+const WDN=["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"];
+const pad=n=>String(n).padStart(2,"0");
+const iso=dt=>`${dt.getFullYear()}-${pad(dt.getMonth()+1)}-${pad(dt.getDate())}`;
+const ddmm=isoStr=>{const[y,m,d]=isoStr.split("-");return `${d}-${m}`;};
+
+const state={phcWB:null,manWB:null,phcName:"",manName:"",result:null,sort:{k:"ndiff",dir:-1}};
+
+/* ---------- carregar ficheiros ---------- */
+function readFile(file){
+  return new Promise((res,rej)=>{
+    const r=new FileReader();
+    r.onload=e=>{try{res(XLSX.read(e.target.result,{type:"array"}));}catch(err){rej(err);}};
+    r.onerror=rej; r.readAsArrayBuffer(file);
+  });
+}
+// deteta se um workbook é PHC ou manual
+function classify(wb){
+  for(const sn of wb.SheetNames){
+    const rows=XLSX.utils.sheet_to_json(wb.Sheets[sn],{header:1,raw:true,blankrows:false}).slice(0,8);
+    for(const row of rows) for(const c of row){
+      if(typeof c==="string"&&/^dia\s?\d{1,2}$/i.test(c.trim())) return "phc";
+    }
+    for(const row of rows) for(const c of row){ if(isWeekdayLabel(c)) return "man"; }
+  }
+  return "?";
+}
+async function handleFiles(files){
+  $("#loadErr").innerHTML="";
+  for(const f of files){
+    try{
+      const wb=await readFile(f);
+      const kind=classify(wb);
+      if(kind==="phc"){state.phcWB=wb;state.phcName=f.name;markDrop("phc",f.name);}
+      else if(kind==="man"){state.manWB=wb;state.manName=f.name;markDrop("man",f.name);}
+      else{ // não identificado: preenche o slot vazio
+        if(!state.phcWB){state.phcWB=wb;state.phcName=f.name;markDrop("phc",f.name);}
+        else{state.manWB=wb;state.manName=f.name;markDrop("man",f.name);}
+      }
+    }catch(err){ $("#loadErr").innerHTML=`<div class="err-msg">Erro ao ler <b>${f.name}</b>: ${err.message}</div>`; }
+  }
+  $("#btnRun").disabled=!(state.phcWB&&state.manWB);
+  showPeriod();
+}
+function markDrop(slot,name){
+  const el=slot==="phc"?$("#dropPHC"):$("#dropMAN");
+  el.classList.add("loaded"); el.classList.remove("err");
+  (slot==="phc"?$("#fnPHC"):$("#fnMAN")).textContent="✓ "+name;
+}
+
+/* ---------- período (dia 21 → 20) ---------- */
+function detectStart(){
+  // procura a data 'Datad' (início do período) no ficheiro PHC
+  if(state.phcWB){
+    const ws=state.phcWB.Sheets[state.phcWB.SheetNames[0]];
+    const rows=XLSX.utils.sheet_to_json(ws,{header:1,raw:false,blankrows:false});
+    let dcol=-1,hr=-1;
+    for(let i=0;i<Math.min(rows.length,10);i++){
+      for(let j=0;j<rows[i].length;j++){ if(norm(rows[i][j])==="DATAD"){dcol=j;hr=i;} }
+      if(dcol>=0)break;
+    }
+    if(dcol>=0){
+      for(let i=hr+1;i<rows.length;i++){
+        const v=rows[i]&&rows[i][dcol];
+        const m=String(v||"").match(/(\d{1,2})[.\/-](\d{1,2})[.\/-](\d{2,4})/);
+        if(m){let y=+m[3];if(y<100)y+=2000;return{y,m:+m[2]};}
+      }
+    }
+  }
+  return null;
+}
+function dateForDay(day,start){
+  // dia >=21 pertence ao mês inicial; dia <=20 ao mês seguinte
+  let y=start.y,m=start.m;
+  if(day<=20){m++;if(m>12){m=1;y++;}}
+  return new Date(y,m-1,day);
+}
+function periodDates(start){
+  const out=[];const d=new Date(start.y,start.m-1,21);
+  const end=dateForDay(20,start);
+  while(d<=end){out.push(iso(d));d.setDate(d.getDate()+1);}
+  return out;
+}
+function showPeriod(){
+  const s=detectStart();
+  if(s){const a=new Date(s.y,s.m-1,21),b=dateForDay(20,s);
+    $("#periodInfo").innerHTML=`Período detetado: <b>${iso(a).split("-").reverse().join("-")}</b> a <b>${iso(b).split("-").reverse().join("-")}</b> (dia 21 → 20).`;}
+  else $("#periodInfo").textContent="";
+}
+
+/* ---------- parsing PHC ---------- */
+function parsePHC(wb,start){
+  const ws=wb.Sheets[wb.SheetNames[0]];
+  const rows=XLSX.utils.sheet_to_json(ws,{header:1,raw:true,blankrows:false});
+  let hr=-1,numCol=-1,nameCol=-1;const dayCols={};
+  for(let i=0;i<rows.length;i++){
+    const row=rows[i];let hits=0;
+    for(let j=0;j<row.length;j++){
+      const m=String(row[j]??"").trim().match(/^dia\s?(\d{1,2})$/i);
+      if(m){dayCols[j]=+m[1];hits++;}
+      const n=norm(row[j]);
+      if(n==="NO"||n==="N"||n==="Nº"||n==="NUM"||n==="Nº FUNC."||n==="NUMERO")numCol=j;
+      if(n==="NOME")nameCol=j;
+    }
+    if(hits>3){hr=i;break;}
+  }
+  if(numCol<0)numCol=1; if(nameCol<0)nameCol=2;
+  const emp=new Map();
+  for(let i=hr+1;i<rows.length;i++){
+    const row=rows[i];const num=row[numCol];
+    if(typeof num!=="number"&&!(typeof num==="string"&&/^\d+$/.test(num)))continue;
+    const id=String(num).trim();
+    const rec=emp.get(id)||{num:id,name:String(row[nameCol]||"").trim(),days:{},noct:0};
+    for(const j in dayCols){
+      const v=row[j];
+      if(typeof v==="number"&&v)rec.days[iso(dateForDay(dayCols[j],start))]=(rec.days[iso(dateForDay(dayCols[j],start))]||0)+v;
+    }
+    emp.set(id,rec);
+  }
+  return emp;
+}
+
+/* ---------- parsing Excel manual ---------- */
+function parseManual(wb,start,countSat){
+  const emp=new Map();
+  for(const sn of wb.SheetNames){
+    const rows=XLSX.utils.sheet_to_json(wb.Sheets[sn],{header:1,raw:true,blankrows:false});
+    // linha dos dias da semana
+    let wr=-1;const dayCols=[],satCols=new Set();
+    for(let i=0;i<Math.min(rows.length,8);i++){
+      let hits=0;const tmp=[];
+      for(let j=0;j<rows[i].length;j++){ if(isWeekdayLabel(rows[i][j])){tmp.push(j);hits++;} }
+      if(hits>=2){wr=i;tmp.forEach(j=>{dayCols.push(j);if(isSatSun(rows[i][j]))satCols.add(j);});break;}
+    }
+    if(wr<0)continue;
+    // linha dos números do dia (acima da linha dos dias da semana)
+    let dnr=-1,best=0;
+    for(let i=0;i<wr;i++){let c=0;for(const j of dayCols)if(typeof rows[i][j]==="number")c++;if(c>best){best=c;dnr=i;}}
+    const dayNum={};if(dnr>=0)for(const j of dayCols){const v=rows[dnr][j];if(typeof v==="number")dayNum[j]=v;}
+    // colunas nº e nome + coluna horas noturnas
+    let numCol=-1,nameCol=-1,noctCol=-1;
+    for(let i=0;i<=wr+1;i++){for(let j=0;j<(rows[i]||[]).length;j++){
+      const n=norm(rows[i][j]);
+      if(n.includes("FUNC"))numCol=j;
+      if(n==="NOME")nameCol=j;
+      if(n.includes("20:30")||n.includes("2030")||(n.includes("NOT")&&n.includes("HORA")))noctCol=j;
+    }}
+    if(numCol<0)numCol=1; if(nameCol<0)nameCol=2;
+    // dados
+    for(let i=wr+1;i<rows.length;i++){
+      const row=rows[i];const num=row[numCol];
+      if(typeof num!=="number"&&!(typeof num==="string"&&/^\d+$/.test(num)))continue;
+      const id=String(num).trim();
+      const rec=emp.get(id)||{num:id,name:String(row[nameCol]||"").trim(),days:{},status:{},noct:0};
+      if(!rec.name)rec.name=String(row[nameCol]||"").trim();
+      if(noctCol>=0&&typeof row[noctCol]==="number")rec.noct+=row[noctCol];
+      for(const j of dayCols){
+        const day=dayNum[j];if(!day)continue;
+        const key=iso(dateForDay(day,start));
+        const htrab=row[j], hext=row[j+1];
+        // marcadores FE / BM
+        [htrab,hext].forEach(v=>{const s=norm(v);if(s==="FE"||s==="BM")rec.status[key]=s;});
+        let add=0;
+        if(typeof hext==="number")add+=hext;
+        if(countSat&&satCols.has(j)&&typeof htrab==="number")add+=htrab;
+        if(add)rec.days[key]=(rec.days[key]||0)+add;
+      }
+      emp.set(id,rec);
+    }
+  }
+  return emp;
+}
+
+/* ---------- cruzamento ---------- */
+function crossCheck(){
+  const start=detectStart();
+  if(!start){$("#loadErr").innerHTML=`<div class="err-msg">Não consegui detetar o período (coluna <b>Datad</b>) no ficheiro PHC. Confirma que carregaste o ficheiro certo.</div>`;return;}
+  const dates=periodDates(start);
+  const countSat=$("#optSat").checked;
+  const phc=parsePHC(state.phcWB,start);
+  const man=parseManual(state.manWB,start,countSat);
+  const ids=[...new Set([...phc.keys(),...man.keys()])].sort((a,b)=>(+a||0)-(+b||0));
+  const rows=[];let totPHC=0,totMAN=0,totDiffDays=0;
+  for(const id of ids){
+    const p=phc.get(id),m=man.get(id);
+    const name=(m&&m.name)||(p&&p.name)||"";
+    const pd=(p&&p.days)||{},md=(m&&m.days)||{},st=(m&&m.status)||{};
+    let tp=0,tm=0,ndiff=0;const cells=[];
+    for(const d of dates){
+      const pv=pd[d]||0,mv=md[d]||0;tp+=pv;tm+=mv;
+      let cls="zero";
+      if(pv||mv){
+        if(pv&&mv)cls=(pv===mv)?"match":"diff";
+        else if(pv)cls="onlyphc";
+        else cls="onlyman";
+      }
+      if(pv!==mv)ndiff++;
+      cells.push({d,pv,mv,cls,st:st[d]||""});
+    }
+    totPHC+=tp;totMAN+=tm;totDiffDays+=ndiff;
+    const pres=(p&&m)?"both":(p?"phc":"man");
+    rows.push({num:id,name,pres,phc:tp,man:tm,dif:tm-tp,ndiff,noct:(m&&m.noct)||0,cells});
+  }
+  state.result={rows,dates,start,totPHC,totMAN,totDiffDays,
+    onlyPHC:rows.filter(r=>r.pres==="phc").length,onlyMAN:rows.filter(r=>r.pres==="man").length};
+  render();
+}
+
+/* ---------- render ---------- */
+function render(){
+  const r=state.result;$("#results").classList.remove("hidden");
+  $("#kpis").innerHTML=`
+    <div class="kpi"><div class="n">${r.rows.length}</div><div class="l">Funcionários</div></div>
+    <div class="kpi"><div class="n">${fmt(r.totPHC)}</div><div class="l">Total h. extra PHC</div></div>
+    <div class="kpi"><div class="n">${fmt(r.totMAN)}</div><div class="l">Total h. extra manual</div></div>
+    <div class="kpi ${r.totDiffDays?'warn':'ok'}"><div class="n">${r.totDiffDays}</div><div class="l">Dias divergentes</div></div>
+    <div class="kpi ${(r.onlyPHC+r.onlyMAN)?'bad':'ok'}"><div class="n">${r.onlyPHC+r.onlyMAN}</div><div class="l">Só num ficheiro (${r.onlyPHC} PHC · ${r.onlyMAN} Excel)</div></div>`;
+  renderTable();
+}
+function fmt(n){return (Math.round(n*100)/100).toString().replace(".",",")+"h";}
+function renderTable(){
+  const r=state.result;const q=norm($("#search").value);const only=$("#onlyDiff").checked;
+  let rows=r.rows.filter(x=>!q||norm(x.num).includes(q)||norm(x.name).includes(q));
+  if(only)rows=rows.filter(x=>x.ndiff>0||x.pres!=="both");
+  const {k,dir}=state.sort;
+  rows.sort((a,b)=>{let va=a[k],vb=b[k];if(typeof va==="string"){va=norm(va);vb=norm(vb);}return va<vb?-dir:va>vb?dir:0;});
+  const tb=$("#tbody");tb.innerHTML="";
+  if(!rows.length){tb.innerHTML=`<tr><td colspan="8" class="empty">Sem resultados.</td></tr>`;return;}
+  for(const x of rows){
+    const tr=document.createElement("tr");tr.className="emp";
+    const presB=x.pres==="both"?`<span class="badge b-both">Ambos</span>`
+      :x.pres==="phc"?`<span class="badge b-phc">Só PHC</span>`:`<span class="badge b-man">Só Excel</span>`;
+    const difc=x.dif>0?"dif-pos":x.dif<0?"dif-neg":"dif-zero";
+    const difs=(x.dif>0?"+":"")+fmt(x.dif);
+    tr.innerHTML=`<td><span class="cr">▸</span> <small class="mono">${x.num}</small></td><td>${x.name}</td><td>${presB}</td>
+      <td class="num">${fmt(x.phc)}</td><td class="num">${fmt(x.man)}</td>
+      <td class="num ${difc}">${difs}</td>
+      <td class="num">${x.ndiff?`<span class="pill warn">${x.ndiff}</span>`:"0"}</td>
+      <td class="num">${x.noct?fmt(x.noct):"—"}</td>`;
+    tr.onclick=()=>toggleDetail(tr,x);
+    tb.appendChild(tr);
+  }
+}
+function motivoFor(c){
+  let txt,cls;
+  if(c.pv&&!c.mv){txt="Só no PHC";cls="est-phc";}
+  else if(c.mv&&!c.pv){txt="Só no Excel manual";cls="est-man";}
+  else{txt="Valores diferentes";cls="est-dif";}
+  if(c.st)txt+=` · ${c.st==="FE"?"Férias":"Baixa médica"}`;
+  return {txt,cls};
+}
+function toggleDetail(tr,x){
+  const cr=tr.querySelector(".cr");
+  if(tr.nextElementSibling&&tr.nextElementSibling.classList.contains("detail")){
+    tr.nextElementSibling.remove();tr.classList.remove("open");if(cr)cr.textContent="▸";return;
+  }
+  tr.classList.add("open");if(cr)cr.textContent="▾";
+  const det=document.createElement("tr");det.className="detail";
+  const td=document.createElement("td");td.colSpan=8;
+
+  // 1) tabela focada só nas divergências
+  const divs=x.cells.filter(c=>c.pv!==c.mv);
+  let html="";
+  if(divs.length){
+    html+=`<div class="dhead">⚠ Divergências deste funcionário <span class="pill warn">${divs.length}</span></div>`;
+    html+=`<table class="divtbl"><thead><tr><th>Data</th><th>Dia</th><th class="num">PHC</th><th class="num">Manual</th><th class="num">Dif.</th><th>Motivo</th></tr></thead><tbody>`;
+    for(const c of divs){
+      const dt=new Date(c.d);const wd=WDN[dt.getDay()];
+      const mv=motivoFor(c);
+      const dif=(c.mv-c.pv>0?"+":"")+(c.mv-c.pv);
+      html+=`<tr><td>${ddmm(c.d)}</td><td>${wd}</td><td class="num">${c.pv||0}</td><td class="num">${c.mv||0}</td><td class="num">${dif}</td><td class="${mv.cls}">${mv.txt}</td></tr>`;
+    }
+    html+=`</tbody></table>`;
+  }else{
+    html+=`<div class="nodiv">✓ Sem divergências — todos os dias coincidem entre PHC e Excel.</div>`;
+  }
+
+  // 2) grelha visual do mês completo (contexto)
+  html+=`<div class="dhead" style="font-weight:600;color:var(--muted)">Mapa do mês (PHC / Manual)</div><div class="daygrid">`;
+  for(const c of x.cells){
+    const dt=new Date(c.d);const wd=WDN[dt.getDay()];const weekend=(dt.getDay()===0||dt.getDay()===6);
+    const cls=["day",c.cls];if(weekend&&c.cls==="zero")cls.push("weekend");
+    const title=`${ddmm(c.d)} ${wd} · PHC: ${c.pv}h · Manual: ${c.mv}h${c.st?" · "+c.st:""}`;
+    html+=`<div class="${cls.join(" ")}" title="${title}">
+      <div class="d">${c.d.split("-")[2]}</div><div class="wd">${wd}</div>
+      <div class="v">${c.pv||"·"} / ${c.mv||"·"}</div>${c.st?`<span class="st">${c.st}</span>`:""}</div>`;
+  }
+  html+=`</div><div style="font-size:11px;color:var(--muted);margin-top:8px">Cada célula: <b>PHC / Manual</b> (horas). Cores: verde = igual · laranja = diferente · vermelho = só PHC.</div>`;
+  td.innerHTML=html;det.appendChild(td);tr.after(det);
+}
+
+/* ---------- CSV ---------- */
+function exportCSV(){
+  const r=state.result;const L=["Nº;Nome;Data;Dia;PHC;Manual;Diferença;Motivo"];
+  for(const x of r.rows)for(const c of x.cells){
+    if(c.pv===c.mv)continue;
+    const dt=new Date(c.d);const wd=WDN[dt.getDay()];
+    const motivo=motivoFor(c).txt;
+    L.push([x.num,`"${x.name}"`,ddmm(c.d),wd,c.pv,c.mv,c.mv-c.pv,`"${motivo}"`].join(";"));
+  }
+  const blob=new Blob(["﻿"+L.join("\r\n")],{type:"text/csv;charset=utf-8"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);
+  a.download="divergencias_horas_extra.csv";a.click();
+}
+
+/* ---------- eventos ---------- */
+["dropPHC","dropMAN"].forEach(id=>{
+  const el=$("#"+id);
+  el.onclick=()=>{$("#fileInput").dataset.target=el.dataset.slot;$("#fileInput").click();};
+  el.ondragover=e=>{e.preventDefault();el.classList.add("hot");};
+  el.ondragleave=()=>el.classList.remove("hot");
+  el.ondrop=e=>{e.preventDefault();el.classList.remove("hot");if(e.dataTransfer.files.length)handleFiles(e.dataTransfer.files);};
+});
+$("#fileInput").onchange=e=>{if(e.target.files.length)handleFiles(e.target.files);e.target.value="";};
+$("#btnRun").onclick=crossCheck;
+$("#btnReset").onclick=()=>location.reload();
+$("#search").oninput=renderTable;
+$("#onlyDiff").onchange=renderTable;
+$("#btnCsv").onclick=exportCSV;
+document.querySelectorAll("#tbl thead th").forEach(th=>{
+  th.onclick=()=>{const k=th.dataset.k;if(state.sort.k===k)state.sort.dir*=-1;else state.sort={k,dir:1};renderTable();};
+});
+// drag & drop em qualquer parte da página
+window.addEventListener("dragover",e=>e.preventDefault());
+window.addEventListener("drop",e=>e.preventDefault());
+</script>
+</body>
+</html>

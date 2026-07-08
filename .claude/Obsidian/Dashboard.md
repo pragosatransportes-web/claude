@@ -66,6 +66,7 @@ SORT prioridade DESC
 | Combustíveis e Mobilizações | [[06 Operações/Combustíveis, Custos e Mobilizações]] |
 | Manutenções | [[06 Operações/Manutenções]] |
 | KPIs | [[06 Operações/KPIs]] |
+| 👥 Equipa Logística | [[06 Operações/Equipa Logística]] |
 
 ---
 

@@ -12,6 +12,12 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["--prefix", "C:\\Users\\ana.fialho\\frota-app", "run", "dev", "--", "--port", "8124"],
       "port": 8124
+    },
+    {
+      "name": "horas-extra",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "http.server", "8777", "-d", "Cruzamento Horas Extra"],
+      "port": 8777
     }
   ]
 }

@@ -77,11 +77,11 @@ Reunião da Comissão Executiva sobre produção e expedição de inertes por pe
 
 ## Tarefas
 - [ ] **[[03 Pessoas/Ricardo Santos|Ricardo Santos]]** — apresentar **projeção de blocos de Moleanos até ao final do ano**.
-- [ ] **[[03 Pessoas/Ricardo Santos|Ricardo Santos]]** — aprovisionar **2 motovibradores** em stock.
+- [x] **[[03 Pessoas/Ricardo Santos|Ricardo Santos]]** — aprovisionar **2 motovibradores** em stock. *(fechada na [[02 Reuniões/2026/2026-07-06 - CE Indústria|CE de 06/07]])*
 - [ ] **Comercial** — rever **estratégia de fornecimentos do Cano** e avaliar rentabilidade de cortar/manter durante a paragem (13–15 jul) e stocks mínimos.
 - [ ] **Comercial** — apresentar **projeção de consumos de britas a 6 meses** (Sobrissul).
 - [ ] Planear paragem do **Cano** (13–15 jul — lavagem + central de britagem) minimizando risco de rutura de Brita 1.
-- [ ] Acompanhar retoma de produção de **Santa Eulália** (prevista 5ª feira) e reforço de TV 1ª / Pó de Pedra.
+- [x] Acompanhar retoma de produção de **Santa Eulália** (prevista 5ª feira) e reforço de TV 1ª / Pó de Pedra.
 - [ ] Resolver ausência de reforço de **Enrocamento** em Vale Rodrigues (troca de martelos prevista para agosto).
 
 ## Próximos Passos
