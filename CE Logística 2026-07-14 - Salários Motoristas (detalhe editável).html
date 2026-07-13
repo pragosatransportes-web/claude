@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Salários Motoristas · Detalhe editável · CE Logística 14/07/2026</title>
+<style>
+  :root{
+    --bg:#0f172a; --ink:#1e293b; --muted:#64748b; --line:#e2e8f0;
+    --accent:#ea8a1e; --accent-d:#c9741a; --blue:#2563eb; --green:#16a34a; --red:#dc2626;
+    --paper:#fff; --soft:#f5f7fa;
+    --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--font);color:var(--ink);background:#eef2f7;line-height:1.45}
+  .wrap{max-width:1080px;margin:0 auto;padding:26px 20px 80px}
+  header.top{background:linear-gradient(150deg,#0f172a,#16294a);color:#e8eefc;border-radius:18px;padding:26px 28px;box-shadow:0 16px 40px rgba(15,23,42,.25)}
+  .logo{display:inline-flex;align-items:center;gap:11px;font-weight:800;letter-spacing:.02em;font-size:15px}
+  .logo .mk{width:34px;height:34px;border-radius:8px;background:var(--accent);display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px}
+  header.top h1{font-size:30px;font-weight:800;letter-spacing:-.01em;margin:14px 0 6px}
+  header.top p{color:#b9c8e6;font-size:15px}
+  .toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+  .btn{border:none;cursor:pointer;font-weight:700;font-size:13px;padding:9px 15px;border-radius:10px;background:rgba(255,255,255,.14);color:#e8eefc;transition:.15s}
+  .btn:hover{background:rgba(255,255,255,.24)}
+  .btn.solid{background:var(--accent);color:#fff}
+  .btn.solid:hover{background:var(--accent-d)}
+
+  .legend{display:flex;gap:16px;flex-wrap:wrap;margin:18px 2px 6px;font-size:12.5px;color:var(--muted)}
+  .legend b{color:var(--ink)}
+  .note{background:#fff7ec;border:1px solid #f6d9ad;border-radius:12px;padding:12px 15px;font-size:13.5px;margin:14px 0 22px;color:#7c4a12}
+
+  .grouphead{display:flex;align-items:center;gap:12px;margin:26px 4px 12px}
+  .grouphead .bar{width:5px;height:26px;border-radius:4px;background:var(--accent)}
+  .grouphead h2{font-size:20px;font-weight:800}
+  .grouphead.blue .bar{background:var(--blue)}
+  .grouphead .sub{font-size:13px;color:var(--muted);font-weight:600}
+
+  .cat{background:var(--paper);border:1px solid var(--line);border-radius:14px;margin-bottom:12px;overflow:hidden;box-shadow:0 3px 10px rgba(15,23,42,.04)}
+  .cathead{display:flex;align-items:center;gap:14px;padding:16px 20px;cursor:pointer;user-select:none;transition:background .15s}
+  .cathead:hover{background:#fafbfd}
+  .cathead .caret{transition:transform .25s;color:var(--muted);font-size:15px;flex:0 0 auto}
+  .cat.open .caret{transform:rotate(90deg)}
+  .cathead .name{font-weight:800;font-size:16px;flex:1}
+  .cathead .name small{display:block;font-weight:600;color:var(--muted);font-size:12px;margin-top:1px}
+  .badge{font-variant-numeric:tabular-nums;font-weight:800;font-size:15px;padding:5px 12px;border-radius:9px;background:var(--soft)}
+  .badge.delta{font-size:12.5px;padding:5px 10px;border-radius:8px}
+  .badge.up{background:#dcfce7;color:#166534}.badge.down{background:#fee2e2;color:#991b1b}.badge.zero{background:#eef2f7;color:#64748b}
+  .catbody{display:none;padding:0 20px 20px}
+  .cat.open .catbody{display:block}
+
+  .tiers{display:flex;gap:7px;flex-wrap:wrap;margin:6px 0 16px}
+  .tier{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 13px;font-size:12.5px;font-weight:700;cursor:pointer;color:var(--muted);transition:.15s}
+  .tier:hover{border-color:var(--accent)}
+  .tier.on{background:var(--accent);border-color:var(--accent);color:#fff}
+
+  table.det{width:100%;border-collapse:collapse}
+  table.det th,table.det td{padding:9px 10px;border-bottom:1px solid var(--line);font-size:14px}
+  table.det th{font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);font-weight:700;text-align:right}
+  table.det th:first-child{text-align:left}
+  table.det td.lbl{text-align:left;font-weight:600}
+  table.det td.lbl small{color:var(--muted);font-weight:600;margin-left:6px;font-size:12px}
+  table.det td.val{text-align:right;font-variant-numeric:tabular-nums;color:var(--ink)}
+  table.det td.prop{text-align:right}
+  table.det input{width:118px;text-align:right;font-variant-numeric:tabular-nums;font-family:inherit;font-size:14px;padding:6px 9px;border:1.5px solid var(--line);border-radius:8px;background:#fff;transition:.15s}
+  table.det input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(234,138,30,.15)}
+  table.det input.changed{border-color:var(--accent);background:#fff7ec;font-weight:700}
+  tr.total td{border-top:2px solid #cbd5e1;border-bottom:none;padding-top:13px;font-weight:800;font-size:15.5px}
+  tr.total td.lbl{font-size:14px}
+  .deltacell{font-size:12.5px;font-weight:800}
+  .deltacell.up{color:var(--green)}.deltacell.down{color:var(--red)}.deltacell.zero{color:var(--muted)}
+  .inc{display:block;font-size:11.5px;font-weight:700;margin-top:2px}
+  .inc.up{color:var(--red)} .inc.down{color:#2563eb} .inc.zero{color:#94a3b8}
+  .prognote{font-size:11.5px;color:var(--muted);margin:-4px 0 8px}
+  .prognote b{color:var(--red)}
+  tr.rowhl td{background:#ecfdf3}
+  tr.rowhl td.lbl{box-shadow:inset 4px 0 0 var(--green);font-weight:800}
+  tr.rowhl input{border-color:var(--green)}
+  tr.rowhl input.changed{background:#dcfce7;border-color:var(--green);color:#166534}
+  .newtag{display:inline-block;font-size:9.5px;font-weight:800;letter-spacing:.04em;color:#fff;background:var(--green);padding:2px 6px;border-radius:5px;margin-left:8px;vertical-align:middle}
+  .rowact{display:flex;justify-content:flex-end;margin-top:12px;gap:8px}
+  .minibtn{border:1px solid var(--line);background:#fff;color:var(--muted);font-weight:700;font-size:12px;padding:7px 12px;border-radius:8px;cursor:pointer}
+  .minibtn:hover{border-color:var(--accent);color:var(--accent-d)}
+  .colnew{color:var(--accent-d)}
+  .tag{display:inline-block;font-size:10.5px;font-weight:800;letter-spacing:.04em;color:#fff;background:var(--green);padding:2px 7px;border-radius:6px;vertical-align:middle;margin-left:8px}
+  @media(max-width:640px){table.det input{width:88px} .wrap{padding:14px 12px 60px}}
+  @media print{.toolbar,.tiers,.rowact,.note{display:none}.cat{break-inside:avoid}.catbody{display:block!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="logo"><span class="mk">▲</span> CONSTRUÇÕES PRAGOSA · Logística</div>
+    <h1>Salários dos Motoristas · detalhe por componente</h1>
+    <p>CE Logística · 14 de Julho de 2026 · com João Machado Pragosa — abrir cada categoria, ver os componentes e propor alterações na coluna editável.</p>
+    <div class="toolbar">
+      <button class="btn solid" onclick="setAll(true)">Expandir tudo</button>
+      <button class="btn" onclick="setAll(false)">Fechar tudo</button>
+      <button class="btn" onclick="resetAll()">Repor valores</button>
+      <button class="btn" onclick="window.print()">Imprimir / PDF</button>
+    </div>
+  </header>
+
+  <div class="legend">
+    <span><b>Atual</b> — valor da tabela em vigor</span>
+    <span><b class="colnew">Proposto</b> — editável, recalcula o total ao vivo</span>
+    <span><b>Δ</b> — diferença vs. atual</span>
+  </div>
+  <div class="note">💡 As alterações são locais (não ficam gravadas). Trocar de escalão/ano preserva o que já editaste nesse escalão. Use "Imprimir / PDF" para registar as propostas da reunião.</div>
+
+  <div id="app"></div>
+</div>
+
+<script>
+const CATS = [
+  // ===== CONSTRUÇÕES PRAGOSA (CPSA) =====
+  { id:'cpsa_34', group:'CPSA', name:'3/4 Eixos', tierType:'Escalão de antiguidade',
+    tiers:['≤1 ano','>1–2 anos','>2–4 anos','>4–10 anos','≥10 anos'],
+    comps:[
+      {l:'Ordenado base', vals:[978,978,1083,1083,1083]},
+      {l:'IHT', n:'40%', vals:[391.20,391.20,433.20,433.20,433.20]},
+      {l:'Prémio de Disponibilidade', n:'10%', vals:[97.80,97.80,108.30,108.30,108.30]},
+      {l:'Prémio Manutenção Equipamento', n:'10%', vals:[97.80,97.80,108.30,108.30,108.30]},
+      {l:'Prémio de Equipamento', vals:[0,50,100,150,200]},
+      {l:'Subsídio de Refeição', n:'8,36€/dia', vals:[183.92,183.92,183.92,183.92,183.92]},
+    ]},
+  { id:'cpsa_semi', group:'CPSA', name:'Semi-reboques', tierType:'Escalão de antiguidade',
+    tiers:['≤1 ano','>1–2 anos','>2–4 anos','>4–10 anos','≥10 anos'],
+    comps:[
+      {l:'Ordenado base', vals:[1078,1128,1183,1183,1183]},
+      {l:'IHT', n:'40%', vals:[431.20,451.20,473.20,473.20,473.20]},
+      {l:'Prémio de Disponibilidade', n:'10%', vals:[107.80,112.80,118.30,118.30,118.30]},
+      {l:'Prémio Manutenção Equipamento', n:'10%', vals:[107.80,112.80,118.30,118.30,118.30]},
+      {l:'Prémio de Equipamento', vals:[0,0,100,150,200]},
+      {l:'Subsídio de Refeição', n:'8,36€/dia', vals:[183.92,183.92,183.92,183.92,183.92]},
+    ]},
+  { id:'cpsa_cola', group:'CPSA', name:'Carro cola', tierType:'Escalão de antiguidade',
+    tiers:['≤1 ano','>1–2 anos','>2–4 anos','>4–10 anos','≥10 anos'],
+    comps:[
+      {l:'Ordenado base', vals:[978,978,1083,1083,1083]},
+      {l:'IHT', n:'20%', vals:[195.60,195.60,216.60,216.60,216.60]},
+      {l:'Prémio de Disponibilidade', n:'10%', vals:[97.80,97.80,108.30,108.30,108.30]},
+      {l:'Prémio Manutenção Equipamento', n:'10%', vals:[97.80,97.80,108.30,108.30,108.30]},
+      {l:'Prémio de Equipamento', vals:[100,100,150,200,300]},
+      {l:'Subsídio de Refeição', n:'8,36€/dia', vals:[183.92,183.92,183.92,183.92,183.92]},
+    ]},
+  { id:'cpsa_pm', group:'CPSA', name:'Porta-máquinas sem articulado', tierType:'Escalão de antiguidade',
+    tiers:['≤1 ano','>1–2 anos','>2–4 anos','>4–10 anos','≥10 anos'],
+    comps:[
+      {l:'Ordenado base', vals:[978,978,1083,1083,1083]},
+      {l:'IHT', n:'20%', vals:[195.60,195.60,216.60,216.60,216.60]},
+      {l:'Prémio de Disponibilidade', n:'10%', vals:[97.80,97.80,108.30,108.30,108.30]},
+      {l:'Prémio Manutenção Equipamento', n:'10%', vals:[97.80,97.80,108.30,108.30,108.30]},
+      {l:'Prémio Transporte Sem Articulado', n:'fixo', vals:[100,150,150,150,150]},
+      {l:'Prémio de Equipamento', vals:[0,0,0,150,250]},
+      {l:'Subsídio de Refeição', n:'8,36€/dia', vals:[183.92,183.92,183.92,183.92,183.92]},
+    ]},
+  { id:'cpsa_te', group:'CPSA', name:'Transporte Especial Articulado (grua e porta-máquinas)', sub:'com carta de articulado', tierType:'Escalão de antiguidade',
+    tiers:['≤1 ano','>1–2 anos','>2–4 anos','>4–10 anos','≥10 anos'],
+    comps:[
+      {l:'Ordenado base', vals:[1078,1228,1233,1375,1375]},
+      {l:'IHT', n:'40%', vals:[431.20,491.20,493.20,550,550]},
+      {l:'Prémio de Disponibilidade', n:'10%', vals:[107.80,122.80,123.30,137.50,137.50]},
+      {l:'Prémio Manutenção Equipamento', n:'10%', vals:[107.80,122.80,123.30,137.50,137.50]},
+      {l:'Prémio de Equipamento', n:'fixo', vals:[100,150,200,250,300]},
+      {l:'Subsídio de Alimentação', n:'8,36€/dia', vals:[183.92,183.92,183.92,183.92,183.92]},
+    ]},
+  // ===== PRAGOSA TRANSPORTES (PTSA) =====
+  { id:'ptsa_cist', group:'PTSA', name:'Motorista Cisternas', tierType:'Ano',
+    tiers:['1º ano','2º ano','3º ano'],
+    comps:[
+      {l:'Ordenado base', vals:[1014.02,1058.00,1110.74]},
+      {l:'Compensação salarial', n:'2%', vals:[20.28,21.16,22.21]},
+      {l:'Prestação Pecuniária', n:'48%', vals:[496.47,518.00,543.82]},
+      {l:'Prémio Manutenção Equipamento', n:'10%', vals:[101.40,105.80,111.07]},
+      {l:'Prémio de Disponibilidade', n:'10%', vals:[101.40,105.80,111.07]},
+      {l:'Prémio de Produção', n:'máx. 200€', vals:[200,200,200]},
+      {l:'Subsídio de Refeição', n:'8,36€/dia', vals:[183.92,183.92,183.92]},
+    ]},
+  { id:'ptsa_agreg', group:'PTSA', name:'Motorista Agregados', tierType:'Ano',
+    tiers:['1º ano e seguintes'],
+    comps:[
+      {l:'Ordenado base', vals:[1014.02]},
+      {l:'Compensação salarial', n:'2%', vals:[20.28]},
+      {l:'Prestação Pecuniária', n:'48%', vals:[496.47]},
+      {l:'Prémio Manutenção Equipamento', n:'10%', vals:[101.40]},
+      {l:'Prémio de Disponibilidade', n:'10%', vals:[101.40]},
+      {l:'Subsídio de Refeição', n:'8,36€/dia', vals:[183.92]},
+    ]},
+  { id:'ptsa_pm', group:'PTSA', name:'Porta-Máquinas / Estrado', isNew:true, tierType:'Ano',
+    tiers:['1º ano','2º ano','3º ano'],
+    comps:[
+      {l:'Ordenado base', vals:[1014.02,1014.02,1014.02]},
+      {l:'Compensação salarial', n:'2%', vals:[20.28,20.28,20.28]},
+      {l:'Prestação Pecuniária', n:'48%', vals:[496.47,496.47,496.47]},
+      {l:'Prémio Manutenção Equipamento', n:'10%', vals:[101.40,101.40,101.40]},
+      {l:'Prémio de Disponibilidade', n:'10%', vals:[101.40,101.40,101.40]},
+      {l:'Prémio de Produção', n:'máx. 200€', vals:[200,200,200]},
+      {l:'Prémio de Transporte Especial / Porta-Máquinas', n:'atual 0 € · proposta', hl:true, vals:[0,0,0], prop:[100,200,300]},
+      {l:'Subsídio de Refeição', n:'8,36€/dia', vals:[183.92,183.92,183.92]},
+    ]},
+];
+
+const fmt = n => (Math.round(n*100)/100).toLocaleString('pt-PT',{minimumFractionDigits:2,maximumFractionDigits:2});
+const parse = s => { const v=parseFloat(String(s).replace(/[^\d,.-]/g,'').replace(/\.(?=\d{3}\b)/g,'').replace(',', '.')); return isNaN(v)?0:v; };
+const active = {};      // catId -> tier index
+const edits = {};       // catId|tier -> [proposto...]
+
+function ekey(id,t){return id+'|'+t;}
+function getEdit(cat,t){
+  const k=ekey(cat.id,t);
+  if(!edits[k]) edits[k]=cat.comps.map(c=> c.prop ? c.prop[t] : c.vals[t]);
+  return edits[k];
+}
+function atualTotal(cat,t){return cat.comps.reduce((s,c)=>s+c.vals[t],0);}
+function propTotal(cat,t){return getEdit(cat,t).reduce((s,v)=>s+v,0);}
+
+function deltaBadge(d){
+  const cls = Math.abs(d)<0.005?'zero':(d>0?'up':'down');
+  const sign = d>0?'+':(d<0?'−':'');
+  return `<span class="badge delta ${cls}">${sign}${fmt(Math.abs(d))} €</span>`;
+}
+
+function incSpan(diff){
+  if(diff===null||diff===undefined) return '';
+  const cls=Math.abs(diff)<0.005?'zero':(diff>0?'up':'down');
+  const sign=diff>0?'+':(diff<0?'−':'');
+  return `<span class="inc ${cls}">(${sign}${fmt(Math.abs(diff))})</span>`;
+}
+function renderBody(cat){
+  const t = active[cat.id] ?? 0;
+  const ed = getEdit(cat,t);
+  const edPrev = t>0 ? getEdit(cat,t-1) : null;
+  const tiers = cat.tiers.map((lb,i)=>`<div class="tier ${i===t?'on':''}" onclick="pickTier('${cat.id}',${i})">${lb}</div>`).join('');
+  const rows = cat.comps.map((c,ci)=>{
+    const a=c.vals[t], p=ed[ci], changed=Math.abs(p-a)>0.005;
+    const aInc = t>0 ? a - c.vals[t-1] : null;
+    const pInc = t>0 ? p - edPrev[ci] : null;
+    return `<tr class="${c.hl?'rowhl':''}">
+      <td class="lbl">${c.l}${c.hl?'<span class="newtag">NOVA RUBRICA</span>':''}${c.n?` <small>${c.n}</small>`:''}</td>
+      <td class="val">${fmt(a)} €${incSpan(aInc)}</td>
+      <td class="prop"><input inputmode="decimal" class="${changed?'changed':''}" value="${fmt(p)}"
+           onchange="editVal('${cat.id}',${t},${ci},this.value)"
+           onfocus="this.select()">${incSpan(pInc)}</td>
+    </tr>`;
+  }).join('');
+  const at=atualTotal(cat,t), pt=propTotal(cat,t);
+  const atInc = t>0 ? at - atualTotal(cat,t-1) : null;
+  const ptInc = t>0 ? pt - propTotal(cat,t-1) : null;
+  const pn = t>0 ? `<p class="prognote">Entre ( ) <b>a vermelho</b>: aumento face ao escalão anterior (${cat.tiers[t-1]} → ${cat.tiers[t]}).</p>` : '';
+  return `
+    <div class="tiers"><span style="font-size:12px;color:var(--muted);font-weight:700;align-self:center;margin-right:4px">${cat.tierType}:</span>${tiers}</div>
+    ${pn}
+    <table class="det">
+      <thead><tr><th>Componente</th><th>Atual</th><th class="colnew">Proposto</th></tr></thead>
+      <tbody>
+        ${rows}
+        <tr class="total">
+          <td class="lbl">Vencimento Bruto</td>
+          <td class="val">${fmt(at)} €${incSpan(atInc)}</td>
+          <td class="prop">${fmt(pt)} €${incSpan(ptInc)}</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="rowact"><button class="minibtn" onclick="resetTier('${cat.id}',${t})">↺ Repor este escalão</button></div>`;
+}
+
+function refreshHead(cat){
+  const t=active[cat.id]??0, d=propTotal(cat,t)-atualTotal(cat,t);
+  const el=document.querySelector(`#head_${cat.id} .headbadges`);
+  if(el) el.innerHTML = `<span class="badge">${fmt(propTotal(cat,t))} €</span>${Math.abs(d)>0.005?deltaBadge(d):''}`;
+}
+
+function editVal(id,t,ci,raw){
+  const cat=CATS.find(c=>c.id===id);
+  getEdit(cat,t)[ci]=parse(raw);
+  document.querySelector(`#body_${id}`).innerHTML=renderBody(cat);
+  refreshHead(cat);
+}
+function pickTier(id,i){ active[id]=i; const cat=CATS.find(c=>c.id===id);
+  document.querySelector(`#body_${id}`).innerHTML=renderBody(cat); refreshHead(cat); }
+function resetTier(id,t){ delete edits[ekey(id,t)]; const cat=CATS.find(c=>c.id===id);
+  document.querySelector(`#body_${id}`).innerHTML=renderBody(cat); refreshHead(cat); }
+function toggle(id){ const c=document.getElementById('cat_'+id); c.classList.toggle('open'); }
+function setAll(open){ CATS.forEach(c=>document.getElementById('cat_'+c.id).classList.toggle('open',open)); }
+function resetAll(){ for(const k in edits) delete edits[k];
+  CATS.forEach(cat=>{ const b=document.querySelector(`#body_${cat.id}`); if(b){b.innerHTML=renderBody(cat); refreshHead(cat);} }); }
+
+function build(){
+  const groups=[
+    {key:'CPSA', title:'Construções Pragosa (CPSA)', sub:'empresa de construção · regime Base + IHT', cls:''},
+    {key:'PTSA', title:'Pragosa Transportes (PTSA)', sub:'empresa transportadora · regime do setor dos transportes', cls:'blue'},
+  ];
+  let html='';
+  groups.forEach(g=>{
+    html+=`<div class="grouphead ${g.cls}"><span class="bar"></span><h2>${g.title}</h2><span class="sub">— ${g.sub}</span></div>`;
+    CATS.filter(c=>c.group===g.key).forEach(cat=>{
+      active[cat.id]=0;
+      const at=atualTotal(cat,0);
+      html+=`
+      <div class="cat" id="cat_${cat.id}">
+        <div class="cathead" id="head_${cat.id}" onclick="toggle('${cat.id}')">
+          <span class="caret">▶</span>
+          <span class="name">${cat.name}${cat.isNew?'<span class="tag">NOVA</span>':''}${cat.sub?`<small>${cat.sub}</small>`:''}</span>
+          <span class="headbadges"><span class="badge">${fmt(at)} €</span></span>
+        </div>
+        <div class="catbody"><div id="body_${cat.id}">${renderBody(cat)}</div></div>
+      </div>`;
+    });
+  });
+  document.getElementById('app').innerHTML=html;
+}
+build();
+</script>
+</body>
+</html>

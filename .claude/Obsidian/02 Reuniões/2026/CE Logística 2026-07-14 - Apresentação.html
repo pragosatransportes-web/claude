@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CE Logística · 14 Julho 2026 · Construções Pragosa</title>
+<style>
+  :root{
+    --bg:#0f172a; --bg2:#111f3a;
+    --ink:#1e293b; --muted:#64748b; --line:#e2e8f0;
+    --accent:#ea8a1e; --accent-d:#c9741a; --accent2:#0ea5e9;
+    --green:#16a34a; --amber:#d97706; --red:#dc2626; --blue:#2563eb;
+    --paper:#ffffff; --soft:#f5f7fa;
+    --shadow:0 20px 60px rgba(15,23,42,.18);
+    --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:var(--font); color:var(--ink);
+    background:#0b1120;
+    display:flex; align-items:center; justify-content:center;
+    overflow:hidden;
+  }
+  #deck{
+    position:relative; width:100vw; height:100vh;
+    max-width:1280px; max-height:800px;
+  }
+  .slide{
+    position:absolute; inset:0;
+    padding:56px 68px 72px;
+    background:var(--paper);
+    display:none; flex-direction:column;
+    opacity:0; transform:translateY(14px);
+    transition:opacity .45s ease, transform .45s ease;
+    overflow:hidden;
+  }
+  .slide.active{display:flex; opacity:1; transform:none}
+  .slide.dark{background:linear-gradient(150deg,var(--bg) 0%,var(--bg2) 60%,#16294a 100%); color:#e8eefc}
+  .slide.dark .muted{color:#9fb2d4}
+
+  /* header */
+  .kicker{font-size:13px; letter-spacing:.16em; text-transform:uppercase; color:var(--accent); font-weight:700}
+  .slide.dark .kicker{color:var(--accent)}
+  h1{font-size:52px; line-height:1.05; font-weight:800; letter-spacing:-.02em; margin:6px 0}
+  h2{font-size:34px; line-height:1.1; font-weight:800; letter-spacing:-.01em; margin:2px 0 4px}
+  h3{font-size:19px; font-weight:700}
+  .muted{color:var(--muted)}
+  .lead{font-size:19px; color:var(--muted); max-width:56ch; line-height:1.5}
+  .slide-head{border-bottom:2px solid var(--line); padding-bottom:14px; margin-bottom:22px; flex:0 0 auto}
+  .slide.dark .slide-head{border-color:rgba(255,255,255,.14)}
+  .body{flex:1 1 auto; min-height:0; overflow:auto}
+  .body::-webkit-scrollbar{width:8px} .body::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:8px}
+
+  /* utilities */
+  .row{display:flex; gap:20px}
+  .col{flex:1}
+  .grid-3{display:grid; grid-template-columns:repeat(3,1fr); gap:18px}
+  .grid-2{display:grid; grid-template-columns:1fr 1fr; gap:20px}
+  .chip{display:inline-flex; align-items:center; gap:7px; padding:4px 12px; border-radius:999px; font-size:13px; font-weight:600; background:var(--soft); color:var(--ink)}
+  .chip.g{background:#dcfce7;color:#166534} .chip.y{background:#fef3c7;color:#92400e}
+  .chip.b{background:#dbeafe;color:#1e40af} .chip.n{background:#e2e8f0;color:#475569}
+  .dot{width:9px;height:9px;border-radius:50%}
+  .card{background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:22px; box-shadow:0 4px 14px rgba(15,23,42,.05)}
+  .card h3{margin-bottom:8px}
+  .card .big{font-size:34px;font-weight:800;letter-spacing:-.01em}
+  .accentbar{height:5px;width:52px;background:var(--accent);border-radius:4px;margin-bottom:14px}
+  ul.clean{list-style:none; display:flex; flex-direction:column; gap:10px}
+  ul.clean li{padding-left:26px; position:relative; font-size:16px; line-height:1.45}
+  ul.clean li::before{content:""; position:absolute; left:0; top:8px; width:9px;height:9px;border-radius:50%; background:var(--accent)}
+  .num{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;background:var(--accent);color:#fff;font-weight:800;font-size:15px;flex:0 0 auto}
+
+  table{width:100%; border-collapse:collapse; font-size:15px}
+  th,td{text-align:left; padding:10px 12px; border-bottom:1px solid var(--line)}
+  th{font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);font-weight:700}
+  td.n,th.n{text-align:right; font-variant-numeric:tabular-nums}
+  tr.hi td{background:#fff7ec; font-weight:700}
+  .tbl-wrap{overflow:auto; border:1px solid var(--line); border-radius:14px}
+
+  /* capacity gauge */
+  .gauge{background:var(--soft);border-radius:14px;padding:20px 22px}
+  .gbar{height:34px;border-radius:9px;background:#e2e8f0;position:relative;overflow:hidden}
+  .gfill{height:100%;width:0;background:linear-gradient(90deg,#16a34a,#22c55e);border-radius:9px;transition:width 1s cubic-bezier(.2,.8,.2,1)}
+  .gcap{position:absolute;top:0;bottom:0;left:0;width:2px;background:#0f172a;opacity:.25}
+
+  /* phases */
+  .phase{display:flex;align-items:stretch;gap:0}
+  .phase .step{flex:1;background:var(--soft);padding:18px;border-radius:14px;position:relative}
+  .arrow{align-self:center;color:var(--accent);font-size:26px;padding:0 6px}
+
+  /* footer / chrome */
+  .foot{position:absolute; left:68px; right:68px; bottom:22px; display:flex; align-items:center; justify-content:space-between; font-size:12px; color:var(--muted)}
+  .slide.dark .foot{color:#93a6c9}
+  .progress{position:absolute; top:0; left:0; height:4px; background:var(--accent); width:0; transition:width .4s ease; z-index:20}
+  .nav{position:fixed; bottom:18px; left:50%; transform:translateX(-50%); display:flex; gap:8px; align-items:center; z-index:30}
+  .nav button{border:none;background:rgba(255,255,255,.9);backdrop-filter:blur(6px);width:40px;height:40px;border-radius:50%;font-size:18px;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.25);color:var(--ink);transition:transform .15s}
+  .nav button:hover{transform:scale(1.08)}
+  .counter{background:rgba(255,255,255,.9);padding:8px 14px;border-radius:999px;font-size:13px;font-weight:700;box-shadow:0 6px 18px rgba(0,0,0,.2)}
+  .dots{position:fixed; top:14px; left:50%; transform:translateX(-50%); display:flex; gap:7px; z-index:30}
+  .dots i{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.35);cursor:pointer;transition:all .2s}
+  .dots i.on{background:var(--accent);transform:scale(1.25)}
+  .hint{position:fixed;bottom:20px;right:20px;font-size:12px;color:#94a3b8;z-index:30}
+
+  .logo{display:inline-flex;align-items:center;gap:12px;font-weight:800;letter-spacing:.02em}
+  .logo .mk{width:38px;height:38px;border-radius:9px;background:var(--accent);display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px}
+  .pill-legal{background:rgba(234,138,30,.12);border:1px solid rgba(234,138,30,.35);border-radius:14px;padding:16px 18px;font-size:15px;line-height:1.5}
+  .slide.dark .pill-legal{background:rgba(234,138,30,.16)}
+  .tag{font-size:12px;font-weight:700;color:var(--accent);letter-spacing:.05em}
+  .anim>*{opacity:0;transform:translateY(10px);animation:rise .5s forwards}
+  .anim>*:nth-child(1){animation-delay:.05s}.anim>*:nth-child(2){animation-delay:.13s}
+  .anim>*:nth-child(3){animation-delay:.21s}.anim>*:nth-child(4){animation-delay:.29s}
+  .anim>*:nth-child(5){animation-delay:.37s}.anim>*:nth-child(6){animation-delay:.45s}
+  @keyframes rise{to{opacity:1;transform:none}}
+  @media (max-width:900px){ .slide{padding:34px 26px 64px} h1{font-size:36px} .grid-3,.grid-2{grid-template-columns:1fr} .foot{left:26px;right:26px} }
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<div class="dots" id="dots"></div>
+<div id="deck">
+
+  <!-- 1 · CAPA -->
+  <section class="slide dark active">
+    <div class="slide-head" style="border:none">
+      <div class="logo"><span class="mk">▲</span> CONSTRUÇÕES PRAGOSA · Logística</div>
+    </div>
+    <div class="body anim" style="display:flex;flex-direction:column;justify-content:center">
+      <div class="kicker">Comissão Executiva · Logística</div>
+      <h1>Reunião CE Logística</h1>
+      <p class="lead" style="color:#c7d5ef">Aquisições de frota, telemática e enquadramento salarial dos motoristas — pontos para decisão.</p>
+      <div style="display:flex;gap:26px;margin-top:34px;flex-wrap:wrap">
+        <div><div class="tag">DATA</div><div style="font-size:22px;font-weight:800">14 de Julho de 2026</div></div>
+        <div><div class="tag">COM</div><div style="font-size:22px;font-weight:800">João Machado Pragosa</div></div>
+        <div><div class="tag">POR</div><div style="font-size:22px;font-weight:800">Ana Rita Fialho · Dir. Logística</div></div>
+      </div>
+    </div>
+    <div class="foot"><span>Construções Pragosa, S.A.</span><span>CE Logística · 14/07/2026</span></div>
+  </section>
+
+  <!-- 2 · AGENDA -->
+  <section class="slide">
+    <div class="slide-head">
+      <div class="kicker">Agenda</div>
+      <h2>Quadro-resumo · 6 pontos de decisão</h2>
+    </div>
+    <div class="body anim">
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>#</th><th>Tema</th><th>Proposta</th><th>Estado</th><th>Próximo passo</th></tr></thead>
+          <tbody>
+            <tr><td><span class="num" style="width:26px;height:26px;font-size:13px">1</span></td><td>Frota · gestão</td><td><b>Gestão centralizada na Logística</b></td><td><span class="chip y"><span class="dot" style="background:#d97706"></span>Proposta</span></td><td>Decidir na CE</td></tr>
+            <tr><td><span class="num" style="width:26px;height:26px;font-size:13px">2</span></td><td>Frota · conjugação</td><td>Mapa de conjugações tratores ↔ semirreboques</td><td><span class="chip b"><span class="dot" style="background:#2563eb"></span>A fazer</span></td><td>Ana Rita c/ João Silva</td></tr>
+            <tr><td><span class="num" style="width:26px;height:26px;font-size:13px">3</span></td><td>Frota · porta-máquinas 3 eixos</td><td>Adquirir Nooteboom OSDS-48-03 (equipas da massa)</td><td><span class="chip g"><span class="dot" style="background:#16a34a"></span>Carga validada</span></td><td>Confirmar trator + gabarito</td></tr>
+            <tr><td><span class="num" style="width:26px;height:26px;font-size:13px">4</span></td><td>Telemática / IA</td><td>Fases: I API · II rotas · III alertas/IA</td><td><span class="chip y"><span class="dot" style="background:#d97706"></span>Proposta</span></td><td>Aprovar Fase I</td></tr>
+            <tr><td><span class="num" style="width:26px;height:26px;font-size:13px">5</span></td><td>Salários · enquadramento</td><td>Diferencial PTSA vs CPSA é estrutural/legal</td><td><span class="chip n"><span class="dot" style="background:#64748b"></span>Esclarecido</span></td><td>Comunicar base legal</td></tr>
+            <tr class="hi"><td><span class="num" style="width:26px;height:26px;font-size:13px">6</span></td><td>Salários · nova categoria</td><td>Categoria PTSA «Porta-Máquinas/Estrado» (2 216–2 416 €)</td><td><span class="chip y"><span class="dot" style="background:#d97706"></span>Proposta</span></td><td>Validar RH → aprovar CE</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="foot"><span>Agenda</span><span>CE Logística · 14/07/2026</span></div>
+  </section>
+
+  <!-- 3 · TEMA 1 -->
+  <section class="slide">
+    <div class="slide-head"><div class="kicker">Tema 1</div><h2>Aquisições de frota · modelo de gestão</h2></div>
+    <div class="body anim">
+      <p class="lead" style="margin-bottom:22px">Três frentes a tratar em conjunto — o modelo de gestão, a conjugação técnica e a aquisição do porta-máquinas de 3 eixos.</p>
+      <div class="grid-3">
+        <div class="card"><div class="accentbar"></div><h3>1.1 · Modelo de gestão</h3><p class="muted" style="margin-top:6px">Afetação, prioridades, responsável, custos e motorista dos equipamentos.</p></div>
+        <div class="card"><div class="accentbar"></div><h3>1.2 · Conjugação</h3><p class="muted" style="margin-top:6px">Ligação tratores ↔ semirreboques novos. Mapa de necessidades antes de comprar.</p></div>
+        <div class="card"><div class="accentbar"></div><h3>1.3 · Porta-máquinas 3 eixos</h3><p class="muted" style="margin-top:6px">Nooteboom OSDS-48-03 para as equipas da massa (cilindros).</p></div>
+      </div>
+    </div>
+    <div class="foot"><span>Tema 1 · Frota</span><span>CE Logística · 14/07/2026</span></div>
+  </section>
+
+  <!-- 4 · 1.1 MODELO DE GESTÃO -->
+  <section class="slide">
+    <div class="slide-head"><div class="kicker">Tema 1.1</div><h2>Modelo de gestão dos equipamentos</h2></div>
+    <div class="body anim">
+      <div class="row">
+        <div class="col" style="flex:1.3">
+          <div class="tbl-wrap">
+            <table>
+              <thead><tr><th>Modelo</th><th>Prós</th><th>Contras</th></tr></thead>
+              <tbody>
+                <tr class="hi"><td>Centralizado (Logística)</td><td>Visão única, prioridades claras</td><td>Exige pedido/agendamento formal</td></tr>
+                <tr><td>Dedicado a uma área</td><td>Resposta rápida à área dona</td><td>Subutilização, conflito</td></tr>
+                <tr><td>Partilhado s/ gestão</td><td>Flexível no imediato</td><td>Sem responsável, conflito</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card" style="background:#fff7ec;border-color:#f6d9ad;height:100%">
+            <div class="tag">Recomendação</div>
+            <h3 style="margin:8px 0;font-size:22px">Gestão centralizada na Logística</h3>
+            <p class="muted">Com pedido formal e regra de prioridades definida — evita o problema de sobrecarga/prioridades já identificado noutras operações.</p>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:18px;display:flex;gap:12px;flex-wrap:wrap">
+        <span class="chip">Afetação</span><span class="chip">Prioridades</span><span class="chip">Responsável único</span><span class="chip">Imputação de custos</span><span class="chip">Motorista dedicado/pool</span>
+      </div>
+    </div>
+    <div class="foot"><span>Tema 1.1 · Gestão</span><span>CE Logística · 14/07/2026</span></div>
+  </section>
+
+  <!-- 5 · 1.2 CONJUGAÇÃO -->
+  <section class="slide">
+    <div class="slide-head"><div class="kicker">Tema 1.2</div><h2>Conjugação · tratores + semirreboques</h2></div>
+    <div class="body anim">
+      <p class="lead" style="margin-bottom:20px"><b>Ação (Ana Rita c/ João Silva):</b> definir os equipamentos a adquirir e montar o mapa de necessidades e conjugações — <i>antes</i> da compra.</p>
+      <div class="grid-2">
+        <div class="card">
+          <h3>Questões técnicas a fechar</h3>
+          <ul class="clean" style="margin-top:12px">
+            <li>Lista de tratores e semirreboques (nº e tipo)</li>
+            <li>Compatibilidade de engate — 5.ª roda / kingpin</li>
+            <li>Combinações por tipo de serviço e área</li>
+            <li>Rácio e intermutabilidade dos conjuntos</li>
+          </ul>
+        </div>
+        <div class="card" style="background:#fef2f2;border-color:#f6c9c9">
+          <div class="tag" style="color:var(--red)">Risco</div>
+          <h3 style="margin:8px 0">Comprar sem mapa de conjugação</h3>
+          <p class="muted">Engates incompatíveis, unidades paradas ou subutilizadas. A conjugação é pré-requisito da aquisição.</p>
+        </div>
+      </div>
+    </div>
+    <div class="foot"><span>Tema 1.2 · Conjugação</span><span>CE Logística · 14/07/2026</span></div>
+  </section>
+
+  <!-- 6 · 1.3 PORTA-MÁQUINAS 3 EIXOS -->
+  <section class="slide">
+    <div class="slide-head"><div class="kicker">Tema 1.3</div><h2>Porta-máquinas 3 eixos · equipas da massa</h2></div>
+    <div class="body anim">
+      <div class="row">
+        <div class="col">
+          <p style="font-size:16px;margin-bottom:14px"><b>Nooteboom OSDS-48-03(EB)</b> — semirreboque rebaixado, para maquinaria de <b>peso médio</b> (cilindros/compactadores). <span class="muted">Não vocacionado para cargas super pesadas.</span></p>
+          <div class="tbl-wrap">
+            <table>
+              <tbody>
+                <tr><td>Carga útil (80 km/h)</td><td class="n"><b>~36 t</b></td></tr>
+                <tr><td>Cama rebaixada</td><td class="n">9,25 m · extensível</td></tr>
+                <tr><td>Eixos / suspensão</td><td class="n">SAF · pneumática · 3.º autodirecional</td></tr>
+                <tr><td>Rampas hidráulicas</td><td class="n">4,0 × 0,88 m</td></tr>
+                <tr><td>Extras</td><td class="n">reforço fresadora · guincho</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="col">
+          <div class="gauge">
+            <div style="display:flex;justify-content:space-between;margin-bottom:10px">
+              <span><b>Validação de carga</b></span><span class="chip g">55% de folga ✓</span>
+            </div>
+            <div class="gbar"><div class="gfill" id="gfill"></div><div class="gcap" style="left:100%"></div></div>
+            <div style="display:flex;justify-content:space-between;margin-top:10px;font-size:14px">
+              <span><b>16 t</b><br><span class="muted">cilindro mais pesado</span></span>
+              <span style="text-align:right"><b>36 t</b><br><span class="muted">capacidade a 80 km/h</span></span>
+            </div>
+          </div>
+          <div class="card" style="margin-top:16px;padding:16px">
+            <div class="tag">A confirmar</div>
+            <p class="muted" style="margin-top:6px;font-size:14px">Trator compatível (5.ª roda 1,20–1,25 m) · gabarito de circulação · categoria do motorista (ver Tema 3).</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="foot"><span>Tema 1.3 · Porta-máquinas</span><span>CE Logística · 14/07/2026</span></div>
+  </section>
+
+  <!-- 7 · TEMA 2 TELEMÁTICA -->
+  <section class="slide">
+    <div class="slide-head"><div class="kicker">Tema 2</div><h2>Telemática / IA · projeto por fases</h2></div>
+    <div class="body anim">
+      <p class="lead" style="margin-bottom:24px">As opções são <b>sequenciais, não alternativas</b>: a IA de alertas depende de ter primeiro os dados e as rotas.</p>
+      <div class="phase">
+        <div class="step"><div class="num">I</div><h3 style="margin:10px 0 6px">Integração API</h3><p class="muted">Wialon <b>ou</b> Traccar — fonte única de telemática. <span class="tag">Decisão: qual a fonte</span></p></div>
+        <div class="arrow">→</div>
+        <div class="step"><div class="num">II</div><h3 style="margin:10px 0 6px">Rotas origem→destino</h3><p class="muted">Modelar rota planeada como referência (planeado vs. real).</p></div>
+        <div class="arrow">→</div>
+        <div class="step"><div class="num">III</div><h3 style="margin:10px 0 6px">Alertas / IA</h3><p class="muted">Desvios de rota e paragens +5 min. IA só com histórico suficiente.</p></div>
+      </div>
+      <div class="pill-legal" style="margin-top:22px"><b>Pedido à CE:</b> escolher a fonte de telemática e aprovar o avanço da <b>Fase I</b> com prova de conceito (responsável + prazo).</div>
+    </div>
+    <div class="foot"><span>Tema 2 · Telemática/IA</span><span>CE Logística · 14/07/2026</span></div>
+  </section>
+
+  <!-- 8 · TEMA 3 ENQUADRAMENTO -->
+  <section class="slide">
+    <div class="slide-head"><div class="kicker">Tema 3 · Salários</div><h2>Duas empresas, dois regimes legais</h2></div>
+    <div class="body anim">
+      <div class="grid-2">
+        <div class="card">
+          <div class="tag">Pragosa Transportes (PTSA)</div>
+          <h3 style="margin:8px 0">Empresa transportadora</h3>
+          <p class="muted">Regime do setor dos transportes — <b>obriga a componentes próprias</b>: Prestação Pecuniária 48%, Compensação salarial, prémios do setor.</p>
+          <div class="big" style="margin-top:12px;color:var(--accent)">~1 916 – 2 275 €</div><span class="muted">bruto (Cisternas / Agregados)</span>
+        </div>
+        <div class="card">
+          <div class="tag">Construções Pragosa (CPSA)</div>
+          <h3 style="margin:8px 0">Construção com frota própria</h3>
+          <p class="muted">Não é transportadora — <b>código de trabalho diferente</b>. Modelo Base + IHT + prémios, com 5 escalões de antiguidade.</p>
+          <div class="big" style="margin-top:12px;color:var(--blue)">~1 645 – 2 676 €</div><span class="muted">bruto (por categoria e escalão)</span>
+        </div>
+      </div>
+      <div class="pill-legal" style="margin-top:22px"><b>Mensagem-chave:</b> o diferencial é <b>estrutural e legítimo</b> — não é desalinhamento a corrigir. As tabelas não se comparam linha a linha; o que se gere é perceção interna e retenção.</div>
+    </div>
+    <div class="foot"><span>Tema 3 · Enquadramento</span><span>CE Logística · 14/07/2026</span></div>
+  </section>
+
+  <!-- 9 · CPSA V1 -->
+  <section class="slide">
+    <div class="slide-head"><div class="kicker">Tema 3 · Construções Pragosa</div><h2>Tabela Construções Pragosa · Salário bruto por escalão</h2></div>
+    <div class="body anim">
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Categoria (nº motoristas)</th><th class="n">≤1 ano</th><th class="n">&gt;1–2</th><th class="n">&gt;2–4</th><th class="n">&gt;4–10</th><th class="n">≥10</th></tr></thead>
+          <tbody>
+            <tr><td>3/4 Eixos (16)</td><td class="n">1 740,80</td><td class="n">1 790,80</td><td class="n">2 008,80</td><td class="n">2 058,80</td><td class="n">2 108,80</td></tr>
+            <tr><td>Semi-reboques (8)</td><td class="n">1 900,80</td><td class="n">1 980,80</td><td class="n">2 168,80</td><td class="n">2 218,80</td><td class="n">2 268,80</td></tr>
+            <tr><td>Carro cola (2)</td><td class="n">1 645,20</td><td class="n">1 645,20</td><td class="n">1 842,20</td><td class="n">1 892,20</td><td class="n">1 992,20</td></tr>
+            <tr><td>Porta-máquinas s/ articulado (1)</td><td class="n">1 645,20</td><td class="n">1 695,20</td><td class="n">1 842,20</td><td class="n">1 992,20</td><td class="n">2 092,20</td></tr>
+            <tr class="hi"><td>Transp. especial articulado · c/ carta (4)</td><td class="n">2 000,80</td><td class="n">2 290,80</td><td class="n">2 348,80</td><td class="n">2 626,00</td><td class="n">2 676,00</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="muted" style="margin-top:14px;font-size:14px">Progressão por antiguidade (5 escalões) + prémio de equipamento. Modelo Base + IHT (regime de construção). Universo ≈ 31 motoristas.</p>
+    </div>
+    <div class="foot"><span>Tema 3 · Construções Pragosa</span><span>CE Logística · 14/07/2026</span></div>
+  </section>
+
+  <!-- 10 · PROPOSTA NOVA CATEGORIA -->
+  <section class="slide">
+    <div class="slide-head"><div class="kicker">Tema 3 · Pragosa Transportes</div><h2>Tabela Pragosa Transportes · c/ nova categoria «Porta-Máquinas / Estrado»</h2></div>
+    <div class="body anim">
+      <div class="row">
+        <div class="col" style="flex:1.5">
+          <div class="tbl-wrap">
+            <table>
+              <thead><tr><th>Categoria</th><th class="n">1º ano</th><th class="n">2º ano</th><th class="n">3º ano</th></tr></thead>
+              <tbody>
+                <tr><td>Motorista Cisternas</td><td class="n">2 116,18</td><td class="n">2 184,76</td><td class="n">2 274,92</td></tr>
+                <tr><td>Motorista Agregados</td><td class="n">1 916,18</td><td class="n">—</td><td class="n">—</td></tr>
+                <tr class="hi"><td>🆕 Porta-Máquinas / Estrado</td><td class="n">2 216,17</td><td class="n">2 316,17</td><td class="n">2 416,17</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="muted" style="font-size:13px;margin-top:10px">Valores brutos, sem diuturnidades (+24,63 €/triénio, máx. +123,15 €). Nova categoria = estrutura PTSA + <b>Prémio de Transporte Especial</b> (100 → 300 por nível).</p>
+        </div>
+        <div class="col">
+          <div class="card" style="background:#fff7ec;border-color:#f6d9ad">
+            <div class="tag">Nova categoria · Cenário A</div>
+            <h3 style="margin:8px 0">Categoria única «Porta-Máquinas/Estrado»</h3>
+            <ul class="clean" style="margin-top:8px">
+              <li>Estrutura PTSA (regime dos transportes)</li>
+              <li>+ Prémio de Transporte Especial / Porta-Máquinas</li>
+              <li>Acima das Cisternas; abaixo do topo CPSA articulado (2 676 €)</li>
+            </ul>
+          </div>
+          <div class="pill-legal" style="margin-top:14px;font-size:14px"><b>A validar RH:</b> conformidade legal das componentes do setor + requisito de carta de articulado — antes de aprovar na CE.</div>
+        </div>
+      </div>
+    </div>
+    <div class="foot"><span>Tema 3 · Pragosa Transportes</span><span>CE Logística · 14/07/2026</span></div>
+  </section>
+
+  <!-- 11 · DECISÕES -->
+  <section class="slide dark">
+    <div class="slide-head"><div class="kicker">Decisões a tomar</div><h2>O que pedimos à Comissão Executiva</h2></div>
+    <div class="body anim">
+      <div class="grid-2" style="gap:16px">
+        <div class="card" style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.14);color:#e8eefc"><div style="display:flex;gap:14px;align-items:flex-start"><span class="num">1</span><div><h3>Modelo de gestão da frota</h3><p style="color:#b9c8e6">Aprovar gestão centralizada na Logística.</p></div></div></div>
+        <div class="card" style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.14);color:#e8eefc"><div style="display:flex;gap:14px;align-items:flex-start"><span class="num">2</span><div><h3>Porta-máquinas 3 eixos</h3><p style="color:#b9c8e6">Avançar com aquisição (carga validada 16 t « 36 t).</p></div></div></div>
+        <div class="card" style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.14);color:#e8eefc"><div style="display:flex;gap:14px;align-items:flex-start"><span class="num">3</span><div><h3>Telemática · Fase I</h3><p style="color:#b9c8e6">Escolher fonte (Wialon/Traccar) e aprovar prova de conceito.</p></div></div></div>
+        <div class="card" style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.14);color:#e8eefc"><div style="display:flex;gap:14px;align-items:flex-start"><span class="num">4</span><div><h3>Categoria PTSA Porta-Máq./Estrado</h3><p style="color:#b9c8e6">Aprovar criação (Cenário A) sujeita a validação de RH.</p></div></div></div>
+      </div>
+    </div>
+    <div class="foot"><span>Decisões</span><span>CE Logística · 14/07/2026</span></div>
+  </section>
+
+  <!-- 12 · FECHO -->
+  <section class="slide dark">
+    <div class="body anim" style="display:flex;flex-direction:column;justify-content:center;align-items:flex-start">
+      <div class="logo" style="margin-bottom:24px"><span class="mk">▲</span> CONSTRUÇÕES PRAGOSA</div>
+      <h1 style="font-size:46px">Obrigada.</h1>
+      <p class="lead" style="color:#c7d5ef;margin-top:10px">Discussão e decisão dos 6 pontos.<br>Ana Rita Fialho · Direção de Logística</p>
+      <div style="margin-top:30px;display:flex;gap:10px;flex-wrap:wrap">
+        <span class="chip n">Frota · gestão</span><span class="chip n">Conjugação</span><span class="chip n">Porta-máquinas 3 eixos</span><span class="chip n">Telemática/IA</span><span class="chip n">Salários motoristas</span>
+      </div>
+    </div>
+    <div class="foot"><span>Construções Pragosa, S.A.</span><span>14 de Julho de 2026</span></div>
+  </section>
+
+</div>
+
+<div class="counter" style="position:fixed;top:12px;right:16px;z-index:30" id="counter">1 / 12</div>
+<div class="nav">
+  <button id="prev" aria-label="Anterior">‹</button>
+  <button id="next" aria-label="Seguinte">›</button>
+</div>
+<div class="hint">← → · barra de espaço · clique</div>
+
+<script>
+  const slides=[...document.querySelectorAll('.slide')];
+  const dotsWrap=document.getElementById('dots');
+  const progress=document.getElementById('progress');
+  const counter=document.getElementById('counter');
+  let i=0;
+  slides.forEach((_,k)=>{const d=document.createElement('i');d.onclick=()=>go(k);dotsWrap.appendChild(d);});
+  const dots=[...dotsWrap.children];
+
+  function go(n){
+    n=Math.max(0,Math.min(slides.length-1,n));
+    slides[i].classList.remove('active');
+    dots[i].classList.remove('on');
+    i=n;
+    slides[i].classList.add('active');
+    dots[i].classList.add('on');
+    // restart entrance animation
+    const a=slides[i].querySelector('.anim');
+    if(a){a.style.animation='none';a.offsetHeight;a.style.animation='';}
+    progress.style.width=((i)/(slides.length-1)*100)+'%';
+    counter.textContent=(i+1)+' / '+slides.length;
+    if(i===5){const g=document.getElementById('gfill');if(g){g.style.width='0';setTimeout(()=>g.style.width=(16/36*100)+'%',80);}}
+  }
+  document.getElementById('next').onclick=()=>go(i+1);
+  document.getElementById('prev').onclick=()=>go(i-1);
+  document.addEventListener('keydown',e=>{
+    if(['ArrowRight','ArrowDown',' ','PageDown'].includes(e.key)){e.preventDefault();go(i+1);}
+    if(['ArrowLeft','ArrowUp','PageUp'].includes(e.key)){e.preventDefault();go(i-1);}
+    if(e.key==='Home')go(0); if(e.key==='End')go(slides.length-1);
+  });
+  // click zones (ignore clicks on nav/dots/links)
+  document.getElementById('deck').addEventListener('click',e=>{
+    if(e.target.closest('button,i,a,table'))return;
+    const x=e.clientX, w=window.innerWidth;
+    if(x> w*0.62) go(i+1); else if(x< w*0.38) go(i-1);
+  });
+  // swipe
+  let sx=0;
+  addEventListener('touchstart',e=>sx=e.touches[0].clientX,{passive:true});
+  addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-sx;if(Math.abs(dx)>50)go(i+(dx<0?1:-1));},{passive:true});
+  go(0);
+</script>
+</body>
+</html>

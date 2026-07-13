@@ -1,12 +1,13 @@
 ---
 tipo: pessoa
 empresa: Construções Pragosa, S.A.
-cargo: Diretor Comercial (Indústria)
+cargo: Diretor da Área Comercial — Indústria e Betão (foco Indústria)
 email:
 telefone:
 tags:
   - pessoa
   - indústria
+  - betão
   - comercial
   - direção
 ---
@@ -14,7 +15,7 @@ tags:
 # Alexandre Marques
 
 ## Função e Responsabilidades
-Diretor Comercial da [[06 Operações/Indústria|Indústria]] (Pedreiras). Responsável pela estratégia comercial de inertes, aprovação/validação de preços de agregados e decisões de fornecimento a clientes-chave. Valida margens e condições comerciais (ex.: baixar preços para garantir fornecimentos) e pondera decisões estratégicas como parar produção para clientes específicos.
+**Diretor da Área Comercial da [[06 Operações/Indústria|Indústria]] e Betão**, com **foco na Indústria** (Pedreiras). Responsável pela estratégia comercial de inertes e betão, aprovação/validação de preços de agregados e decisões de fornecimento a clientes-chave. Coordena a equipa comercial da Indústria — [[03 Pessoas/Filipe Nascimento|Filipe Nascimento]] e [[03 Pessoas/Jorge Ferreira|Jorge Ferreira]]. Valida margens e condições comerciais (ex.: baixar preços para garantir fornecimentos) e pondera decisões estratégicas como parar produção para clientes específicos.
 
 ## Contacto
 - Email:

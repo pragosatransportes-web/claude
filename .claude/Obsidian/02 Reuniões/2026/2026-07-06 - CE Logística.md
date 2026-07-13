@@ -24,6 +24,16 @@ tags:
 ## Resumo Executivo
 Reunião de decisão sobre **três eixos**: (1) definir o **modelo de gestão das aquisições de frota** — porta-máquinas, novos tratores + semirreboques e o porta-máquinas de 3 eixos — garantindo afetação, prioridades, responsabilidade, custos e conjugação técnica antes da compra; (2) fechar o **âmbito e a fase do projeto de telemática/IA** que ficou pendente da última reunião; (3) rever **salários e categorias dos motoristas**, comparando as estruturas da Pragosa Transportes e da CPSA, corrigindo incoerências e definindo o enquadramento do motorista do novo porta-máquinas. O objetivo é sair com decisão nos três, não apenas discussão.
 
+## Quadro Resumo — Sugestões & Decisões
+| # | Tema | Sugestão / Proposta | Estado | Próximo passo · responsável |
+|---|------|---------------------|--------|------------------------------|
+| 1 | Frota · gestão | Gestão **centralizada na Logística** (pedido formal + regra de prioridades) | 🟡 Proposta | Decidir na CE · [[03 Pessoas/João Machado Pragosa]] |
+| 2 | Frota · conjugação | **Mapa de necessidades e conjugações** tratores ↔ semirreboques | 🔵 A fazer | Ana Rita c/ [[03 Pessoas/João Silva]] |
+| 3 | Frota · porta-máquinas 3 eixos | Adquirir **Nooteboom OSDS-48-03** para equipas da massa (cilindros) | 🟢 Carga validada (16 t « 36 t) | Confirmar trator compatível + gabarito |
+| 4 | Telemática / IA | Projeto por fases: **I API (Wialon/Traccar) · II rotas · III alertas/IA** | 🟡 Proposta | Aprovar Fase I + escolher fonte |
+| 5 | Salários · enquadramento | Diferencial PTSA vs CPSA é **estrutural/legal** (transportes vs construção) | ⚪ Esclarecido | Comunicar base legal (evitar «injustiça») |
+| 6 | Salários · nova categoria | Criar categoria PTSA **«Porta-Máquinas/Estrado»** (única, Cenário A: 2 216–2 416 €) | 🟡 Proposta | Validar RH → aprovar CE |
+
 ## Contexto
 - Várias aquisições de frota em curso/avaliação — decisão sobre o **modelo de gestão** e as **conjugações técnicas** ainda em aberto.
 - Inclui a avaliação de um **porta-máquinas de 3 eixos** (semirreboque rebaixado) para as equipas da massa — ver Tema 1.
@@ -166,6 +176,9 @@ Duas estruturas retributivas distintas para 2026, em duas empresas do grupo:
 | **Pragosa Transportes** | Base + prestação pecuniária | Ordenado base · Compensação 2% · Prestação Pecuniária 48% · Prémio Manutenção 10% · Prémio Disponibilidade 10% · Prémio Produção (≤200€, só Cisternas) · Sub. refeição 8,30€ · Diuturnidades 24,63€ (3/3 anos, lim. 5) |
 | **Construção Pragosa (CPSA)** — tabela **V1** | Base + IHT + prémio de equipamento por antiguidade | Ordenado base · IHT (20% ou 40%) · Prémio Disponibilidade 10% · Prémio Manutenção 10% · Prémio de Equipamento (progressivo por antiguidade) · Prémio Transporte (categorias «sem articulado») · Sub. refeição 8€ · **5 escalões de antiguidade** |
 
+> [!info] Porque são estruturas diferentes — e não comparáveis linha a linha
+> A **Pragosa Transportes** é uma **empresa transportadora**: os seus motoristas regem-se pelo enquadramento legal do setor dos transportes, que **obriga a componentes próprias** (Prestação Pecuniária, Compensação salarial, prémios do setor). A **CPSA é uma empresa de construção** com viaturas próprias — os motoristas têm **código/regime de trabalho diferente**, sem essas componentes obrigatórias. **O diferencial é estrutural e legítimo, não um desalinhamento a corrigir.** A comparação de valores serve para gestão de expectativas e retenção, não para equiparar tabelas.
+
 ### Vencimento bruto — CPSA (Revisão Jan 2026, tabela V1)
 Total bruto por escalão de antiguidade (nº de motoristas entre parênteses):
 
@@ -187,20 +200,70 @@ Total bruto por escalão de antiguidade (nº de motoristas entre parênteses):
 
 ### Achados
 1. **A tabela V1 corrige a incoerência anterior.** ✅ Deixa de existir "líquido > bruto": passa a apresentar só o **Total Bruto** por escalão, coerente.
-2. **Progressão agora explícita por antiguidade** (5 escalões) com **Prémio de Equipamento** crescente — aproxima a CPSA da Pragosa Transportes nos escalões seniores. Ex.: **Transp. Especial Articulado ≥10 anos = 2 676 €**, acima da Cisternas 3º ano (2 275 €). O gap concentra-se agora nos **escalões de entrada** (3/4 eixos ≤1 ano 1 741 € vs. Cisternas 1º ano 2 116 €).
+2. **A diferença PTSA vs CPSA é estrutural, não uma anomalia.** A Pragosa Transportes, como transportadora, tem componentes obrigatórias do setor dos transportes que a CPSA (construção com frota própria) não tem por lei. A progressão da V1 por antiguidade (5 escalões) com **Prémio de Equipamento** crescente até aproxima os escalões seniores da CPSA — ex.: **Transp. Especial Articulado ≥10 anos = 2 676 €**, acima da Cisternas 3º ano (2 275 €). A diferença nota-se sobretudo nos **escalões de entrada** (3/4 eixos ≤1 ano 1 741 € vs. Cisternas 1º ano 2 116 €), e é justificada pelo regime laboral distinto.
 3. **Ligação ao Tema 1 (novo porta-máquinas 3 eixos).** Sendo articulado (exige carta), o motorista enquadra-se em **Transporte Especial Articulado (grua/porta-máquinas)**: **2 001 € (entrada) a 2 676 € (≥10 anos)**. É este o **custo de motorista a incluir no business case** da aquisição.
 4. **Cobertura fina de condutores.** Só **1 motorista** em "Porta-máquinas s/ articulado" e **4** em "Transporte Especial Articulado" — dimensionar a afetação do novo equipamento à disponibilidade real de condutores com carta de articulado.
 
 ### Questões para o [[03 Pessoas/João Silva]] / RH
 - [ ] Que **escalão/antiguidade** e categoria para o condutor a afetar ao novo porta-máquinas 3 eixos → custo real (2 001–2 676 €)?
 - [ ] Há **condutores com carta de articulado disponíveis** ou é preciso recrutar/formar? (universo de 1+4)
-- [ ] O **diferencial de entrada** Transportes vs CPSA (≈375 €) é intencional (CCT/função) ou a corrigir?
+- [ ] Confirmar o **enquadramento legal** de cada empresa (transportes vs construção) para comunicar corretamente porque as tabelas diferem — evitar leitura de "injustiça".
 - [ ] Critério de **passagem de escalão** — automático por antiguidade?
 - [ ] **Diuturnidades**: só a Pragosa Transportes as tem (24,63 €)? Na CPSA estão integradas no "Prémio de Equipamento"?
 
 ### Riscos
 - Afetar o novo porta-máquinas sem condutor com carta de articulado disponível → equipamento parado.
-- Diferencial nos escalões de entrada Transportes vs CPSA → dificuldade de recrutamento/retenção na CPSA.
+- Diferencial de entrada (estrutural/legal) mal comunicado → perceção de "injustiça" e dificuldade de retenção na CPSA, mesmo sendo legítimo.
+
+### 🆕 Proposta — nova categoria PTSA: "Serviço de Porta-Máquinas / Estrado"
+
+**Problema:** a **PTSA não tem categoria tabelada** para o serviço de porta-máquinas/estrado. É preciso criá-la para enquadrar estes condutores na empresa transportadora.
+
+> [!note] Decidido (preparação): **categoria única** "Serviço de Porta-Máquinas/Estrado" (não se separa estrado de porta-máquinas) · posicionamento **Cenário A**.
+
+**Princípio da proposta:** replicar a **estrutura retributiva da PTSA** (com as componentes obrigatórias do setor dos transportes) e **ancorar os valores de referência** nas categorias de porta-máquinas / transporte especial da **CPSA**. Como a base PTSA já é superior à de entrada da CPSA, a nova categoria fica competitiva; a **progressão por antiguidade** adota a lógica de escalões da CPSA (via prémio de transporte especial).
+
+**Estrutura proposta (componentes mensais):**
+| Componente | Valor | Origem |
+|------------|------:|--------|
+| Ordenado base | 1 014,02 | igual às restantes categorias PTSA |
+| Compensação salarial 2% | 20,28 | estrutura PTSA |
+| Prestação Pecuniária 48% | 496,47 | estrutura PTSA (setor transportes) |
+| Prémio Manutenção Equipamento 10% | 101,40 | estrutura PTSA |
+| Prémio de Disponibilidade 10% | 101,40 | estrutura PTSA |
+| Prémio de Produção | 200,00 | estrutura PTSA (nível Cisternas) |
+| **Prémio de Transporte Especial / Porta-Máquinas** *(novo)* | **100 → 300** | base: "Prémio de Equipamento" CPSA articulado |
+| Subsídio de Refeição (8,30€/dia) | 182,60 | estrutura PTSA |
+| Diuturnidades (24,63€, 3/3 anos, lim. 5) | +0 a +123,15 | estrutura PTSA |
+
+**Valor bruto por escalão (Cenário A — ✅ escolhido):**
+| Escalão antiguidade | Prémio TE/PM | Total bruto* |
+|---------------------|-------------:|-------------:|
+| ≤1 ano | 100 | 2 216,17 |
+| >1–2 | 150 | 2 266,17 |
+| >2–4 | 200 | 2 316,17 |
+| >4–10 | 250 | 2 366,17 |
+| ≥10 | 300 | 2 416,17 |
+
+> *sem diuturnidades; somar 24,63€ por cada triénio, até 5 (máx. +123,15€).
+
+**Posicionamento vs referências (topo de escala):**
+| Referência | Bruto |
+|------------|------:|
+| CPSA — Porta-máquinas s/ articulado (≥10) | 2 092,20 |
+| PTSA — Cisternas (3º ano) | 2 274,92 |
+| **PTSA — Porta-Máquinas/Estrado proposta (≥10, Cenário A)** | **2 416,17** |
+| CPSA — Transp. Especial Articulado (≥10) | 2 676,00 |
+
+**Posicionamento (escolhido — Cenário A):** a nova categoria fica **acima das Cisternas** e da porta-máquinas CPSA, e **abaixo do topo da CPSA articulado (2 676€)** — aceite, porque a PTSA não escala o ordenado base por antiguidade (usa diuturnidades). _(Alternativa não escolhida — Cenário B: paridade com o topo CPSA articulado, prémio até ~560€ no ≥10.)_
+
+**A validar com RH antes de apresentar à CE:**
+- Conformidade legal das componentes obrigatórias do setor dos transportes para esta nova categoria.
+- Se o serviço justifica manter o "Prémio de Produção" (200€) ou substituí-lo pelo prémio de transporte especial.
+- Requisito de **carta de articulado** e eventual prémio/subsídio associado.
+
+> [!decision] Criar categoria PTSA "Serviço de Porta-Máquinas/Estrado" — **categoria única, Cenário A**
+> Estrutura PTSA + Prémio de Transporte Especial (100→300 por escalão) → bruto **2 216–2 416€** (+ diuturnidades). Categoria única (estrado + porta-máquinas). _(a validar RH + aprovar CE)_
 
 ---
 
@@ -227,7 +290,8 @@ Total bruto por escalão de antiguidade (nº de motoristas entre parênteses):
 - [x] ~~RH: corrigir incoerências (líquido > bruto)~~ — resolvido na tabela CPSA V1
 - [ ] Confirmar disponibilidade de condutor com carta de articulado para o novo porta-máquinas 3 eixos
 - [ ] Definir escalão/categoria e custo do motorista do novo porta-máquinas 3 eixos (2 001–2 676 €)
-- [ ] Clarificar o diferencial salarial de entrada Pragosa Transportes vs CPSA
+- [ ] Preparar mensagem que explique a base legal do diferencial PTSA (transportes) vs CPSA (construção) — evitar leitura de "injustiça"
+- [ ] **Criar categoria PTSA "Serviço de Porta-Máquinas/Estrado"** — validar estrutura com RH e submeter à CE (Cenário A: 2 216–2 416€)
 
 ## Próximos Passos
 - Fechar decisão nos dois temas na reunião.
