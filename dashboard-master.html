@@ -1,0 +1,1399 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — Departamento de Logistica</title>
+<style>
+:root{color-scheme:light;--bg:#f5f5f3;--surface:#ffffff;--border:rgba(0,0,0,0.09);--text:#18181b;--text-2:#52525b;--text-3:#a1a1aa;--accent:#2563eb;--green:#16a34a;--amber:#d97706;--red:#dc2626;--blue:#0891b2;--radius:10px;--shadow:0 1px 3px rgba(0,0,0,0.07)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:13.5px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.app-header{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:20}
+.app-header-left h1{font-size:15px;font-weight:600}.app-header-left p{font-size:11px;color:var(--text-3);margin-top:1px}
+.app-header-right{font-size:11px;color:var(--text-3);text-align:right}
+.nav{background:var(--surface);border-bottom:1px solid var(--border);display:flex;padding:0 20px;gap:2px}
+.nav-btn{padding:10px 14px;font-size:12.5px;font-weight:400;color:var(--text-2);border:none;background:none;cursor:pointer;border-bottom:2px solid transparent;transition:color .12s;white-space:nowrap;position:relative}
+.nav-btn:hover{color:var(--text)}.nav-btn.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:500}
+.nav-badge{position:absolute;top:6px;right:4px;background:var(--red);color:#fff;font-size:9px;font-weight:700;min-width:14px;height:14px;border-radius:7px;display:flex;align-items:center;justify-content:center;padding:0 3px}
+.main{padding:20px;max-width:1080px;margin:0 auto}.section{display:none}.section.active{display:block}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.mb4{margin-bottom:4px}.mb8{margin-bottom:8px}.mb12{margin-bottom:12px}.mb16{margin-bottom:16px}.mb20{margin-bottom:20px}
+.mt4{margin-top:4px}.mt8{margin-top:8px}.mt12{margin-top:12px}.divider{height:1px;background:var(--border);margin:18px 0}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;box-shadow:var(--shadow)}
+.card-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-3);margin-bottom:10px}
+.sh{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.sh-title{font-size:13px;font-weight:600;color:var(--text-2)}
+.badge{display:inline-flex;align-items:center;gap:3px;font-size:10.5px;font-weight:500;padding:2px 8px;border-radius:20px;white-space:nowrap}
+.b-ok{background:#dcfce7;color:#15803d}.b-warn{background:#fef3c7;color:#92400e}.b-err{background:#fee2e2;color:#991b1b}
+.b-info{background:#e0f2fe;color:#075985}.b-gray{background:#f4f4f5;color:#52525b}.b-purple{background:#f3e8ff;color:#6b21a8}
+.av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0}
+.av-blue{background:#dbeafe;color:#1d4ed8}.av-green{background:#dcfce7;color:#15803d}
+.av-amber{background:#fef3c7;color:#92400e}.av-red{background:#fee2e2;color:#991b1b}.av-purple{background:#ede9fe;color:#7c3aed}
+.alert{padding:9px 13px;border-radius:8px;font-size:12.5px;line-height:1.5;border-left:3px solid}
+.alert-warn{background:#fffbeb;border-color:#f59e0b;color:#78350f}
+.alert-err{background:#fef2f2;border-color:#ef4444;color:#7f1d1d}
+.alert-info{background:#f0f9ff;border-color:#0ea5e9;color:#0c4a6e}
+.alert-ok{background:#f0fdf4;border-color:#22c55e;color:#14532d}
+.pb{height:5px;background:#e4e4e7;border-radius:99px;overflow:hidden;margin-top:8px}
+.pb-fill{height:100%;border-radius:99px}
+.kpi-num{font-size:26px;font-weight:600;letter-spacing:-0.02em;line-height:1}
+.kpi-lbl{font-size:11px;color:var(--text-3);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px}
+.kpi-sub{font-size:11.5px;color:var(--text-2);margin-top:3px}
+/* View toggle */
+.view-toggle{display:flex;border:1px solid var(--border);border-radius:8px;overflow:hidden;background:var(--surface)}
+.view-toggle-btn{padding:6px 14px;font-size:12px;border:none;background:none;cursor:pointer;color:var(--text-2);transition:background .1s}
+.view-toggle-btn.active{background:var(--accent);color:#fff}
+/* Equipa cards */
+.e-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:5px;box-shadow:var(--shadow);overflow:hidden}
+.e-card.risk-warn{border-left:3px solid var(--amber)}.e-card.risk-err{border-left:3px solid var(--red)}
+.e-card-header{display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer;user-select:none;transition:background .1s}
+.e-card-header:hover{background:#fafafa}
+.e-card-name{font-size:13px;font-weight:500}.e-card-role{font-size:11.5px;color:var(--text-2)}
+.e-chevron{font-size:11px;color:var(--text-3);transition:transform .2s;flex-shrink:0;margin-left:6px}
+.e-chevron.open{transform:rotate(180deg)}
+.e-card-body{padding:12px 14px 14px;border-top:1px solid var(--border)}
+.e-section-title{font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-3);margin:10px 0 6px}
+.e-section-title:first-child{margin-top:2px}
+.e-eval-table{width:100%;border-collapse:collapse;font-size:12px}
+.e-eval-table th{text-align:left;padding:4px 8px;font-size:10.5px;color:var(--text-3);font-weight:500;border-bottom:1px solid var(--border)}
+.e-eval-table td{padding:6px 8px;border-bottom:1px solid var(--border);color:var(--text-2);line-height:1.4}
+.e-eval-table tr:last-child td{border-bottom:none}
+.e-pending-item{display:flex;align-items:flex-start;gap:8px;padding:3px 0;font-size:12.5px;color:var(--text-2)}
+.e-pending-cb{margin-top:2px;cursor:pointer;flex-shrink:0}
+.e-notes-area{width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:7px;font-size:12.5px;resize:vertical;min-height:60px;font-family:inherit;color:var(--text);background:var(--surface)}
+.e-notes-area:focus{border-color:var(--accent);outline:none}
+.btn-save-notes{padding:6px 14px;background:var(--accent);color:#fff;border:none;border-radius:7px;font-size:12px;font-weight:500;cursor:pointer;margin-top:6px}
+/* Org chart */
+.org-chart-wrap{overflow-x:auto;padding:4px 0 16px}
+.org-col{flex:1;min-width:130px;display:flex;flex-direction:column;gap:5px;padding-top:24px;position:relative}
+.org-col::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:1px;height:24px;background:var(--border)}
+.org-col-hdr{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;padding:4px 8px;border-radius:6px;text-align:center;margin-bottom:4px;border:1px solid}
+.c-trafego{background:#eff6ff;color:#1e40af;border-color:#bfdbfe}
+.c-comercial{background:#f0fdf4;color:#166534;border-color:#bbf7d0}
+.c-admin{background:#fffbeb;color:#92400e;border-color:#fde68a}
+.c-expedicao{background:#fff1f2;color:#9f1239;border-color:#fecdd3}
+.org-node-btn{background:var(--surface);border:1.5px solid var(--border);border-radius:8px;padding:8px 10px;cursor:pointer;text-align:left;transition:border-color .15s,box-shadow .15s;display:flex;align-items:center;gap:8px;width:100%}
+.org-node-btn:hover{border-color:var(--accent);box-shadow:0 0 0 3px rgba(37,99,235,0.08)}
+.org-node-btn.selected{border-color:var(--accent);background:#eff6ff}
+.org-node-btn.risk-warn{border-left:3px solid var(--amber)}.org-node-btn.risk-err{border-left:3px solid var(--red)}.org-node-btn.risk-info{border-style:dashed}
+.org-node-initials{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0}
+.org-node-info{flex:1;min-width:0}
+.org-node-name{font-size:12px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.org-node-role{font-size:10px;color:var(--text-3);margin-top:1px}
+.org-subnodes{margin-left:12px;border-left:1px solid var(--border);padding-left:8px;display:flex;flex-direction:column;gap:4px;margin-top:4px}
+.org-edit-panel{background:#f0f9ff;border:1px solid #bae6fd;border-radius:var(--radius);padding:16px;margin-top:14px}
+.org-edit-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+/* Meeting cards */
+.m-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:10px;box-shadow:var(--shadow)}
+.m-header{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:6px}
+.m-title{font-size:13.5px;font-weight:500;flex:1}.m-date{font-size:11px;color:var(--text-3);flex-shrink:0;white-space:nowrap}
+.m-body{font-size:12.5px;color:var(--text-2);line-height:1.6}
+.m-actions{margin-top:10px;padding-top:10px;border-top:1px solid var(--border)}
+.m-actions-title{font-size:11px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px}
+.m-action-item{display:flex;align-items:flex-start;gap:8px;padding:5px 0;font-size:12px;color:var(--text-2)}
+.btn-add-task{font-size:10.5px;padding:2px 8px;border:1px solid var(--border);border-radius:20px;background:var(--bg);color:var(--text-2);cursor:pointer;white-space:nowrap;flex-shrink:0;transition:background .12s,color .12s}
+.btn-add-task:hover{background:#e0f2fe;color:#075985;border-color:#0ea5e9}
+.btn-add-task.added{background:#dcfce7;color:#15803d;border-color:#86efac;cursor:default}
+.tags{display:flex;gap:4px;flex-wrap:wrap;margin-top:8px}
+.tag{font-size:10px;padding:2px 6px;border-radius:4px}
+/* OKR */
+.okr-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:10px;box-shadow:var(--shadow)}
+.okr-title{font-size:13.5px;font-weight:600;margin-bottom:10px}
+.kr{display:flex;align-items:center;gap:8px;padding:6px 0;border-top:1px solid var(--border);font-size:12.5px;color:var(--text-2)}
+.kr-icon{font-size:14px;flex-shrink:0}.kr-text{flex:1}
+/* Tasks */
+.task-toolbar{display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.task-filter-group{display:flex;border:1px solid var(--border);border-radius:8px;overflow:hidden;background:var(--surface)}
+.task-filter-btn{padding:6px 12px;font-size:12px;border:none;background:none;cursor:pointer;color:var(--text-2);transition:background .1s;white-space:nowrap}
+.task-filter-btn:hover{background:var(--bg)}.task-filter-btn.active{background:var(--accent);color:#fff}
+.task-area-select,.fleet-type-select{padding:6px 10px;font-size:12px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);cursor:pointer}
+.btn-new-task{margin-left:auto;padding:7px 14px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-size:12.5px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:5px}
+.btn-new-task:hover{opacity:0.88}
+.task-stats{display:flex;gap:16px;margin-bottom:14px}
+.task-stat{font-size:12px;color:var(--text-2)}
+.task-stat strong{font-size:18px;font-weight:600;display:block;line-height:1}
+.task-stat.s-open strong{color:var(--amber)}.task-stat.s-done strong{color:var(--green)}.task-stat.s-high strong{color:var(--red)}
+.task-group-header{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-3);padding:10px 0 6px;border-bottom:1px solid var(--border);margin-bottom:2px}
+.task-item{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
+.task-item:last-child{border-bottom:none}.task-item.done{opacity:0.45}
+.task-checkbox{width:17px;height:17px;border:1.5px solid var(--border);border-radius:4px;flex-shrink:0;margin-top:2px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .12s,border-color .12s}
+.task-checkbox:hover{border-color:var(--accent)}.task-checkbox.checked{background:var(--green);border-color:var(--green)}
+.task-checkbox.checked::after{content:'checkmark';color:#fff;font-size:10px;font-weight:700;content:'\2713'}
+.task-priority-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:5px}
+.dot-high{background:var(--red)}.dot-medium{background:var(--amber)}.dot-low{background:var(--green)}
+.task-content{flex:1;min-width:0}
+.task-text{font-size:13px;line-height:1.4}.task-item.done .task-text{text-decoration:line-through}
+.task-meta{font-size:11px;color:var(--text-3);margin-top:2px}
+.task-source{font-size:10.5px;color:var(--blue);margin-top:2px}
+.btn-task-delete{padding:2px 6px;font-size:10px;border:none;background:none;color:var(--text-3);cursor:pointer;border-radius:4px;opacity:0;transition:opacity .12s}
+.task-item:hover .btn-task-delete{opacity:1}.btn-task-delete:hover{background:#fee2e2;color:var(--red)}
+.task-empty{text-align:center;padding:32px 0;color:var(--text-3);font-size:13px}
+.new-task-form{background:#f0f9ff;border:1px solid #bae6fd;border-radius:var(--radius);padding:14px 16px;margin-bottom:16px;display:none}
+.new-task-form.open{display:block}
+.form-title{font-size:13px;font-weight:600;margin-bottom:12px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+.form-field{display:flex;flex-direction:column;gap:3px}
+.form-field label{font-size:11px;color:var(--text-2);font-weight:500}
+.form-field input,.form-field select,.form-field textarea{padding:7px 10px;border:1px solid var(--border);border-radius:7px;font-size:12.5px;background:var(--surface);color:var(--text);outline:none;font-family:inherit}
+.form-field input:focus,.form-field select:focus,.form-field textarea:focus{border-color:var(--accent)}
+.form-field textarea{resize:vertical;min-height:52px}.form-field.full{grid-column:1/-1}
+.form-buttons{display:flex;gap:8px;justify-content:flex-end;margin-top:8px}
+.btn-cancel{padding:7px 14px;border:1px solid var(--border);border-radius:7px;background:var(--surface);color:var(--text-2);font-size:12.5px;cursor:pointer}
+.btn-submit{padding:7px 16px;background:var(--accent);color:#fff;border:none;border-radius:7px;font-size:12.5px;font-weight:500;cursor:pointer}
+/* Fleet */
+.fleet-cat-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
+.fleet-cat-card{background:var(--surface);border:2px solid var(--border);border-radius:var(--radius);padding:14px 16px;box-shadow:var(--shadow);cursor:pointer;transition:border-color .15s,box-shadow .15s}
+.fleet-cat-card:hover{border-color:#93c5fd;box-shadow:0 0 0 3px rgba(37,99,235,0.08)}
+.fleet-cat-card.selected{border-color:var(--accent);box-shadow:0 0 0 3px rgba(37,99,235,0.12)}
+.select-hint{font-size:10.5px;color:var(--text-3);margin-top:6px}
+.fleet-cat-card.selected .select-hint{color:var(--accent);font-weight:500}
+.fleet-explorer{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);margin-bottom:16px}
+.fleet-explorer-header{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:#fafafa}
+.fleet-explorer-title{font-size:13px;font-weight:600;flex:1}
+.fleet-search{padding:7px 12px;border:1px solid var(--border);border-radius:8px;font-size:12.5px;background:var(--surface);color:var(--text);outline:none;width:200px}
+.fleet-search:focus{border-color:var(--accent)}
+.fleet-table-wrap{overflow-x:auto;max-height:480px;overflow-y:auto}
+table.ft{width:100%;border-collapse:collapse;font-size:12.5px}
+table.ft th{position:sticky;top:0;text-align:left;padding:9px 10px;font-weight:500;color:var(--text-2);border-bottom:2px solid var(--border);background:#fafafa;font-size:11px;text-transform:uppercase;letter-spacing:0.04em;white-space:nowrap;z-index:2}
+table.ft td{padding:9px 10px;border-bottom:1px solid var(--border);vertical-align:middle}
+table.ft tr:last-child td{border-bottom:none}
+table.ft tr:hover td{background:#f9f9f7}
+.mat-badge{font-family:monospace;font-size:12.5px;font-weight:600}
+.age-badge{display:inline-flex;padding:2px 7px;border-radius:12px;font-size:10.5px;font-weight:500}
+.age-new{background:#dcfce7;color:#15803d}.age-mid{background:#fef3c7;color:#92400e}.age-old{background:#fee2e2;color:#991b1b}
+.dual-badge{display:inline-flex;padding:1px 5px;border-radius:8px;font-size:9.5px;background:#e0f2fe;color:#075985;margin-left:4px;font-weight:500}
+.mot-display{font-size:12.5px;color:var(--text-2);cursor:pointer;padding:3px 6px;border-radius:5px;border:1px solid transparent;transition:border-color .12s}
+.mot-display:hover{border-color:var(--border);background:var(--bg)}
+.mot-display.empty{color:var(--text-3);font-style:italic}
+.mot-input{padding:4px 8px;border:1.5px solid var(--accent);border-radius:5px;font-size:12.5px;width:130px;outline:none;font-family:inherit}
+.btn-avarias{padding:4px 10px;font-size:11.5px;border:1px solid var(--border);border-radius:7px;background:var(--bg);color:var(--text-2);cursor:pointer;white-space:nowrap;text-decoration:none;display:inline-flex;align-items:center;gap:4px;transition:background .12s}
+.btn-avarias:hover{background:#fff7ed;color:#92400e;border-color:#fbbf24}
+.btn-avarias.configured{background:#fffbeb;color:#78350f;border-color:#fde68a}
+.fleet-footer{padding:8px 16px;border-top:1px solid var(--border);font-size:11.5px;color:var(--text-3);background:#fafafa;display:flex}
+.url-config-bar{display:flex;align-items:center;gap:8px;padding:8px 12px;background:#fffbeb;border:1px solid #fde68a;border-radius:8px;margin-bottom:12px;flex-wrap:wrap}
+.url-config-label{font-size:12px;color:#78350f;flex:1}
+.url-config-input{padding:6px 10px;border:1px solid #fde68a;border-radius:7px;font-size:12px;flex:1;min-width:200px;outline:none;font-family:monospace;background:#fff}
+.url-config-input:focus{border-color:var(--amber)}
+.btn-url-save{padding:5px 12px;background:var(--amber);color:#fff;border:none;border-radius:7px;font-size:12px;font-weight:500;cursor:pointer}
+.btn-url-toggle{padding:5px 12px;border:1px solid var(--border);border-radius:7px;font-size:12px;background:var(--surface);color:var(--text-2);cursor:pointer}
+.url-config-form{display:none;margin-top:8px;width:100%}
+.url-config-form.open{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.vacant{background:#f0f9ff;border:1px dashed #7dd3fc;border-radius:var(--radius);padding:12px 14px;display:flex;align-items:center;gap:10px}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(60px);background:#18181b;color:#fff;padding:9px 18px;border-radius:8px;font-size:12.5px;opacity:0;transition:all .25s;z-index:100;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+.resp-table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:4px}
+.resp-table thead th{color:var(--text-3);font-size:10.5px;font-weight:600;text-align:left;padding:3px 4px;border-bottom:1px solid var(--border);text-transform:uppercase;letter-spacing:.4px}
+.resp-table tbody td{padding:3px 4px;border-bottom:1px solid var(--border-light,rgba(0,0,0,.06));vertical-align:middle}
+.resp-text-input{width:100%;background:transparent;border:none;color:var(--text-1);font-size:12px;padding:2px 0;outline:none}
+.resp-text-input:focus{background:var(--bg-2);border-radius:3px;padding:2px 4px}
+.resp-select{font-size:11px;width:100%;background:var(--bg-2);color:var(--text-1);border:1px solid var(--border);border-radius:4px;padding:2px 3px;cursor:pointer}
+.resp-add-btn{margin-top:6px;font-size:11.5px;background:none;border:1px dashed var(--border);border-radius:5px;color:var(--accent);padding:4px 12px;cursor:pointer;width:100%;transition:background .15s}
+.resp-add-btn:hover{background:var(--bg-2)}
+
+
+@media(max-width:700px){.kpi-dept-grid{grid-template-columns:1fr}}
+
+.kpi-month-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin-top:6px}
+.kpi-month-table{border-collapse:collapse;font-size:12px;min-width:760px;width:100%}
+.kpi-row-lbl-th{text-align:left;padding:3px 10px 3px 0;min-width:130px}
+.kpi-row-lbl{font-size:12px;color:var(--text-1);padding:5px 10px 5px 0;min-width:130px;vertical-align:top;white-space:nowrap}
+.kpi-month-th{font-size:10px;color:var(--text-3);text-align:center;padding:3px 2px;min-width:46px;font-weight:500}
+.kpi-qavg-th{font-size:10.5px;color:var(--text-2);font-weight:700;text-align:center;padding:3px 6px;background:rgba(0,0,0,.04);min-width:56px;border-left:1px solid var(--border)}
+.kpi-annual-th{border-left:2px solid var(--border)!important;background:rgba(0,0,0,.07)!important}
+.kpi-month-td{text-align:center;padding:3px 2px;vertical-align:middle}
+.kpi-cur-month .kpi-m-input{border-color:var(--accent)!important;background:rgba(99,102,241,.08)!important}
+.kpi-m-input{width:42px;background:var(--bg-1);border:1px solid var(--border);border-radius:4px;padding:2px 4px;font-size:11.5px;color:var(--text-1);text-align:center;-moz-appearance:textfield}
+.kpi-m-input::-webkit-outer-spin-button,.kpi-m-input::-webkit-inner-spin-button{-webkit-appearance:none}
+.kpi-m-input:focus{outline:none;border-color:var(--accent)}
+.kpi-qavg-td{text-align:center;padding:4px 6px;background:rgba(0,0,0,.04);border-left:1px solid var(--border);vertical-align:middle;white-space:nowrap}
+
+.ferias-grid{width:100%;border-collapse:collapse;font-size:12px;margin-top:8px}
+.ferias-grid th{font-size:10.5px;color:var(--text-3);font-weight:600;text-align:center;padding:4px 3px;text-transform:uppercase;letter-spacing:.3px}
+.ferias-grid th.f-name-th{text-align:left;min-width:130px;padding-left:0}
+.ferias-grid th.f-cur-month{color:var(--accent);font-weight:700}
+.ferias-grid td{padding:4px 3px;text-align:center;vertical-align:middle;border-bottom:1px solid var(--border)}
+.ferias-grid td.f-name{text-align:left;padding:6px 8px 6px 0;white-space:nowrap;font-weight:600;color:var(--text-1)}
+.ferias-grid td.f-name span{display:block;font-size:10.5px;font-weight:400;color:var(--text-3)}
+.f-cell-vac{background:var(--accent);color:#fff;border-radius:5px;font-size:11px;font-weight:700;padding:2px 4px;display:inline-block;min-width:22px}
+.f-cell-vac.f-overlap{background:var(--red,#ef4444)}
+.f-cell-vac.f-warn{background:#f97316}
+.f-cell-empty{color:var(--text-3);font-size:10px}
+.f-total{font-weight:700;color:var(--text-1)}
+.f-restam{font-size:11px;color:var(--text-3)}
+.f-alert-row td{padding:2px 3px;font-size:10px;color:var(--red,#ef4444);font-weight:600;text-align:center}
+.ferias-legend{display:flex;gap:14px;margin-bottom:10px;font-size:11px;color:var(--text-2);flex-wrap:wrap}
+.f-leg{display:flex;align-items:center;gap:5px}
+.f-leg-dot{width:12px;height:12px;border-radius:3px}
+.ferias-alerts{background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.2);border-radius:8px;padding:10px 14px;margin-bottom:12px}
+.ferias-alerts-title{font-size:12px;font-weight:700;color:var(--red,#ef4444);margin-bottom:6px}
+.ferias-alert-item{font-size:11.5px;color:var(--text-1);margin-bottom:4px;line-height:1.4}
+
+#ferias-detail-modal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.55);z-index:9999;align-items:center;justify-content:center}
+#ferias-detail-content{background:#ffffff;border-radius:14px;padding:20px;max-width:330px;width:92%;box-shadow:0 24px 70px rgba(0,0,0,.4);position:relative;z-index:10000}
+@media(prefers-color-scheme:dark){#ferias-detail-content{background:#1e1e2e;color:#cdd6f4}}
+.fd-header{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.fd-cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:12px}
+.fd-day-name{text-align:center;font-size:10px;font-weight:600;color:var(--text-3);padding:2px}
+.fd-day{text-align:center;font-size:12px;padding:5px 2px;border-radius:5px;line-height:1}
+.fd-day-vac{background:var(--accent);color:#fff;font-weight:700}
+.fd-day-weekend{color:var(--text-3);font-size:11px}
+.fd-day-normal{color:var(--text-1)}
+.fd-days-list{font-size:12px;color:var(--text-2);border-top:1px solid var(--border);padding-top:10px;margin-top:4px;line-height:1.7}
+.f-month-cell{cursor:pointer;transition:background .15s}
+.f-month-cell:hover{background:var(--bg-2)}
+</style>
+</head>
+<body>
+<div class="app-header">
+  <div class="app-header-left">
+    <p>Construcoes Pragosa, S.A.</p>
+    <h1>Departamento de Logistica &amp; Frota</h1>
+  </div>
+  <div class="app-header-right"><div>Diretora: Rita Fialho</div><div>Atualizado: 12 jul 2026</div></div>
+</div>
+<div class="nav">
+  <button class="nav-btn active" onclick="showTab('equipa',this)">Equipa</button>
+  <button class="nav-btn" onclick="showTab('frota',this)">Frota</button>
+  <button class="nav-btn" onclick="showTab('reunioes',this)">Reunioes</button>
+  <button class="nav-btn" onclick="showTab('kpis',this)">KPIs &amp; OKRs</button>
+  <button class="nav-btn" id="nav-tarefas" onclick="showTab('tarefas',this)">Tarefas <span class="nav-badge" id="badge-open" style="display:none"></span></button>
+</div>
+<div class="main">
+
+<!-- EQUIPA -->
+<div id="tab-equipa" class="section active">
+  <div class="sh mb12">
+    <div class="sh-title">Equipa — 14 colaboradores</div>
+    <div class="view-toggle">
+      <button class="view-toggle-btn active" onclick="setEquipaView('cards',this)">Cartoes</button>
+      <button class="view-toggle-btn" onclick="setEquipaView('org',this)">Organograma</button>
+    <button class="view-toggle-btn" onclick="setEquipaView('ferias',this)">Férias 2026</button>
+    </div>
+  </div>
+  <div id="equipa-cards-view">
+    <div id="equipa-cards-container"></div>
+    <div class="divider"></div>
+    <div class="grid-3">
+      <div class="card"><div class="kpi-lbl">Cisternas</div><div class="kpi-num" style="color:var(--green)">15</div><div class="kpi-sub">motoristas internos</div><div class="mt8"><span class="badge b-ok">Sem alugados</span></div></div>
+      <div class="card"><div class="kpi-lbl">Industria / CPSA</div><div class="kpi-num" style="color:var(--amber)">40+</div><div class="kpi-sub">internos + alugados variavel</div><div class="mt8"><span class="badge b-warn">Dependencia alugados</span></div></div>
+      <div class="card"><div class="kpi-lbl">CCTs distintos</div><div class="kpi-num" style="color:var(--accent)">2</div><div class="kpi-sub">Pragosa Transportes vs. CPSA</div><div class="mt8"><span class="badge b-info">Atencao</span></div></div>
+    </div>
+    <div class="alert alert-warn mt12">Avaliacao CE 30 jun: Gabriela em evolucao. Frederico em integracao (plano 2 fases). Monica superou expectativas. Ruben Sousa: licenca paternidade setembro.</div>
+  </div>
+  <div id="equipa-org-view" style="display:none">
+    <div class="org-chart-wrap">
+      <div style="display:flex;justify-content:center;margin-bottom:0" id="orgRootRow"></div>
+      <div style="display:flex;justify-content:center"><div style="width:1px;height:20px;background:var(--border)"></div></div>
+      <div style="height:1px;background:var(--border);margin:0 11%"></div>
+      <div id="orgChildrenRow" style="display:flex;gap:8px;align-items:flex-start"></div>
+    </div>
+    <div class="org-edit-panel" id="orgEditPanel" style="display:none"></div>
+  </div>
+</div>
+  <div id="equipa-ferias-view" style="display:none;padding-top:8px"></div>
+
+<!-- FROTA -->
+<div id="tab-frota" class="section">
+  <div class="url-config-bar" id="urlConfigBar">
+    <div class="url-config-label">APP Gestao de Avarias: <span id="urlStatus">Nao configurada</span></div>
+    <button class="btn-url-toggle" onclick="toggleUrlForm()">Configurar URL</button>
+    <div class="url-config-form" id="urlConfigForm">
+      <input class="url-config-input" id="urlInput" type="text" placeholder="https://app.example.com/avarias?veiculo="/>
+      <button class="btn-url-save" onclick="saveAvariasUrl()">Guardar</button>
+      <span style="font-size:11px;color:#78350f;flex:1">A matricula sera adicionada no fim do URL</span>
+    </div>
+  </div>
+  <div class="fleet-cat-cards">
+    <div class="fleet-cat-card selected" id="cat-basculantes" onclick="selectCat('basculantes')">
+      <div class="kpi-lbl">Basculantes</div><div class="kpi-num" style="color:var(--green)">62</div>
+      <div class="kpi-sub">matriculas</div>
+      <div class="pb mt8"><div class="pb-fill" style="width:73%;background:var(--green)"></div></div>
+      <div style="font-size:11px;color:var(--text-3);margin-top:4px">73% com menos de 10 anos</div>
+      <div class="select-hint">Clique para ver todos</div>
+    </div>
+    <div class="fleet-cat-card" id="cat-cisternas" onclick="selectCat('cisternas')">
+      <div class="kpi-lbl">Cisternas</div><div class="kpi-num" style="color:var(--blue)">28</div>
+      <div class="kpi-sub">equipamentos</div>
+      <div class="pb mt8"><div class="pb-fill" style="width:61%;background:var(--blue)"></div></div>
+      <div style="font-size:11px;color:var(--text-3);margin-top:4px">61% com menos de 10 anos</div>
+      <div class="select-hint">Clique para ver todos</div>
+    </div>
+    <div class="fleet-cat-card" id="cat-especial" onclick="selectCat('especial')">
+      <div class="kpi-lbl">Transporte Especial</div><div class="kpi-num" style="color:var(--red)">24</div>
+      <div class="kpi-sub">equipamentos</div>
+      <div class="pb mt8"><div class="pb-fill" style="width:29%;background:var(--red)"></div></div>
+      <div style="font-size:11px;color:var(--text-3);margin-top:4px">58% com 20 ou mais anos</div>
+      <div class="select-hint">Clique para ver todos</div>
+    </div>
+  </div>
+  <div class="fleet-explorer">
+    <div class="fleet-explorer-header">
+      <div class="fleet-explorer-title" id="explorerTitle">Basculantes</div>
+      <input class="fleet-search" id="fleetSearch" type="text" placeholder="Pesquisar matricula..." oninput="renderFleet()">
+      <select class="fleet-type-select" id="fleetTypeFilter" onchange="renderFleet()"><option value="">Todos os tipos</option></select>
+      <select class="fleet-type-select" id="fleetAgeFilter" onchange="renderFleet()">
+        <option value="">Todas as idades</option>
+        <option value="new">Novos (&lt;10a)</option>
+        <option value="mid">Medios (10-19a)</option>
+        <option value="old">Antigos (20+a)</option>
+      </select>
+    </div>
+    <div class="fleet-table-wrap">
+      <table class="ft"><thead><tr><th>Matricula</th><th>Tipo</th><th>Marca / Modelo</th><th>Ano</th><th>Idade</th><th>Motorista</th><th>Avarias</th></tr></thead>
+      <tbody id="fleetTbody"></tbody></table>
+    </div>
+    <div class="fleet-footer"><span id="fleetCount">0 equipamentos</span><span style="margin-left:auto">Clique no motorista para editar</span></div>
+  </div>
+  <div class="alert alert-err mb8"><strong>Alerta T. Especial:</strong> L-37858 (1976, 50 anos) e 77-56-AB (Mercedes 1992) — avaliacao imediata de abate.</div>
+  <div class="alert alert-ok"><strong>Basculantes e Cisternas em bom estado:</strong> Renovacao massiva 2021-2025. 5 reboques Galucho SGB3 de 2025 recem-entregues.</div>
+</div>
+
+<!-- REUNIOES -->
+<div id="tab-reunioes" class="section">
+<div class="alert alert-info mb16">Reuniões actualizadas automaticamente · <strong>16 jul 2026</strong></div>
+
+  <div class="m-card">
+    <div class="m-header"><div class="m-title">CE Indústria · 2026-07-13</div><div class="m-date">13 jul 2026</div></div>
+    <div class="m-body">Vale Rodrigues condicionada por avaria no tapete do último crivo (stocks aquém, Enrocamento abaixo do mínimo, Brita 2 e Bago de Arroz em forte acumulação). Carbomin com stocks estabilizados mas Granel Carbo G2000 crítico — prioridade aos Big Bags. Cano com desequilíbrio acentuado de britas (Brita 1 a produzir −1.600 t/sem face ao consumo, agravado pelo fornecimento à IBERA de Évora). Santa Eulália a reforçar Brita 2 e explorar produção de Brita 1 MBQ em simultâneo com Brita 1 Brisa. Sobrissul em recuperação, experiência de Brita 3 confirmada como inviável (10 h de produção por carga, exige valor comercial superior). Obra 2456 (Sesimbra/CPSA): sugerida Pedreira do Risco para mistura tout-venant com fresado, início agosto.</div>
+    <div class="tags mb8">
+    <span class="tag b-info">CE</span>
+    <span class="tag b-info">Indústria</span>
+    <span class="tag b-gray">Pedreiras</span>
+    </div>
+  <div class="m-actions">
+    <div class="m-actions-title">Acções identificadas</div>
+      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Ricardo Santos — apresentar proposta para o Cano fazer face aos consumos de britas','industria','high')">+ Tarefa</button><span>Ricardo Santos — apresentar proposta para o Cano fazer face aos consumos de britas</span></div>
+      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Ricardo Santos — limpeza de stocks do Bago de Arroz do Cano (tulha contaminada com argila)','ops','medium')">+ Tarefa</button><span>Ricardo Santos — limpeza de stocks do Bago de Arroz do Cano (tulha contaminada com argila)</span></div>
+      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Ricardo Santos — estimativa de exploração restante de Moleanos para JMP','industria','medium')">+ Tarefa</button><span>Ricardo Santos — estimativa de exploração restante de Moleanos para JMP</span></div>
+      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Ricardo Santos — preparar espaço na Pedreira do Risco (obra 2456/CPSA) e indicar necessidade de Buldózer','ops','medium')">+ Tarefa</button><span>Ricardo Santos — preparar espaço na Pedreira do Risco (obra 2456/CPSA) e indicar necessidade de Buldózer</span></div>
+      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Filipe Nascimento — corrigir dados de horas de Santa Eulália (62 h/sem, não 30 h)','industria','medium')">+ Tarefa</button><span>Filipe Nascimento — corrigir dados de horas de Santa Eulália (62 h/sem, não 30 h)</span></div>
+      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Filipe Nascimento — responder ao cliente Alves Ribeiro (Brita 1 Brisa só a partir de janeiro)','ops','medium')">+ Tarefa</button><span>Filipe Nascimento — responder ao cliente Alves Ribeiro (Brita 1 Brisa só a partir de janeiro)</span></div>
+      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Filipe Nascimento — ligar previsões do 2.º semestre ao orçamento e juntar histórico do 1.º semestre','ops','medium')">+ Tarefa</button><span>Filipe Nascimento — ligar previsões do 2.º semestre ao orçamento e juntar histórico do 1.º semestre</span></div>
+      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Carbomin — priorizar produção/expedição de Big Bags de Carbo G2000','industria','high')">+ Tarefa</button><span>Carbomin — priorizar produção/expedição de Big Bags de Carbo G2000</span></div>
+      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Ana Rita — acompanhar fornecimento de Brita 1 à IBERA de Évora e articular cadências','ops','medium')">+ Tarefa</button><span>Ana Rita — acompanhar fornecimento de Brita 1 à IBERA de Évora e articular cadências</span></div>
+  </div>
+  </div>
+  <div class="m-card">
+    <div class="m-header"><div class="m-title">Reunião Comercial Indústria · 2026-07-09</div><div class="m-date">09 jul 2026</div></div>
+    <div class="m-body">Reunião comercial do segmento Indústria para planear fornecimentos de brita, tout-venant, pó de pedra e agregados até agosto/setembro e alinhar preços e logística. Ponto central: subir o preço de venda alvo de ~€8,50 para €9,50 para proteger margem e viabilizar transporte. Central de betão projeta 6.000 m³/mês (26.000 t Brita 1 + 22.000 t Brita 2 a 6 meses — a validar com Filipe Nascimento). Obras a fechar até início de agosto: Teixeira Duarte (arranque setembro) e Zago/Zagope. Concurso Urubirado — 24.000 t de agregado reciclado.</div>
+    <div class="tags mb8">
+    <span class="tag b-info">Comercial</span>
+    <span class="tag b-info">Indústria</span>
+    <span class="tag b-gray">Pedreiras</span>
+    </div>
+  <div class="m-actions">
+    <div class="m-actions-title">Acções identificadas</div>
+      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Jorge Ferreira — monitorizar cargas e intervir se houver discrepância de fornecimento','ops','medium')">+ Tarefa</button><span>Jorge Ferreira — monitorizar cargas e intervir se houver discrepância de fornecimento</span></div>
+      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Jorge Ferreira — acompanhar negociação com Teixeira Duarte e Zago (fecho até início de agosto)','ops','medium')">+ Tarefa</button><span>Jorge Ferreira — acompanhar negociação com Teixeira Duarte e Zago (fecho até início de agosto)</span></div>
+      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Filipe Nascimento — confirmar estimativas da central (6.000 m³/mês) e validar capacidade para 26.000 t Brita 1 + 22.000 t Brita 2','ops','medium')">+ Tarefa</button><span>Filipe Nascimento — confirmar estimativas da central (6.000 m³/mês) e validar capacidade para 26.000 t Brita 1 + 22.000 t Brita 2</span></div>
+      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Comercial — atualizar mapa de preços e preços de transferência (Sobre e Sul)','ops','medium')">+ Tarefa</button><span>Comercial — atualizar mapa de preços e preços de transferência (Sobre e Sul)</span></div>
+      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Comercial — confirmar preço de venda alvo €9,50 e testar aceitação com clientes-chave','ops','medium')">+ Tarefa</button><span>Comercial — confirmar preço de venda alvo €9,50 e testar aceitação com clientes-chave</span></div>
+      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Comercial — decidir participação no concurso Urubirado (24.000 t agregado reciclado)','ops','medium')">+ Tarefa</button><span>Comercial — decidir participação no concurso Urubirado (24.000 t agregado reciclado)</span></div>
+  </div>
+  </div>
+  <div class="m-card">
+    <div class="m-header"><div class="m-title">CE Logística · 2026-07-06</div><div class="m-date">06 jul 2026</div></div>
+    <div class="m-body">Reunião de decisão sobre três eixos: (1) modelo de gestão das aquisições de frota — porta-máquinas, novos tratores + semirreboques e porta-máquinas de 3 eixos (Nooteboom OSDS-48-03, validado para cilindros até 16 t vs. 36 t de carga útil); (2) fechar âmbito e fase do projeto de telemática/IA por fases (API Wialon/Traccar → rotas → alertas/IA); (3) salários e categorias dos motoristas — proposta de nova categoria PTSA "Serviço de Porta-Máquinas/Estrado" (2.216–2.416€, Cenário A), a validar com RH e aprovar em CE.</div>
+    <div class="tags mb8">
+    <span class="tag b-info">CE</span>
+    <span class="tag b-gray">Logística</span>
+    </div>
+  <div class="m-actions">
+    <div class="m-actions-title">Acções identificadas</div>
+      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Definir modelo de gestão das aquisições de frota (afetação, prioridades, responsável, custos)','ops','high')">+ Tarefa</button><span>Definir modelo de gestão das aquisições de frota (afetação, prioridades, responsável, custos)</span></div>
+      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Ana Rita — ver com João Silva equipamentos a adquirir e montar mapa de necessidades e conjugações tratores/semirreboques','frota','medium')">+ Tarefa</button><span>Ana Rita — ver com João Silva equipamentos a adquirir e montar mapa de necessidades e conjugações tratores/semirreboques</span></div>
+      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Confirmar plataforma de telemática disponível (Wialon vs. Traccar) e aprovar Fase I','ops','medium')">+ Tarefa</button><span>Confirmar plataforma de telemática disponível (Wialon vs. Traccar) e aprovar Fase I</span></div>
+      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Confirmar disponibilidade de condutor com carta de articulado para o novo porta-máquinas 3 eixos','rh','medium')">+ Tarefa</button><span>Confirmar disponibilidade de condutor com carta de articulado para o novo porta-máquinas 3 eixos</span></div>
+      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Criar categoria PTSA &quot;Serviço de Porta-Máquinas/Estrado&quot; — validar com RH e submeter à CE (Cenário A: 2.216–2.416€)','rh','medium')">+ Tarefa</button><span>Criar categoria PTSA "Serviço de Porta-Máquinas/Estrado" — validar com RH e submeter à CE (Cenário A: 2.216–2.416€)</span></div>
+  </div>
+  </div>
+  <div class="m-card">
+    <div class="m-header"><div class="m-title">CE Indústria · 2026-07-06</div><div class="m-date">06 jul 2026</div></div>
+    <div class="m-body">Período de verão condiciona fortemente a produção (paragem de manhã por temperatura/vento, produção noturna) com silos a encher rapidamente e ~4 dias de trabalho/semana. Situação de stocks controlada em Carbomin. Cano — Brita 1 crítico (stock a zero a ~1 mês, consumo ~3.000 t/sem) e Brita 2 lavada (reserva 1.800 t para ~3 semanas). Aquisição de 2 motovibradores (~3.000€) confirmada. Alves Ribeiro (~25.000 t Brita 1) com produção insuficiente. Retoma do fornecimento a Alenquer (Lincare/Anker) determinada por JMP.</div>
+    <div class="tags mb8">
+    <span class="tag b-info">CE</span>
+    <span class="tag b-info">Indústria</span>
+    <span class="tag b-gray">Pedreiras</span>
+    </div>
+  <div class="m-actions">
+    <div class="m-actions-title">Acções identificadas</div>
+      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Ricardo Santos — confirmar plano de paragem sequencial do Cano (primeiro uma instalação, depois a outra)','industria','high')">+ Tarefa</button><span>Ricardo Santos — confirmar plano de paragem sequencial do Cano (primeiro uma instalação, depois a outra)</span></div>
+      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Ricardo Santos — realizar ensaio de Brita 3 na Instalação 2 (Sobrissul) e apresentar dados; avisar Comercial','industria','medium')">+ Tarefa</button><span>Ricardo Santos — realizar ensaio de Brita 3 na Instalação 2 (Sobrissul) e apresentar dados; avisar Comercial</span></div>
+      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Produção/Comercial — emitir NC + relatório de ocorrência da Brita 1 do Cano (Central de Montemor)','ops','medium')">+ Tarefa</button><span>Produção/Comercial — emitir NC + relatório de ocorrência da Brita 1 do Cano (Central de Montemor)</span></div>
+      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Ana Rita — esclarecer situação do fornecimento a Alenquer (Lincare/Anker) e retomar entregas (stock ~5.000 t)','ops','high')">+ Tarefa</button><span>Ana Rita — esclarecer situação do fornecimento a Alenquer (Lincare/Anker) e retomar entregas (stock ~5.000 t)</span></div>
+      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Ana Rita — atualizar mapa de consumos de britas (Santa Eulália e Cano) para mapa de 5ª feira','ops','medium')">+ Tarefa</button><span>Ana Rita — atualizar mapa de consumos de britas (Santa Eulália e Cano) para mapa de 5ª feira</span></div>
+  </div>
+  </div>
+  <div class="m-card">
+    <div class="m-header"><div class="m-title">Reunião Comercial Indústria · 2026-07-02</div><div class="m-date">02 jul 2026</div></div>
+    <div class="m-body">Reunião comercial do segmento Indústria para alinhar carteira de fornecimentos por pedreira, reclamações de qualidade em aberto e obras em pipeline. Ponto central: definir se a Alves Ribeiro (Camarate) é cliente estratégico que justifique parar produção em Santa Eulália. Reclamações de excesso de finos na Brita 1 betão (Secil) e em aberto de IBERA, Elci e Secil. WRCTEAM — 30 cargas de Enrocamento 200/500 a arrancar 13/07. Obras em pipeline: Teixeira Duarte (Cascais, setembro), Zagope (Poceirão-Bombel, setembro).</div>
+    <div class="tags mb8">
+    <span class="tag b-info">Comercial</span>
+    <span class="tag b-info">Indústria</span>
+    <span class="tag b-gray">Pedreiras</span>
+    </div>
+  <div class="m-actions">
+    <div class="m-actions-title">Acções identificadas</div>
+      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Ana Rita — falar com Ricardo Santos: preço de rebritagem da Brita e capacidade de produção','ops','medium')">+ Tarefa</button><span>Ana Rita — falar com Ricardo Santos: preço de rebritagem da Brita e capacidade de produção</span></div>
+      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Jorge Ferreira — apurar quantidades a fornecer nos próximos 6 meses (Alves Ribeiro / Santa Eulália)','ops','medium')">+ Tarefa</button><span>Jorge Ferreira — apurar quantidades a fornecer nos próximos 6 meses (Alves Ribeiro / Santa Eulália)</span></div>
+      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Comercial — apresentar projeção de consumos de britas a 6 meses (Santa Eulália e Sobrissul)','ops','medium')">+ Tarefa</button><span>Comercial — apresentar projeção de consumos de britas a 6 meses (Santa Eulália e Sobrissul)</span></div>
+      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Alexandre Marques — validar redução de preço dos agregados para IBERA Évora (Brita 2 + Areia)','ops','medium')">+ Tarefa</button><span>Alexandre Marques — validar redução de preço dos agregados para IBERA Évora (Brita 2 + Areia)</span></div>
+      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Tratar reclamações em aberto: IBERA, Elci, Secil (excesso de finos — Brita 1 betão)','ops','medium')">+ Tarefa</button><span>Tratar reclamações em aberto: IBERA, Elci, Secil (excesso de finos — Brita 1 betão)</span></div>
+  </div>
+  </div>
+  <div class="m-card">
+    <div class="m-header"><div class="m-title">CE Weekly — Estado Operacional Logística · 2026-06-30</div><div class="m-date">30 jun 2026</div></div>
+    <div class="m-body">Estado operacional estável nas Construções. Cisternas sob pressão por elevado número de avarias a condicionar a operação — reforçar manutenção preventiva. Expedição Sobrissul em risco: Paula Lagos com baixas recorrentes, Susete sobrecarregada — decisão de abrir vaga de 3.º elemento. Foco de gestão demasiado concentrado na operação, com pouco tempo para equipa e visão estratégica. Frederico em integração (Fase I — basculantes). Ruben Sousa: licença paternidade em setembro.</div>
+    <div class="tags mb8">
+    <span class="tag b-info">CE</span>
+    <span class="tag b-gray">Weekly</span>
+    <span class="tag b-gray">Equipa</span>
+    </div>
+  <div class="m-actions">
+    <div class="m-actions-title">Acções identificadas</div>
+      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Analisar causas das avarias em Cisternas e reforçar manutenção preventiva','frota','high')">+ Tarefa</button><span>Analisar causas das avarias em Cisternas e reforçar manutenção preventiva</span></div>
+      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Acompanhar fornecimentos a maior distância e uso de subcontratados na Indústria','ops','medium')">+ Tarefa</button><span>Acompanhar fornecimentos a maior distância e uso de subcontratados na Indústria</span></div>
+      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Confirmar plano de substituições de férias, incluindo cobertura imprevisto na Sobrissul','equipa','medium')">+ Tarefa</button><span>Confirmar plano de substituições de férias, incluindo cobertura imprevisto na Sobrissul</span></div>
+  </div>
+  </div>
+  <div class="m-card">
+    <div class="m-header"><div class="m-title">CE Indústria · 2026-06-30</div><div class="m-date">30 jun 2026</div></div>
+    <div class="m-body">Vários materiais com consumo superior à produção: Cano — Brita 1 quebra semana após semana (risco de rutura a ~1300-1500 t/sem), Santa Eulália e Sobrissul — Brita 1. Orientações de João Pragosa: planeamento por projeção de produção (não por cliente), revisão da estratégia de fornecimentos do Cano e projeção de consumos de britas a 6 meses (Sobrissul). Determinado aprovisionamento de 2 motovibradores em stock. Paragem do Cano: semana de 13-15 de julho.</div>
+    <div class="tags mb8">
+    <span class="tag b-info">CE</span>
+    <span class="tag b-info">Indústria</span>
+    <span class="tag b-gray">Pedreiras</span>
+    </div>
+  <div class="m-actions">
+    <div class="m-actions-title">Acções identificadas</div>
+      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Ricardo Santos — apresentar projeção de blocos de Moleanos até ao final do ano','industria','medium')">+ Tarefa</button><span>Ricardo Santos — apresentar projeção de blocos de Moleanos até ao final do ano</span></div>
+      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Comercial — rever estratégia de fornecimentos do Cano e avaliar rentabilidade durante a paragem (13-15 jul)','ops','high')">+ Tarefa</button><span>Comercial — rever estratégia de fornecimentos do Cano e avaliar rentabilidade durante a paragem (13-15 jul)</span></div>
+      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Comercial — apresentar projeção de consumos de britas a 6 meses (Sobrissul)','ops','medium')">+ Tarefa</button><span>Comercial — apresentar projeção de consumos de britas a 6 meses (Sobrissul)</span></div>
+      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Vale Rodrigues — resolver ausência de reforço de Enrocamento (troca de martelos prevista para agosto)','industria','medium')">+ Tarefa</button><span>Vale Rodrigues — resolver ausência de reforço de Enrocamento (troca de martelos prevista para agosto)</span></div>
+  </div>
+  </div>
+  <div class="m-card">
+    <div class="m-header"><div class="m-title">CE Indústria · 2026-06-22</div><div class="m-date">22 jun 2026</div></div>
+    <div class="m-body">Vários materiais com consumo superior à produção: Vale Rodrigues (Brita 1), Cano (Tout-Venant 1ª e Brita 1 Lavada), Santa Eulália (Brita 1 MBQ). Sobrissul — Brita 2 volta a atingir stock mínimo em ~1 semana. Paragens de produção planeadas em três pedreiras. Durante a reunião, Comercial suspendeu o fornecimento de Brita 1 Granito MBQ (Santa Eulália) por alegado incumprimento de fuso — Jorge Ferreira a verificar stocks na Central do Seixal.</div>
+    <div class="tags mb8">
+    <span class="tag b-info">CE</span>
+    <span class="tag b-info">Indústria</span>
+    <span class="tag b-gray">Pedreiras</span>
+    </div>
+  <div class="m-actions">
+    <div class="m-actions-title">Acções identificadas</div>
+      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Ana Rita — ver com Jorge Ferreira arranque do fornecimento Enrocamento 200/500 (30 cargas, WRCTEAM) a partir de 13/07','ops','medium')">+ Tarefa</button><span>Ana Rita — ver com Jorge Ferreira arranque do fornecimento Enrocamento 200/500 (30 cargas, WRCTEAM) a partir de 13/07</span></div>
+      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Ana Rita — ver com Jorge Ferreira a reclamação da Secil Évora — Brita 1','ops','medium')">+ Tarefa</button><span>Ana Rita — ver com Jorge Ferreira a reclamação da Secil Évora — Brita 1</span></div>
+      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Organizar transporte da Giratória EC480 (Vale Rodrigues → Cano) para semana de 13-17 jul','frota','medium')">+ Tarefa</button><span>Organizar transporte da Giratória EC480 (Vale Rodrigues → Cano) para semana de 13-17 jul</span></div>
+      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Reforçar stocks de Vale Rodrigues, Santa Eulália e Sobrissul antes das paragens planeadas','industria','medium')">+ Tarefa</button><span>Reforçar stocks de Vale Rodrigues, Santa Eulália e Sobrissul antes das paragens planeadas</span></div>
+  </div>
+  </div>
+  <div class="m-card">
+    <div class="m-header"><div class="m-title">Controlo de Obras, Mobilizações, Custos e Combustível · 2026-06-15</div><div class="m-date">15 jun 2026</div></div>
+    <div class="m-body">Reunião quinzenal de coordenação entre Logística, DTI, Controlo de Gestão, Manutenção e Administração. Três frentes: substituição dos GPS com erros (agendada para 01-03/07, depende de fornecedor externo + nova versão do Traccar), mobilizações (colagem e associação de QR codes em 13 viaturas pesadas e contentores — fluxo DTI → Logística → App), e gasóleo (alargamento da App de Combustíveis ao pessoal das pedreiras, formação a cargo da Logística).</div>
+    <div class="tags mb8">
+    <span class="tag b-gray">Mobilizações</span>
+    <span class="tag b-gray">Frota</span>
+    <span class="tag b-gray">GPS</span>
+    </div>
+  <div class="m-actions">
+    <div class="m-actions-title">Acções identificadas</div>
+      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Confirmar fornecedor externo e agendar substituição dos GPS entre 01/07 e 03/07','ops','medium')">+ Tarefa</button><span>Confirmar fornecedor externo e agendar substituição dos GPS entre 01/07 e 03/07</span></div>
+      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Colar autocolantes QR nas 13 pesadas em falta (+ reboques) e associar na App','frota','medium')">+ Tarefa</button><span>Colar autocolantes QR nas 13 pesadas em falta (+ reboques) e associar na App</span></div>
+      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Nuno Amado — sincronizar QR codes dos contentores e definir local padronizado de colocação','ops','medium')">+ Tarefa</button><span>Nuno Amado — sincronizar QR codes dos contentores e definir local padronizado de colocação</span></div>
+      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Gestão de Combustíveis — preparar formação e plano de acompanhamento da App nas pedreiras','ops','medium')">+ Tarefa</button><span>Gestão de Combustíveis — preparar formação e plano de acompanhamento da App nas pedreiras</span></div>
+  </div>
+  </div>
+  <div class="m-card">
+    <div class="m-header"><div class="m-title">Reunião de Manutenção · 2026-06-15</div><div class="m-date">15 jun 2026</div></div>
+    <div class="m-body">Ponto de situação das viaturas em manutenção. Três viaturas com previsão de término esta/próxima semana (42FF75, 44QI51, 24FA85). Duas resolvidas (24FA87 — toldo/calhas; AJ48BP — tubo despipado). Reparações externas sem previsão: AT57JF na Cortubai, Porta-Máquinas (David) na Unimolas, AU01EM/AC na MAN Turquel. Pendente: folha de inspeção da L-215831 (motorista Celso Cristo).</div>
+    <div class="tags mb8">
+    <span class="tag b-warn">Manutenção</span>
+    <span class="tag b-gray">Frota</span>
+    <span class="tag b-gray">Oficina</span>
+    </div>
+  <div class="m-actions">
+    <div class="m-actions-title">Acções identificadas</div>
+      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Obter ponto de situação da Cortubai sobre a AT57JF (sem previsão)','frota','medium')">+ Tarefa</button><span>Obter ponto de situação da Cortubai sobre a AT57JF (sem previsão)</span></div>
+      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Obter previsão da Unimolas para o Porta-Máquinas David (sem previsão)','frota','medium')">+ Tarefa</button><span>Obter previsão da Unimolas para o Porta-Máquinas David (sem previsão)</span></div>
+      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Obter previsão do AC do AU01EM na MAN Turquel','frota','medium')">+ Tarefa</button><span>Obter previsão do AC do AU01EM na MAN Turquel</span></div>
+      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Pedir ao motorista Celso Cristo a folha de inspeção da L-215831','frota','medium')">+ Tarefa</button><span>Pedir ao motorista Celso Cristo a folha de inspeção da L-215831</span></div>
+  </div>
+  </div>
+  <div class="m-card">
+    <div class="m-header"><div class="m-title">CE Indústria · 2026-06-15</div><div class="m-date">15 jun 2026</div></div>
+    <div class="m-body">Vários reforços de stock de britas em curso: Vale Rodrigues (britas), Sobrissul (stocks de reserva + TV 1ª IP sobe para 1.750 t) e Carbomin (10 paletes de Carbo G2000). Comunicação diária de planeamento com Carbomin definida via WhatsApp (hora de almoço). Sobrissul — Brita 2 atinge stock mínimo no final da semana; Brita 1 atinge stock mínimo em ~4 semanas. Prioridades de transporte definidas para Alenquer (caixote).</div>
+    <div class="tags mb8">
+    <span class="tag b-info">CE</span>
+    <span class="tag b-info">Indústria</span>
+    <span class="tag b-gray">Pedreiras</span>
+    </div>
+  <div class="m-actions">
+    <div class="m-actions-title">Acções identificadas</div>
+      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Rita Fialho — ligar ao Ricardo Santos (Areipor) para fornecimento de Carbo G2000 a granel','ops','medium')">+ Tarefa</button><span>Rita Fialho — ligar ao Ricardo Santos (Areipor) para fornecimento de Carbo G2000 a granel</span></div>
+      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Confirmar reforço de stock de reserva na Sobrissul antes da rutura de Brita 2','industria','high')">+ Tarefa</button><span>Confirmar reforço de stock de reserva na Sobrissul antes da rutura de Brita 2</span></div>
+      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Monitorizar consumo de britas no Cano para Montemor (obra 2397)','industria','medium')">+ Tarefa</button><span>Monitorizar consumo de britas no Cano para Montemor (obra 2397)</span></div>
+  </div>
+  </div>
+  <div class="m-card">
+    <div class="m-header"><div class="m-title">CE Logística · 2026-06-14</div><div class="m-date">14 jun 2026</div></div>
+    <div class="m-body">Reunião centrada na transição de responsabilidades comerciais da Ana Rita e do Alexandre Marques para o Filipe Nascimento, com ponto de situação sobre o arranque do Filipe e acompanhamento do controlo pelo Jorge Ferreira. Tratou-se do acompanhamento de clientes (listagens de volume de faturação), feedback ao controlo de encomendas CPSA e necessidade de reforçar a equipa comercial dos agregados (+1 comercial), também para cobrir as férias do Jorge.</div>
+    <div class="tags mb8">
+    <span class="tag b-info">CE</span>
+    <span class="tag b-gray">Logística</span>
+    <span class="tag b-info">Comercial</span>
+    </div>
+  <div class="m-actions">
+    <div class="m-actions-title">Acções identificadas</div>
+      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Formalizar âmbito da passagem de responsabilidades para o Filipe Nascimento (clientes, encomendas, faturação)','ops','high')">+ Tarefa</button><span>Formalizar âmbito da passagem de responsabilidades para o Filipe Nascimento (clientes, encomendas, faturação)</span></div>
+      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Definir calendário de handover com marcos e ponto de situação periódico com o Filipe','ops','medium')">+ Tarefa</button><span>Definir calendário de handover com marcos e ponto de situação periódico com o Filipe</span></div>
+      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Produzir listagens de volume de faturação para acompanhamento dos clientes','ops','medium')">+ Tarefa</button><span>Produzir listagens de volume de faturação para acompanhamento dos clientes</span></div>
+      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Avançar recrutamento/afetação de +1 comercial para os agregados','rh','medium')">+ Tarefa</button><span>Avançar recrutamento/afetação de +1 comercial para os agregados</span></div>
+      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Definir cobertura da atividade comercial durante as férias do Jorge','ops','medium')">+ Tarefa</button><span>Definir cobertura da atividade comercial durante as férias do Jorge</span></div>
+  </div>
+  </div>
+</div>
+
+<!-- KPIS -->
+<div id="tab-kpis" class="section">
+  <div id="kpi-dept-area" class="mb4"></div>
+  <div class="sh mb16" style="margin-top:4px"><div class="sh-title">OKRs 2026</div></div>
+  <div class="okr-card mb12"><div class="okr-title">O1 — Eficiencia Operacional da Frota</div>
+    <div class="kr"><div class="kr-icon">+</div><div class="kr-text">Taxa de disponibilidade &gt;= 95%</div><span class="badge b-warn">A medir</span></div>
+    <div class="kr"><div class="kr-icon">+</div><div class="kr-text">Reduzir manutencoes corretivas em 20%</div><span class="badge b-err">Cisternas com avarias a subir</span></div>
+    <div class="kr"><div class="kr-icon">+</div><div class="kr-text">Projeto Tacografos em producao</div><span class="badge b-info">Ativo</span></div>
+  </div>
+  <div class="okr-card mb12"><div class="okr-title">O2 — Crescimento Comercial</div>
+    <div class="kr"><div class="kr-icon">+</div><div class="kr-text">Industria — preco alvo 9,50 euros/t</div><span class="badge b-ok">Definido</span></div>
+    <div class="kr"><div class="kr-icon">+</div><div class="kr-text">Teixeira Duarte e Zago — setembro</div><span class="badge b-warn">Em preparacao</span></div>
+  </div>
+  <div class="okr-card mb20"><div class="okr-title">O3 — Digitalizacao</div>
+    <div class="kr"><div class="kr-icon">+</div><div class="kr-text">OLACmd em producao</div><span class="badge b-info">Ativo</span></div>
+    <div class="kr"><div class="kr-icon">+</div><div class="kr-text">Telematica/IA — Wialon/Traccar</div><span class="badge b-warn">Fase I pendente</span></div>
+  </div>
+  <div class="grid-4 mb16">
+    <div class="card"><div class="kpi-lbl">Disponib. Frota</div><div class="kpi-num">—</div><div class="kpi-sub">Meta: &gt;= 95%</div><div class="mt8"><span class="badge b-gray">A medir</span></div></div>
+    <div class="card"><div class="kpi-lbl">Obras em Prazo</div><div class="kpi-num">—</div><div class="kpi-sub">Meta: &gt;= 90%</div><div class="mt8"><span class="badge b-gray">A medir</span></div></div>
+    <div class="card"><div class="kpi-lbl">Motoristas</div><div class="kpi-num" style="color:var(--green)">55</div><div class="kpi-sub">internos</div><div class="mt8"><span class="badge b-ok">Confirmado</span></div></div>
+    <div class="card"><div class="kpi-lbl">Frota Total</div><div class="kpi-num" style="color:var(--accent)">114</div><div class="kpi-sub">equipamentos</div><div class="mt8"><span class="badge b-ok">Inventariado</span></div></div>
+  </div>
+</div>
+
+<!-- TAREFAS -->
+<div id="tab-tarefas" class="section">
+  <div class="task-stats mb12">
+    <div class="task-stat s-open"><strong id="stat-open">0</strong>Abertas</div>
+    <div class="task-stat s-high"><strong id="stat-high">0</strong>Alta prioridade</div>
+    <div class="task-stat s-done"><strong id="stat-done">0</strong>Concluidas</div>
+    <div style="margin-left:auto;font-size:11.5px;color:var(--text-3);align-self:flex-end" id="stat-total"></div>
+  </div>
+  <div class="task-toolbar">
+    <div class="task-filter-group">
+      <button class="task-filter-btn active" onclick="setFilter('all',this)">Todas</button>
+      <button class="task-filter-btn" onclick="setFilter('open',this)">Abertas</button>
+      <button class="task-filter-btn" onclick="setFilter('done',this)">Concluidas</button>
+    </div>
+    <select class="task-area-select" id="areaFilter" onchange="renderTasks()">
+      <option value="all">Todas as areas</option>
+      <option value="equipa">Equipa</option>
+      <option value="frota">Frota</option>
+      <option value="rh">RH</option>
+      <option value="ops">Operacoes</option>
+    </select>
+    <button class="btn-new-task" onclick="toggleForm()">+ Nova tarefa</button>
+  </div>
+  <div class="new-task-form" id="newTaskForm">
+    <div class="form-title">Nova Tarefa</div>
+    <div class="form-row">
+      <div class="form-field full"><label>Descricao *</label><textarea id="f-text" rows="2" placeholder="O que precisa ser feito?"></textarea></div>
+      <div class="form-field"><label>Area</label><select id="f-area"><option value="equipa">Equipa</option><option value="frota">Frota</option><option value="rh">RH</option><option value="ops">Operacoes</option></select></div>
+      <div class="form-field"><label>Prioridade</label><select id="f-priority"><option value="high">Alta</option><option value="medium" selected>Media</option><option value="low">Baixa</option></select></div>
+      <div class="form-field"><label>Responsavel / Prazo</label><input id="f-meta" type="text" placeholder="ex: Resp.: Rita · Prazo: 31 jul"></div>
+      <div class="form-field"><label>Origem</label><input id="f-source" type="text" placeholder="ex: CE Logistica 12 jul"></div>
+    </div>
+    <div class="form-buttons"><button class="btn-cancel" onclick="toggleForm()">Cancelar</button><button class="btn-submit" onclick="submitTask()">Adicionar</button></div>
+  </div>
+  <div id="taskListContainer"></div>
+</div>
+
+</div><!-- /main -->
+<div class="toast" id="toast"></div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.js" integrity="sha384-iU8HYtnGQ8Cy4zl7gbNMOhsDTTKX02BTXptVP/vqAWIaTfM7isw76iyZCsjL2eVi" crossorigin="anonymous"></script>
+<script>
+// ── TEAM DATA ──
+var TEAM_DATA_DEFAULT=[
+  {id:'rf',initials:'RF',color:'purple',name:'Rita Fialho',cargo:'Diretora de Logistica',area:'direcao',reportsTo:null,risk:'ok',status:'Lideranca',note:'Gestao operacional de frota, pedreiras, obras e projetos internos.',eval:[],pendentes:[]},
+  {id:'gs',initials:'GS',color:'blue',name:'Gabriela Soares',cargo:'Gest. Trafego — Cisternas',area:'trafego',reportsTo:'rf',risk:'warn',status:'Em evolucao',note:'Responsavel pela gestao operacional da frota de cisternas. Cadencia: semanal 30 min.',eval:[{data:'2026-06-30',estado:'Em evolucao',nota:'A ganhar estabilidade na coordenacao com manutencao.'}],pendentes:[]},
+  {id:'bc',initials:'BC',color:'blue',name:'Bruna Cordeiro',cargo:'Gest. Trafego — Industria',area:'trafego',reportsTo:'rf',risk:'ok',status:'De ferias',note:'Gestao operacional da frota das pedreiras. Cadencia: semanal 30 min.',eval:[{data:'2026-06-30',estado:'Sem avaliacao',nota:'Ausente (ferias). Substituida pela Monica com bom desempenho.'}],pendentes:[]},
+  {id:'fc',initials:'FC',color:'amber',name:'Frederico Catarino',cargo:'Gest. Trafego — CPSA',area:'trafego',reportsTo:'rf',risk:'warn',status:'Em integracao — desde 29 jun',note:'Iniciou 29/06/2026. Cadencia: 2x/sem no arranque. Plano: Fase I basculantes, Fase II T. Especial.',eval:[{data:'2026-06-30',estado:'Em integracao',nota:'Plano de desenvolvimento: Fase I basculantes; Fase II T. Especial.'}],pendentes:['Processos e sistemas internos (trafego, ponto, avarias)','Conhecer frota e motoristas CPSA','Alinhar KPIs e expectativas com Rita']},
+  {id:'mn',initials:'MN',color:'green',name:'Monica Neves',cargo:'Administrativa — Industria',area:'admin',reportsTo:'bc',risk:'ok',status:'Superou expectativas',note:'Apoio administrativo as pedreiras. Reporta a Bruna Cordeiro.',eval:[{data:'2026-06-30',estado:'Superou expectativas',nota:'Substituiu a Bruna nas ferias — desempenho mais estavel do que o esperado.'}],pendentes:[]},
+  {id:'fn',initials:'FN',color:'blue',name:'Filipe Nascimento',cargo:'Gestor Comercial — Industria',area:'comercial',reportsTo:'rf',risk:'ok',status:'Operacional',note:'Area Comercial das Pedreiras. Colabora com Alexandre Marques (Dir. Comercial) e Jorge Ferreira.',eval:[],pendentes:[]},
+  {id:'jf',initials:'JF',color:'blue',name:'Jorge Ferreira',cargo:'Comercial — Industria',area:'comercial',reportsTo:'fn',risk:'ok',status:'Operacional',note:'Gere pedidos e relacao com clientes de inertes. jorge.ferreira@pragosa.pt | 967952314.',eval:[],pendentes:[]},
+  {id:'am',initials:'AM',color:'amber',name:'Antonio Marques',cargo:'Admin. Cisternas + Gestor Frota (parcial)',area:'admin',reportsTo:'rf',risk:'warn',status:'Dupla funcao',note:'Administrativo de Cisternas e Lancamento: propostas, guias de transporte, faturacao, ocorrencias.',eval:[],pendentes:[]},
+  {id:'jc',initials:'JC',color:'red',name:'Joao Campos',cargo:'Admin. Custos + Combustiveis + Gestor Frota (parcial)',area:'admin',reportsTo:'rf',risk:'err',status:'3 funcoes — risco critico',note:'Combustiveis, custos, mobilizacoes, tacografos DL 84/2026, licencas e seguros.',eval:[],pendentes:[]},
+  {id:'nd',initials:'ND',color:'amber',name:"Nuno D'Avo",cargo:'Expedicao — Vale Rodrigues + Moleanos',area:'expedicao',reportsTo:'rf',risk:'warn',status:'2 locais — sem backup',note:'Dois locais sem backup identificado. Identificar substituto para ausencias.',eval:[],pendentes:[]},
+  {id:'le',initials:'L',color:'green',name:'Leonor',cargo:'Expedicao — Do Cano',area:'expedicao',reportsTo:'rf',risk:'ok',status:'Operacional',note:'',eval:[],pendentes:[]},
+  {id:'ac',initials:'AC',color:'green',name:'Ana Caiola',cargo:'Expedicao — Santa Eulalia',area:'expedicao',reportsTo:'rf',risk:'ok',status:'Operacional',note:'',eval:[],pendentes:[]},
+  {id:'st',initials:'ST',color:'amber',name:'Susete Trafaria',cargo:'Expedicao — Sobrissul',area:'expedicao',reportsTo:'rf',risk:'warn',status:'Sobrecarga',note:'Equipa Sobrissul em risco. Paula Lagos com baixas recorrentes.',eval:[],pendentes:[]},
+  {id:'pl',initials:'PL',color:'red',name:'Paula Lagos',cargo:'Expedicao — Sobrissul',area:'expedicao',reportsTo:'rf',risk:'err',status:'Baixas recorrentes',note:'Baixas recorrentes — equipa Sobrissul em risco critico.',eval:[],pendentes:[]},
+  {id:'vg',initials:'+',color:'blue',name:'Vaga aberta',cargo:'3. elemento — Sobrissul',area:'expedicao',reportsTo:'rf',risk:'info',status:'Em recrutamento',note:'Decisao CE 30 jun: abrir 3. elemento para Sobrissul.',eval:[],pendentes:['Publicar oferta de emprego','Definir perfil e criterios de selecao']},
+  {id:'vb',initials:'VB',color:'blue',name:'Vera Bairros',cargo:'A definir — entrada agosto',area:'equipa',reportsTo:'rf',risk:'info',status:'Pre-entrada — agosto 2026',note:'Entrada prevista agosto 2026. Funcao a definir.',eval:[],pendentes:['Preparar plano de onboarding','Definir funcao e area de integracao']}
+];
+
+// ── Area responsibilities (from Obsidian person notes) ──
+var AREA_RESP={
+  rf:['Gestao operacional de frota, pedreiras, obras e projetos internos','Supervisao da equipa de logistica e trafego','Relacao com Administracao e restantes departamentos','Aprovacao de decisoes de frota, pessoal e custo'],
+  gs:['Ocupacao e disponibilidade de frota — Cisternas (substituicoes)','Avarias e manutencoes (APP de Avarias)','Consumos e produtividade viatura/motorista; incidentes','Encomendas e expedicao de cisternas','Motoristas: horarios, faltas, validacao de ponto'],
+  bc:['Ocupacao e disponibilidade de frota — Industria (substituicoes)','Avarias e manutencoes (APP de Avarias)','Consumos e produtividade, incidentes','Encomendas e expedicao pedreiras (VR, Cano, SE, Sobrissul, Moleanos)','Motoristas: horarios, faltas, validacao de ponto'],
+  fc:['Ocupacao e disponibilidade frota CPSA (substituicoes)','Avarias e manutencoes (APP de Avarias)','Consumos e produtividade, incidentes CPSA','Motoristas CPSA: horarios, faltas, validacao de ponto'],
+  mn:['Apoio administrativo as pedreiras (expedicao, guias, registos)','Substituicao de Bruna Cordeiro em ausencias'],
+  fn:['Gestao comercial das Pedreiras (inertes)','Acompanhamento de clientes e pedidos','Colaboracao com Dir. Comercial (Alexandre Marques)','Participacao CE Industria'],
+  jf:['Gestao de pedidos de inertes (britas, agregados)','Relacao direta com clientes (precos, prazos, reclamacoes)','Acompanhamento de reclamacoes de qualidade'],
+  am:['Propostas de fornecimento e notas de encomenda (Cisternas)','Guias de transporte e lancamento','Faturacao proforma e recepcao de materiais','Ocorrencias Cisternas'],
+  jc:['Controlo de consumos e cartoes de combustivel','Mobilizacoes de maquinas e grandes equipamentos','Imputacao de custos a obras','Tacografos: descargas e conformidade (DL 84/2026)','Licencas, sinistros e seguros de frota'],
+  nd:['Expedicao de 2 locais: Vale Rodrigues e Moleanos','Controlo de cargas e guias de transporte'],
+  le:['Expedicao — Do Cano','Controlo de cargas e guias de transporte'],
+  ac:['Expedicao — Santa Eulalia','Controlo de cargas e guias de transporte'],
+  st:['Expedicao — Sobrissul (co-responsavel)','Controlo de cargas, guias e comunicacao com motoristas'],
+  pl:['Expedicao — Sobrissul (co-responsavel)','Controlo de cargas, guias e comunicacao com motoristas'],
+  vg:['[Vaga] A definir no processo de recrutamento']
+};
+function getTeamData(){var s=localStorage.getItem('pragosa_team_v1');return s?JSON.parse(s):JSON.parse(JSON.stringify(TEAM_DATA_DEFAULT));}
+function saveTeamData(d){localStorage.setItem('pragosa_team_v1',JSON.stringify(d));}
+function getPersonNotes(){return JSON.parse(localStorage.getItem('pragosa_person_notes')||'{}');}
+function savePersonNote(id,note){var n=getPersonNotes();n[id]=note;localStorage.setItem('pragosa_person_notes',JSON.stringify(n));}
+function getPersonPending(){return JSON.parse(localStorage.getItem('pragosa_person_pending')||'{}');}
+function savePersonPending(id,items){var a=getPersonPending();a[id]=items;localStorage.setItem('pragosa_person_pending',JSON.stringify(a));}
+
+// ── Card view ──
+var GROUPS=[{area:'direcao',label:'Direcao'},{area:'trafego',label:'Gestao de Trafego'},{area:'comercial',label:'Comercial'},{area:'admin',label:'Administrativo & Custos'},{area:'expedicao',label:'Expedicao'}];
+
+function getPersonResp(id){var s=JSON.parse(localStorage.getItem('pragosa_resp_v1')||'{}');if(s[id])return s[id];var base=AREA_RESP[id]||[];return base.map(function(r){return{text:r,rating:'',shared:''};});}
+function savePersonResp(id,data){var s=JSON.parse(localStorage.getItem('pragosa_resp_v1')||'{}');s[id]=data;localStorage.setItem('pragosa_resp_v1',JSON.stringify(s));}
+function setRespRating(pid,idx,val){var d=getPersonResp(pid);d[idx].rating=val;savePersonResp(pid,d);}
+function setRespShared(pid,idx,val){var d=getPersonResp(pid);d[idx].shared=val;savePersonResp(pid,d);}
+function setRespText(pid,idx,val){var d=getPersonResp(pid);d[idx].text=val;savePersonResp(pid,d);}
+function addResp(pid){var d=getPersonResp(pid);d.push({text:'Nova responsabilidade',rating:'',shared:''});savePersonResp(pid,d);renderCards();var card=document.getElementById('ecard-'+pid);if(card)card.classList.add('expanded');if(selectedOrgId===pid){setTimeout(function(){openOrgEdit(pid);},50);}}
+var _pendingResp=null;
+function deleteResp(pid,idx){var key=pid+'-'+idx;if(_pendingResp!==key){_pendingResp=key;showToast('Clique novamente para confirmar a eliminação.');setTimeout(function(){if(_pendingResp===key)_pendingResp=null;},3000);return;}_pendingResp=null;var d=getPersonResp(pid);d.splice(idx,1);savePersonResp(pid,d);renderCards();if(selectedOrgId===pid){setTimeout(function(){openOrgEdit(pid);},50);}showToast('Responsabilidade eliminada.');}
+function transferResp(pid,idx,targetPid){if(!targetPid)return;var src=getPersonResp(pid);var tgt=getPersonResp(targetPid);var item=src.splice(idx,1)[0];item.shared='';tgt.push(item);savePersonResp(pid,src);savePersonResp(targetPid,tgt);renderCards();if(selectedOrgId===pid){setTimeout(function(){openOrgEdit(pid);},50);}var team=getTeamData();var t=team.find(function(x){return x.id===targetPid;});showToast('Transferida para '+(t?t.name.split(' ')[0]:'colega')+'.');}
+function buildRespTable(pid,resp,team,inPanel){
+  var ratingVals=['Excelente','Bom','Satisfatório','A Melhorar','Crítico'];
+  var h='<div class="e-section-title">Responsabilidades</div>';
+  if(!resp.length){
+    h+='<button class="resp-add-btn" data-pid="'+pid+'" onclick="addResp(this.dataset.pid)">+ Responsabilidade</button>';
+    return h;
+  }
+  var colleagues=team.filter(function(x){return x.id!==pid&&x.id!=='vg'&&x.id!=='vb';});
+  h+='<table class="resp-table"><thead><tr><th>Responsabilidade</th><th style="width:110px">Desempenho</th><th style="width:110px">Partilhado com</th><th style="width:130px">Acções</th></tr></thead><tbody>';
+  resp.forEach(function(r,i){
+    var rOpts='<option value="">—</option>'+ratingVals.map(function(v){return'<option value="'+v+'"'+(r.rating===v?' selected':'')+'>'+v+'</option>';}).join('');
+    var sOpts='<option value="">—</option>'+colleagues.map(function(x){var nm=x.name.split(' ');return'<option value="'+x.id+'"'+(r.shared===x.id?' selected':'')+'>'+nm[0]+(nm[1]?' '+nm[1].charAt(0)+'.':'')+' </option>';}).join('');
+    var tOpts='<option value="">Transferir →</option>'+colleagues.map(function(x){var nm=x.name.split(' ');return'<option value="'+x.id+'">'+nm[0]+(nm[1]?' '+nm[1].charAt(0)+'.':'')+' </option>';}).join('');
+    h+='<tr>';
+    h+='<td><input class="resp-text-input" data-pid="'+pid+'" data-idx="'+i+'" value="'+escHtml(r.text)+'" onchange="setRespText(this.dataset.pid,+this.dataset.idx,this.value)"></td>';
+    h+='<td><select class="resp-select" data-pid="'+pid+'" data-idx="'+i+'" onchange="setRespRating(this.dataset.pid,+this.dataset.idx,this.value)">'+rOpts+'</select></td>';
+    h+='<td><select class="resp-select" data-pid="'+pid+'" data-idx="'+i+'" onchange="setRespShared(this.dataset.pid,+this.dataset.idx,this.value)">'+sOpts+'</select></td>';
+    h+='<td style="white-space:nowrap;display:flex;gap:4px;align-items:center;padding:3px 4px">';
+    h+='<select class="resp-select" style="flex:1;font-size:10.5px" data-pid="'+pid+'" data-idx="'+i+'" onchange="transferResp(this.dataset.pid,+this.dataset.idx,this.value);this.value=\'\'">'+tOpts+'</select>';
+    h+='<button onclick="deleteResp(\''+pid+'\','+i+')" title="Eliminar" style="flex-shrink:0;padding:2px 6px;border:1px solid var(--border);border-radius:4px;background:none;color:var(--text-3);cursor:pointer;font-size:12px;line-height:1" onmouseover="this.style.background=\'#fee2e2\';this.style.color=\'#991b1b\'" onmouseout="this.style.background=\'none\';this.style.color=\'var(--text-3)\'">✕</button>';
+    h+='</td>';
+    h+='</tr>';
+  });
+  h+='</tbody></table>';
+  h+='<button class="resp-add-btn" data-pid="'+pid+'" onclick="addResp(this.dataset.pid)">+ Responsabilidade</button>';
+  return h;
+}
+
+
+var KPI_DEPT_DEF=[
+  {id:'kd1',tipo:'Economico',tipoC:'economico',cat:'Tecnicos',name:'Indice de Ocupacao',
+   formula:'(KM Carga / KM Total) x 100  |  (H.Trabalhadas / H.Disponibilidade) x 100',
+   rows:[
+     {key:'ocup_cist',lbl:'Cisternas',meta:55,unit:'%'},
+     {key:'ocup_bascul',lbl:'Basculantes',meta:60,unit:'%'},
+     {key:'ocup_esp',lbl:'T.Especial',meta:80,unit:'%'}
+   ]},
+  {id:'kd2',tipo:'Operacional',tipoC:'operacional',cat:'Administrativos',name:'Fecho Mensal de Lancamentos',
+   formula:'((Dia Entrega - Dia Estipulado) / Dia Estipulado) x 100',
+   rows:[
+     {key:'fecho_comb',lbl:'Combustivel',meta:5,unit:'dia',lower:true},
+     {key:'fecho_mob',lbl:'Mobilizacoes',meta:5,unit:'dia',lower:true},
+     {key:'fecho_fat',lbl:'Faturacao',meta:5,unit:'dia',lower:true}
+   ]},
+  {id:'kd3',tipo:'Governanca',tipoC:'governanca',cat:'Departamento',name:'ON Time Delivery (OTD)',
+   formula:'((Data Realizada - Data Planeada) / Data Planeada) x 100',
+   rows:[
+     {key:'otd',lbl:'Pedidos na data ou antes',meta:90,unit:'%'}
+   ]},
+  {id:'kd4',tipo:'Ambiental',tipoC:'ambiental',cat:'Departamento',name:'Consumo de Combustivel',
+   formula:'Litros Consumidos / KM Percorridos',
+   rows:[
+     {key:'consumo',lbl:'Consumo medio frota',meta:40,unit:'L/100km',lower:true}
+   ]},
+  {id:'kd5',tipo:'Social',tipoC:'social',cat:'Departamento',name:'Desenvolvimento de Competencias',
+   formula:'Aumentar nivel de competencias tecnicas da equipa',
+   rows:[
+     {key:'compet',lbl:'Nivel competencias tecnicas',meta:70,unit:'%'}
+   ]}
+];
+var KPI_MONTHS_PT=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+var KPI_YEAR=2026;
+var KPI_CUR_MONTH=new Date().getMonth();
+function getKpiVals(){return JSON.parse(localStorage.getItem('pragosa_kpi_v2')||'{}');}
+function saveKpiVals(d){localStorage.setItem('pragosa_kpi_v2',JSON.stringify(d));}
+function setKpiMonth(key,mIdx,val){
+  var d=getKpiVals();
+  if(!d[key])d[key]={};
+  var mk=KPI_YEAR+'-'+(mIdx<9?'0':'')+(mIdx+1);
+  if(val===''||val===null||val===undefined||isNaN(parseFloat(val))){delete d[key][mk];}
+  else{d[key][mk]=parseFloat(val);}
+  saveKpiVals(d);
+  updateQAvg(key,Math.floor(mIdx/3),d);
+  updateAnnualAvg(key,d);
+}
+function getRowDef(key){var found=null;KPI_DEPT_DEF.forEach(function(k){k.rows.forEach(function(r){if(r.key===key)found=r;});});return found;}
+function calcQAvg(key,d,qIdx){
+  var r=getRowDef(key);if(!r)return null;
+  var vals=[];
+  for(var mi=0;mi<3;mi++){var mIdx=qIdx*3+mi;var mk=KPI_YEAR+'-'+(mIdx<9?'0':'')+(mIdx+1);if(d[key]&&d[key][mk]!==undefined)vals.push(d[key][mk]);}
+  return vals.length?vals.reduce(function(a,b){return a+b;},0)/vals.length:null;
+}
+function kpiColor(avg,meta,lower){
+  if(avg===null||typeof meta!=='number')return'var(--text-3)';
+  var pct=lower?Math.min(100,Math.round((meta/Math.max(avg,0.01))*100)):Math.min(100,Math.round((avg/meta)*100));
+  return pct>=100?'var(--green)':pct>=75?'#f97316':'var(--red,#ef4444)';
+}
+function updateQAvg(key,qIdx,d){
+  var r=getRowDef(key);if(!r)return;
+  var avg=calcQAvg(key,d,qIdx);
+  var el=document.getElementById('qavg-'+key+'-'+qIdx);if(!el)return;
+  var col=kpiColor(avg,r.meta,!!r.lower);
+  el.innerHTML=avg!==null?('<span style="color:'+col+';font-weight:600">'+avg.toFixed(1)+'</span><span style="font-size:9px;color:var(--text-3)"> '+r.unit+'</span>'):'<span style="color:var(--text-3)">—</span>';
+}
+function updateAnnualAvg(key,d){
+  var r=getRowDef(key);if(!r)return;
+  var qAvgs=[];for(var qi=0;qi<4;qi++){var avg=calcQAvg(key,d,qi);if(avg!==null)qAvgs.push(avg);}
+  var annualAvg=qAvgs.length?qAvgs.reduce(function(a,b){return a+b;},0)/qAvgs.length:null;
+  var el=document.getElementById('annual-'+key);if(!el)return;
+  var col=kpiColor(annualAvg,r.meta,!!r.lower);
+  el.innerHTML=annualAvg!==null?('<span style="color:'+col+';font-weight:700">'+annualAvg.toFixed(1)+'</span><span style="font-size:9px;color:var(--text-3)"> '+r.unit+'</span>'):'<span style="color:var(--text-3)">—</span>';
+}
+function renderDeptKpis(){
+  var d=getKpiVals();
+  var out='<div class="sh mb12"><div class="sh-title">KPIs Departamento 2026</div><div class="sh-sub">Valores mensais &rarr; m&eacute;dia trimestral vs. meta &mdash; campo a azul = m&ecirc;s actual</div></div>';
+  KPI_DEPT_DEF.forEach(function(k){
+    out+='<div class="kpi-dept-card kpi-tipo-'+k.tipoC+' mb12">';
+    out+='<div class="kpi-dept-tipo">'+escHtml(k.tipo)+' &middot; '+escHtml(k.cat)+'</div>';
+    out+='<div class="kpi-dept-name">'+escHtml(k.name)+'</div>';
+    out+='<div class="kpi-dept-formula">'+escHtml(k.formula)+'</div>';
+    out+='<div class="kpi-month-wrap"><table class="kpi-month-table"><thead><tr><th class="kpi-row-lbl-th"></th>';
+    for(var qi=0;qi<4;qi++){
+      for(var mi=0;mi<3;mi++){out+='<th class="kpi-month-th">'+KPI_MONTHS_PT[qi*3+mi]+'</th>';}
+      out+='<th class="kpi-qavg-th">Q'+(qi+1)+'</th>';
+    }
+    out+='<th class="kpi-qavg-th kpi-annual-th">Anual</th></tr></thead><tbody>';
+    k.rows.forEach(function(r){
+      out+='<tr><td class="kpi-row-lbl">'+escHtml(r.lbl)+'<br><span style="font-size:10px;color:var(--text-3)">Meta: '+r.meta+r.unit+'</span></td>';
+      var annualQs=[];
+      for(var qi=0;qi<4;qi++){
+        for(var mi=0;mi<3;mi++){
+          var mIdx=qi*3+mi;
+          var mk=KPI_YEAR+'-'+(mIdx<9?'0':'')+(mIdx+1);
+          var val=d[r.key]&&d[r.key][mk]!==undefined?d[r.key][mk]:'';
+          var isCur=mIdx===KPI_CUR_MONTH;
+          out+='<td class="kpi-month-td'+(isCur?' kpi-cur-month':'')+'"><input class="kpi-m-input" data-key="'+r.key+'" data-midx="'+mIdx+'" type="number" step="0.1" min="0" placeholder="&mdash;" value="'+(val!==''?val:'')+'" onchange="setKpiMonth(this.dataset.key,+this.dataset.midx,this.value)"></td>';
+        }
+        var qAvg=calcQAvg(r.key,d,qi);
+        if(qAvg!==null)annualQs.push(qAvg);
+        var qCol=kpiColor(qAvg,r.meta,!!r.lower);
+        out+='<td class="kpi-qavg-td" id="qavg-'+r.key+'-'+qi+'">';
+        out+=qAvg!==null?('<span style="color:'+qCol+';font-weight:600">'+qAvg.toFixed(1)+'</span><span style="font-size:9px;color:var(--text-3)"> '+r.unit+'</span>'):'<span style="color:var(--text-3)">—</span>';
+        out+='</td>';
+      }
+      var aAvg=annualQs.length?annualQs.reduce(function(a,b){return a+b;},0)/annualQs.length:null;
+      var aCol=kpiColor(aAvg,r.meta,!!r.lower);
+      out+='<td class="kpi-qavg-td kpi-annual-th" id="annual-'+r.key+'">';
+      out+=aAvg!==null?('<span style="color:'+aCol+';font-weight:700">'+aAvg.toFixed(1)+'</span><span style="font-size:9px;color:var(--text-3)"> '+r.unit+'</span>'):'<span style="color:var(--text-3)">—</span>';
+      out+='</td></tr>';
+    });
+    out+='</tbody></table></div></div>';
+  });
+  var el=document.getElementById('kpi-dept-area');
+  if(el)el.innerHTML=out;
+}
+
+
+
+var FERIAS_2026={
+  'rf':{name:'Ana Rita',initials:'AR',color:'purple',m:{3:[25,26,27],9:[7,8,9,10,11],12:[23]}},
+  'gs':{name:'Gabriela Soares',initials:'GS',color:'blue',m:{4:[13,14,15,16,17],7:[6,7,8,9,10],9:[7,8,9,10,11]}},
+  'mn':{name:'Monica Neves',initials:'MN',color:'green',m:{9:[14,15,16,17,18]}},
+  'bc':{name:'Bruna Cordeiro',initials:'BC',color:'blue',m:{3:[30,31],4:[1,2],6:[22,23,24,25,26],8:[24,25,26,27,28,31],9:[1,2,3,4],10:[6,7,8,9],12:[14,15,16,17,18]}},
+  'jc':{name:'Joao Campos',initials:'JC',color:'red',m:{5:[22],7:[9,10,24,27,28],8:[3,4,5,6,7,10,11,12,13],12:[21,22,23,24,31]}},
+  'am':{name:'Antonio Marques',initials:'AM',color:'amber',m:{1:[2,16],4:[6,7,8,9,10],6:[5,8,9,11,12],7:[7],8:[24,25,26,27,28,31],9:[1,2,3,4]}}
+};
+var FERIAS_META=22;
+var MONTHS_LABEL=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+
+function getFeriasOverlaps(){
+  var dayMap={};
+  Object.keys(FERIAS_2026).forEach(function(pid){
+    var p=FERIAS_2026[pid];
+    Object.keys(p.m).forEach(function(m){
+      p.m[m].forEach(function(d){
+        var k=m+'-'+d; if(!dayMap[k])dayMap[k]=[];
+        dayMap[k].push(pid);
+      });
+    });
+  });
+  // Build month-level overlap: {m: [pids with overlap]}
+  var monthOverlap={};
+  Object.keys(dayMap).forEach(function(k){
+    if(dayMap[k].length>=2){
+      var m=k.split('-')[0];
+      if(!monthOverlap[m])monthOverlap[m]={};
+      dayMap[k].forEach(function(pid){monthOverlap[m][pid]=true;});
+    }
+  });
+  return monthOverlap;
+}
+
+
+function showFeriasDetail(pid,month){
+  var p=FERIAS_2026[pid];if(!p)return;
+  var days=p.m[month]||[];
+  var mName=MONTHS_LABEL[month-1];
+  var firstDow=new Date(2026,month-1,1).getDay(); // 0=Sun
+  var firstMon=(firstDow+6)%7; // convert to Mon=0
+  var daysInMonth=new Date(2026,month,0).getDate();
+  var h='<div class="fd-header"><div class="av av-'+p.color+'" style="width:34px;height:34px;font-size:12px;flex-shrink:0">'+escHtml(p.initials)+'</div>';
+  h+='<div style="flex:1"><div style="font-weight:700;font-size:14px">'+escHtml(p.name)+'</div>';
+  h+='<div style="font-size:11px;color:var(--text-3)">'+mName+' 2026 &mdash; '+days.length+' dia'+(days.length!==1?'s':'')+' de f&eacute;rias</div></div>';
+  h+='<button onclick="closeFeriasDetail()" style="background:none;border:none;font-size:22px;cursor:pointer;color:var(--text-3);line-height:1;padding:0">&#215;</button></div>';
+  var dayNames=['Seg','Ter','Qua','Qui','Sex','S&aacute;b','Dom'];
+  h+='<div class="fd-cal-grid">';
+  dayNames.forEach(function(d){h+='<div class="fd-day-name">'+d+'</div>';});
+  for(var i=0;i<firstMon;i++)h+='<div></div>';
+  for(var d=1;d<=daysInMonth;d++){
+    var isVac=days.indexOf(d)!==-1;
+    var dow=(firstMon+d-1)%7;
+    var isWk=dow>=5;
+    var cls=isVac?'fd-day fd-day-vac':isWk?'fd-day fd-day-weekend':'fd-day fd-day-normal';
+    h+='<div class="'+cls+'">'+d+'</div>';
+  }
+  h+='</div>';
+  if(days.length){
+    h+='<div class="fd-days-list"><strong>Dias marcados:</strong><br>';
+    h+=days.map(function(d){
+      var dow2=(firstMon+d-1)%7;
+      var dNames=['Segunda','Ter&ccedil;a','Quarta','Quinta','Sexta','S&aacute;bado','Domingo'];
+      return dNames[dow2]+' '+d+' '+mName;
+    }).join('<br>');
+    h+='</div>';
+  } else {
+    h+='<div class="fd-days-list" style="color:var(--text-3)">Sem f&eacute;rias marcadas neste m&ecirc;s.</div>';
+  }
+  document.getElementById('ferias-detail-content').innerHTML=h;
+  document.getElementById('ferias-detail-modal').style.display='flex';
+}
+function closeFeriasDetail(){document.getElementById('ferias-detail-modal').style.display='none';}
+function renderFerias(){
+  var overlaps=getFeriasOverlaps();
+  var curMonth=new Date().getMonth()+1; // 1-indexed
+  var out='';
+
+  // Alerts section
+  var alertMonths={
+    7:'Jul — Gabriela e João em férias em simultâneo (dias 9-10) + António dia 7',
+    8:'Ago — Agosto crítico: João (dias 3-13), Bruna e António (dias 24-31) ausentes',
+    9:'Set — Ana Rita e Gabriela sobrepostas (dias 7-11) + Bruna e António (dias 1-4)',
+  };
+  out+='<div class="ferias-alerts"><div class="ferias-alerts-title">⚠ Alertas de cobertura</div>';
+  Object.keys(alertMonths).forEach(function(m){
+    if(parseInt(m)>=curMonth-1)out+='<div class="ferias-alert-item">'+alertMonths[m]+'</div>';
+  });
+  out+='</div>';
+
+  // Legend
+  out+='<div class="ferias-legend">';
+  out+='<div class="f-leg"><div class="f-leg-dot" style="background:var(--accent)"></div>Férias</div>';
+  out+='<div class="f-leg"><div class="f-leg-dot" style="background:#f97316"></div>2 pessoas ausentes</div>';
+  out+='<div class="f-leg"><div class="f-leg-dot" style="background:var(--red,#ef4444)"></div>3+ pessoas ausentes</div>';
+  out+='</div>';
+
+  // Table
+  out+='<div style="overflow-x:auto"><table class="ferias-grid"><thead><tr>';
+  out+='<th class="f-name-th">Elemento</th>';
+  for(var m=1;m<=12;m++){
+    var cls=m===curMonth?' f-cur-month':'';
+    out+='<th class="'+cls+'">'+MONTHS_LABEL[m-1]+'</th>';
+  }
+  out+='<th>Total</th><th>Restam</th></tr></thead><tbody>';
+
+  // Count absent per month for color coding
+  var absentPerMonth={};
+  for(var m=1;m<=12;m++){
+    absentPerMonth[m]=0;
+    Object.keys(FERIAS_2026).forEach(function(pid){
+      if(FERIAS_2026[pid].m[m]&&FERIAS_2026[pid].m[m].length>0)absentPerMonth[m]++;
+    });
+  }
+
+  Object.keys(FERIAS_2026).forEach(function(pid){
+    var p=FERIAS_2026[pid];
+    var total=0;
+    Object.keys(p.m).forEach(function(k){total+=p.m[k].length;});
+    var restam=Math.max(0,FERIAS_META-total);
+    out+='<tr>';
+    out+='<td class="f-name"><div style="display:flex;align-items:center;gap:8px"><div class="av av-'+p.color+'" style="width:28px;height:28px;font-size:11px;flex-shrink:0">'+p.initials+'</div>'+escHtml(p.name)+'</div></td>';
+    for(var m=1;m<=12;m++){
+      var days=p.m[m]||[];
+      var cnt=days.length;
+      var hasOverlap=overlaps[m]&&overlaps[m][pid];
+      var absence=absentPerMonth[m];
+      var cls=absence>=3?'f-cell-vac f-overlap':hasOverlap?'f-cell-vac f-warn':'f-cell-vac';
+      var title=days.length?'title="Dias: '+days.join(', ')+'"':'';
+      out+='<td class="f-month-cell" data-pid="'+pid+'" data-month="'+m+'" onclick="showFeriasDetail(this.dataset.pid,+this.dataset.month)">';
+      if(cnt>0)out+='<span class="'+cls+'" '+title+'>'+cnt+'</span>';
+      else out+='<span class="f-cell-empty">—</span>';
+      out+='</td>';
+    }
+    out+='<td class="f-total">'+total+'</td>';
+    out+='<td class="f-restam" style="color:'+(restam<=3?'var(--red,#ef4444)':restam<=8?'#f97316':'var(--text-3)')+'">'+restam+'</td>';
+    out+='</tr>';
+  });
+
+  // Footer: total per month
+  out+='<tr style="border-top:2px solid var(--border)">';
+  out+='<td class="f-name" style="font-size:11px;color:var(--text-3)">Ausências/mês</td>';
+  for(var m=1;m<=12;m++){
+    var cnt=absentPerMonth[m];
+    var col=cnt>=3?'var(--red,#ef4444)':cnt>=2?'#f97316':cnt===1?'var(--accent)':'var(--text-3)';
+    out+='<td style="font-weight:700;color:'+col+';font-size:12px">'+(cnt||'—')+'</td>';
+  }
+  out+='<td colspan="2"></td></tr>';
+  out+='</tbody></table></div>';
+
+  var el=document.getElementById('equipa-ferias-view');
+  if(el)el.innerHTML=out;
+}
+function renderCards(){
+  var team=getTeamData(),notes=getPersonNotes(),pending=getPersonPending(),html='';
+  GROUPS.forEach(function(g){
+    var members=team.filter(function(p){return p.area===g.area;});
+    if(!members.length)return;
+    html+='<div class="card-title mb4 mt12">'+g.label+'</div>';
+    members.forEach(function(p){
+      var rC=p.risk==='warn'?'risk-warn':p.risk==='err'?'risk-err':'';
+      var sC=p.risk==='ok'?'b-ok':p.risk==='warn'?'b-warn':p.risk==='err'?'b-err':p.risk==='info'?'b-info':'b-gray';
+      var pPend=pending[p.id]||(p.pendentes.length?p.pendentes.map(function(t){return{text:t,done:false};}):null);
+      html+='<div class="e-card '+rC+'"><div class="e-card-header" onclick="toggleECard(\''+p.id+'\')">'
+        +'<div class="av av-'+p.color+'">'+p.initials+'</div>'
+        +'<div style="flex:1;min-width:0"><div class="e-card-name">'+escHtml(p.name)+'</div>'
+        +'<div class="e-card-role">'+escHtml(p.cargo)+'</div></div>'
+        +'<span class="badge '+sC+'">'+escHtml(p.status)+'</span>'
+        +'<span class="e-chevron" id="echev-'+p.id+'">&#9660;</span></div>'
+        +'<div class="e-card-body" id="ebody-'+p.id+'" style="display:none">';
+      if(p.note)html+='<div class="e-section-title">Sobre</div><div style="font-size:12.5px;color:var(--text-2);line-height:1.6">'+escHtml(p.note)+'</div>';
+      html+=buildRespTable(p.id,getPersonResp(p.id),team,false);
+      if(p.reportsTo){var mgr=team.find(function(m){return m.id===p.reportsTo;});if(mgr)html+='<div style="font-size:11.5px;color:var(--text-3);margin-top:4px">Reporta a: <strong>'+mgr.name+'</strong></div>';}
+      if(p.eval&&p.eval.length){
+        html+='<div class="e-section-title">Avaliacao</div><table class="e-eval-table"><thead><tr><th>Data</th><th>Estado</th><th>Nota</th></tr></thead><tbody>';
+        p.eval.forEach(function(e){html+='<tr><td>'+e.data+'</td><td>'+escHtml(e.estado)+'</td><td>'+escHtml(e.nota)+'</td></tr>';});
+        html+='</tbody></table>';
+      }
+      if(pPend&&pPend.length){
+        html+='<div class="e-section-title">Pendentes</div>';
+        pPend.forEach(function(item,idx){
+          html+='<div class="e-pending-item"><input type="checkbox" class="e-pending-cb"'+(item.done?' checked':'')
+            +' onchange="togglePending(\''+p.id+'\','+idx+',this)"><span style="'+(item.done?'text-decoration:line-through;color:var(--text-3)':'')+'">'
+            +escHtml(item.text)+'</span></div>';
+        });
+      }
+      html+='<div class="e-section-title">Observacoes</div>'
+        +'<textarea class="e-notes-area" id="enotes-'+p.id+'" placeholder="Notas, observacoes ou avaliacao...">'+escHtml(notes[p.id]||'')+'</textarea>'
+        +'<button class="btn-save-notes" onclick="saveNoteCard(\''+p.id+'\')">Guardar</button>'
+        +'</div></div>';
+    });
+  });
+  document.getElementById('equipa-cards-container').innerHTML=html;
+}
+function toggleECard(id){var b=document.getElementById('ebody-'+id),c=document.getElementById('echev-'+id),o=b.style.display!=='none';b.style.display=o?'none':'block';c.classList.toggle('open',!o);}
+function saveNoteCard(id){savePersonNote(id,document.getElementById('enotes-'+id).value);showToast('Observacao guardada');}
+function togglePending(id,idx,cb){
+  var team=getTeamData(),p=team.find(function(x){return x.id===id;}),pending=getPersonPending();
+  var items=pending[id]||(p?p.pendentes.map(function(t){return{text:t,done:false};}):[]); 
+  if(items[idx])items[idx].done=cb.checked;savePersonPending(id,items);
+}
+
+// ── Org chart ──
+var ORG_SECTIONS=[
+  {label:'Trafego',hdr:'c-trafego',members:['gs','bc','fc']},
+  {label:'Comercial',hdr:'c-comercial',members:['fn']},
+  {label:'Admin & Custos',hdr:'c-admin',members:['am','jc']},
+  {label:'Expedicao',hdr:'c-expedicao',members:['nd','le','ac','st','pl','vg']}
+];
+function renderOrgChart(){
+  var team=getTeamData(),root=team.find(function(p){return !p.reportsTo;});
+  document.getElementById('orgRootRow').innerHTML=makeOrgNode(root,'root');
+  var html='';
+  ORG_SECTIONS.forEach(function(sec){
+    html+='<div class="org-col"><div class="org-col-hdr '+sec.hdr+'">'+sec.label+'</div>';
+    sec.members.forEach(function(id){
+      var p=team.find(function(x){return x.id===id;});if(!p)return;
+      html+=makeOrgNode(p,'member');
+      var subs=team.filter(function(x){return x.reportsTo===id&&sec.members.indexOf(x.id)===-1;});
+      if(subs.length){html+='<div class="org-subnodes">';subs.forEach(function(s){html+=makeOrgNode(s,'sub');});html+='</div>';}
+    });
+    html+='</div>';
+  });
+  document.getElementById('orgChildrenRow').innerHTML=html;
+}
+function makeOrgNode(p,type){
+  var rC=p.risk==='warn'?'risk-warn':p.risk==='err'?'risk-err':p.risk==='info'?'risk-info':'';
+  var st=type==='root'?'justify-content:center;flex-direction:column;text-align:center;min-width:180px':'';
+  return '<button class="org-node-btn '+rC+'" style="'+st+'" onclick="openOrgEdit(\''+p.id+'\')" id="orgnode-'+p.id+'">'
+    +'<div class="org-node-initials av-'+p.color+'">'+p.initials+'</div>'
+    +'<div class="org-node-info"><div class="org-node-name">'+escHtml(p.name)+'</div>'
+    +'<div class="org-node-role">'+escHtml(p.cargo.replace(/\s*[—-].*/,'').trim())+'</div></div></button>';
+}
+var selectedOrgId=null;
+function openOrgEdit(id){
+  var team=getTeamData(),p=team.find(function(x){return x.id===id;});if(!p)return;
+  document.querySelectorAll('.org-node-btn').forEach(function(b){b.classList.remove('selected');});
+  var nd=document.getElementById('orgnode-'+id);if(nd)nd.classList.add('selected');
+  selectedOrgId=id;
+  var notes=getPersonNotes(),pending=getPersonPending();
+  var pPend=pending[id]||(p.pendentes.length?p.pendentes.map(function(t){return{text:t,done:false};}):null);
+  var sC=p.risk==='ok'?'b-ok':p.risk==='warn'?'b-warn':p.risk==='err'?'b-err':p.risk==='info'?'b-info':'b-gray';
+  var evalH='',pendH='';
+  if(p.eval&&p.eval.length){evalH='<div class="e-section-title">Avaliacao</div><table class="e-eval-table"><thead><tr><th>Data</th><th>Estado</th><th>Nota</th></tr></thead><tbody>';p.eval.forEach(function(e){evalH+='<tr><td>'+e.data+'</td><td>'+escHtml(e.estado)+'</td><td>'+escHtml(e.nota)+'</td></tr>';});evalH+='</tbody></table>';}
+  if(pPend&&pPend.length){pendH='<div class="e-section-title">Pendentes</div>';pPend.forEach(function(item,idx){pendH+='<div class="e-pending-item"><input type="checkbox" class="e-pending-cb"'+(item.done?' checked':'')+' onchange="togglePending(\''+id+'\','+idx+',this)"><span style="'+(item.done?'text-decoration:line-through;color:var(--text-3)':'')+'">' +escHtml(item.text)+'</span></div>';});}
+  var panel=document.getElementById('orgEditPanel');
+  panel.style.display='block';
+  panel.innerHTML='<div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">'
+    +'<div class="av av-'+p.color+'" style="width:40px;height:40px;font-size:15px">'+p.initials+'</div>'
+    +'<div style="flex:1"><div style="font-size:15px;font-weight:600">'+escHtml(p.name)+'</div><span class="badge '+sC+'">'+escHtml(p.status)+'</span></div>'
+    +'<button style="background:none;border:none;color:var(--text-3);cursor:pointer;font-size:22px;line-height:1" onclick="closeOrgEdit()">&#215;</button></div>'
+    +'<div class="org-edit-grid">'
+    +'<div class="form-field"><label>Nome</label><input id="oe-name" value="'+escHtml(p.name)+'"></div>'
+    +'<div class="form-field"><label>Cargo</label><input id="oe-cargo" value="'+escHtml(p.cargo)+'"></div>'
+    +'<div class="form-field"><label>Status</label><input id="oe-status" value="'+escHtml(p.status)+'"></div>'
+    +'<div class="form-field"><label>Risco</label><select id="oe-risk">'
+    +['ok','warn','err','info'].map(function(r){return'<option value="'+r+'"'+(p.risk===r?' selected':'')+'>'+{ok:'OK',warn:'Atencao',err:'Risco',info:'Info'}[r]+'</option>';}).join('')
+    +'</select></div>'
+    +'<div class="form-field"><label>Reporta a</label><select id="oe-reports-to"><option value="">— Nenhum —</option>'
+    +team.filter(function(x){return x.id!==id;}).map(function(x){return'<option value="'+x.id+'"'+(p.reportsTo===x.id?' selected':'')+'>'+escHtml(x.name)+'</option>';}).join('')
+    +'</select></div></div>'
+    +(p.note?'<div class="e-section-title">Info</div><div style="font-size:12.5px;color:var(--text-2);line-height:1.6;margin-bottom:8px">'+escHtml(p.note)+'</div>':'')
+    +buildRespTable(id,getPersonResp(id),team,true)
+    +evalH+pendH
+    +'<div class="e-section-title">Observacoes</div>'
+    +'<textarea class="e-notes-area" id="oe-notes" placeholder="Notas, observacoes ou avaliacao...">'+escHtml(notes[id]||'')+'</textarea>'
+    +'<div style="display:flex;gap:8px;margin-top:8px"><button class="btn-submit" onclick="saveOrgEdit()">Guardar</button><button class="btn-cancel" onclick="closeOrgEdit()">Fechar</button></div>';
+  panel.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function closeOrgEdit(){document.getElementById('orgEditPanel').style.display='none';document.querySelectorAll('.org-node-btn').forEach(function(b){b.classList.remove('selected');});selectedOrgId=null;}
+function saveOrgEdit(){
+  if(!selectedOrgId)return;
+  var team=getTeamData(),p=team.find(function(x){return x.id===selectedOrgId;});if(!p)return;
+  var n=document.getElementById('oe-name').value.trim(),c=document.getElementById('oe-cargo').value.trim(),s=document.getElementById('oe-status').value.trim();
+  if(n)p.name=n;if(c)p.cargo=c;if(s)p.status=s;p.risk=document.getElementById('oe-risk').value;var rt=document.getElementById('oe-reports-to');if(rt)p.reportsTo=rt.value||null;
+  saveTeamData(team);savePersonNote(selectedOrgId,document.getElementById('oe-notes').value);
+  renderOrgChart();setTimeout(function(){var nd=document.getElementById('orgnode-'+selectedOrgId);if(nd)nd.classList.add('selected');},20);
+  showToast('Guardado');
+}
+function setEquipaView(view,btn){
+  document.querySelectorAll('.view-toggle-btn').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');
+  document.getElementById('equipa-cards-view').style.display=view==='cards'?'block':'none';
+  document.getElementById('equipa-org-view').style.display=view==='org'?'block':'none';
+  document.getElementById('equipa-ferias-view').style.display=view==='ferias'?'block':'none';
+  if(view==='org')renderOrgChart();
+  if(view==='ferias')renderFerias();
+}
+// ── Fleet data ──
+var FLEET_DATA={
+basculantes:[
+  {mat:"BG52ZE",tipo:"Trator",marca:"Volvo",modelo:"FH750",ano:"2024",age:"new",dual:true},
+  {mat:"AV-55672",tipo:"Porta-Maquinas",marca:"Invepe",modelo:"RPM 133",ano:"2017",age:"new",dual:true},
+  {mat:"94-TA-46",tipo:"Trator",marca:"Volvo",modelo:"FH 540",ano:"2017",age:"new",dual:true},
+  {mat:"SE-1082",tipo:"Porta-Maquinas",marca:"A.R.B.",modelo:"SPM 3D",ano:"2008",age:"mid",dual:true},
+  {mat:"BE10MB",tipo:"Trator",marca:"Volvo",modelo:"FH 500",ano:"2023",age:"new",dual:true},
+  {mat:"L-154494",tipo:"Porta-Maquinas",marca:"Kaiser",modelo:"S530 3F",ano:"2000",age:"old",dual:true},
+  {mat:"L-219995",tipo:"Reboque Basculante",marca:"Galucho",modelo:"SBG3",ano:"2025",age:"new"},
+  {mat:"BE11MB",tipo:"Trator",marca:"Volvo",modelo:"FH 500",ano:"2023",age:"new"},
+  {mat:"L-209506",tipo:"Reboque Basculante",marca:"Galucho",modelo:"SGB3",ano:"2021",age:"new"},
+  {mat:"BE09MB",tipo:"Trator",marca:"Volvo",modelo:"FH 500",ano:"2023",age:"new"},
+  {mat:"L-219996",tipo:"Reboque Basculante",marca:"Galucho",modelo:"SGB3",ano:"2025",age:"new"},
+  {mat:"BE08MB",tipo:"Trator",marca:"Volvo",modelo:"FH 500",ano:"2023",age:"new",dual:true},
+  {mat:"L-219997",tipo:"Reboque Basculante",marca:"Galucho",modelo:"SGB3",ano:"2025",age:"new"},
+  {mat:"44-QI-50",tipo:"Trator",marca:"Volvo",modelo:"FH-38",ano:"2015",age:"mid"},
+  {mat:"L-207078",tipo:"Reboque Basculante",marca:"Galucho",modelo:"SGB3",ano:"2020",age:"new"},
+  {mat:"25-ZO-41",tipo:"Trator",marca:"Volvo",modelo:"FH D13K",ano:"2019",age:"new"},
+  {mat:"L-215831",tipo:"Reboque Basculante",marca:"Galucho",modelo:"SGB3",ano:"2024",age:"new"},
+  {mat:"44-QI-51",tipo:"Trator",marca:"Volvo",modelo:"FH-38",ano:"2015",age:"mid"},
+  {mat:"25-ZO-49",tipo:"Trator",marca:"Volvo",modelo:"FH D13K",ano:"2019",age:"new"},
+  {mat:"L-210305",tipo:"Reboque Basculante",marca:"Galucho",modelo:"SGB3",ano:"2021",age:"new"},
+  {mat:"74-TC-56",tipo:"Trator",marca:"Volvo",modelo:"FH",ano:"2017",age:"new"},
+  {mat:"L-207077",tipo:"Reboque Basculante",marca:"Galucho",modelo:"SGB3",ano:"2020",age:"new"},
+  {mat:"AN90AV",tipo:"Trator",marca:"Volvo",modelo:"FMX 460",ano:"2021",age:"new"},
+  {mat:"BG56ZE",tipo:"Trator",marca:"Volvo",modelo:"FMX 460",ano:"2024",age:"new"},
+  {mat:"25-ZO-42",tipo:"Trator",marca:"Volvo",modelo:"FMX 460",ano:"2019",age:"new"},
+  {mat:"BG53ZE",tipo:"Trator",marca:"Volvo",modelo:"FMX 460",ano:"2024",age:"new"},
+  {mat:"BG55ZE",tipo:"Trator",marca:"Volvo",modelo:"FMX 460",ano:"2024",age:"new"},
+  {mat:"BG51ZE",tipo:"Trator",marca:"Volvo",modelo:"FMX 460",ano:"2024",age:"new"},
+  {mat:"BG54ZE",tipo:"Trator",marca:"Volvo",modelo:"FMX 460",ano:"2024",age:"new"},
+  {mat:"AN87AV",tipo:"Trator",marca:"Volvo",modelo:"FMX 460",ano:"2021",age:"new"},
+  {mat:"42-FF-75",tipo:"Trator",marca:"Volvo",modelo:"FM 13",ano:"2008",age:"mid"},
+  {mat:"25-ZO-51",tipo:"Trator",marca:"Volvo",modelo:"FMX 460",ano:"2019",age:"new"},
+  {mat:"42-FF-74",tipo:"Trator",marca:"Volvo",modelo:"FM 13",ano:"2008",age:"mid"},
+  {mat:"BG50ZE",tipo:"Trator",marca:"Volvo",modelo:"FMX 380",ano:"2024",age:"new"},
+  {mat:"BG57ZE",tipo:"Trator",marca:"Volvo",modelo:"FMX 380",ano:"2024",age:"new"},
+  {mat:"24-FA-85",tipo:"Trator",marca:"Volvo",modelo:"FM 9",ano:"2007",age:"mid"},
+  {mat:"24-FA-86",tipo:"Trator",marca:"Volvo",modelo:"FM 9",ano:"2007",age:"mid"},
+  {mat:"24-FA-87",tipo:"Trator",marca:"Volvo",modelo:"FM 9",ano:"2007",age:"mid"},
+  {mat:"24-FA-88",tipo:"Trator",marca:"Volvo",modelo:"FM 9",ano:"2007",age:"mid"},
+  {mat:"28-58-OJ",tipo:"Basculante Rigido",marca:"Volvo",modelo:"FL 10",ano:"1999",age:"old"},
+  {mat:"AJ50GD",tipo:"Trator",marca:"MAN",modelo:"TGS 18.430",ano:"2021",age:"new"},
+  {mat:"L-209374",tipo:"Reboque Basculante",marca:"Galucho",modelo:"SGB3",ano:"2021",age:"new"},
+  {mat:"AJ-48-BP",tipo:"Trator",marca:"Volvo",modelo:"TGS 18.430",ano:"2021",age:"new"},
+  {mat:"L-188051",tipo:"Basculante Rigido",marca:"INVEPE",modelo:"BAS 8 AL",ano:"2008",age:"mid"},
+  {mat:"AJ-50-BP",tipo:"Trator",marca:"MAN",modelo:"TGS 18.430",ano:"2021",age:"new"},
+  {mat:"L-219998",tipo:"Reboque Basculante",marca:"Galucho",modelo:"SGB3",ano:"2025",age:"new"},
+  {mat:"BA-61-UH",tipo:"Trator",marca:"MAN",modelo:"TGS 18.470",ano:"2023",age:"new"},
+  {mat:"L-159175",tipo:"Reboque Basculante",marca:"Basben",modelo:"SB20SM",ano:"2001",age:"old"},
+  {mat:"L-198571",tipo:"Reboque Basculante",marca:"Invepe",modelo:"SR3",ano:"2015",age:"mid"},
+  {mat:"BB-06-OD",tipo:"Trator",marca:"MAN",modelo:"TGS 18.430",ano:"2023",age:"new"},
+  {mat:"L-219999",tipo:"Reboque Basculante",marca:"Galucho",modelo:"SGB 3",ano:"2025",age:"new"},
+  {mat:"BD-87-AZ",tipo:"Trator",marca:"MAN",modelo:"TGS 18.430",ano:"2023",age:"new"},
+  {mat:"L-209373",tipo:"Reboque Basculante",marca:"Galucho",modelo:"SGB 3",ano:"2021",age:"new"},
+  {mat:"AJ-49-BP",tipo:"Trator",marca:"MAN",modelo:"TFS 18.430",ano:"2021",age:"new"},
+  {mat:"L-209375",tipo:"Reboque Basculante",marca:"Galucho",modelo:"SGB 3",ano:"2021",age:"new"},
+  {mat:"AJ-15-MG",tipo:"Trator",marca:"MAN",modelo:"TGS 18.430",ano:"2021",age:"new"},
+  {mat:"L-198570",tipo:"Reboque Basculante",marca:"INVEPE",modelo:"SR3",ano:"2015",age:"mid"},
+  {mat:"L-188158",tipo:"Basculante Rigido",marca:"Invepe",modelo:"BAS 8 AL",ano:"2008",age:"mid"},
+  {mat:"L-183985",tipo:"Reboque Basculante",marca:"MONTENEGRO",modelo:"SVF-2G-18AE",ano:"2007",age:"mid"},
+  {mat:"L-215832",tipo:"Reboque Basculante",marca:"Galucho",modelo:"SGB3",ano:"2024",age:"new"},
+  {mat:"L-209507",tipo:"Reboque Basculante",marca:"Galucho",modelo:"SGB3",ano:"2021",age:"new"},
+  {mat:"L-183989",tipo:"Reboque Basculante",marca:"MONTENEGRO",modelo:"SVF-2G-18AE",ano:"2007",age:"mid"}
+],
+cisternas:[
+  {mat:"25-ZO-43",tipo:"Trator Cisterna",marca:"VOLVO",modelo:"FH",ano:"2019",age:"new"},
+  {mat:"75-ZS-76",tipo:"Trator Cisterna",marca:"MAN",modelo:"TGX 18.510",ano:"2020",age:"new"},
+  {mat:"75-ZS-77",tipo:"Trator Cisterna",marca:"MAN",modelo:"TGX 18.510",ano:"2020",age:"new"},
+  {mat:"AT-05-RJ",tipo:"Trator Cisterna",marca:"MAN",modelo:"TGX 18.510",ano:"2022",age:"new"},
+  {mat:"25-ZO-46",tipo:"Trator Cisterna",marca:"Volvo",modelo:"FH",ano:"2019",age:"new"},
+  {mat:"AT-07-RJ",tipo:"Trator Cisterna",marca:"MAN",modelo:"TGX 18.510",ano:"2022",age:"new"},
+  {mat:"AT-08-RJ",tipo:"Trator Cisterna",marca:"MAN",modelo:"TGX 18.510",ano:"2022",age:"new"},
+  {mat:"AT-54-JF",tipo:"Trator Cisterna",marca:"MAN",modelo:"TGX 18.510",ano:"2022",age:"new"},
+  {mat:"AT-55-JF",tipo:"Trator Cisterna",marca:"MAN",modelo:"TGX 18.510",ano:"2022",age:"new"},
+  {mat:"AT-57-JF",tipo:"Trator Cisterna",marca:"MAN",modelo:"TGX 18.510",ano:"2022",age:"new"},
+  {mat:"AT-59-JF",tipo:"Trator Cisterna",marca:"MAN",modelo:"TGX 18.510",ano:"2022",age:"new"},
+  {mat:"AT-60-JF",tipo:"Trator Cisterna",marca:"MAN",modelo:"TGX 18.510",ano:"2022",age:"new"},
+  {mat:"AU-01-EM",tipo:"Trator Cisterna",marca:"MAN",modelo:"TGX 18.510",ano:"2022",age:"new"},
+  {mat:"74TC55",tipo:"Trator Cisterna",marca:"MAN",modelo:"FH",ano:"2017",age:"new"},
+  {mat:"AT06RJ",tipo:"Trator Cisterna",marca:"MAN",modelo:"TGX 18.510",ano:"2022",age:"new"},
+  {mat:"L-170277",tipo:"Reboque Cisterna",marca:"Hermans",modelo:"SAL 2C 31T",ano:"2004",age:"old"},
+  {mat:"L-174917",tipo:"Reboque Cisterna",marca:"HERMANNS",modelo:"Chosal SAL 2C",ano:"2005",age:"old"},
+  {mat:"SE-1144",tipo:"Reboque Cisterna",marca:"Omeps",modelo:"S 122",ano:"2008",age:"mid"},
+  {mat:"SE-1349",tipo:"Reboque Cisterna",marca:"Hermanns",modelo:"Chosal SAL 2C",ano:"2008",age:"mid"},
+  {mat:"SE-2067",tipo:"Reboque Cisterna",marca:"Hermans",modelo:"SALB 42",ano:"2010",age:"mid"},
+  {mat:"LE-2306",tipo:"Reboque Cisterna",marca:"Kassbohrer",modelo:"K.SSK40",ano:"2017",age:"new"},
+  {mat:"SE-992",tipo:"Reboque Cisterna",marca:"HERMANNS",modelo:"SAL 2C 31T",ano:"2008",age:"mid"},
+  {mat:"SE-916",tipo:"Reboque Cisterna",marca:"Hermans",modelo:"SAL 2C 33T",ano:"2008",age:"mid"},
+  {mat:"SE-1347",tipo:"Reboque Cisterna",marca:"HERMANNS",modelo:"SAL 2C 31T",ano:"2008",age:"mid"},
+  {mat:"LE-3158",tipo:"Reboque Cisterna",marca:"Kassbohrer",modelo:"K.SSK40",ano:"2019",age:"new"},
+  {mat:"SE-886",tipo:"Reboque Cisterna",marca:"Hermans",modelo:"SAL 2C 31T",ano:"2008",age:"mid"},
+  {mat:"L-183518",tipo:"Reboque Cisterna",marca:"Hermans",modelo:"SAL 2C 33T",ano:"2007",age:"mid"},
+  {mat:"SE-906",tipo:"Reboque Cisterna",marca:"Hermans",modelo:"SAL 2C 33T",ano:"2008",age:"mid"}
+],
+especial:[
+  {mat:"BG52ZE",tipo:"Trator",marca:"Volvo",modelo:"FH750",ano:"2024",age:"new",dual:true},
+  {mat:"AV-55672",tipo:"Porta-Maquinas",marca:"Invepe",modelo:"RPM 133",ano:"2017",age:"new",dual:true},
+  {mat:"94-TA-46",tipo:"Trator",marca:"Volvo",modelo:"FH 540",ano:"2017",age:"new",dual:true},
+  {mat:"SE-1082",tipo:"Porta-Maquinas",marca:"A.R.B.",modelo:"SPM 3D",ano:"2008",age:"mid",dual:true},
+  {mat:"BE10MB",tipo:"Trator",marca:"Volvo",modelo:"FH 500",ano:"2023",age:"new",dual:true},
+  {mat:"L-154494",tipo:"Porta-Maquinas",marca:"Kaiser",modelo:"S530 3F",ano:"2000",age:"old",dual:true},
+  {mat:"92-81-PA",tipo:"Rigido Agua",marca:"Volvo",modelo:"FM 7",ano:"2000",age:"old"},
+  {mat:"29-15-ZF",tipo:"Rigido Cola",marca:"Volvo",modelo:"FM9",ano:"2004",age:"old"},
+  {mat:"19-FT-63",tipo:"Rigido Cola",marca:"Iveco",modelo:"Eurocarga 220",ano:"2008",age:"mid"},
+  {mat:"25-ZO-44",tipo:"Rigido Grua",marca:"Volvo",modelo:"FMX 500",ano:"2019",age:"new"},
+  {mat:"L-190357",tipo:"Estrado",marca:"Joluso",modelo:"RR-2D-6.5",ano:"2009",age:"mid"},
+  {mat:"AD27MD",tipo:"Rigido Grua",marca:"Volvo",modelo:"FM 420",ano:"2020",age:"new"},
+  {mat:"BH50VS",tipo:"Rigido Grua",marca:"Volvo",modelo:"FMX 500",ano:"2024",age:"new"},
+  {mat:"13-96-QP",tipo:"Rigido Cola",marca:"Volvo",modelo:"FL 10",ano:"2000",age:"old"},
+  {mat:"77-56-AB",tipo:"Rigido Agua",marca:"Mercedes",modelo:"26.29K",ano:"1992",age:"old"},
+  {mat:"12-92-OR",tipo:"Rigido Agua",marca:"Mercedes",modelo:"Ategos 26.28B",ano:"1999",age:"old"},
+  {mat:"57-74-PF",tipo:"Rigido Agua",marca:"Volvo",modelo:"FM 7",ano:"2000",age:"old"},
+  {mat:"15-95-PE",tipo:"Rigido Cola",marca:"Volvo",modelo:"FM 7",ano:"2000",age:"old"},
+  {mat:"39-70-OE",tipo:"Rigido Cola",marca:"Mercedes",modelo:"Ategos 26.28B",ano:"1999",age:"old"},
+  {mat:"L-130016",tipo:"Estrado",marca:"Fruehauf",modelo:"EBP",ano:"1996",age:"old"},
+  {mat:"P-81998",tipo:"Porta-Silos",marca:"Lecinena",modelo:"2E-RD",ano:"2001",age:"old"},
+  {mat:"L-37858",tipo:"Estrado",marca:"Metalofabril",modelo:"SR2",ano:"1976",age:"old"},
+  {mat:"L-155299",tipo:"Estrado",marca:"Montenegro",modelo:"SPL 3S 13.62",ano:"2001",age:"old"},
+  {mat:"L-137878",tipo:"Porta-Maquinas",marca:"Carsul",modelo:"12.0-PM-BED",ano:"1998",age:"old"}
+]};
+
+var currentCat='basculantes';
+function selectCat(cat){
+  currentCat=cat;
+  document.querySelectorAll('.fleet-cat-card').forEach(function(c){c.classList.remove('selected');});
+  document.getElementById('cat-'+cat).classList.add('selected');
+  var titles={basculantes:'Basculantes',cisternas:'Cisternas',especial:'Transporte Especial'};
+  document.getElementById('explorerTitle').textContent=titles[cat];
+  document.getElementById('fleetSearch').value='';document.getElementById('fleetAgeFilter').value='';
+  buildTypeFilter(cat);renderFleet();
+}
+function buildTypeFilter(cat){
+  var types={};FLEET_DATA[cat].forEach(function(v){types[v.tipo]=true;});
+  var sel=document.getElementById('fleetTypeFilter');
+  sel.innerHTML='<option value="">Todos os tipos</option>';
+  Object.keys(types).sort().forEach(function(t){sel.innerHTML+='<option value="'+t+'">'+t+'</option>';});
+}
+function renderFleet(){
+  var vehicles=FLEET_DATA[currentCat];
+  var search=document.getElementById('fleetSearch').value.toLowerCase();
+  var typeF=document.getElementById('fleetTypeFilter').value;
+  var ageF=document.getElementById('fleetAgeFilter').value;
+  var motoristas=JSON.parse(localStorage.getItem('pragosa_motoristas')||'{}');
+  var avariasUrl=localStorage.getItem('pragosa_avarias_url')||'';
+  var filtered=vehicles.filter(function(v){
+    var ms=!search||v.mat.toLowerCase().includes(search)||v.marca.toLowerCase().includes(search)||v.modelo.toLowerCase().includes(search)||v.tipo.toLowerCase().includes(search);
+    return ms&&(!typeF||v.tipo===typeF)&&(!ageF||v.age===ageF);
+  });
+  var ageBadge={new:'<span class="age-badge age-new">Novo</span>',mid:'<span class="age-badge age-mid">Medio</span>',old:'<span class="age-badge age-old">Antigo</span>'};
+  var hasMot=function(v){return v.tipo.includes('Trator')||v.tipo.includes('Rigido')||v.tipo==='Trator Cisterna';};
+  var html=filtered.map(function(v){
+    var rr=(v.mat==='L-37858'||v.mat==='77-56-AB')?' style="background:#fff5f5;"':'';
+    var db=v.dual?'<span class="dual-badge">2cat</span>':'';
+    var mv=motoristas[v.mat]||'';
+    var mH=hasMot(v)?'<div class="mot-display'+(mv?'':' empty')+'" onclick="editMot(this,\''+v.mat+'\')">'+(mv||'A definir')+'</div>'
+      :'<span style="color:var(--text-3);font-size:11px">Reboque</span>';
+    var avBtn=avariasUrl?'<a class="btn-avarias configured" href="'+avariasUrl+encodeURIComponent(v.mat)+'" target="_blank">Ver avarias</a>'
+      :'<button class="btn-avarias" onclick="openUrlModal()">Configurar</button>';
+    return'<tr'+rr+'><td><span class="mat-badge">'+v.mat+'</span>'+db+'</td><td>'+v.tipo+'</td><td>'+v.marca+' '+v.modelo+'</td><td>'+v.ano+'</td><td>'+ageBadge[v.age]+'</td><td style="min-width:120px">'+mH+'</td><td>'+avBtn+'</td></tr>';
+  }).join('');
+  document.getElementById('fleetTbody').innerHTML=html||'<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--text-3)">Nenhum resultado</td></tr>';
+  document.getElementById('fleetCount').textContent=filtered.length+' de '+vehicles.length+' equipamentos';
+}
+function editMot(el,mat){
+  if(el.querySelector('input'))return;
+  var motoristas=JSON.parse(localStorage.getItem('pragosa_motoristas')||'{}');
+  var cur=motoristas[mat]||'';
+  var input=document.createElement('input');input.className='mot-input';input.value=cur;input.placeholder='Nome do motorista';
+  el.textContent='';el.appendChild(input);input.focus();input.select();
+  function save(){var v=input.value.trim();motoristas[mat]=v;localStorage.setItem('pragosa_motoristas',JSON.stringify(motoristas));el.textContent=v||'A definir';el.classList.toggle('empty',!v);showToast('Motorista guardado');}
+  input.addEventListener('blur',save);
+  input.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();save();}if(e.key==='Escape'){el.textContent=cur||'A definir';el.classList.toggle('empty',!cur);}});
+}
+function toggleUrlForm(){var f=document.getElementById('urlConfigForm');f.classList.toggle('open');if(f.classList.contains('open')){document.getElementById('urlInput').value=localStorage.getItem('pragosa_avarias_url')||'';}}
+function saveAvariasUrl(){var u=document.getElementById('urlInput').value.trim();localStorage.setItem('pragosa_avarias_url',u);document.getElementById('urlStatus').textContent=u?'Configurada':'Nao configurada';document.getElementById('urlConfigForm').classList.remove('open');renderFleet();showToast('URL guardado');}
+function openUrlModal(){document.getElementById('urlConfigForm').classList.add('open');document.getElementById('urlConfigBar').scrollIntoView({behavior:'smooth'});showToast('Configura o URL da APP de Avarias em cima');}
+
+// ── Tasks ──
+var TASKS_KEY='pragosa_tasks_v1',SEED_KEY='pragosa_seed_v1',SEED_VERSION='v1.2';
+var SEED_TASKS=[
+  {id:'eq-01',text:'Definir RACI formal da funcao Gestor de Frota (Marques vs. Campos)',area:'equipa',priority:'high',meta:'Prazo: 31 jul - Resp.: Rita Fialho',source:'Plano Capacidade Jul 2026',done:false,createdAt:'2026-07-11',completedAt:null},
+  {id:'eq-02',text:'Avaliar carga real de Joao Campos e redistribuir uma das 3 funcoes',area:'equipa',priority:'high',meta:'Prazo: 31 jul - Resp.: Rita Fialho',source:'Plano Capacidade Jul 2026',done:false,createdAt:'2026-07-11',completedAt:null},
+  {id:'eq-03',text:'Abrir vaga 3. elemento Expedicao Sobrissul',area:'equipa',priority:'high',meta:'Estado: Em curso',source:'CE Logistica 30 jun',done:false,createdAt:'2026-07-11',completedAt:null},
+  {id:'eq-04',text:'Atribuir tutor a Frederico Catarino e definir marco de autonomia CPSA',area:'equipa',priority:'medium',meta:'Prazo: 15 jul - Resp.: Rita Fialho',source:'Plano Capacidade Jul 2026',done:false,createdAt:'2026-07-11',completedAt:null},
+  {id:'eq-05',text:'Identificar backups para Vale Rodrigues e Moleanos (Nuno D\'Avo)',area:'equipa',priority:'medium',meta:'Prazo: 31 ago',source:'Plano Capacidade Jul 2026',done:false,createdAt:'2026-07-11',completedAt:null},
+  {id:'fc-01',text:'[FC Onboarding] Processos e sistemas internos — trafego, ponto, avarias',area:'equipa',priority:'high',meta:'Resp.: Frederico Catarino · Tutor: Rita Fialho',source:'Onboarding FC — 29 jun 2026',done:false,createdAt:'2026-07-11',completedAt:null},
+  {id:'fc-02',text:'[FC Onboarding] Conhecer frota e motoristas CPSA',area:'equipa',priority:'medium',meta:'Resp.: Frederico Catarino',source:'Onboarding FC — 29 jun 2026',done:false,createdAt:'2026-07-11',completedAt:null},
+  {id:'fc-03',text:'[FC Onboarding] Alinhar KPIs e expectativas CPSA com Rita',area:'equipa',priority:'medium',meta:'Resp.: Rita Fialho + Frederico Catarino',source:'Onboarding FC — 29 jun 2026',done:false,createdAt:'2026-07-11',completedAt:null},
+  {id:'fr-01',text:'Avaliar abate L-37858 (1976, 50 anos) e 77-56-AB (Mercedes 1992)',area:'frota',priority:'high',meta:'Urgente',source:'Plano Capacidade Jul 2026',done:false,createdAt:'2026-07-11',completedAt:null},
+  {id:'fr-02',text:'Resolver viaturas externas sem previsao: AT57JF, Porta-Maq. David, AU01EM/AC',area:'frota',priority:'medium',meta:'Resp.: Antonio Marques',source:'Reuniao Manutencao 15 jun',done:false,createdAt:'2026-07-11',completedAt:null},
+  {id:'fr-03',text:'Analisar causas avarias Cisternas e reforcar manutencao preventiva',area:'frota',priority:'medium',meta:'Resp.: Gabriela Soares',source:'CE Logistica 30 jun',done:false,createdAt:'2026-07-11',completedAt:null},
+  {id:'fr-04',text:'Montar mapa conjugacoes tratores e semirreboques com Joao Silva',area:'frota',priority:'medium',meta:'Resp.: Rita Fialho',source:'CE Logistica 6 jul',done:false,createdAt:'2026-07-11',completedAt:null},
+  {id:'fr-05',text:'Regularizar folha de inspecao L-215831 (motorista Celso Cristo)',area:'frota',priority:'medium',meta:'Resp.: Antonio Marques',source:'Reuniao Manutencao 15 jun',done:false,createdAt:'2026-07-11',completedAt:null},
+  {id:'rh-01',text:'Validar nova categoria PTSA Porta-Maquinas/Estrado com RH (2.216-2.416 euros)',area:'rh',priority:'medium',meta:'Resp.: RH + Rita Fialho',source:'CE Logistica 6 jul',done:false,createdAt:'2026-07-11',completedAt:null},
+  {id:'rh-02',text:'Confirmar carta de articulado para candidato a Porta-Maquinas',area:'rh',priority:'medium',meta:'Resp.: RH',source:'CE Logistica 6 jul',done:false,createdAt:'2026-07-11',completedAt:null},
+  {id:'rh-03',text:'Planear substituicao de Ruben Sousa (licenca paternidade setembro)',area:'rh',priority:'medium',meta:'Resp.: Rita Fialho',source:'CE Logistica 30 jun',done:false,createdAt:'2026-07-11',completedAt:null},
+  {id:'op-01',text:'Mapear volume e custo de transportes alugados em Industria e CPSA',area:'ops',priority:'medium',meta:'Prazo: 31 jul',source:'Plano Capacidade Jul 2026',done:false,createdAt:'2026-07-11',completedAt:null},
+  {id:'op-02',text:'Lancar Fase I projeto telematica/IA (Wialon/Traccar + rotas)',area:'ops',priority:'medium',meta:'Resp.: Rita Fialho',source:'CE Logistica 6 jul',done:false,createdAt:'2026-07-11',completedAt:null},
+  {id:'op-03',text:'Investigar irregularidade AT60JF / Alvaro Silva (tacografo + combustivel)',area:'ops',priority:'high',meta:'Resp.: Rita Fialho',source:'CE Semanal 9 jun',done:false,createdAt:'2026-07-11',completedAt:null}  ,{id:'ob-01',text:'Acompanhar processo Alvaro Silva (AT60JF/Cimpor — enquadramento disciplinar)',area:'ops',priority:'medium',meta:'Resp.: Rita Fialho',source:'Diario 30 jun 2026',done:false,createdAt:'2026-07-12',completedAt:null}
+  ,{id:'ob-02',text:'Estruturar requisitos app alertas automaticos de frota (Wialon/Traccar + IA)',area:'ops',priority:'medium',meta:'Resp.: Rita Fialho — decisao CE 30 jun',source:'Diario 30 jun 2026',done:false,createdAt:'2026-07-12',completedAt:null}
+  ,{id:'ob-03',text:'Mapa de consumos de britas (Santa Eulalia + Cano) — incluir no mapa de 5a feira',area:'ops',priority:'medium',meta:'Resp.: Rita Fialho',source:'Diario 6 jul 2026',done:false,createdAt:'2026-07-12',completedAt:null}
+  ,{id:'ob-04',text:'Central de Montemor — avaliar cadencias de britas a fornecer no periodo de verao',area:'ops',priority:'medium',meta:'Resp.: Rita Fialho',source:'Diario 6 jul 2026',done:false,createdAt:'2026-07-12',completedAt:null}
+  ,{id:'ob-05',text:'Confirmar plano paragem sequencial Cano com Ricardo Santos (Instalacao 1 + 2)',area:'ops',priority:'high',meta:'Resp.: Rita Fialho + Ricardo Santos — risco rutura Brita 1',source:'Diario 6 jul 2026',done:false,createdAt:'2026-07-12',completedAt:null}
+  ,{id:'ob-06',text:'Ensaio Brita 3 na Instalacao 2 (Sobrissul) — coordenar com Producao e avisar Comercial',area:'ops',priority:'medium',meta:'Resp.: Ricardo Santos (coordenar com Rita)',source:'Diario 6 jul 2026',done:false,createdAt:'2026-07-12',completedAt:null}
+  ,{id:'ob-07',text:'Alves Ribeiro — avaliar custos producao Brita 1 betuminoso e viabilidade de ~25.000t (jul-nov)',area:'ops',priority:'medium',meta:'Resp.: Comercial + Producao',source:'Diario 6 jul 2026',done:false,createdAt:'2026-07-12',completedAt:null}
+  ,{id:'ob-08',text:'Tacografos — verificar conformidade frota DL 169/2009: fim regime sancionatorio 11/07/2026 (VERIFICAR URGENTE)',area:'frota',priority:'high',meta:'Resp.: Joao Campos — prazo JA PASSOU',source:'Projeto Tacografos',done:false,createdAt:'2026-07-12',completedAt:null}
+  ,{id:'ob-09',text:'Tacografos — verificar conformidade G2V2 para transporte internacional na frota',area:'frota',priority:'medium',meta:'Resp.: Joao Campos',source:'Projeto Tacografos',done:false,createdAt:'2026-07-12',completedAt:null}
+  ,{id:'ob-10',text:'Preparar integracao Vera Bairros — entrada prevista agosto (funcao a definir)',area:'equipa',priority:'medium',meta:'Resp.: Rita Fialho',source:'Equipa Logistica.md',done:false,createdAt:'2026-07-12',completedAt:null}
+];
+function loadTasks(){var s=localStorage.getItem(TASKS_KEY),sv=localStorage.getItem(SEED_KEY),tasks=s?JSON.parse(s):[];if(sv!==SEED_VERSION){var ids={};tasks.forEach(function(t){ids[t.id]=true;});SEED_TASKS.forEach(function(t){if(!ids[t.id])tasks.push(t);});localStorage.setItem(TASKS_KEY,JSON.stringify(tasks));localStorage.setItem(SEED_KEY,SEED_VERSION);}return tasks;}
+function saveTasks(tasks){localStorage.setItem(TASKS_KEY,JSON.stringify(tasks));updateBadge(tasks);}
+function updateBadge(tasks){var o=tasks.filter(function(t){return!t.done;}).length,b=document.getElementById('badge-open');b.textContent=o>0?o:'';b.style.display=o>0?'flex':'none';}
+var currentFilter='all';
+function setFilter(f,btn){currentFilter=f;document.querySelectorAll('.task-filter-btn').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');renderTasks();}
+var AREA_LABELS={equipa:'Equipa',frota:'Frota',rh:'RH',ops:'Operacoes'};
+function renderTasks(){
+  var tasks=loadTasks(),areaF=document.getElementById('areaFilter').value;
+  var filtered=tasks.filter(function(t){var sOk=currentFilter==='all'||(currentFilter==='open'&&!t.done)||(currentFilter==='done'&&t.done);return sOk&&(areaF==='all'||t.area===areaF);});
+  var open=tasks.filter(function(t){return!t.done;}).length,high=tasks.filter(function(t){return!t.done&&t.priority==='high';}).length,done=tasks.filter(function(t){return t.done;}).length;
+  document.getElementById('stat-open').textContent=open;document.getElementById('stat-high').textContent=high;document.getElementById('stat-done').textContent=done;document.getElementById('stat-total').textContent=tasks.length+' no total';updateBadge(tasks);
+  var groups={};filtered.forEach(function(t){if(!groups[t.area])groups[t.area]=[];groups[t.area].push(t);});
+  var container=document.getElementById('taskListContainer');
+  if(!filtered.length){container.innerHTML='<div class="task-empty">Nenhuma tarefa para mostrar</div>';return;}
+  var html='';
+  ['equipa','frota','rh','ops'].forEach(function(area){
+    if(!groups[area]||!groups[area].length)return;
+    var items=groups[area].sort(function(a,b){if(a.done!==b.done)return a.done?1:-1;var p={high:0,medium:1,low:2};return(p[a.priority]||1)-(p[b.priority]||1);});
+    html+='<div class="card mb12"><div class="task-group-header">'+AREA_LABELS[area]+' <span style="font-weight:400;color:var(--text-3)">('+items.length+')</span></div>';
+    items.forEach(function(t){
+      html+='<div class="task-item'+(t.done?' done':'')+'">'
+        +'<div class="task-checkbox'+(t.done?' checked':'')+'" onclick="toggleTask(\''+t.id+'\')"></div>'
+        +'<div class="task-priority-dot dot-'+t.priority+'"></div>'
+        +'<div class="task-content"><div class="task-text">'+escHtml(t.text)+'</div>'
+        +(t.meta?'<div class="task-meta">'+escHtml(t.meta)+'</div>':'')
+        +(t.source?'<div class="task-source">'+escHtml(t.source)+'</div>':'')
+        +(t.done&&t.completedAt?'<div class="task-meta">Concluida em '+t.completedAt+'</div>':'')
+        +'</div><button class="btn-task-delete" onclick="deleteTask(\''+t.id+'\')" title="Eliminar">x</button></div>';
+    });
+    html+='</div>';
+  });
+  container.innerHTML=html;
+}
+function toggleTask(id){var tasks=loadTasks(),t=tasks.find(function(x){return x.id===id;});if(!t)return;t.done=!t.done;t.completedAt=t.done?new Date().toLocaleDateString('pt-PT'):null;saveTasks(tasks);renderTasks();showToast(t.done?'Tarefa concluida':'Tarefa reaberta');}
+var _pendingTask=null;
+function deleteTask(id){if(_pendingTask!==id){_pendingTask=id;showToast('Clique novamente para eliminar a tarefa.');setTimeout(function(){if(_pendingTask===id)_pendingTask=null;},3000);return;}_pendingTask=null;saveTasks(loadTasks().filter(function(x){return x.id!==id;}));renderTasks();showToast('Tarefa eliminada.');}
+var formOpen=false;
+function toggleForm(){formOpen=!formOpen;document.getElementById('newTaskForm').classList.toggle('open',formOpen);if(formOpen)document.getElementById('f-text').focus();}
+function submitTask(){var text=document.getElementById('f-text').value.trim();if(!text){showToast('Escreve a descricao');return;}var tasks=loadTasks();tasks.push({id:'u-'+Date.now(),text:text,area:document.getElementById('f-area').value,priority:document.getElementById('f-priority').value,meta:document.getElementById('f-meta').value.trim(),source:document.getElementById('f-source').value.trim(),done:false,createdAt:new Date().toLocaleDateString('pt-PT'),completedAt:null});saveTasks(tasks);document.getElementById('f-text').value='';document.getElementById('f-meta').value='';document.getElementById('f-source').value='';if(currentFilter==='done'){currentFilter='open';document.querySelectorAll('.task-filter-btn').forEach(function(b,i){b.classList.toggle('active',i===1);});}renderTasks();toggleForm();showToast('Tarefa adicionada');}
+var addedFromMeeting=JSON.parse(localStorage.getItem('pragosa_meeting_added')||'{}');
+function addFromMeeting(btn,text,area,priority){if(btn.classList.contains('added'))return;var tasks=loadTasks();if(tasks.some(function(t){return t.text===text;})){btn.classList.add('added');btn.textContent='Ja existe';showToast('Ja esta na lista');return;}tasks.push({id:'mtg-'+Date.now(),text:text,area:area,priority:priority,meta:'',source:'Reunião',done:false,createdAt:new Date().toLocaleDateString('pt-PT'),completedAt:null});saveTasks(tasks);btn.classList.add('added');btn.textContent='Adicionada';showToast('Tarefa adicionada');addedFromMeeting[text]=true;localStorage.setItem('pragosa_meeting_added',JSON.stringify(addedFromMeeting));}
+function syncMeetingButtons(){addedFromMeeting=JSON.parse(localStorage.getItem('pragosa_meeting_added')||'{}');var tasks=loadTasks(),txts={};tasks.forEach(function(t){txts[t.text]=true;});document.querySelectorAll('.btn-add-task').forEach(function(btn){var m=(btn.getAttribute('onclick')||'').match(/'([^']+)'/);if(m&&txts[m[1]]){btn.classList.add('added');btn.textContent='Adicionada';}});}
+
+// ── Nav ──
+function showTab(name,btn){
+  document.querySelectorAll('.section').forEach(function(s){s.classList.remove('active');});
+  document.querySelectorAll('.nav-btn').forEach(function(b){b.classList.remove('active');});
+  document.getElementById('tab-'+name).classList.add('active');btn.classList.add('active');
+  if(name==='frota'){buildTypeFilter(currentCat);renderFleet();}
+  if(name==='tarefas'){renderTasks();syncMeetingButtons();}
+  if(name==='reunioes')syncMeetingButtons();
+}
+function showToast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},2200);}
+function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+// ── Init ──
+(function(){
+  renderCards();
+  renderDeptKpis();
+  var tasks=loadTasks();updateBadge(tasks);
+  var url=localStorage.getItem('pragosa_avarias_url')||'';
+  document.getElementById('urlStatus').textContent=url?'Configurada':'Nao configurada';
+  buildTypeFilter('basculantes');renderFleet();
+})();
+</script>
+
+<div id="ferias-detail-modal" onclick="if(event.target===this)closeFeriasDetail()">
+  <div id="ferias-detail-content"></div>
+</div>
+</body>
+</html>

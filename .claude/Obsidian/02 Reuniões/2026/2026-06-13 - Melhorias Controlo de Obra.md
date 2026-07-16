@@ -62,7 +62,7 @@ Continuação do trabalho de equipar a frota e os ativos com identificação dig
 	- [ ] **Colocar QR no tanque 61HP50** (Sobrissul) e **indicar ao [[03 Pessoas/João Silva]]**.
 - [ ] Concluir a colocação de QR nas **11 pesadas pendentes** (de 13).
 - [ ] Dar **formação de tanques móveis** às **Pedreiras**, a **Mário Leal** e a **Tiago Almeida**.
-- [ ] Manter o **registo de viagens de ligeiros ao fim de semana**. *(Logística)*
+- [x] Manter o **registo de viagens de ligeiros ao fim de semana**. *(Logística)*
 - [ ] Fazer os **registos das vias verdes**. *(Controlo de Gestão)*
 
 ## Riscos

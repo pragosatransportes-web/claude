@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Análise de Paragens · Traccar — Construções Pragosa</title>
+<style>
+/* ===== Paleta validada (ver LEIA-ME §Cores) ============================= */
+:root {
+  color-scheme: light;
+  --surface-1: #fcfcfb;
+  --plane:     #f9f9f7;
+  --ink-1:     #0b0b0b;
+  --ink-2:     #52514e;
+  --ink-3:     #898781;
+  --grid:      #e1e0d9;
+  --axis:      #c3c2b7;
+  --border:    rgba(11,11,11,0.10);
+
+  --c-semanal:  #1baf7a;
+  --c-diario:   #eda100;
+  --c-obrig:    #e87ba4;
+  --c-laboral:  #eb6834;
+  --c-espera:   #2a78d6;
+  --c-extra:    #e34948;
+  --c-inativo:  #4a3aa7;
+  --c-porclass: #008300;
+
+  /* Chrome da interface — nunca uma cor de série, para não confundir com dados */
+  --accent:   #2a78d6;
+
+  --good:     #0ca30c;
+  --warning:  #fab219;
+  --serious:  #ec835a;
+  --critical: #d03b3b;
+  --good-ink: #006300;
+}
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme="light"])) {
+    color-scheme: dark;
+    --surface-1: #191917;
+    --plane:     #0d0d0d;
+    --ink-1:     #ffffff;
+    --ink-2:     #c3c2b7;
+    --ink-3:     #898781;
+    --grid:      #2c2c2a;
+    --axis:      #383835;
+    --border:    rgba(255,255,255,0.10);
+
+    --c-semanal:  #199e70;
+    --c-diario:   #c98500;
+    --c-obrig:    #d55181;
+    --c-laboral:  #d95926;
+    --c-espera:   #3987e5;
+    --c-extra:    #e66767;
+    --c-inativo:  #9085e9;
+    --c-porclass: #008300;
+    --accent:     #3987e5;
+    --good-ink:   #0ca30c;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --surface-1: #191917; --plane: #0d0d0d;
+  --ink-1: #ffffff; --ink-2: #c3c2b7; --ink-3: #898781;
+  --grid: #2c2c2a; --axis: #383835; --border: rgba(255,255,255,0.10);
+  --c-semanal: #199e70; --c-diario: #c98500; --c-obrig: #d55181;
+  --c-laboral: #d95926; --c-espera: #3987e5; --c-extra: #e66767;
+  --c-inativo: #9085e9; --c-porclass: #008300;
+  --accent: #3987e5; --good-ink: #0ca30c;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--plane); color: var(--ink-1);
+  font: 14px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+.wrap { max-width: 1440px; margin: 0 auto; padding: 24px 20px 64px; }
+
+header.top { margin-bottom: 20px; }
+h1 { font-size: 21px; margin: 0 0 4px; letter-spacing: -0.01em; }
+.sub { color: var(--ink-2); font-size: 13px; margin: 0; }
+
+.card {
+  background: var(--surface-1); border: 1px solid var(--border);
+  border-radius: 10px; padding: 18px; margin-bottom: 16px;
+}
+.card h2 { font-size: 15px; margin: 0 0 2px; }
+.card .hint { font-size: 12px; color: var(--ink-3); margin: 0 0 14px; }
+
+/* ===== Importação ====================================================== */
+.drop {
+  border: 1.5px dashed var(--axis); border-radius: 10px; padding: 32px 20px;
+  text-align: center; cursor: pointer; transition: border-color .15s, background .15s;
+}
+.drop:hover, .drop.over { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 5%, transparent); }
+.drop strong { display: block; font-size: 15px; margin-bottom: 4px; }
+.drop span { color: var(--ink-3); font-size: 13px; }
+#ficheiro { display: none; }
+
+/* ===== Controlos ======================================================= */
+.filtros { display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end; margin-bottom: 16px; }
+.campo { display: flex; flex-direction: column; gap: 4px; }
+.campo label { font-size: 11px; color: var(--ink-3); text-transform: uppercase; letter-spacing: .04em; }
+select, input[type=number], input[type=date] {
+  background: var(--surface-1); color: var(--ink-1);
+  border: 1px solid var(--axis); border-radius: 6px; padding: 6px 9px; font: inherit; font-size: 13px;
+}
+button {
+  background: var(--surface-1); color: var(--ink-1); border: 1px solid var(--axis);
+  border-radius: 6px; padding: 7px 13px; font: inherit; font-size: 13px; cursor: pointer;
+}
+button:hover { background: var(--plane); }
+button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+button.primary:hover { filter: brightness(1.08); }
+
+/* ===== Stat tiles ====================================================== */
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 16px; }
+.tile { background: var(--surface-1); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; }
+.tile .k { font-size: 11px; color: var(--ink-3); text-transform: uppercase; letter-spacing: .04em; margin-bottom: 6px; }
+.tile .v { font-size: 27px; font-weight: 600; letter-spacing: -0.02em; line-height: 1.1; }
+.tile .n { font-size: 12px; color: var(--ink-2); margin-top: 3px; }
+
+/* ===== Legenda ========================================================= */
+.legenda { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 14px; }
+.leg { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--ink-2); cursor: pointer; user-select: none; }
+.leg .sw { width: 11px; height: 11px; border-radius: 3px; flex: none; }
+.leg.off { opacity: .35; }
+
+/* ===== Gantt =========================================================== */
+.gantt { overflow-x: auto; }
+.gantt-row { display: grid; grid-template-columns: 116px 1fr; gap: 10px; align-items: center; margin-bottom: 3px; }
+.gantt-lbl { font-size: 12px; color: var(--ink-2); text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.gantt-track { position: relative; height: 22px; background: var(--grid); border-radius: 4px; min-width: 620px; }
+.gantt-bar { position: absolute; top: 0; height: 22px; border-radius: 2px; }
+.gantt-bar.mov { background: var(--ink-3); border-radius: 4px; }
+.gantt-bar.par { box-shadow: 0 0 0 2px var(--surface-1); }
+.gantt-eixo { display: grid; grid-template-columns: 116px 1fr; gap: 10px; margin-bottom: 6px; }
+.gantt-horas { position: relative; height: 14px; min-width: 620px; }
+.gantt-horas span { position: absolute; font-size: 10px; color: var(--ink-3); transform: translateX(-50%); font-variant-numeric: tabular-nums; }
+
+/* ===== Barras ========================================================== */
+.barras { display: flex; flex-direction: column; gap: 7px; }
+.barra { display: grid; grid-template-columns: 132px 1fr 74px; gap: 10px; align-items: center; font-size: 12px; }
+.barra .nome { color: var(--ink-2); text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.barra .trilho { background: var(--grid); border-radius: 4px; height: 17px; position: relative; }
+.barra .fill { height: 17px; border-radius: 0 4px 4px 0; }
+.barra .val { color: var(--ink-1); font-variant-numeric: tabular-nums; font-weight: 500; }
+
+/* ===== Alertas ========================================================= */
+.alerta { display: flex; gap: 10px; padding: 10px 12px; border-radius: 7px; margin-bottom: 7px; background: var(--plane); border: 1px solid var(--border); }
+.alerta .ico { flex: none; width: 17px; height: 17px; border-radius: 50%; display: grid; place-items: center; font-size: 11px; font-weight: 700; color: #fff; margin-top: 1px; }
+.alerta.critical .ico { background: var(--critical); }
+.alerta.serious  .ico { background: var(--serious); }
+.alerta.warning  .ico { background: var(--warning); color: #0b0b0b; }
+.alerta .txt { flex: 1; }
+.alerta .t { font-weight: 600; font-size: 13px; }
+.alerta .d { color: var(--ink-2); font-size: 12px; margin-top: 2px; }
+.alerta .m { color: var(--ink-3); font-size: 11px; margin-top: 3px; font-variant-numeric: tabular-nums; }
+
+/* ===== Tabela ========================================================== */
+.tbl-wrap { overflow-x: auto; max-height: 560px; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px; }
+table { border-collapse: collapse; width: 100%; font-size: 12.5px; }
+th {
+  background: var(--plane); text-align: left; padding: 9px 11px; font-weight: 600; font-size: 11px;
+  color: var(--ink-2); text-transform: uppercase; letter-spacing: .04em;
+  position: sticky; top: 0; border-bottom: 1px solid var(--border); white-space: nowrap;
+}
+td { padding: 8px 11px; border-bottom: 1px solid var(--grid); white-space: nowrap; }
+td.num { font-variant-numeric: tabular-nums; text-align: right; }
+tbody tr:hover { background: var(--plane); }
+.tag { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 500; }
+.tag .sw { width: 9px; height: 9px; border-radius: 2px; flex: none; }
+.conf { font-size: 10px; padding: 1px 5px; border-radius: 3px; background: var(--grid); color: var(--ink-2); }
+
+/* ===== Aviso =========================================================== */
+.aviso { background: color-mix(in srgb, var(--warning) 12%, var(--surface-1)); border: 1px solid color-mix(in srgb, var(--warning) 40%, transparent); border-radius: 8px; padding: 12px 14px; font-size: 12.5px; color: var(--ink-1); margin-bottom: 16px; }
+.aviso b { display: block; margin-bottom: 3px; }
+
+/* ===== Tooltip ========================================================= */
+#tip {
+  position: fixed; pointer-events: none; z-index: 99; opacity: 0; transition: opacity .1s;
+  background: var(--ink-1); color: var(--surface-1); font-size: 12px; line-height: 1.45;
+  padding: 7px 10px; border-radius: 6px; max-width: 280px; box-shadow: 0 4px 14px rgba(0,0,0,.18);
+}
+#tip b { color: var(--surface-1); }
+#tip .tdim { opacity: .72; }
+
+.oculto { display: none; }
+.tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--border); margin-bottom: 16px; }
+.tab { padding: 8px 14px; font-size: 13px; cursor: pointer; border: none; background: none; color: var(--ink-2); border-bottom: 2px solid transparent; border-radius: 0; }
+.tab.on { color: var(--ink-1); border-bottom-color: var(--accent); font-weight: 600; }
+.rodape { color: var(--ink-3); font-size: 11.5px; text-align: center; margin-top: 28px; line-height: 1.7; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <h1>Análise de Paragens · Traccar</h1>
+  <p class="sub">Construções Pragosa · deteção e classificação automática de paragens a partir do relatório de viagens</p>
+</header>
+
+<!-- ===== Importação ===== -->
+<section class="card" id="c-import">
+  <h2>Relatórios do Traccar</h2>
+  <p class="hint">
+    Traccar → Relatórios → exportar para Excel (uma folha por veículo). Pode escolher os dois ao mesmo tempo.<br>
+    <b>Viagens</b> dá o tempo de condução · <b>Paragens</b> dá as coordenadas de cada paragem. Exporte os dois <b>para o mesmo período</b>.
+  </p>
+  <label class="drop" id="drop">
+    <input type="file" id="ficheiro" accept=".xlsx,.xls" multiple>
+    <strong>Escolher ficheiros ou arrastar para aqui</strong>
+    <span>trips.xlsx e stops.xlsx — reconhecidos automaticamente, processados no seu computador</span>
+  </label>
+  <div id="estado-import" style="margin-top:12px"></div>
+</section>
+
+<div id="app" class="oculto">
+
+  <!-- ===== Controlos ===== -->
+  <section class="card">
+    <div class="filtros">
+      <div class="campo">
+        <label for="f-veic">Veículo</label>
+        <select id="f-veic"><option value="">Todos</option></select>
+      </div>
+      <div class="campo">
+        <label for="f-de">De</label>
+        <input type="date" id="f-de">
+      </div>
+      <div class="campo">
+        <label for="f-ate">Até</label>
+        <input type="date" id="f-ate">
+      </div>
+      <div class="campo">
+        <label for="f-min">Paragem mínima</label>
+        <select id="f-min">
+          <option value="0">Todas</option>
+          <option value="5" selected>5 min</option>
+          <option value="10">10 min</option>
+          <option value="15">15 min</option>
+          <option value="30">30 min</option>
+          <option value="45">45 min</option>
+          <option value="60">1 hora</option>
+          <option value="90">1h30</option>
+        </select>
+      </div>
+      <div class="campo">
+        <label for="f-servico">Considerar</label>
+        <select id="f-servico">
+          <option value="servico">Só tempo de serviço</option>
+          <option value="tudo">Incluir descansos</option>
+        </select>
+      </div>
+      <button id="b-xlsx">Exportar Excel</button>
+      <button id="b-print">Imprimir / PDF</button>
+    </div>
+    <div class="tiles" id="tiles"></div>
+  </section>
+
+  <div class="tabs">
+    <button class="tab on" data-vista="resumo">Resumo</button>
+    <button class="tab" data-vista="dia">Dia a dia</button>
+    <button class="tab" data-vista="alertas">Alertas</button>
+    <button class="tab" data-vista="locais">Locais</button>
+    <button class="tab" data-vista="viagens">Viagens</button>
+    <button class="tab" data-vista="tabela">Paragens</button>
+  </div>
+
+  <!-- ===== Vista: Locais ===== -->
+  <div id="v-locais" class="oculto">
+    <section class="card">
+      <h2>Locais de paragem</h2>
+      <p class="hint">
+        Paragens a menos de 150 m umas das outras são o mesmo local. <b>Atribuir o tipo é o que permite classificar</b>:
+        uma morada diz onde é, mas só saber que aquilo é uma pedreira permite dizer que a paragem é carga e não desperdício.
+        Os nomes ficam guardados neste computador e aplicam-se às importações seguintes.
+      </p>
+      <div class="filtros">
+        <button id="b-geo" class="primary">Obter moradas (OpenStreetMap)</button>
+        <button id="b-limpar-nomes">Esquecer nomes guardados</button>
+        <span id="geo-estado" style="font-size:12px;color:var(--ink-2)"></span>
+      </div>
+      <div class="tbl-wrap">
+        <table id="t-locais">
+          <thead><tr>
+            <th class="num">#</th><th class="num">Tempo parado</th><th class="num">Paragens</th><th class="num">Veíc.</th>
+            <th>Nome</th><th>Tipo</th><th>Morada</th><th>Mapa</th>
+          </tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== Vista: Resumo ===== -->
+  <div id="v-resumo">
+    <section class="card">
+      <h2>Distribuição do tempo parado por tipo</h2>
+      <p class="hint">Que fatia do tempo de imobilização é legalmente obrigatória e que fatia não é.</p>
+      <div class="legenda" id="leg-tipo"></div>
+      <div class="barras" id="g-tipo"></div>
+    </section>
+
+    <section class="card" id="c-rank-locais">
+      <h2>Ranking de locais · onde a frota mais para</h2>
+      <p class="hint">Locais por tempo total parado. Sem nome atribuído aparecem as coordenadas — atribua o nome no separador <b>Locais</b>.</p>
+      <div class="barras" id="g-locais"></div>
+    </section>
+
+    <section class="card">
+      <h2>Ranking de veículos · tempo por classificar</h2>
+      <p class="hint">Onde há mais tempo parado que os dados não explicam. É a lista por onde começar a investigar — não uma lista de infratores.</p>
+      <div class="barras" id="g-veic"></div>
+    </section>
+
+    <section class="card">
+      <h2>Produtividade por veículo</h2>
+      <p class="hint">Percentagem do tempo de serviço em deslocação. Tempo de serviço = deslocação + paragens (exclui descanso diário e semanal).</p>
+      <div class="barras" id="g-prod"></div>
+    </section>
+  </div>
+
+  <!-- ===== Vista: Dia a dia ===== -->
+  <div id="v-dia" class="oculto">
+    <section class="card">
+      <h2>Linha temporal diária</h2>
+      <p class="hint">Cinzento = em deslocação. Cores = paragens. Passe o rato sobre cada bloco para o detalhe.</p>
+      <div class="legenda" id="leg-gantt"></div>
+      <div class="gantt" id="g-gantt"></div>
+    </section>
+  </div>
+
+  <!-- ===== Vista: Alertas ===== -->
+  <div id="v-alertas" class="oculto">
+    <section class="card">
+      <h2>Alertas</h2>
+      <p class="hint">Indicadores operacionais, não prova de infração — ver aviso no fundo da página.</p>
+      <div id="g-alertas"></div>
+    </section>
+  </div>
+
+  <!-- ===== Vista: Viagens ===== -->
+  <div id="v-viagens" class="oculto">
+    <section class="card">
+      <h2>Tempo de condução por dia</h2>
+      <p class="hint">Soma do tempo ao volante de cada veículo em cada dia, e a viagem mais longa sem interrupção nesse dia.</p>
+      <div class="tbl-wrap" style="max-height:340px">
+        <table id="t-dias">
+          <thead><tr>
+            <th>Veículo</th><th>Data</th><th class="num">Tempo de condução</th><th class="num">Viagens</th>
+            <th class="num">Km</th><th class="num">Viagem mais longa</th><th>Limite Art.6</th>
+          </tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Viagens detetadas</h2>
+      <p class="hint">Cada deslocação com o respetivo tempo de condução. Inclui as manobras (movimento dentro do mesmo local) e as viagens que o Traccar não fechou, assinaladas.</p>
+      <div class="tbl-wrap">
+        <table id="t-viagens">
+          <thead><tr>
+            <th>Veículo</th><th>Data</th><th>Início</th><th>Fim</th><th class="num">Tempo de condução</th>
+            <th class="num">Distância</th><th class="num">Vel. média</th><th>Registo</th>
+          </tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== Vista: Tabela ===== -->
+  <div id="v-tabela" class="oculto">
+    <section class="card">
+      <h2>Paragens detetadas</h2>
+      <p class="hint">Paragens acima do limiar escolhido, com classificação, justificação e grau de confiança.
+        Com <b>Todas</b> entram também as paragens de segundos, úteis para ver a operação ao detalhe mas ruidosas.</p>
+      <div class="tbl-wrap">
+        <table id="t-paragens">
+          <thead><tr>
+            <th>Veículo</th><th>Data</th><th>Início</th><th>Fim</th><th class="num">Duração</th>
+            <th>Tipo</th><th>Justificação</th><th>Confiança</th><th class="num">Cond. acum.</th><th>Local</th>
+          </tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <div class="aviso" id="aviso-limites"></div>
+  <p class="rodape" id="rodape"></p>
+</div>
+</div>
+
+<div id="tip"></div>
+
+<script src="xlsx.full.min.js"></script>
+<script src="motor.js"></script>
+<script>
+/* ============================================================================
+   INTERFACE
+   ========================================================================== */
+let DADOS = null;      // resultado de analisar()
+let BRUTAS = [];       // viagens tal como lidas do Excel
+let PARAGENS_BRUTAS = null;  // paragens do relatório (se importado)
+let tiposOff = new Set();
+const NOMES_KEY = 'paragens-traccar:locais';
+
+/* ---------- Leitura do Excel do Traccar --------------------------------
+   Uma folha por veículo. Linha 1 identifica o relatório ("Viagens"/"Paragens"),
+   linha 2 são os cabeçalhos, linha 3+ os dados. O tipo é detetado pelos
+   cabeçalhos, não pelo nome do ficheiro.
+     Viagens : Hora de Início | Hora de Fim | Distância | Velocidade Média
+     Paragens: Hora de Início | Hora de Fim | Conta-Quilómetros | Morada
+   ----------------------------------------------------------------------- */
+function lerTraccar(wb) {
+  const viagens = [], paragens = [], erros = [];
+
+  for (const nome of wb.SheetNames) {
+    const linhas = XLSX.utils.sheet_to_json(wb.Sheets[nome], { header: 1, blankrows: false });
+    const iCab = linhas.findIndex(l => l.some(c => /hora de in[íi]cio/i.test(String(c ?? ''))));
+    if (iCab < 0) { erros.push(`${nome}: sem cabeçalho reconhecível`); continue; }
+
+    const cab = linhas[iCab].map(c => String(c ?? '').toLowerCase());
+    const col = (rx) => cab.findIndex(c => rx.test(c));
+    const cIni = col(/in[íi]cio/), cFim = col(/fim/);
+    if (cIni < 0 || cFim < 0) { erros.push(`${nome}: faltam colunas de hora`); continue; }
+
+    const cMorada = col(/morada|endere[çc]o|localiza/);
+    const cOdo = col(/conta.?quil|od[óo]metro/);
+    const cKm = col(/dist/), cVel = col(/velocidade/);
+    const ehParagens = cMorada >= 0 || cOdo >= 0;
+
+    for (const l of linhas.slice(iCab + 1)) {
+      const ini = parseData(l[cIni]), fim = parseData(l[cFim]);
+      if (!ini || !fim) continue;
+      if (ehParagens) {
+        paragens.push({
+          veiculo: nome.trim(), inicio: ini, fim: fim,
+          coord: parseCoord(l[cMorada]),
+          moradaTraccar: cMorada >= 0 && !parseCoord(l[cMorada]) ? String(l[cMorada] ?? '').trim() || null : null,
+          odometro: cOdo >= 0 ? parseNum(l[cOdo]) : null,
+          manobrasDentro: 0,
+        });
+      } else {
+        viagens.push({
+          veiculo: nome.trim(), inicio: ini, fim: fim,
+          km: parseNum(l[cKm]),
+          velMedia: l[cVel] == null || l[cVel] === '' ? null : parseNum(l[cVel]),
+        });
+      }
+    }
+  }
+  return { viagens, paragens, erros };
+}
+
+/* "39.61782°, -8.83737°" → [39.61782, -8.83737]. Devolve null se for texto. */
+function parseCoord(v) {
+  if (v == null || v === '') return null;
+  const m = String(v).match(/(-?\d+\.\d+)\s*°?\s*,\s*(-?\d+\.\d+)/);
+  return m ? [parseFloat(m[1]), parseFloat(m[2])] : null;
+}
+
+function parseData(v) {
+  if (v == null || v === '') return null;
+  if (v instanceof Date) return v;
+  // Serial do Excel
+  if (typeof v === 'number') {
+    const d = XLSX.SSF.parse_date_code(v);
+    return d ? new Date(d.y, d.m - 1, d.d, d.H, d.M, d.S) : null;
+  }
+  // "01/07/2026, 05:01"
+  const m = /^(\d{1,2})\/(\d{1,2})\/(\d{4}),?\s+(\d{1,2}):(\d{2})/.exec(String(v).trim());
+  if (!m) return null;
+  return new Date(+m[3], +m[2] - 1, +m[1], +m[4], +m[5]);
+}
+function parseNum(v) {
+  if (v == null || v === '') return 0;
+  if (typeof v === 'number') return v;
+  const m = /-?[\d.,]+/.exec(String(v));
+  return m ? parseFloat(m[0].replace(',', '.')) : 0;
+}
+
+/* ---------- Importação -------------------------------------------------- */
+const drop = document.getElementById('drop');
+const inputFich = document.getElementById('ficheiro');
+
+inputFich.addEventListener('change', e => carregar([...e.target.files]));
+['dragenter','dragover'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add('over'); }));
+['dragleave','drop'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove('over'); }));
+drop.addEventListener('drop', e => carregar([...e.dataTransfer.files]));
+
+const lerFicheiro = (f) => new Promise((ok, falha) => {
+  const fr = new FileReader();
+  fr.onload = e => ok(XLSX.read(new Uint8Array(e.target.result), { type: 'array' }));
+  fr.onerror = () => falha(new Error(`Não foi possível ler ${f.name}`));
+  fr.readAsArrayBuffer(f);
+});
+
+async function carregar(files) {
+  if (!files.length) return;
+  const viagens = [], paragens = [], erros = [];
+  for (const f of files) {
+    try {
+      const r = lerTraccar(await lerFicheiro(f));
+      viagens.push(...r.viagens); paragens.push(...r.paragens);
+      erros.push(...r.erros.map(e => `${f.name} → ${e}`));
+    } catch (e) { erros.push(`${f.name}: ${e.message}`); }
+  }
+
+  if (!viagens.length) {
+    alert('Nenhum dos ficheiros tem um relatório de Viagens reconhecível.\n\n' +
+          'O relatório de Viagens é obrigatório (dá o tempo de condução).\n\n' + erros.join('\n'));
+    return;
+  }
+
+  BRUTAS = viagens;
+  PARAGENS_BRUTAS = paragens.length ? paragens : null;
+
+  const aviso = verificarCoerencia(viagens, paragens);
+  if (aviso && !confirm(aviso + '\n\nContinuar mesmo assim?')) return;
+
+  document.getElementById('c-import').classList.add('oculto');
+  document.getElementById('app').classList.remove('oculto');
+  prepararFiltros();
+  recalcular();
+}
+
+/* Os dois relatórios têm de cobrir o mesmo período. Exportá-los com datas
+   diferentes é o erro fácil de cometer e daria uma análise silenciosamente
+   errada: paragens sem viagens à volta, condução acumulada sem sentido. */
+function verificarCoerencia(viagens, paragens) {
+  if (!paragens.length) return null;
+  const per = (a) => [new Date(Math.min(...a.map(x => x.inicio))), new Date(Math.max(...a.map(x => x.fim)))];
+  const [v0, v1] = per(viagens), [p0, p1] = per(paragens);
+  const dias = (a) => new Set(a.map(x => dia(x.inicio)));
+  const comuns = [...dias(viagens)].filter(d => dias(paragens).has(d));
+
+  if (!comuns.length)
+    return `⚠️ Os dois relatórios não têm nenhum dia em comum.\n\n` +
+           `Viagens : ${diaPT(v0)} a ${diaPT(v1)}\nParagens: ${diaPT(p0)} a ${diaPT(p1)}\n\n` +
+           `Sem sobreposição não é possível cruzá-los — exporte os dois para o mesmo período.`;
+
+  const total = new Set([...dias(viagens), ...dias(paragens)]).size;
+  if (comuns.length < total)
+    return `⚠️ Os relatórios cobrem períodos diferentes: ${comuns.length} de ${total} dias em comum.\n\n` +
+           `Viagens : ${diaPT(v0)} a ${diaPT(v1)}\nParagens: ${diaPT(p0)} a ${diaPT(p1)}\n\n` +
+           `Os dias sem os dois relatórios ficam incompletos.`;
+  return null;
+}
+
+function prepararFiltros() {
+  const sel = document.getElementById('f-veic');
+  sel.innerHTML = '<option value="">Todos os veículos</option>';
+  [...new Set(BRUTAS.map(v => v.veiculo))].sort().forEach(v => {
+    const o = document.createElement('option'); o.value = o.textContent = v; sel.appendChild(o);
+  });
+  const datas = BRUTAS.map(v => v.inicio).sort((a, b) => a - b);
+  document.getElementById('f-de').value = iso(datas[0]);
+  document.getElementById('f-ate').value = iso(datas[datas.length - 1]);
+}
+const iso = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+
+/* ---------- Recálculo --------------------------------------------------- */
+['f-veic','f-de','f-ate','f-min','f-servico'].forEach(id =>
+  document.getElementById(id).addEventListener('change', recalcular));
+
+/* Nomes e tipos dos locais persistem entre sessões — nomear é trabalho manual
+   que não se deve pedir duas vezes. Chave = coordenada arredondada (~11m). */
+const lerNomes = () => { try { return JSON.parse(localStorage.getItem(NOMES_KEY)) || {}; } catch { return {}; } };
+const gravarNomes = (n) => localStorage.setItem(NOMES_KEY, JSON.stringify(n));
+
+function recalcular() {
+  const veic = document.getElementById('f-veic').value;
+  const de = document.getElementById('f-de').value ? new Date(document.getElementById('f-de').value + 'T00:00') : null;
+  const ate = document.getElementById('f-ate').value ? new Date(document.getElementById('f-ate').value + 'T23:59') : null;
+  const minP = +document.getElementById('f-min').value;
+
+  const filtrar = (arr) => {
+    let a = arr;
+    if (veic) a = a.filter(x => x.veiculo === veic);
+    if (de) a = a.filter(x => x.fim >= de);
+    if (ate) a = a.filter(x => x.inicio <= ate);
+    return a;
+  };
+
+  DADOS = analisar(filtrar(BRUTAS), PARAGENS_BRUTAS ? filtrar(PARAGENS_BRUTAS) : null,
+                   { ...CFG, paragemMinMin: minP }, lerNomes());
+  render();
+}
+
+/* ---------- Render ------------------------------------------------------ */
+function paragensVisiveis() {
+  const incluirDescanso = document.getElementById('f-servico').value === 'tudo';
+  return DADOS.paragens.filter(p => {
+    const t = p.classificacao.tipo.id;
+    if (!incluirDescanso && (t === 'DESCANSO_DIARIO' || t === 'DESCANSO_SEMANAL')) return false;
+    return !tiposOff.has(t);
+  });
+}
+
+function render() {
+  renderTiles(); renderLegendas(); renderTipos(); renderVeiculos();
+  renderProdutividade(); renderRankingLocais(); renderGantt(); renderAlertas();
+  renderLocais(); renderViagens(); renderTabela(); renderNotas();
+}
+
+function renderTiles() {
+  const ps = paragensVisiveis();
+  const reais = DADOS.viagens.filter(v => !v.manobra);
+  const km = reais.reduce((s, v) => s + v.km, 0);
+  const cond = reais.reduce((s, v) => s + (v.fim - v.inicio) / 60000, 0);
+  const parado = ps.reduce((s, p) => s + p.duracaoMin, 0);
+  const porClass = ps.filter(p => p.classificacao.tipo.id === 'POR_CLASSIFICAR').reduce((s, p) => s + p.duracaoMin, 0);
+  const nPorClass = ps.filter(p => p.classificacao.tipo.id === 'POR_CLASSIFICAR').length;
+  const servico = cond + parado;
+  const prod = servico ? cond / servico * 100 : 0;
+  const manobras = DADOS.viagens.filter(v => v.manobra).length;
+
+  const t = [
+    ['Veículos', DADOS.veiculos.length, `${reais.length} deslocações · ${manobras} manobras`],
+    ['Distância', `${Math.round(km).toLocaleString('pt-PT')} km`, `${min2h(cond)} em deslocação`],
+    [DADOS.cfg.paragemMinMin > 0 ? `Paragens ≥ ${min2h(DADOS.cfg.paragemMinMin)}` : 'Todas as paragens',
+     ps.length, `média ${min2h(ps.length ? parado / ps.length : 0)}`],
+    ['Tempo parado', min2h(parado), `${(servico ? parado / servico * 100 : 0).toFixed(0)}% do tempo de serviço`],
+    ['Por classificar', min2h(porClass), `${nPorClass} paragens · ${(parado ? porClass / parado * 100 : 0).toFixed(0)}% do tempo parado`],
+    ['Produtividade', `${prod.toFixed(0)}%`, 'tempo em deslocação / serviço'],
+  ];
+  document.getElementById('tiles').innerHTML = t.map(([k, v, n]) =>
+    `<div class="tile"><div class="k">${k}</div><div class="v">${v}</div><div class="n">${n}</div></div>`).join('');
+}
+
+function renderLegendas() {
+  const html = Object.values(TIPOS).map(t =>
+    `<div class="leg ${tiposOff.has(t.id) ? 'off' : ''}" data-tipo="${t.id}">
+       <span class="sw" style="background:${t.cor}"></span>${t.label}</div>`).join('');
+  for (const id of ['leg-tipo', 'leg-gantt']) document.getElementById(id).innerHTML = html;
+  document.querySelectorAll('.leg').forEach(el => el.addEventListener('click', () => {
+    const t = el.dataset.tipo;
+    tiposOff.has(t) ? tiposOff.delete(t) : tiposOff.add(t);
+    render();
+  }));
+}
+
+function renderTipos() {
+  const ps = paragensVisiveis();
+  const tot = {};
+  for (const p of ps) {
+    const t = p.classificacao.tipo;
+    tot[t.id] = tot[t.id] || { t, min: 0, n: 0 };
+    tot[t.id].min += p.duracaoMin; tot[t.id].n++;
+  }
+  const linhas = Object.values(tot).sort((a, b) => b.min - a.min);
+  const max = Math.max(...linhas.map(l => l.min), 1);
+  const soma = linhas.reduce((s, l) => s + l.min, 0);
+
+  document.getElementById('g-tipo').innerHTML = linhas.map(l => `
+    <div class="barra" data-tip="${esc(`<b>${l.t.label}</b><br>${l.n} paragens · ${min2h(l.min)}<br><span class="tdim">${(l.min/soma*100).toFixed(1)}% do tempo parado</span>`)}">
+      <div class="nome">${l.t.label}</div>
+      <div class="trilho"><div class="fill" style="width:${l.min / max * 100}%;background:${l.t.cor}"></div></div>
+      <div class="val">${min2h(l.min)}</div>
+    </div>`).join('') || vazio();
+  ligarTips('#g-tipo .barra');
+}
+
+function renderVeiculos() {
+  const ps = paragensVisiveis().filter(p => p.classificacao.tipo.id === 'POR_CLASSIFICAR');
+  const tot = {};
+  for (const p of ps) {
+    tot[p.veiculo] = tot[p.veiculo] || { v: p.veiculo, min: 0, n: 0, maior: 0 };
+    tot[p.veiculo].min += p.duracaoMin; tot[p.veiculo].n++;
+    tot[p.veiculo].maior = Math.max(tot[p.veiculo].maior, p.duracaoMin);
+  }
+  const linhas = Object.values(tot).sort((a, b) => b.min - a.min).slice(0, 15);
+  const max = Math.max(...linhas.map(l => l.min), 1);
+
+  document.getElementById('g-veic').innerHTML = linhas.map(l => `
+    <div class="barra" data-tip="${esc(`<b>${l.v}</b><br>${l.n} paragens por classificar · ${min2h(l.min)}<br><span class="tdim">maior: ${min2h(l.maior)} · média: ${min2h(l.min / l.n)}</span>`)}">
+      <div class="nome">${l.v}</div>
+      <div class="trilho"><div class="fill" style="width:${l.min / max * 100}%;background:var(--c-extra)"></div></div>
+      <div class="val">${min2h(l.min)}</div>
+    </div>`).join('') || vazio();
+  ligarTips('#g-veic .barra');
+}
+
+function renderProdutividade() {
+  const linhas = DADOS.kpis.filter(k => k.servicoMin > 60).sort((a, b) => a.produtividadePct - b.produtividadePct).slice(0, 15);
+  document.getElementById('g-prod').innerHTML = linhas.map(l => `
+    <div class="barra" data-tip="${esc(`<b>${l.veiculo}</b><br>${Math.round(l.km).toLocaleString('pt-PT')} km em ${l.nDias} dias<br>${min2h(l.conducaoMin)} em deslocação · ${min2h(l.paradoMin)} parado<br><span class="tdim">${l.paragens} paragens · média ${min2h(l.pausaMediaMin)}</span>`)}">
+      <div class="nome">${l.veiculo}</div>
+      <div class="trilho"><div class="fill" style="width:${l.produtividadePct}%;background:var(--c-espera)"></div></div>
+      <div class="val">${l.produtividadePct.toFixed(0)}%</div>
+    </div>`).join('') || vazio();
+  ligarTips('#g-prod .barra');
+}
+
+/* ---------- Gantt ------------------------------------------------------- */
+function renderGantt() {
+  const H0 = 4, H1 = 22;                       // janela horária mostrada
+  const pos = (d) => {
+    const m = d.getHours() * 60 + d.getMinutes();
+    return Math.max(0, Math.min(100, (m - H0 * 60) / ((H1 - H0) * 60) * 100));
+  };
+
+  const visiveis = new Set(paragensVisiveis().map(p => p.inicio.getTime() + '|' + p.veiculo));
+  const chaves = {};
+  for (const v of DADOS.viagens.filter(v => !v.manobra)) {
+    const k = `${dia(v.inicio)}|${v.veiculo}`;
+    (chaves[k] = chaves[k] || { viagens: [], paragens: [] }).viagens.push(v);
+  }
+  for (const p of DADOS.paragens) {
+    if (!visiveis.has(p.inicio.getTime() + '|' + p.veiculo)) continue;
+    const k = `${dia(p.inicio)}|${p.veiculo}`;
+    if (chaves[k]) chaves[k].paragens.push(p);
+  }
+
+  const ordenadas = Object.entries(chaves).sort(([a], [b]) => a.localeCompare(b)).slice(0, 120);
+  const eixo = [];
+  for (let h = H0; h <= H1; h += 2) eixo.push(`<span style="left:${(h - H0) / (H1 - H0) * 100}%">${String(h).padStart(2, '0')}h</span>`);
+
+  let html = `<div class="gantt-eixo"><div></div><div class="gantt-horas">${eixo.join('')}</div></div>`;
+  let ultimoDia = null;
+
+  for (const [k, o] of ordenadas) {
+    const [d, veic] = k.split('|');
+    if (d !== ultimoDia) {
+      ultimoDia = d;
+      const dt = new Date(d + 'T12:00');
+      html += `<div class="gantt-row" style="margin-top:10px">
+        <div class="gantt-lbl" style="color:var(--ink-1);font-weight:600">${diaPT(dt)}</div><div></div></div>`;
+    }
+    const barras = [
+      ...o.viagens.map(v => {
+        const a = pos(v.inicio), b = pos(v.fim);
+        if (b <= a) return '';
+        const aviso = v.suspeita ? '<br><span class="tdim">Viagem não fechada — duração não fiável</span>' : '';
+        return `<div class="gantt-bar mov" style="left:${a}%;width:${b - a}%"
+          data-tip="${esc(`<b>Deslocação</b> ${hhmm(v.inicio)}–${hhmm(v.fim)}<br>${min2h(v.durMin)} ao volante<br><span class="tdim">${v.km.toFixed(1)} km · ${v.velMedia ? v.velMedia.toFixed(0) + ' km/h médios' : 's/ velocidade'}</span>${aviso}`)}"></div>`;
+      }),
+      ...o.paragens.map(p => {
+        const a = pos(p.inicio), b = pos(p.fim);
+        if (b <= a) return '';
+        const c = p.classificacao;
+        return `<div class="gantt-bar par" style="left:${a}%;width:${Math.max(b - a, 0.4)}%;background:${c.tipo.cor}"
+          data-tip="${esc(`<b>${c.tipo.label}</b> ${hhmm(p.inicio)}–${hhmm(p.fim)}<br>${min2h(p.duracaoMin)}<br><span class="tdim">${c.justificacao}</span>`)}"></div>`;
+      }),
+    ].join('');
+    html += `<div class="gantt-row"><div class="gantt-lbl">${veic}</div><div class="gantt-track">${barras}</div></div>`;
+  }
+
+  const el = document.getElementById('g-gantt');
+  el.innerHTML = html || vazio();
+  if (Object.keys(chaves).length > 120)
+    el.insertAdjacentHTML('beforeend', `<p class="hint" style="margin-top:12px">A mostrar os primeiros 120 dias-veículo de ${Object.keys(chaves).length}. Filtre por veículo ou datas para ver o resto.</p>`);
+  ligarTips('.gantt-bar');
+}
+
+function renderAlertas() {
+  const ico = { critical: '!', serious: '!', warning: 'i' };
+  const nome = { critical: 'Crítico', serious: 'Grave', warning: 'Atenção' };
+  const el = document.getElementById('g-alertas');
+  if (!DADOS.alertas.length) { el.innerHTML = vazio('Sem alertas no período e filtros selecionados.'); return; }
+  el.innerHTML = DADOS.alertas.map(a => `
+    <div class="alerta ${a.sev}">
+      <div class="ico">${ico[a.sev]}</div>
+      <div class="txt">
+        <div class="t">${nome[a.sev]} · ${a.titulo}</div>
+        <div class="d">${a.detalhe}</div>
+        <div class="m">${a.veiculo} · ${a.data}</div>
+      </div>
+    </div>`).join('');
+  document.querySelector('.tab[data-vista="alertas"]').textContent = `Alertas (${DADOS.alertas.length})`;
+}
+
+/* ---------- Locais ------------------------------------------------------ */
+const nomeLocal = (l) => l.nome || `${l.centro[0].toFixed(4)}, ${l.centro[1].toFixed(4)}`;
+
+function renderRankingLocais() {
+  const card = document.getElementById('c-rank-locais');
+  if (!DADOS.locais.length) { card.classList.add('oculto'); return; }
+  card.classList.remove('oculto');
+
+  const visiveis = new Set(paragensVisiveis());
+  const linhas = DADOS.locais
+    .map(l => {
+      const ps = l.paragens.filter(p => visiveis.has(p));
+      return { l, min: ps.reduce((s, p) => s + p.duracaoMin, 0), n: ps.length };
+    })
+    .filter(x => x.n > 0)
+    .sort((a, b) => b.min - a.min).slice(0, 12);
+
+  const max = Math.max(...linhas.map(x => x.min), 1);
+  document.getElementById('g-locais').innerHTML = linhas.map(({ l, min, n }) => {
+    const tipo = l.tipo ? TIPOS_LOCAL[l.tipo].label : 'sem tipo atribuído';
+    return `<div class="barra" data-tip="${esc(`<b>${nomeLocal(l)}</b><br>${n} paragens · ${min2h(min)} · ${l.veiculos} veículo(s)<br><span class="tdim">${tipo}${l.morada ? '<br>' + l.morada : ''}</span>`)}">
+      <div class="nome">${nomeLocal(l)}</div>
+      <div class="trilho"><div class="fill" style="width:${min / max * 100}%;background:var(--c-espera)"></div></div>
+      <div class="val">${min2h(min)}</div>
+    </div>`;
+  }).join('') || vazio();
+  ligarTips('#g-locais .barra');
+}
+
+function renderLocais() {
+  const tb = document.querySelector('#t-locais tbody');
+  if (!DADOS.locais.length) {
+    tb.innerHTML = `<tr><td colspan="8" style="color:var(--ink-3)">Sem coordenadas. Exporte também o relatório <b>Paragens</b> do Traccar para o mesmo período.</td></tr>`;
+    document.querySelector('.tab[data-vista="locais"]').textContent = 'Locais';
+    return;
+  }
+
+  const ops = Object.values(TIPOS_LOCAL).map(t => `<option value="${t.id}">${t.label}</option>`).join('');
+  tb.innerHTML = DADOS.locais.map((l, i) => `
+    <tr data-chave="${l.chave}">
+      <td class="num">${i + 1}</td>
+      <td class="num">${min2h(l.totalMin)}</td>
+      <td class="num">${l.paragens.length}</td>
+      <td class="num">${l.veiculos}</td>
+      <td><input class="in-nome" data-chave="${l.chave}" value="${(l.nome ?? '').replace(/"/g,'&quot;')}"
+            placeholder="ex: Pedreira Vale Rodrigues" style="width:190px"></td>
+      <td><select class="in-tipo" data-chave="${l.chave}">
+            <option value="">— por tipificar —</option>${ops}
+          </select></td>
+      <td style="white-space:normal;max-width:260px;color:var(--ink-2)">${l.morada ?? '<span style="color:var(--ink-3)">—</span>'}</td>
+      <td><a href="https://www.google.com/maps?q=${l.centro[0]},${l.centro[1]}" data-externo
+             target="_blank" rel="noopener noreferrer" style="color:var(--accent)">ver</a></td>
+    </tr>`).join('');
+
+  for (const s of tb.querySelectorAll('.in-tipo')) {
+    s.value = DADOS.locais.find(l => l.chave === s.dataset.chave)?.tipo ?? '';
+    s.addEventListener('change', () => guardarLocal(s.dataset.chave, { tipo: s.value || null }));
+  }
+  for (const i of tb.querySelectorAll('.in-nome')) {
+    i.addEventListener('change', () => guardarLocal(i.dataset.chave, { nome: i.value.trim() || null }));
+  }
+
+  const semTipo = DADOS.locais.filter(l => !l.tipo).length;
+  document.querySelector('.tab[data-vista="locais"]').textContent =
+    `Locais (${DADOS.locais.length}${semTipo ? ` · ${semTipo} por tipificar` : ''})`;
+}
+
+/* Abrir o mapa sem perder a análise.
+   `target="_blank"` sozinho não chega: alguns visualizadores embebidos (painéis de
+   pré-visualização, webviews) ignoram-no e navegam na própria janela. A app era
+   substituída pelo Google Maps e os ficheiros importados perdiam-se — não há como
+   os recuperar com o botão Retroceder, porque um <input type=file> não se repõe.
+
+   Cuidado com o retorno: `window.open(url, '_blank', 'noopener')` devolve SEMPRE
+   null por especificação — o noopener corta a referência. Usar esse retorno para
+   decidir se cancelamos a navegação abre as duas coisas: o separador novo E a
+   navegação na janela principal. Abrir em branco primeiro dá uma referência
+   utilizável, e anular o opener mantém a proteção sem depender do argumento. */
+document.addEventListener('click', (e) => {
+  const a = e.target.closest('a[data-externo]');
+  if (!a || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey) return;
+
+  const nova = window.open('', '_blank');
+  if (!nova) return;              // bloqueado: deixar o link nativo fazer o que faz
+  nova.opener = null;             // equivalente a noopener, sem perder o retorno
+  nova.location = a.href;
+  e.preventDefault();             // só cancelamos depois de garantir que abriu
+});
+
+function guardarLocal(chave, campos) {
+  const n = lerNomes();
+  n[chave] = { ...(n[chave] || {}), ...campos };
+  gravarNomes(n);
+  recalcular();
+}
+
+document.getElementById('b-limpar-nomes').addEventListener('click', () => {
+  if (!confirm('Esquecer os nomes, tipos e moradas guardados neste computador?')) return;
+  localStorage.removeItem(NOMES_KEY);
+  recalcular();
+});
+
+/* ---------- Geocodificação inversa (Nominatim / OpenStreetMap) ----------
+   Envia as coordenadas de cada LOCAL (não de cada paragem) para um servidor
+   externo. É por isso que o agrupamento vem primeiro: ~120 pedidos em vez de
+   milhares. A política do Nominatim exige no máximo 1 pedido por segundo.
+   O resultado fica em cache local — cada local só é pedido uma vez.
+   ----------------------------------------------------------------------- */
+document.getElementById('b-geo').addEventListener('click', async () => {
+  const btn = document.getElementById('b-geo');
+  const estado = document.getElementById('geo-estado');
+  const faltam = DADOS.locais.filter(l => !l.morada);
+
+  if (!faltam.length) { estado.textContent = 'Todos os locais já têm morada.'; return; }
+  if (!confirm(`Vão ser enviadas as coordenadas de ${faltam.length} locais para o servidor do OpenStreetMap ` +
+               `(nominatim.openstreetmap.org), a 1 por segundo — cerca de ${Math.ceil(faltam.length * 1.1 / 60)} min.\n\n` +
+               `As moradas ficam guardadas neste computador; cada local só é pedido uma vez.\n\nAvançar?`)) return;
+
+  btn.disabled = true;
+  let ok = 0, falhou = 0;
+  for (const [i, l] of faltam.entries()) {
+    estado.textContent = `A obter ${i + 1} de ${faltam.length}…  ${ok} obtidas${falhou ? `, ${falhou} sem resultado` : ''}`;
+    try {
+      const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${l.centro[0]}&lon=${l.centro[1]}` +
+                  `&zoom=18&addressdetails=1&accept-language=pt`;
+      const r = await fetch(url, { headers: { 'Accept': 'application/json' } });
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      const j = await r.json();
+      const a = j.address || {};
+      const morada = [
+        j.name || a.road || a.hamlet || a.suburb,
+        a.village || a.town || a.city || a.municipality,
+        a.county, a.district, a.state,
+      ].filter((x, k, arr) => x && arr.indexOf(x) === k).slice(0, 3).join(', ') || j.display_name;
+      guardarSilencioso(l.chave, {
+        morada: morada || null,
+        municipio: a.town || a.city || a.village || a.municipality || null,
+        distrito: a.district || a.county || a.state || null,
+      });
+      ok++;
+    } catch (e) { falhou++; }
+    await new Promise(r => setTimeout(r, 1100));   // política do Nominatim: 1 req/s
+  }
+  btn.disabled = false;
+  estado.textContent = `${ok} morada(s) obtidas${falhou ? `, ${falhou} sem resultado` : ''}. Guardadas neste computador.`;
+  recalcular();
+});
+
+/* grava sem recalcular — o recálculo é feito uma vez no fim do lote */
+function guardarSilencioso(chave, campos) {
+  const n = lerNomes();
+  n[chave] = { ...(n[chave] || {}), ...campos };
+  gravarNomes(n);
+}
+
+function renderViagens() {
+  const vs = [...DADOS.viagens].sort((a, b) => a.inicio - b.inicio || a.veiculo.localeCompare(b.veiculo));
+
+  document.querySelector('#t-viagens tbody').innerHTML = vs.map(v => {
+    let registo = '<span class="conf">deslocação</span>';
+    if (v.suspeita) registo = `<span class="conf" style="background:color-mix(in srgb,var(--serious) 30%,transparent)">não fechada</span>`;
+    else if (v.manobra) registo = '<span class="conf">manobra</span>';
+    // A duração de uma viagem não fechada não é tempo ao volante — não a apresentar como tal.
+    const tempo = v.suspeita ? `<span style="color:var(--ink-3)">${min2h(v.durMin)} ?</span>` : min2h(v.durMin);
+    return `<tr>
+      <td>${v.veiculo}</td>
+      <td>${diaPT(v.inicio)}</td>
+      <td class="num">${hhmm(v.inicio)}</td>
+      <td class="num">${hhmm(v.fim)}</td>
+      <td class="num">${tempo}</td>
+      <td class="num">${v.km.toFixed(1)} km</td>
+      <td class="num">${v.velMedia !== null ? v.velMedia.toFixed(0) + ' km/h' : '—'}</td>
+      <td>${registo}</td>
+    </tr>`;
+  }).join('');
+
+  // --- Tempo de condução por veículo e dia
+  const dias = {};
+  for (const v of DADOS.viagens) {
+    if (v.manobra) continue;
+    const k = `${v.veiculo}|${dia(v.inicio)}`;
+    dias[k] = dias[k] || { veiculo: v.veiculo, data: v.inicio, min: 0, n: 0, km: 0, maior: 0, suspeitas: 0 };
+    const o = dias[k];
+    o.n++; o.km += v.km;
+    if (v.suspeita) { o.suspeitas++; continue; }   // não somar duração não fiável
+    o.min += v.durMin;
+    o.maior = Math.max(o.maior, v.durMin);
+  }
+
+  const linhas = Object.values(dias).sort((a, b) => b.min - a.min);
+  document.querySelector('#t-dias tbody').innerHTML = linhas.map(o => {
+    let limite = '<span class="conf">dentro de 9h</span>', cor = '';
+    if (o.suspeitas) { limite = '<span class="conf">não apurável</span>'; }
+    else if (o.min > 10 * 60) { limite = '<span class="conf" style="background:color-mix(in srgb,var(--critical) 32%,transparent)">acima de 10h</span>'; cor = 'color:var(--critical);font-weight:600'; }
+    else if (o.min > 9 * 60) { limite = '<span class="conf" style="background:color-mix(in srgb,var(--serious) 32%,transparent)">acima de 9h</span>'; cor = 'color:var(--serious);font-weight:600'; }
+    const maior = o.maior > CFG.conducaoContinuaMaxMin
+      ? `<span style="color:var(--critical);font-weight:600">${min2h(o.maior)}</span>` : min2h(o.maior);
+    return `<tr>
+      <td>${o.veiculo}</td>
+      <td>${diaPT(o.data)}</td>
+      <td class="num" style="${cor}">${o.suspeitas ? '—' : min2h(o.min)}</td>
+      <td class="num">${o.n}</td>
+      <td class="num">${Math.round(o.km)} km</td>
+      <td class="num">${o.suspeitas ? '—' : maior}</td>
+      <td>${limite}</td>
+    </tr>`;
+  }).join('');
+
+  document.querySelector('.tab[data-vista="viagens"]').textContent = `Viagens (${vs.length})`;
+}
+
+function renderTabela() {
+  const ps = paragensVisiveis().sort((a, b) => a.inicio - b.inicio || a.veiculo.localeCompare(b.veiculo));
+  document.querySelector('#t-paragens tbody').innerHTML = ps.map(p => {
+    const c = p.classificacao;
+    return `<tr>
+      <td>${p.veiculo}</td>
+      <td>${diaPT(p.inicio)}</td>
+      <td class="num">${hhmm(p.inicio)}</td>
+      <td class="num">${hhmm(p.fim)}</td>
+      <td class="num">${min2h(p.duracaoMin)}</td>
+      <td><span class="tag"><span class="sw" style="background:${c.tipo.cor}"></span>${c.tipo.label}</span></td>
+      <td style="white-space:normal;max-width:280px">${c.justificacao}</td>
+      <td><span class="conf">${c.confianca}</span></td>
+      <td class="num">${min2h(p.conducaoAcumuladaMin)}</td>
+      <td style="white-space:normal;max-width:220px">${p.local
+            ? `${nomeLocal(p.local)}${p.local.morada ? `<br><span style="color:var(--ink-3);font-size:11px">${p.local.morada}</span>` : ''}`
+            : '<span style="color:var(--ink-3)">— sem coordenadas</span>'}</td>
+    </tr>`;
+  }).join('');
+}
+
+function renderNotas() {
+  const semLocal = DADOS.paragens.filter(p => !p.morada).length;
+  const naoFechadas = DADOS.viagens.filter(v => v.suspeita && !v.manobra).length;
+  const longasLentas = DADOS.viagens.filter(v => !v.manobra && !v.suspeita && v.durMin > 6 * 60).length;
+
+  document.getElementById('aviso-limites').innerHTML = `
+    <b>Como ler estes números</b>
+    O relatório <i>Viagens</i> do Traccar não traz coordenadas, morada nem motorista — ${semLocal} das ${DADOS.paragens.length} paragens
+    não têm local associado. Por isso a classificação assenta em duração, hora do dia e deslocação acumulada, e as linhas marcadas
+    com confiança <span class="conf">baixa</span> são hipóteses, não factos. O tempo de deslocação do GPS <b>não é</b> o tempo de condução do
+    tacógrafo (não capta &laquo;outros trabalhos&raquo; como carga e descarga), pelo que os alertas do Regulamento 561/2006 são
+    <b>indicadores operacionais para investigar — nunca prova de infração nem base para ação disciplinar</b>. A análise é por
+    <b>veículo, não por motorista</b>: se dois motoristas se revezam no mesmo camião, o tempo de condução soma os dois.
+    ${naoFechadas ? `<br><br><b>${naoFechadas} registo(s) de viagem sem tempo de condução apurável</b> — duração marcada com <i>?</i> e excluída dos totais.
+    Ou o motorista descansou com a viatura ligada e parada (<b>prática normal, não é irregularidade</b>), ou o equipamento falhou. Ver Alertas.` : ''}
+    ${longasLentas ? `<br><br><b>⚠️ ${longasLentas} viagem(ns) acima de 6h sem qualquer paragem registada.</b> Confirmar com o DTI duas definições do
+    servidor Traccar: <i>useIgnition</i> (se as viagens forem delimitadas pela ignição, a paragem de um veículo que fica ligado <b>não é registada
+    em lado nenhum</b>) e <i>minimalParkingDuration</i> (por omissão 5 min). Enquanto isso não estiver esclarecido, os alertas de condução contínua
+    podem ser artefacto de configuração e não achado.` : ''}
+    <br><br>Para obter o motorista é preciso atribuí-lo ao veículo no Traccar ou cruzar com a escala de serviço (ver LEIA-ME).`;
+
+  const d = DADOS.viagens.map(v => v.inicio).sort((a, b) => a - b);
+  document.getElementById('rodape').textContent =
+    `${DADOS.viagens.length} viagens lidas · ${DADOS.veiculos.length} veículos · ${d.length ? diaPT(d[0]) + ' a ' + diaPT(d[d.length-1]) : ''} · análise gerada em ${diaPT(new Date())}`;
+}
+
+const vazio = (t = 'Sem dados para os filtros selecionados.') => `<p class="hint" style="margin:0">${t}</p>`;
+
+/* ---------- Tooltip ----------------------------------------------------- */
+const tip = document.getElementById('tip');
+const esc = s => s.replace(/"/g, '&quot;');
+function ligarTips(sel) {
+  document.querySelectorAll(sel).forEach(el => {
+    if (!el.dataset.tip) return;
+    el.addEventListener('mouseenter', () => { tip.innerHTML = el.dataset.tip; tip.style.opacity = '1'; });
+    el.addEventListener('mousemove', e => {
+      const x = Math.min(e.clientX + 14, innerWidth - tip.offsetWidth - 8);
+      const y = e.clientY + tip.offsetHeight + 20 > innerHeight ? e.clientY - tip.offsetHeight - 10 : e.clientY + 14;
+      tip.style.left = x + 'px'; tip.style.top = y + 'px';
+    });
+    el.addEventListener('mouseleave', () => { tip.style.opacity = '0'; });
+  });
+}
+
+/* ---------- Separadores ------------------------------------------------- */
+document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => {
+  document.querySelectorAll('.tab').forEach(x => x.classList.remove('on'));
+  t.classList.add('on');
+  ['resumo','dia','alertas','locais','viagens','tabela'].forEach(v =>
+    document.getElementById('v-' + v).classList.toggle('oculto', v !== t.dataset.vista));
+}));
+
+/* ---------- Exportação -------------------------------------------------- */
+document.getElementById('b-print').addEventListener('click', () => print());
+document.getElementById('b-xlsx').addEventListener('click', () => {
+  const wb = XLSX.utils.book_new();
+
+  const ps = paragensVisiveis().sort((a, b) => a.inicio - b.inicio);
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(ps.map(p => ({
+    'Veículo': p.veiculo, 'Data': diaPT(p.inicio), 'Início': hhmm(p.inicio), 'Fim': hhmm(p.fim),
+    'Duração (min)': Math.round(p.duracaoMin), 'Duração': min2h(p.duracaoMin),
+    'Tipo': p.classificacao.tipo.label, 'Obrigatória': p.classificacao.tipo.obrigatoria ? 'Sim' : 'Não',
+    'Justificação': p.classificacao.justificacao, 'Confiança': p.classificacao.confianca,
+    'Condução acumulada (min)': Math.round(p.conducaoAcumuladaMin),
+    'Manobras durante a paragem': p.manobrasDentro,
+    'Local': p.local ? nomeLocal(p.local) : '',
+    'Tipo de local': p.local?.tipo ? TIPOS_LOCAL[p.local.tipo].label : '',
+    'Morada': p.local?.morada ?? '',
+    'Latitude': p.coord?.[0] ?? '', 'Longitude': p.coord?.[1] ?? '',
+    'Motorista': '',
+  }))), 'Paragens');
+
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(
+    [...DADOS.viagens].sort((a, b) => a.inicio - b.inicio).map(v => ({
+      'Veículo': v.veiculo, 'Data': diaPT(v.inicio), 'Início': hhmm(v.inicio), 'Fim': hhmm(v.fim),
+      'Tempo de condução (min)': v.suspeita ? '' : Math.round(v.durMin),
+      'Tempo de condução': v.suspeita ? '' : min2h(v.durMin),
+      'Distância (km)': +v.km.toFixed(2), 'Velocidade média (km/h)': v.velMedia,
+      'Registo': v.suspeita ? 'Viagem não fechada — duração não fiável' : v.manobra ? 'Manobra' : 'Deslocação',
+    }))), 'Viagens');
+
+  const dias = {};
+  for (const v of DADOS.viagens.filter(v => !v.manobra)) {
+    const k = `${v.veiculo}|${dia(v.inicio)}`;
+    dias[k] = dias[k] || { veiculo: v.veiculo, data: v.inicio, min: 0, n: 0, km: 0, maior: 0, suspeitas: 0 };
+    const o = dias[k];
+    o.n++; o.km += v.km;
+    if (v.suspeita) { o.suspeitas++; continue; }
+    o.min += v.durMin; o.maior = Math.max(o.maior, v.durMin);
+  }
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(
+    Object.values(dias).sort((a, b) => b.min - a.min).map(o => ({
+      'Veículo': o.veiculo, 'Data': diaPT(o.data),
+      'Tempo de condução (h)': o.suspeitas ? '' : +(o.min / 60).toFixed(2),
+      'Tempo de condução': o.suspeitas ? 'não apurável' : min2h(o.min),
+      'Viagens': o.n, 'Km': Math.round(o.km),
+      'Viagem mais longa (min)': o.suspeitas ? '' : Math.round(o.maior),
+      'Acima de 9h (Art.6)': o.suspeitas ? '' : o.min > 540 ? 'Sim' : 'Não',
+      'Acima de 10h (Art.6)': o.suspeitas ? '' : o.min > 600 ? 'Sim' : 'Não',
+      'Viagens não fechadas': o.suspeitas,
+    }))), 'Condução por dia');
+
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(DADOS.kpis.map(k => ({
+    'Veículo': k.veiculo, 'Dias': k.nDias, 'Viagens': k.viagens, 'Km': Math.round(k.km),
+    'Km/dia': Math.round(k.kmDia), 'Deslocação (h)': +(k.conducaoMin / 60).toFixed(1),
+    'Parado (h)': +(k.paradoMin / 60).toFixed(1),
+    'Parado obrigatório (h)': +(k.paradoObrigMin / 60).toFixed(1),
+    'Parado não obrigatório (h)': +(k.paradoExtraMin / 60).toFixed(1),
+    'Nº paragens': k.paragens, 'Nº paragens extra': k.paragensExtra,
+    'Pausa média (min)': Math.round(k.pausaMediaMin),
+    'Produtividade (%)': +k.produtividadePct.toFixed(1), 'Tempo parado (%)': +k.paradoPct.toFixed(1),
+  }))), 'KPIs por veículo');
+
+  if (DADOS.locais.length)
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(DADOS.locais.map((l, i) => ({
+      '#': i + 1, 'Nome': l.nome ?? '', 'Tipo': l.tipo ? TIPOS_LOCAL[l.tipo].label : '',
+      'Morada': l.morada ?? '', 'Tempo parado (h)': +(l.totalMin / 60).toFixed(1),
+      'Paragens': l.paragens.length, 'Veículos': l.veiculos,
+      'Latitude': +l.centro[0].toFixed(6), 'Longitude': +l.centro[1].toFixed(6),
+      'Mapa': `https://www.google.com/maps?q=${l.centro[0]},${l.centro[1]}`,
+    }))), 'Locais');
+
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(DADOS.alertas.map(a => ({
+    'Gravidade': a.sev, 'Veículo': a.veiculo, 'Data': a.data, 'Alerta': a.titulo, 'Detalhe': a.detalhe,
+  }))), 'Alertas');
+
+  XLSX.writeFile(wb, `Analise Paragens ${iso(new Date())}.xlsx`);
+});
+</script>
+</body>
+</html>

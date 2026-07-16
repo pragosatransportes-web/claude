@@ -18,6 +18,12 @@
       "runtimeExecutable": "python",
       "runtimeArgs": ["-m", "http.server", "8777", "-d", "Cruzamento Horas Extra"],
       "port": 8777
+    },
+    {
+      "name": "paragens-traccar",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "http.server", "8778", "-d", "Analise Paragens Traccar"],
+      "port": 8778
     }
   ]
 }
