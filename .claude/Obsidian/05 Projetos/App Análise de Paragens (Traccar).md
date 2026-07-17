@@ -44,7 +44,7 @@ seleção que este protótipo revelou — não a API em si.
 ## Estado Atual
 🟢 **Fases 1, 2 e 3 concluídas** — a app já diz *onde* parou. Falta tipificar os locais.
 
-Aplicação em `Analise Paragens Traccar/` (abrir `index.html`, sem instalação, corre local).
+Aplicação em `C:\Users\ana.fialho\paragens-traccar` — **repositório Git próprio e privado**, separado do vault (abrir `index.html`, sem instalação, corre local).
 Importa os dois relatórios do Traccar (**Viagens** + **Paragens**) e reconhece-os pelos
 cabeçalhos. Validada com 01–15/07 (1637 viagens) e 13–16/07 (722 viagens + 713 paragens).
 
@@ -113,6 +113,8 @@ SORT data DESC
 ```
 
 ## Tarefas
+- [ ] **Criar no GitHub o repositório privado `paragens-traccar`** e fazer push do local (`C:\Users\ana.fialho\paragens-traccar`, já com o 1.º commit feito)
+- [ ] ⚠️ **Corrigir o remoto do vault**: `pragosatransportes-web/claude` é **público** e tem outro projeto (app frota React/Firebase). O vault tem salários, atas da CE e fichas de pessoas — **nunca fazer push deste repositório para lá**. Decidir: remover o remoto, ou criar um repositório privado próprio para o vault
 - [ ] Levar o protótipo à CE como prova de conceito da Fase III → informar a decisão **Wialon vs Traccar** com um critério concreto: a fonte tem de dar coordenadas por paragem e motorista por veículo
 - [x] ~~Exportar do Traccar o relatório **Paragens**~~ — feito 16/07, desbloqueou as coordenadas
 - [ ] **Tipificar os ~15 locais do topo da lista** (pedreira, cliente, obra, oficina, posto, sede) — é o passo com maior relação esforço/retorno: cada local tipificado converte dezenas de paragens de *Por classificar* em classificação com fundamento
@@ -156,9 +158,21 @@ SORT data DESC
 5. Só depois avaliar a API REST (fase 5) — não traz dados novos, só tira o passo manual.
 
 ## Notas
-- Documentação técnica completa e roadmap: `Analise Paragens Traccar/LEIA-ME.md`
+- Documentação técnica completa e roadmap: `C:\Users\ana.fialho\paragens-traccar\LEIA-ME.md`
 - Motor de classificação isolado do interface em `motor.js` — parametrização toda no objeto `CFG` (limiares de manobra, janelas legais, limiar de inatividade).
 - Prompt original que deu origem ao projeto: `Criação de Aplicação Tacógrafo.pdf` (Desktop).
+
+> [!decision] A app vive em repositório próprio e privado, fora do vault
+> O vault tem salários, atas da CE e fichas de pessoas — nada disso pode ir para o GitHub.
+> A app não tem nada de sensível no código, mas a **base de dados de locais** (`locais.json`)
+> mapeia pedreiras, clientes e sede com nome e coordenada: é a cadeia de abastecimento, e é
+> por isso que o repositório é **privado** mesmo só tendo a app.
+
+> [!warning] O remoto `pragosatransportes-web/claude` é de outro projeto — e é público
+> Tem uma app React/Firebase de custos de frota no `main` e no `master`. O vault local tem
+> esse remoto configurado mas com histórico independente: um push seria rejeitado e, se
+> forçado, **destruía a app frota**. Como o repositório é **público**, o vault nunca lhe pode
+> ser enviado. Ver tarefas.
 
 ### Ligações
 - Projetos: [[05 Projetos/Projeto Tacógrafos]]

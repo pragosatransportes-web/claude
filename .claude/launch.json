@@ -22,7 +22,7 @@
     {
       "name": "paragens-traccar",
       "runtimeExecutable": "python",
-      "runtimeArgs": ["-m", "http.server", "8778", "-d", "Analise Paragens Traccar"],
+      "runtimeArgs": ["-m", "http.server", "8778", "-d", "C:\\Users\\ana.fialho\\paragens-traccar"],
       "port": 8778
     }
   ]
