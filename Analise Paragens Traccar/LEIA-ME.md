@@ -27,6 +27,19 @@ A aplicação reconhece cada ficheiro pelos cabeçalhos, não pelo nome — a or
 indiferente. Se os períodos não coincidirem, avisa antes de continuar: cruzar
 relatórios de datas diferentes daria uma análise silenciosamente errada.
 
+Pode dar os dois de uma vez **ou juntar um depois do outro**: cada importação
+substitui apenas o relatório que os ficheiros contêm e mantém o outro. Carregar
+as Viagens hoje e juntar-lhes as Paragens a seguir funciona. O botão
+**Ficheiros** (na barra de filtros) volta a abrir a zona de importação e mostra
+o que está carregado — `✓✓` os dois, `✓—` falta o de Paragens.
+
+Os ficheiros podem ser largados em **qualquer ponto da janela**, não só na zona
+tracejada.
+
+Os registos lidos ficam guardados na sessão do separador: se sair da página e
+voltar atrás, ou carregar F5, **a análise volta sozinha sem reimportar nada**. O
+botão **Recomeçar** larga-os (os nomes dos locais mantêm-se).
+
 O relatório de **Viagens** é obrigatório. Sem o de **Paragens** a aplicação
 funciona na mesma (deriva as paragens dos intervalos entre viagens, com 99% de
 coincidência), mas fica sem localização — e sem localização não há classificação.

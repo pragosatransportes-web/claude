@@ -98,6 +98,16 @@ h1 { font-size: 21px; margin: 0 0 4px; letter-spacing: -0.01em; }
 .drop span { color: var(--ink-3); font-size: 13px; }
 #ficheiro { display: none; }
 
+/* Arrastar ficheiros: aceite em toda a janela, não só na zona tracejada */
+body.a-arrastar::after {
+  content: "Largue aqui os ficheiros do Traccar";
+  position: fixed; inset: 10px; z-index: 90; pointer-events: none;
+  border: 2px dashed var(--accent); border-radius: 12px;
+  background: color-mix(in srgb, var(--accent) 8%, var(--plane));
+  display: grid; place-items: center;
+  font-size: 17px; font-weight: 600; color: var(--accent);
+}
+
 /* ===== Controlos ======================================================= */
 .filtros { display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end; margin-bottom: 16px; }
 .campo { display: flex; flex-direction: column; gap: 4px; }
@@ -205,13 +215,16 @@ tbody tr:hover { background: var(--plane); }
 <section class="card" id="c-import">
   <h2>Relatórios do Traccar</h2>
   <p class="hint">
-    Traccar → Relatórios → exportar para Excel (uma folha por veículo). Pode escolher os dois ao mesmo tempo.<br>
-    <b>Viagens</b> dá o tempo de condução · <b>Paragens</b> dá as coordenadas de cada paragem. Exporte os dois <b>para o mesmo período</b>.
+    Traccar → Relatórios → exportar para Excel (uma folha por veículo). Exporte os dois <b>para o mesmo período</b>:
+    <b>Viagens</b> dá o tempo de condução · <b>Paragens</b> dá as coordenadas de cada paragem.<br>
+    Pode dar os dois de uma vez ou <b>juntar um depois do outro</b> — cada ficheiro substitui só o relatório que contém.
+    Depois de carregar, o botão <b>Ficheiros</b> volta a abrir esta zona.
   </p>
   <label class="drop" id="drop">
     <input type="file" id="ficheiro" accept=".xlsx,.xls" multiple>
     <strong>Escolher ficheiros ou arrastar para aqui</strong>
-    <span>trips.xlsx e stops.xlsx — reconhecidos automaticamente, processados no seu computador</span>
+    <span>trips.xlsx e stops.xlsx — reconhecidos pelos cabeçalhos, processados no seu computador.
+      Pode largar em qualquer ponto da janela.</span>
   </label>
   <div id="estado-import" style="margin-top:12px"></div>
 </section>
@@ -253,6 +266,8 @@ tbody tr:hover { background: var(--plane); }
           <option value="tudo">Incluir descansos</option>
         </select>
       </div>
+      <button id="b-ficheiros" title="Juntar ou trocar ficheiros">Ficheiros</button>
+      <button id="b-recomecar" title="Largar os ficheiros carregados">Recomeçar</button>
       <button id="b-xlsx">Exportar Excel</button>
       <button id="b-print">Imprimir / PDF</button>
     </div>
@@ -408,6 +423,38 @@ let BRUTAS = [];       // viagens tal como lidas do Excel
 let PARAGENS_BRUTAS = null;  // paragens do relatório (se importado)
 let tiposOff = new Set();
 const NOMES_KEY = 'paragens-traccar:locais';
+const DADOS_KEY = 'paragens-traccar:dados';
+
+/* ---------- Guardar os ficheiros lidos ---------------------------------
+   Se algo tirar a app do ecrã — um link que abre na própria janela, um F5, um
+   engano — os ficheiros importados perdem-se e um <input type=file> não se
+   repõe com o botão Retroceder. Guardar os registos já lidos em sessionStorage
+   faz a análise voltar sozinha, sem reimportar nada.
+   sessionStorage (e não localStorage) porque isto é o estado desta sessão de
+   trabalho: dura enquanto o separador durar e não deixa dados velhos para trás.
+   ----------------------------------------------------------------------- */
+function guardarDados() {
+  try {
+    sessionStorage.setItem(DADOS_KEY, JSON.stringify({ v: BRUTAS, p: PARAGENS_BRUTAS }));
+  } catch (e) {
+    // Quota excedida (períodos muito longos): seguir sem cache em vez de falhar.
+    try { sessionStorage.removeItem(DADOS_KEY); } catch { /* ignorado */ }
+  }
+}
+
+function restaurarDados() {
+  try {
+    const cru = sessionStorage.getItem(DADOS_KEY);
+    if (!cru) return false;
+    const d = JSON.parse(cru);
+    // JSON.stringify converte Date em texto ISO — reconstruir na volta.
+    const datas = (a) => a.map(x => ({ ...x, inicio: new Date(x.inicio), fim: new Date(x.fim) }));
+    if (!d.v?.length) return false;
+    BRUTAS = datas(d.v);
+    PARAGENS_BRUTAS = d.p?.length ? datas(d.p) : null;
+    return true;
+  } catch { return false; }
+}
 
 /* ---------- Leitura do Excel do Traccar --------------------------------
    Uma folha por veículo. Linha 1 identifica o relatório ("Viagens"/"Paragens"),
@@ -488,10 +535,43 @@ function parseNum(v) {
 const drop = document.getElementById('drop');
 const inputFich = document.getElementById('ficheiro');
 
-inputFich.addEventListener('change', e => carregar([...e.target.files]));
-['dragenter','dragover'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add('over'); }));
-['dragleave','drop'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove('over'); }));
-drop.addEventListener('drop', e => carregar([...e.dataTransfer.files]));
+inputFich.addEventListener('change', e => { carregar([...e.target.files]); e.target.value = ''; });
+
+/* Arrastar para QUALQUER ponto da página, a qualquer altura.
+   Se só a zona tracejada aceitasse o drop, largar um ficheiro a dois centímetros
+   dela faria o browser navegar para o .xlsx — a análise ia-se embora e parecia
+   que "não dá para arrastar". Aceitar em toda a janela evita isso. */
+let arrastando = 0;
+const temFicheiros = (e) => [...(e.dataTransfer?.types || [])].includes('Files');
+
+window.addEventListener('dragenter', e => {
+  if (!temFicheiros(e)) return;
+  e.preventDefault(); arrastando++; document.body.classList.add('a-arrastar');
+});
+window.addEventListener('dragover', e => { if (temFicheiros(e)) e.preventDefault(); });
+window.addEventListener('dragleave', e => {
+  if (!temFicheiros(e)) return;
+  if (--arrastando <= 0) { arrastando = 0; document.body.classList.remove('a-arrastar'); }
+});
+window.addEventListener('drop', e => {
+  if (!temFicheiros(e)) return;
+  e.preventDefault();
+  arrastando = 0; document.body.classList.remove('a-arrastar');
+  carregar([...e.dataTransfer.files]);
+});
+
+/* Voltar a mostrar a importação para juntar ou trocar ficheiros */
+document.getElementById('b-ficheiros').addEventListener('click', () => {
+  const c = document.getElementById('c-import');
+  c.classList.toggle('oculto');
+  if (!c.classList.contains('oculto')) c.scrollIntoView({ behavior: 'smooth', block: 'start' });
+});
+
+document.getElementById('b-recomecar').addEventListener('click', () => {
+  if (!confirm('Largar os ficheiros carregados e recomeçar?\n\nOs nomes e tipos dos locais mantêm-se.')) return;
+  try { sessionStorage.removeItem(DADOS_KEY); } catch { /* ignorado */ }
+  location.reload();
+});
 
 const lerFicheiro = (f) => new Promise((ok, falha) => {
   const fr = new FileReader();
@@ -500,8 +580,13 @@ const lerFicheiro = (f) => new Promise((ok, falha) => {
   fr.readAsArrayBuffer(f);
 });
 
+/* Cada importação substitui apenas os relatórios que vêm nos ficheiros novos e
+   mantém o outro. Assim é possível carregar as Viagens hoje e juntar-lhes as
+   Paragens depois, sem ter de voltar a escolher as duas. */
 async function carregar(files) {
+  files = files.filter(f => /\.xlsx?$/i.test(f.name));
   if (!files.length) return;
+
   const viagens = [], paragens = [], erros = [];
   for (const f of files) {
     try {
@@ -511,22 +596,62 @@ async function carregar(files) {
     } catch (e) { erros.push(`${f.name}: ${e.message}`); }
   }
 
-  if (!viagens.length) {
-    alert('Nenhum dos ficheiros tem um relatório de Viagens reconhecível.\n\n' +
-          'O relatório de Viagens é obrigatório (dá o tempo de condução).\n\n' + erros.join('\n'));
+  if (!viagens.length && !paragens.length) {
+    alert('Não foi reconhecido nenhum relatório do Traccar nestes ficheiros.\n\n' +
+          'Esperado: Viagens (Início · Fim · Distância · Velocidade Média) ou ' +
+          'Paragens (Início · Fim · Conta-Quilómetros · Morada).\n\n' + erros.join('\n'));
     return;
   }
 
-  BRUTAS = viagens;
-  PARAGENS_BRUTAS = paragens.length ? paragens : null;
+  const novasViagens = viagens.length ? viagens : BRUTAS;
+  const novasParagens = paragens.length ? paragens : PARAGENS_BRUTAS;
 
-  const aviso = verificarCoerencia(viagens, paragens);
+  if (!novasViagens.length) {
+    alert('Só foi encontrado o relatório de Paragens.\n\n' +
+          'O de Viagens é obrigatório — é ele que dá o tempo de condução. ' +
+          'Escolha os dois, ou carregue primeiro o de Viagens.');
+    return;
+  }
+
+  const aviso = verificarCoerencia(novasViagens, novasParagens || []);
   if (aviso && !confirm(aviso + '\n\nContinuar mesmo assim?')) return;
 
+  BRUTAS = novasViagens;
+  PARAGENS_BRUTAS = novasParagens?.length ? novasParagens : null;
+  guardarDados();
+  abrirApp();
+}
+
+function abrirApp() {
   document.getElementById('c-import').classList.add('oculto');
   document.getElementById('app').classList.remove('oculto');
   prepararFiltros();
   recalcular();
+  mostrarEstadoImport();
+}
+
+/* O que está carregado neste momento — sem isto não há forma de saber se o
+   relatório de Paragens entrou, e é ele que traz as coordenadas. */
+function mostrarEstadoImport() {
+  const per = (a) => {
+    const d = a.map(x => x.inicio).sort((x, y) => x - y);
+    return d.length ? `${diaPT(d[0])} a ${diaPT(d[d.length - 1])}` : '—';
+  };
+  const linha = (ok, nome, txt) =>
+    `<div style="display:flex;gap:8px;align-items:baseline;font-size:12.5px;margin-bottom:3px">
+       <span style="color:${ok ? 'var(--good-ink)' : 'var(--ink-3)'};font-weight:700">${ok ? '✓' : '—'}</span>
+       <b style="min-width:70px">${nome}</b>
+       <span style="color:var(--ink-2)">${txt}</span></div>`;
+
+  document.getElementById('estado-import').innerHTML =
+    linha(true, 'Viagens', `${BRUTAS.length} registos · ${per(BRUTAS)}`) +
+    linha(!!PARAGENS_BRUTAS, 'Paragens',
+      PARAGENS_BRUTAS ? `${PARAGENS_BRUTAS.length} registos · ${per(PARAGENS_BRUTAS)}`
+                      : 'não carregado — sem ele não há coordenadas nem classificação por local');
+
+  const b = document.getElementById('b-ficheiros');
+  b.textContent = PARAGENS_BRUTAS ? 'Ficheiros ✓✓' : 'Ficheiros ✓—';
+  b.title = PARAGENS_BRUTAS ? 'Viagens e Paragens carregados' : 'Falta o relatório de Paragens';
 }
 
 /* Os dois relatórios têm de cobrir o mesmo período. Exportá-los com datas
@@ -857,10 +982,13 @@ document.addEventListener('click', (e) => {
   const a = e.target.closest('a[data-externo]');
   if (!a || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey) return;
 
-  const nova = window.open('', '_blank');
+  // Abrir logo com o URL: `window.open('', '_blank')` é um padrão que alguns
+  // bloqueadores travam, e com 'noopener' o retorno é sempre null por
+  // especificação — nos dois casos ficamos sem saber se abriu.
+  let nova = null;
+  try { nova = window.open(a.href, '_blank'); } catch { /* ignorado */ }
   if (!nova) return;              // bloqueado: deixar o link nativo fazer o que faz
-  nova.opener = null;             // equivalente a noopener, sem perder o retorno
-  nova.location = a.href;
+  try { nova.opener = null; } catch { /* cross-origin: já vem sem opener utilizável */ }
   e.preventDefault();             // só cancelamos depois de garantir que abriu
 });
 
@@ -1135,6 +1263,14 @@ document.getElementById('b-xlsx').addEventListener('click', () => {
 
   XLSX.writeFile(wb, `Analise Paragens ${iso(new Date())}.xlsx`);
 });
+
+/* ---------- Arranque ----------------------------------------------------
+   No fim do script, de propósito: retomar chama recalcular(), que depende de
+   `const` definidos acima (lerNomes, entre outros). Como `const` não é hoisted,
+   correr isto mais cedo dava ReferenceError e matava o resto do script — a app
+   ficava com ar de aberta mas sem dados e sem os botões ligados.
+   ----------------------------------------------------------------------- */
+if (restaurarDados()) abrirApp();
 </script>
 </body>
 </html>
