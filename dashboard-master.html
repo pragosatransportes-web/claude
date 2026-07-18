@@ -45,6 +45,62 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
 .view-toggle{display:flex;border:1px solid var(--border);border-radius:8px;overflow:hidden;background:var(--surface)}
 .view-toggle-btn{padding:6px 14px;font-size:12px;border:none;background:none;cursor:pointer;color:var(--text-2);transition:background .1s}
 .view-toggle-btn.active{background:var(--accent);color:#fff}
+/* Plano de integracao FC (importado do Excel) */
+.fc-wrap{overflow-x:auto;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:12px}
+.fc-gantt{border-collapse:collapse;font-size:12px;width:100%;min-width:900px}
+.fc-gantt th{padding:5px 6px;font-size:10px;font-weight:600;color:#fff;background:#4b5563;border:1px solid rgba(255,255,255,.15);text-align:center;line-height:1.3;white-space:nowrap}
+.fc-gantt th.fc-th-task{background:#374151;text-align:left;min-width:330px}
+.fc-gantt th.fc-now{background:var(--accent)}
+.fc-gantt td{border:1px solid var(--border);padding:4px 7px;vertical-align:middle}
+.fc-gantt td.fc-task{font-size:11.5px;color:var(--text-2);line-height:1.4}
+.fc-gantt td.fc-cell{width:52px;padding:0;height:24px;cursor:pointer;transition:background .1s}
+.fc-gantt td.fc-cell:hover{background:#e4e4e7}
+.fc-gantt tr.fc-obj-row td{font-size:11px;font-weight:600;color:#fff;letter-spacing:.03em;padding:5px 8px}
+.fc-o1{background:#2563eb}.fc-o2{background:#059669}.fc-o3{background:#d97706}.fc-o4{background:#7c3aed}
+.fc-b1{background:#93c5fd}.fc-b2{background:#6ee7b7}.fc-b3{background:#fcd34d}.fc-b4{background:#c4b5fd}.fc-bm{background:#f87171}
+.fc-gantt td.fc-cell.fc-nowcol{box-shadow:inset 0 0 0 1px var(--accent)}
+.fc-legend{display:flex;flex-wrap:wrap;gap:14px;margin-top:10px;font-size:11.5px;color:var(--text-2);align-items:center}
+.fc-legend span.sw{display:inline-block;width:22px;height:11px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.fc-ci{width:100%;border-collapse:collapse;font-size:12px;min-width:900px}
+.fc-ci th{text-align:left;padding:6px 8px;font-size:10.5px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--border);white-space:nowrap}
+.fc-ci td{border-bottom:1px solid var(--border);padding:4px 6px;vertical-align:top}
+.fc-ci tr.fc-ci-now{background:#eff6ff}
+.fc-ci textarea{width:100%;min-width:150px;min-height:36px;border:1px solid var(--border);border-radius:6px;padding:5px 7px;font-family:inherit;font-size:11.5px;resize:vertical;background:var(--surface);color:var(--text)}
+.fc-ci select,.fc-av select{border:1px solid var(--border);border-radius:6px;padding:4px 6px;font-family:inherit;font-size:11.5px;background:var(--surface);color:var(--text)}
+.fc-ci .fc-wk{font-weight:600;font-size:11.5px;white-space:nowrap}
+.fc-ci .fc-per{font-size:11px;color:var(--text-3);white-space:nowrap}
+.fc-av td{border-bottom:1px solid var(--border);padding:6px 8px;vertical-align:top}
+.fc-av td.fc-av-crit{font-size:12px;color:var(--text-2);width:44%}
+.fc-av textarea{width:100%;min-height:34px;border:1px solid var(--border);border-radius:6px;padding:5px 7px;font-family:inherit;font-size:11.5px;resize:vertical;background:var(--surface);color:var(--text)}
+/* GANTs — categorias, planos e edicao */
+.g-cats{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:14px}
+.g-cat{display:flex;align-items:center;gap:5px;flex-wrap:wrap;background:var(--surface);border:1px solid var(--border);border-radius:99px;padding:4px 6px 4px 12px;box-shadow:var(--shadow)}
+.g-cat-name{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--text-3);margin-right:2px}
+.g-chip{border:1px solid var(--border);background:var(--bg);color:var(--text-2);font-family:inherit;font-size:11.5px;padding:4px 11px;border-radius:99px;cursor:pointer;max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;transition:background .1s}
+.g-chip:hover{background:#e4e4e7}
+.g-chip.active{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:500}
+.g-chip.g-add{font-weight:700;color:var(--accent);padding:4px 10px}
+.g-chip.g-newcat{background:var(--surface);border-style:dashed;box-shadow:var(--shadow)}
+.g-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:14px}
+.g-title{font-size:15px;font-weight:600}
+.g-sub{font-size:12px;color:var(--text-2);margin-top:2px}
+.g-actions{display:flex;gap:6px;flex-wrap:wrap}
+.g-btn{border:1px solid var(--border);background:var(--surface);color:var(--text-2);font-family:inherit;font-size:11.5px;padding:5px 12px;border-radius:8px;cursor:pointer;transition:background .1s}
+.g-btn:hover{background:#f4f4f5}
+.g-btn.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.g-btn.g-danger{color:var(--red)}.g-btn.g-danger:hover{background:#fef2f2}
+.g-edit-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:8px;flex:1;min-width:280px}
+.g-edit-grid label{display:flex;flex-direction:column;gap:3px;font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--text-3)}
+.g-edit-grid input{border:1px solid var(--border);border-radius:6px;padding:5px 8px;font-family:inherit;font-size:12.5px;font-weight:400;text-transform:none;letter-spacing:0;color:var(--text);background:var(--surface)}
+.g-obj-edit{display:flex;gap:6px;align-items:center}
+.g-obj-edit input{flex:1;border:none;border-radius:5px;padding:3px 7px;font-family:inherit;font-size:11px;font-weight:600;background:rgba(255,255,255,.9);color:#18181b}
+.g-obj-edit select{border:none;border-radius:5px;padding:3px 5px;font-family:inherit;font-size:11px;background:rgba(255,255,255,.9);color:#18181b}
+.g-task-input{width:100%;border:1px solid var(--border);border-radius:5px;padding:3px 6px;font-family:inherit;font-size:11.5px;background:var(--surface);color:var(--text)}
+.g-x{border:none;background:none;color:var(--red);font-size:15px;line-height:1;cursor:pointer;padding:0 5px;font-family:inherit}
+.g-x:hover{color:#7f1d1d}
+.g-marco{font-size:10.5px;color:var(--text-2);display:inline-flex;align-items:center;gap:3px;margin-right:4px;white-space:nowrap}
+.g-mini{border:1px dashed var(--border);background:none;color:var(--accent);font-family:inherit;font-size:11px;padding:3px 10px;border-radius:6px;cursor:pointer}
+.g-mini:hover{background:#eff6ff}
 /* Equipa cards */
 .e-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:5px;box-shadow:var(--shadow);overflow:hidden}
 .e-card.risk-warn{border-left:3px solid var(--amber)}.e-card.risk-err{border-left:3px solid var(--red)}
@@ -252,7 +308,7 @@ table.ft tr:hover td{background:#f9f9f7}
     <p>Construcoes Pragosa, S.A.</p>
     <h1>Departamento de Logistica &amp; Frota</h1>
   </div>
-  <div class="app-header-right"><div>Diretora: Rita Fialho</div><div>Atualizado: 12 jul 2026</div></div>
+  <div class="app-header-right"><div>Diretora: Rita Fialho</div><div>Atualizado: 18 jul 2026</div></div>
 </div>
 <div class="nav">
   <button class="nav-btn active" onclick="showTab('equipa',this)">Equipa</button>
@@ -271,6 +327,7 @@ table.ft tr:hover td{background:#f9f9f7}
       <button class="view-toggle-btn active" onclick="setEquipaView('cards',this)">Cartoes</button>
       <button class="view-toggle-btn" onclick="setEquipaView('org',this)">Organograma</button>
     <button class="view-toggle-btn" onclick="setEquipaView('ferias',this)">Férias 2026</button>
+    <button class="view-toggle-btn" onclick="setEquipaView('gantt',this)">GANTs</button>
     </div>
   </div>
   <div id="equipa-cards-view">
@@ -281,7 +338,7 @@ table.ft tr:hover td{background:#f9f9f7}
       <div class="card"><div class="kpi-lbl">Industria / CPSA</div><div class="kpi-num" style="color:var(--amber)">40+</div><div class="kpi-sub">internos + alugados variavel</div><div class="mt8"><span class="badge b-warn">Dependencia alugados</span></div></div>
       <div class="card"><div class="kpi-lbl">CCTs distintos</div><div class="kpi-num" style="color:var(--accent)">2</div><div class="kpi-sub">Pragosa Transportes vs. CPSA</div><div class="mt8"><span class="badge b-info">Atencao</span></div></div>
     </div>
-    <div class="alert alert-warn mt12">Avaliacao CE 30 jun: Gabriela em evolucao. Frederico em integracao (plano 2 fases). Monica superou expectativas. Ruben Sousa: licenca paternidade setembro.</div>
+    <div class="alert alert-warn mt12"><strong>Equipa — 18 jul 2026:</strong> Bruna em funções com elevado desempenho — disponibilidade crescente para análise de frota e outras áreas. Gabriela regressou de férias (7-10 jul) — foco nas Cisternas. António em dupla função (RACI a clarificar). João Campos: bom desempenho em junho (mobilizações e custos nos timings); combustíveis em acompanhamento. Frederico: arranca programa de formacao de 10 semanas (20/07-26/09) — Obj. 1 (planeamento basculantes) em curso; autonomia basculantes avaliada a 11/09 e transportes especiais a 26/09. Vera Bairros entra em agosto. Ruben Sousa: licença paternidade em setembro.</div>
   </div>
   <div id="equipa-org-view" style="display:none">
     <div class="org-chart-wrap">
@@ -292,8 +349,9 @@ table.ft tr:hover td{background:#f9f9f7}
     </div>
     <div class="org-edit-panel" id="orgEditPanel" style="display:none"></div>
   </div>
-</div>
   <div id="equipa-ferias-view" style="display:none;padding-top:8px"></div>
+  <div id="equipa-gantt-view" style="display:none;padding-top:8px"></div>
+</div>
 
 <!-- FROTA -->
 <div id="tab-frota" class="section">
@@ -347,214 +405,686 @@ table.ft tr:hover td{background:#f9f9f7}
     </div>
     <div class="fleet-footer"><span id="fleetCount">0 equipamentos</span><span style="margin-left:auto">Clique no motorista para editar</span></div>
   </div>
-  <div class="alert alert-err mb8"><strong>Alerta T. Especial:</strong> L-37858 (1976, 50 anos) e 77-56-AB (Mercedes 1992) — avaliacao imediata de abate.</div>
-  <div class="alert alert-ok"><strong>Basculantes e Cisternas em bom estado:</strong> Renovacao massiva 2021-2025. 5 reboques Galucho SGB3 de 2025 recem-entregues.</div>
+  <div class="alert alert-err mb8"><strong>Alerta T. Especial:</strong> L-37858 (1976, 50 anos) e 77-56-AB (Mercedes 1992) — avaliação imediata de abate.</div>
+  <div class="alert alert-err mb8"><strong>Tacógrafos G2V2:</strong> Fim do regime sancionatório (Lei 27/2010 + DL 169/2009) ocorreu a 11/07/2026. Verificar urgentemente conformidade da frota de transporte internacional.</div>
+  <div class="alert alert-warn mb8"><strong>Cisternas:</strong> Avarias acima do esperado a condicionar a operação. Reforçar manutenção preventiva (identificado CE 30/06).</div>
+  <div class="alert alert-ok"><strong>Basculantes em bom estado:</strong> Renovação massiva 2021–2025. 5 reboques Galucho SGB3 de 2025 recém-entregues. App de análise de paragens (Traccar) operacional — 86% das paragens em locais recorrentes identificados.</div>
 </div>
 
 <!-- REUNIOES -->
 <div id="tab-reunioes" class="section">
-<div class="alert alert-info mb16">Reuniões actualizadas automaticamente · <strong>16 jul 2026</strong></div>
+<div class="alert alert-info mb16">Reuniões actualizadas automaticamente · <strong>18 jul 2026</strong></div>
 
-  <div class="m-card">
-    <div class="m-header"><div class="m-title">CE Indústria · 2026-07-13</div><div class="m-date">13 jul 2026</div></div>
-    <div class="m-body">Vale Rodrigues condicionada por avaria no tapete do último crivo (stocks aquém, Enrocamento abaixo do mínimo, Brita 2 e Bago de Arroz em forte acumulação). Carbomin com stocks estabilizados mas Granel Carbo G2000 crítico — prioridade aos Big Bags. Cano com desequilíbrio acentuado de britas (Brita 1 a produzir −1.600 t/sem face ao consumo, agravado pelo fornecimento à IBERA de Évora). Santa Eulália a reforçar Brita 2 e explorar produção de Brita 1 MBQ em simultâneo com Brita 1 Brisa. Sobrissul em recuperação, experiência de Brita 3 confirmada como inviável (10 h de produção por carga, exige valor comercial superior). Obra 2456 (Sesimbra/CPSA): sugerida Pedreira do Risco para mistura tout-venant com fresado, início agosto.</div>
-    <div class="tags mb8">
-    <span class="tag b-info">CE</span>
+<div class="m-card">
+  <div class="m-header">
+    <div class="m-title">CE Indústria · 2026-07-13</div>
+    <div class="m-date">13 jul 2026</div>
+  </div>
+  <div class="m-body">Ponto de situação semanal das pedreiras do segmento Indústria. Vale Rodrigues condicionada por avaria no tapete do último crivo (stocks aquém do esperado; Enrocamento abaixo do mínimo), com Brita 2 e Bago de Arroz em forte acumulação e Pó de Pedra em risco de saturação. Carbomin com stocks estabilizados, mas Granel Carbo G2000 crítico — prioridade aos Big Bags. Cano com desequilíbrio acentuado de britas (Brita 1 a produzir −1.600 t/sem face ao consumo, agravado pelo fornecimento à IBERA de Évora) — Ricardo Santos/produção devem apresentar proposta para fazer face aos consumos (ponto principal da reunião). Santa Eulália a reforçar Brita 2 e a explorar produção de Brita 1 MBQ em simultâneo com Brita 1 Brisa. Sobrissul em recuperação de stocks, com a experiência de Brita 3 confirmada como inviável do ponto de vista de produtividade (10 h de produção por carga, condiciona todas as outras produções → exige valor comercial superior). Dados das bancadas de Moleanos e das previsões do 2.º semestre a incorporar no orçamento. Pedido da obra 2456 (Sesimbra / CPSA) para espaço de mistura de tout-venant com fresado — sugerida a Pedreira do Risco, início de trabalhos em agosto.</div>
+  <div class="tags mb8">
+    <span class="tag b-info">Comissão Executiva</span>
     <span class="tag b-info">Indústria</span>
     <span class="tag b-gray">Pedreiras</span>
-    </div>
+  </div>
   <div class="m-actions">
     <div class="m-actions-title">Acções identificadas</div>
-      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Ricardo Santos — apresentar proposta para o Cano fazer face aos consumos de britas','industria','high')">+ Tarefa</button><span>Ricardo Santos — apresentar proposta para o Cano fazer face aos consumos de britas</span></div>
-      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Ricardo Santos — limpeza de stocks do Bago de Arroz do Cano (tulha contaminada com argila)','ops','medium')">+ Tarefa</button><span>Ricardo Santos — limpeza de stocks do Bago de Arroz do Cano (tulha contaminada com argila)</span></div>
-      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Ricardo Santos — estimativa de exploração restante de Moleanos para JMP','industria','medium')">+ Tarefa</button><span>Ricardo Santos — estimativa de exploração restante de Moleanos para JMP</span></div>
-      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Ricardo Santos — preparar espaço na Pedreira do Risco (obra 2456/CPSA) e indicar necessidade de Buldózer','ops','medium')">+ Tarefa</button><span>Ricardo Santos — preparar espaço na Pedreira do Risco (obra 2456/CPSA) e indicar necessidade de Buldózer</span></div>
-      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Filipe Nascimento — corrigir dados de horas de Santa Eulália (62 h/sem, não 30 h)','industria','medium')">+ Tarefa</button><span>Filipe Nascimento — corrigir dados de horas de Santa Eulália (62 h/sem, não 30 h)</span></div>
-      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Filipe Nascimento — responder ao cliente Alves Ribeiro (Brita 1 Brisa só a partir de janeiro)','ops','medium')">+ Tarefa</button><span>Filipe Nascimento — responder ao cliente Alves Ribeiro (Brita 1 Brisa só a partir de janeiro)</span></div>
-      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Filipe Nascimento — ligar previsões do 2.º semestre ao orçamento e juntar histórico do 1.º semestre','ops','medium')">+ Tarefa</button><span>Filipe Nascimento — ligar previsões do 2.º semestre ao orçamento e juntar histórico do 1.º semestre</span></div>
-      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Carbomin — priorizar produção/expedição de Big Bags de Carbo G2000','industria','high')">+ Tarefa</button><span>Carbomin — priorizar produção/expedição de Big Bags de Carbo G2000</span></div>
-      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Ana Rita — acompanhar fornecimento de Brita 1 à IBERA de Évora e articular cadências','ops','medium')">+ Tarefa</button><span>Ana Rita — acompanhar fornecimento de Brita 1 à IBERA de Évora e articular cadências</span></div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Ricardo Santos — apresentar proposta para o Cano fazer face aos consumos de britas (corrigir desequilíbrio Brita 1/Brita 2). (prioritário)','industria','high')">+ Tarefa</button>
+      <span>Ricardo Santos — apresentar proposta para o Cano fazer face aos consumos de britas (corrigir desequilíbrio Brita 1/Brita 2). (prioritário)</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Ricardo Santos — efetuar limpeza de stocks do Bago de Arroz do Cano (tulha da caída contaminada com argila/barro).','industria','medium')">+ Tarefa</button>
+      <span>Ricardo Santos — efetuar limpeza de stocks do Bago de Arroz do Cano (tulha da caída contaminada com argila/barro).</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Ricardo Santos — dar a estimativa de exploração restante (&quot;pedreira cega&quot;) de Moleanos a JMP.','industria','medium')">+ Tarefa</button>
+      <span>Ricardo Santos — dar a estimativa de exploração restante (&quot;pedreira cega&quot;) de Moleanos a JMP.</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Ricardo Santos — para a obra 2456 (Sesimbra/CPSA): preparar o espaço na Pedreira do Risco e indicar necessidade de Buldózer para regularização; fornecer dados concretos (datas/prazos) a JMP.','industria','medium')">+ Tarefa</button>
+      <span>Ricardo Santos — para a obra 2456 (Sesimbra/CPSA): preparar o espaço na Pedreira do Risco e indicar necessidade de Buldózer para regularização; fornecer dados concretos (datas/prazos) a JMP.</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Filipe Nascimento — corrigir os dados de horas de Santa Eulália (62 h/semana, não 30 h — enviesados pela paragem).','industria','medium')">+ Tarefa</button>
+      <span>Filipe Nascimento — corrigir os dados de horas de Santa Eulália (62 h/semana, não 30 h — enviesados pela paragem).</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Filipe Nascimento — responder ao cliente Alves Ribeiro (Brita 1 Brisa só a partir de janeiro).','industria','medium')">+ Tarefa</button>
+      <span>Filipe Nascimento — responder ao cliente Alves Ribeiro (Brita 1 Brisa só a partir de janeiro).</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Filipe Nascimento — ligar as previsões do 2.º semestre ao orçamento e juntar o histórico do 1.º semestre (incluir bancadas de Moleanos).','industria','medium')">+ Tarefa</button>
+      <span>Filipe Nascimento — ligar as previsões do 2.º semestre ao orçamento e juntar o histórico do 1.º semestre (incluir bancadas de Moleanos).</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Filipe Nascimento / Comercial — reavaliar o valor comercial da Brita 3 (Sobrissul) face à baixa produtividade e impacto nas restantes produções.','industria','medium')">+ Tarefa</button>
+      <span>Filipe Nascimento / Comercial — reavaliar o valor comercial da Brita 3 (Sobrissul) face à baixa produtividade e impacto nas restantes produções.</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Vale Rodrigues — reparar o tapete do último crivo e gerir a acumulação de Brita 2 / Bago de Arroz e a saturação de Pó de Pedra.','industria','medium')">+ Tarefa</button>
+      <span>Vale Rodrigues — reparar o tapete do último crivo e gerir a acumulação de Brita 2 / Bago de Arroz e a saturação de Pó de Pedra.</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Carbomin — priorizar produção/expedição de Big Bags de Carbo G2000 (Granel G2000 crítico).','industria','high')">+ Tarefa</button>
+      <span>Carbomin — priorizar produção/expedição de Big Bags de Carbo G2000 (Granel G2000 crítico).</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Ana Rita — acompanhar o fornecimento de Brita 1 à IBERA de Évora (principal causa do desequilíbrio do Cano) e articular cadências.','industria','medium')">+ Tarefa</button>
+      <span>Ana Rita — acompanhar o fornecimento de Brita 1 à IBERA de Évora (principal causa do desequilíbrio do Cano) e articular cadências.</span>
+    </div>
   </div>
+</div>
+<div class="m-card">
+  <div class="m-header">
+    <div class="m-title">Comercial Indústria · 2026-07-09</div>
+    <div class="m-date">09 jul 2026</div>
   </div>
-  <div class="m-card">
-    <div class="m-header"><div class="m-title">Reunião Comercial Indústria · 2026-07-09</div><div class="m-date">09 jul 2026</div></div>
-    <div class="m-body">Reunião comercial do segmento Indústria para planear fornecimentos de brita, tout-venant, pó de pedra e agregados até agosto/setembro e alinhar preços e logística. Ponto central: subir o preço de venda alvo de ~€8,50 para €9,50 para proteger margem e viabilizar transporte. Central de betão projeta 6.000 m³/mês (26.000 t Brita 1 + 22.000 t Brita 2 a 6 meses — a validar com Filipe Nascimento). Obras a fechar até início de agosto: Teixeira Duarte (arranque setembro) e Zago/Zagope. Concurso Urubirado — 24.000 t de agregado reciclado.</div>
-    <div class="tags mb8">
+  <div class="m-body">Reunião comercial do segmento Indústria para planear fornecimentos de brita, tuvenan, pó de pedra e agregados até agosto/setembro e alinhar preços e logística. Ponto central de negociação: subir o preço de venda alvo de ~€8,50 para €9,50 para proteger margem e viabilizar transporte, mantendo sempre o preço de transferência entre pedreiras abaixo do preço de venda. Central de betão projeta 6.000 m³/mês (26.000 t Brita 1 + 22.000 t Brita 2 a 6 meses — validar capacidade com Filipe Nascimento). Riscos principais: paragens programadas de manutenção (previstas 3 dias, historicamente até 1 semana) e reclamações de brita não lavada. Obras a fechar até início de agosto: Teixeira Duarte (arranque setembro) e Zago/Zagope.</div>
+  <div class="tags mb8">
     <span class="tag b-info">Comercial</span>
     <span class="tag b-info">Indústria</span>
     <span class="tag b-gray">Pedreiras</span>
-    </div>
+  </div>
   <div class="m-actions">
     <div class="m-actions-title">Acções identificadas</div>
-      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Jorge Ferreira — monitorizar cargas e intervir se houver discrepância de fornecimento','ops','medium')">+ Tarefa</button><span>Jorge Ferreira — monitorizar cargas e intervir se houver discrepância de fornecimento</span></div>
-      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Jorge Ferreira — acompanhar negociação com Teixeira Duarte e Zago (fecho até início de agosto)','ops','medium')">+ Tarefa</button><span>Jorge Ferreira — acompanhar negociação com Teixeira Duarte e Zago (fecho até início de agosto)</span></div>
-      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Filipe Nascimento — confirmar estimativas da central (6.000 m³/mês) e validar capacidade para 26.000 t Brita 1 + 22.000 t Brita 2','ops','medium')">+ Tarefa</button><span>Filipe Nascimento — confirmar estimativas da central (6.000 m³/mês) e validar capacidade para 26.000 t Brita 1 + 22.000 t Brita 2</span></div>
-      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Comercial — atualizar mapa de preços e preços de transferência (Sobre e Sul)','ops','medium')">+ Tarefa</button><span>Comercial — atualizar mapa de preços e preços de transferência (Sobre e Sul)</span></div>
-      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Comercial — confirmar preço de venda alvo €9,50 e testar aceitação com clientes-chave','ops','medium')">+ Tarefa</button><span>Comercial — confirmar preço de venda alvo €9,50 e testar aceitação com clientes-chave</span></div>
-      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Comercial — decidir participação no concurso Urubirado (24.000 t agregado reciclado)','ops','medium')">+ Tarefa</button><span>Comercial — decidir participação no concurso Urubirado (24.000 t agregado reciclado)</span></div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Jorge Ferreira — monitorizar cargas e intervir se houver discrepância grande de fornecimento (aportar material).','ops','medium')">+ Tarefa</button>
+      <span>Jorge Ferreira — monitorizar cargas e intervir se houver discrepância grande de fornecimento (aportar material).</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Jorge Ferreira — acompanhar negociação com Teixeira Duarte e Zago (fecho até início de agosto / arranque setembro).','ops','medium')">+ Tarefa</button>
+      <span>Jorge Ferreira — acompanhar negociação com Teixeira Duarte e Zago (fecho até início de agosto / arranque setembro).</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Jorge Ferreira — verificar necessidade de máquina/adaptações se arrancarem dois fronts em simultâneo (separação de material, pessoas e equipamentos).','ops','medium')">+ Tarefa</button>
+      <span>Jorge Ferreira — verificar necessidade de máquina/adaptações se arrancarem dois fronts em simultâneo (separação de material, pessoas e equipamentos).</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Filipe Nascimento — confirmar estimativas da central (6.000 m³/mês) e validar capacidade para 26.000 t Brita 1 / 22.000 t Brita 2 a 6 meses.','industria','medium')">+ Tarefa</button>
+      <span>Filipe Nascimento — confirmar estimativas da central (6.000 m³/mês) e validar capacidade para 26.000 t Brita 1 / 22.000 t Brita 2 a 6 meses.</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Fernando (I e II) — acompanhar entregas e camadas de enchimento (camadas finais para campos desportivos); coordenar cargas recentes e previsão de 500–2.000 t de materiais combinados.','ops','medium')">+ Tarefa</button>
+      <span>Fernando (I e II) — acompanhar entregas e camadas de enchimento (camadas finais para campos desportivos); coordenar cargas recentes e previsão de 500–2.000 t de materiais combinados.</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Ricardo Santos — analisar impacto das paragens programadas (cano) e recalcular stocks; retomar segunda-feira (regresso de férias).','industria','medium')">+ Tarefa</button>
+      <span>Ricardo Santos — analisar impacto das paragens programadas (cano) e recalcular stocks; retomar segunda-feira (regresso de férias).</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Ricardo Santos / equipa técnica — avaliar capacidade de produção semanal real e confirmar plano de manutenção.','frota','medium')">+ Tarefa</button>
+      <span>Ricardo Santos / equipa técnica — avaliar capacidade de produção semanal real e confirmar plano de manutenção.</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Comercial / Planeamento — atualizar mapa de preços e preços de transferência (Sobre e Sul).','ops','medium')">+ Tarefa</button>
+      <span>Comercial / Planeamento — atualizar mapa de preços e preços de transferência (Sobre e Sul).</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Comercial — confirmar preço de venda alvo €9,50 e testar aceitação com clientes-chave.','ops','medium')">+ Tarefa</button>
+      <span>Comercial — confirmar preço de venda alvo €9,50 e testar aceitação com clientes-chave.</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Comercial — verificar pedido de stock mínimo de pó de pedra (7.000 t) e ajustar produção/stock.','ops','medium')">+ Tarefa</button>
+      <span>Comercial — verificar pedido de stock mínimo de pó de pedra (7.000 t) e ajustar produção/stock.</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Comercial — decidir participação no concurso Urubirado (24.000 t agregado reciclado) e como suprir o material.','ops','medium')">+ Tarefa</button>
+      <span>Comercial — decidir participação no concurso Urubirado (24.000 t agregado reciclado) e como suprir o material.</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Monitorizar qualidade de lavagem da brita e tratar reclamações de material não lavado.','industria','medium')">+ Tarefa</button>
+      <span>Monitorizar qualidade de lavagem da brita e tratar reclamações de material não lavado.</span>
+    </div>
   </div>
+</div>
+<div class="m-card">
+  <div class="m-header">
+    <div class="m-title">CE Logística · 2026-07-06</div>
+    <div class="m-date">06 jul 2026</div>
   </div>
-  <div class="m-card">
-    <div class="m-header"><div class="m-title">CE Logística · 2026-07-06</div><div class="m-date">06 jul 2026</div></div>
-    <div class="m-body">Reunião de decisão sobre três eixos: (1) modelo de gestão das aquisições de frota — porta-máquinas, novos tratores + semirreboques e porta-máquinas de 3 eixos (Nooteboom OSDS-48-03, validado para cilindros até 16 t vs. 36 t de carga útil); (2) fechar âmbito e fase do projeto de telemática/IA por fases (API Wialon/Traccar → rotas → alertas/IA); (3) salários e categorias dos motoristas — proposta de nova categoria PTSA "Serviço de Porta-Máquinas/Estrado" (2.216–2.416€, Cenário A), a validar com RH e aprovar em CE.</div>
-    <div class="tags mb8">
-    <span class="tag b-info">CE</span>
+  <div class="m-body">Reunião de decisão sobre três eixos: (1) definir o modelo de gestão das aquisições de frota — porta-máquinas, novos tratores + semirreboques e o porta-máquinas de 3 eixos — garantindo afetação, prioridades, responsabilidade, custos e conjugação técnica antes da compra; (2) fechar o âmbito e a fase do projeto de telemática/IA que ficou pendente da última reunião; (3) rever salários e categorias dos motoristas, comparando as estruturas da Pragosa Transportes e da CPSA, corrigindo incoerências e definindo o enquadramento do motorista do novo porta-máquinas. O objetivo é sair com decisão nos três, não apenas discussão.</div>
+  <div class="tags mb8">
+    <span class="tag b-info">Comissão Executiva</span>
     <span class="tag b-gray">Logística</span>
-    </div>
+    <span class="tag b-info">Preparação</span>
+  </div>
   <div class="m-actions">
     <div class="m-actions-title">Acções identificadas</div>
-      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Definir modelo de gestão das aquisições de frota (afetação, prioridades, responsável, custos)','ops','high')">+ Tarefa</button><span>Definir modelo de gestão das aquisições de frota (afetação, prioridades, responsável, custos)</span></div>
-      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Ana Rita — ver com João Silva equipamentos a adquirir e montar mapa de necessidades e conjugações tratores/semirreboques','frota','medium')">+ Tarefa</button><span>Ana Rita — ver com João Silva equipamentos a adquirir e montar mapa de necessidades e conjugações tratores/semirreboques</span></div>
-      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Confirmar plataforma de telemática disponível (Wialon vs. Traccar) e aprovar Fase I','ops','medium')">+ Tarefa</button><span>Confirmar plataforma de telemática disponível (Wialon vs. Traccar) e aprovar Fase I</span></div>
-      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Confirmar disponibilidade de condutor com carta de articulado para o novo porta-máquinas 3 eixos','rh','medium')">+ Tarefa</button><span>Confirmar disponibilidade de condutor com carta de articulado para o novo porta-máquinas 3 eixos</span></div>
-      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Criar categoria PTSA &quot;Serviço de Porta-Máquinas/Estrado&quot; — validar com RH e submeter à CE (Cenário A: 2.216–2.416€)','rh','medium')">+ Tarefa</button><span>Criar categoria PTSA "Serviço de Porta-Máquinas/Estrado" — validar com RH e submeter à CE (Cenário A: 2.216–2.416€)</span></div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Altura da 5.ª roda dos tratores disponíveis é compatível com o reboque (1,20–1,25 m em vazio)?','ops','medium')">+ Tarefa</button>
+      <span>Altura da 5.ª roda dos tratores disponíveis é compatível com o reboque (1,20–1,25 m em vazio)?</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Configuração dos tratores (4x2 / 6x2 / 6x4) e capacidade de tração para o PMA previsto (48 t a 80 km/h; mais em regimes lentos)?','ops','medium')">+ Tarefa</button>
+      <span>Configuração dos tratores (4x2 / 6x2 / 6x4) e capacidade de tração para o PMA previsto (48 t a 80 km/h; mais em regimes lentos)?</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Kingpin de 2&quot; compatível com todos os tratores?','ops','medium')">+ Tarefa</button>
+      <span>Kingpin de 2&quot; compatível com todos os tratores?</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Sistema elétrico: alimentação 24V OTAN, tomadas 7 polos ISO-N/ISO-S e EBS/ABS compatíveis entre trator e reboque?','ops','medium')">+ Tarefa</button>
+      <span>Sistema elétrico: alimentação 24V OTAN, tomadas 7 polos ISO-N/ISO-S e EBS/ABS compatíveis entre trator e reboque?</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Bateria do trator alimenta as rampas hidráulicas elétricas do porta-máquinas?','frota','medium')">+ Tarefa</button>
+      <span>Bateria do trator alimenta as rampas hidráulicas elétricas do porta-máquinas?</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Lista definitiva: quantos tratores e quantos semirreboques, de que tipo?','ops','medium')">+ Tarefa</button>
+      <span>Lista definitiva: quantos tratores e quantos semirreboques, de que tipo?</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Rácio tratores/semirreboques — há reboques a mais ou a menos face aos tratores?','ops','medium')">+ Tarefa</button>
+      <span>Rácio tratores/semirreboques — há reboques a mais ou a menos face aos tratores?</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Intermutabilidade: qualquer trator engata em qualquer semirreboque, ou há pares fixos?','ops','medium')">+ Tarefa</button>
+      <span>Intermutabilidade: qualquer trator engata em qualquer semirreboque, ou há pares fixos?</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Que tipos de serviço/carga estão previstos para cada conjugação?','ops','medium')">+ Tarefa</button>
+      <span>Que tipos de serviço/carga estão previstos para cada conjugação?</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Lacunas: alguma necessidade operacional que as aquisições atuais não cobrem?','ops','medium')">+ Tarefa</button>
+      <span>Lacunas: alguma necessidade operacional que as aquisições atuais não cobrem?</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Trator dedicado ou em pool? Qual dos tratores fica afeto?','ops','medium')">+ Tarefa</button>
+      <span>Trator dedicado ou em pool? Qual dos tratores fica afeto?</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Dimensões do cilindro (largura/altura) sobre a cama rebaixada → há excesso de gabarito (largura da cama 2,52 m, até 3,02 m alargada)?','ops','medium')">+ Tarefa</button>
+      <span>Dimensões do cilindro (largura/altura) sobre a cama rebaixada → há excesso de gabarito (largura da cama 2,52 m, até 3,02 m alargada)?</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Transporte especial: precisa de licença/acompanhamento por largura ou dimensões?','ops','medium')">+ Tarefa</button>
+      <span>Transporte especial: precisa de licença/acompanhamento por largura ou dimensões?</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'As rampas (inclinação 11°) permitem subir/descer os cilindros em segurança?','ops','medium')">+ Tarefa</button>
+      <span>As rampas (inclinação 11°) permitem subir/descer os cilindros em segurança?</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Eixo traseiro autodirecional — manobrabilidade suficiente em estaleiro/pedreira?','industria','medium')">+ Tarefa</button>
+      <span>Eixo traseiro autodirecional — manobrabilidade suficiente em estaleiro/pedreira?</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Vamos usar o reforço para fresadora (Wirtgen 1000DC) e o guincho — ou são extras dispensáveis?','ops','medium')">+ Tarefa</button>
+      <span>Vamos usar o reforço para fresadora (Wirtgen 1000DC) e o guincho — ou são extras dispensáveis?</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Plano de manutenção de eixos SAF, travões de tambor, suspensão pneumática — cobertos pela oficina interna?','frota','medium')">+ Tarefa</button>
+      <span>Plano de manutenção de eixos SAF, travões de tambor, suspensão pneumática — cobertos pela oficina interna?</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Pneus Goodyear 235/75R17.5 e sistema TPMS — disponibilidade de sobressalentes?','ops','medium')">+ Tarefa</button>
+      <span>Pneus Goodyear 235/75R17.5 e sistema TPMS — disponibilidade de sobressalentes?</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Habilitação dos motoristas: carta CE e formação para transporte especial / manobra de rampas?','ops','medium')">+ Tarefa</button>
+      <span>Habilitação dos motoristas: carta CE e formação para transporte especial / manobra de rampas?</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Que escalão/antiguidade e categoria para o condutor a afetar ao novo porta-máquinas 3 eixos → custo real (2 001–2 676 €)?','frota','medium')">+ Tarefa</button>
+      <span>Que escalão/antiguidade e categoria para o condutor a afetar ao novo porta-máquinas 3 eixos → custo real (2 001–2 676 €)?</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Há condutores com carta de articulado disponíveis ou é preciso recrutar/formar? (universo de 1+4)','ops','medium')">+ Tarefa</button>
+      <span>Há condutores com carta de articulado disponíveis ou é preciso recrutar/formar? (universo de 1+4)</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Confirmar o enquadramento legal de cada empresa (transportes vs construção) para comunicar corretamente porque as tabelas diferem — evitar leitura de &quot;injustiça&quot;.','ops','medium')">+ Tarefa</button>
+      <span>Confirmar o enquadramento legal de cada empresa (transportes vs construção) para comunicar corretamente porque as tabelas diferem — evitar leitura de &quot;injustiça&quot;.</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Critério de passagem de escalão — automático por antiguidade?','ops','medium')">+ Tarefa</button>
+      <span>Critério de passagem de escalão — automático por antiguidade?</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Diuturnidades: só a Pragosa Transportes as tem (24,63 €)? Na CPSA estão integradas no &quot;Prémio de Equipamento&quot;?','ops','medium')">+ Tarefa</button>
+      <span>Diuturnidades: só a Pragosa Transportes as tem (24,63 €)? Na CPSA estão integradas no &quot;Prémio de Equipamento&quot;?</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Definir modelo de gestão das aquisições de frota (afetação, prioridades, responsável, custos)','frota','medium')">+ Tarefa</button>
+      <span>Definir modelo de gestão das aquisições de frota (afetação, prioridades, responsável, custos)</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Ana Rita: ver com o João Silva os equipamentos a adquirir (tratores + semirreboques) e montar mapa de necessidades e conjugações','ops','medium')">+ Tarefa</button>
+      <span>Ana Rita: ver com o João Silva os equipamentos a adquirir (tratores + semirreboques) e montar mapa de necessidades e conjugações</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Avaliar aquisição do porta-máquinas 3 eixos (Nooteboom OSDS-48-03) — confirmar pesos dos cilindros vs. carga útil e trator compatível','frota','medium')">+ Tarefa</button>
+      <span>Avaliar aquisição do porta-máquinas 3 eixos (Nooteboom OSDS-48-03) — confirmar pesos dos cilindros vs. carga útil e trator compatível</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Confirmar plataforma de telemática disponível (Wialon vs. Traccar)','ops','medium')">+ Tarefa</button>
+      <span>Confirmar plataforma de telemática disponível (Wialon vs. Traccar)</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Aprovar avanço da Fase I — integração de API de telemática','ops','medium')">+ Tarefa</button>
+      <span>Aprovar avanço da Fase I — integração de API de telemática</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Nomear responsável e prazo para prova de conceito dos alertas','ops','medium')">+ Tarefa</button>
+      <span>Nomear responsável e prazo para prova de conceito dos alertas</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Confirmar disponibilidade de condutor com carta de articulado para o novo porta-máquinas 3 eixos','frota','medium')">+ Tarefa</button>
+      <span>Confirmar disponibilidade de condutor com carta de articulado para o novo porta-máquinas 3 eixos</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Definir escalão/categoria e custo do motorista do novo porta-máquinas 3 eixos (2 001–2 676 €)','frota','medium')">+ Tarefa</button>
+      <span>Definir escalão/categoria e custo do motorista do novo porta-máquinas 3 eixos (2 001–2 676 €)</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Preparar mensagem que explique a base legal do diferencial PTSA (transportes) vs CPSA (construção) — evitar leitura de &quot;injustiça&quot;','ops','medium')">+ Tarefa</button>
+      <span>Preparar mensagem que explique a base legal do diferencial PTSA (transportes) vs CPSA (construção) — evitar leitura de &quot;injustiça&quot;</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Criar categoria PTSA &quot;Serviço de Porta-Máquinas/Estrado&quot; — validar estrutura com RH e submeter à CE (Cenário A: 2 216–2 416€)','frota','medium')">+ Tarefa</button>
+      <span>Criar categoria PTSA &quot;Serviço de Porta-Máquinas/Estrado&quot; — validar estrutura com RH e submeter à CE (Cenário A: 2 216–2 416€)</span>
+    </div>
   </div>
+</div>
+<div class="m-card">
+  <div class="m-header">
+    <div class="m-title">CE Indústria · 2026-07-06</div>
+    <div class="m-date">06 jul 2026</div>
   </div>
-  <div class="m-card">
-    <div class="m-header"><div class="m-title">CE Indústria · 2026-07-06</div><div class="m-date">06 jul 2026</div></div>
-    <div class="m-body">Período de verão condiciona fortemente a produção (paragem de manhã por temperatura/vento, produção noturna) com silos a encher rapidamente e ~4 dias de trabalho/semana. Situação de stocks controlada em Carbomin. Cano — Brita 1 crítico (stock a zero a ~1 mês, consumo ~3.000 t/sem) e Brita 2 lavada (reserva 1.800 t para ~3 semanas). Aquisição de 2 motovibradores (~3.000€) confirmada. Alves Ribeiro (~25.000 t Brita 1) com produção insuficiente. Retoma do fornecimento a Alenquer (Lincare/Anker) determinada por JMP.</div>
-    <div class="tags mb8">
-    <span class="tag b-info">CE</span>
+  <div class="m-body">Ponto de situação operacional das pedreiras do segmento Indústria. O período de verão condiciona fortemente a produção (paragem de manhã por temperatura/vento, produção deslocada para a noite) e, com o escoamento reduzido, os silos enchem depressa — levando a menos dias de produção por semana. Situação de stocks globalmente controlada em Carbomin, com reforços em curso em Santa Eulália e Sobrissul. Ponto crítico mantém-se no Cano — Brita 1 (stock a zero a ~1 mês) e Brita 2 lavada (reserva de 1.800 t para ~3 semanas). Confirmada a aquisição dos 2 motovibradores (~3.000 €) para a paragem de 3 dias, a executar de forma sequencial. Dois pedidos comerciais distintos em aberto: Alves Ribeiro (~25.000 t de Brita 1 c/ características de betuminoso) e retoma do fornecimento a Alenquer (~5.000 t de stock, esgota a 1 mês).</div>
+  <div class="tags mb8">
+    <span class="tag b-info">Comissão Executiva</span>
     <span class="tag b-info">Indústria</span>
     <span class="tag b-gray">Pedreiras</span>
-    </div>
+  </div>
   <div class="m-actions">
     <div class="m-actions-title">Acções identificadas</div>
-      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Ricardo Santos — confirmar plano de paragem sequencial do Cano (primeiro uma instalação, depois a outra)','industria','high')">+ Tarefa</button><span>Ricardo Santos — confirmar plano de paragem sequencial do Cano (primeiro uma instalação, depois a outra)</span></div>
-      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Ricardo Santos — realizar ensaio de Brita 3 na Instalação 2 (Sobrissul) e apresentar dados; avisar Comercial','industria','medium')">+ Tarefa</button><span>Ricardo Santos — realizar ensaio de Brita 3 na Instalação 2 (Sobrissul) e apresentar dados; avisar Comercial</span></div>
-      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Produção/Comercial — emitir NC + relatório de ocorrência da Brita 1 do Cano (Central de Montemor)','ops','medium')">+ Tarefa</button><span>Produção/Comercial — emitir NC + relatório de ocorrência da Brita 1 do Cano (Central de Montemor)</span></div>
-      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Ana Rita — esclarecer situação do fornecimento a Alenquer (Lincare/Anker) e retomar entregas (stock ~5.000 t)','ops','high')">+ Tarefa</button><span>Ana Rita — esclarecer situação do fornecimento a Alenquer (Lincare/Anker) e retomar entregas (stock ~5.000 t)</span></div>
-      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Ana Rita — atualizar mapa de consumos de britas (Santa Eulália e Cano) para mapa de 5ª feira','ops','medium')">+ Tarefa</button><span>Ana Rita — atualizar mapa de consumos de britas (Santa Eulália e Cano) para mapa de 5ª feira</span></div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Ricardo Santos — confirmar o plano de paragem sequencial do Cano (primeiro uma instalação, depois a outra).','industria','medium')">+ Tarefa</button>
+      <span>Ricardo Santos — confirmar o plano de paragem sequencial do Cano (primeiro uma instalação, depois a outra).</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Ricardo Santos — realizar ensaio de Brita 3 na Instalação 2 e apresentar dados dos resultados (~1 semana); identificar o período e avisar o Comercial (impacto no TV 1ª).','industria','medium')">+ Tarefa</button>
+      <span>Ricardo Santos — realizar ensaio de Brita 3 na Instalação 2 e apresentar dados dos resultados (~1 semana); identificar o período e avisar o Comercial (impacto no TV 1ª).</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Ricardo Santos — preparar resposta ao cliente da Sobrissul (reclamação TV 1ª — presença de argila).','industria','medium')">+ Tarefa</button>
+      <span>Ricardo Santos — preparar resposta ao cliente da Sobrissul (reclamação TV 1ª — presença de argila).</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Produção/Comercial — emitir NC + relatório de ocorrência da Brita 1 do Cano (Central de Montemor); encarregado assina; explicar custos (transporte + produto).','industria','medium')">+ Tarefa</button>
+      <span>Produção/Comercial — emitir NC + relatório de ocorrência da Brita 1 do Cano (Central de Montemor); encarregado assina; explicar custos (transporte + produto).</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Produção/Comercial — avaliar custos de produção de Brita 1 c/ características de betuminoso para a Alves Ribeiro (~25.000 t jul–nov) e definir quantidade viável.','industria','medium')">+ Tarefa</button>
+      <span>Produção/Comercial — avaliar custos de produção de Brita 1 c/ características de betuminoso para a Alves Ribeiro (~25.000 t jul–nov) e definir quantidade viável.</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Ana Rita — esclarecer a situação do fornecimento a Alenquer (Lincare/Anker) e retomar as entregas (stock ~5.000 t, esgota a 1 mês).','ops','medium')">+ Tarefa</button>
+      <span>Ana Rita — esclarecer a situação do fornecimento a Alenquer (Lincare/Anker) e retomar as entregas (stock ~5.000 t, esgota a 1 mês).</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Ana Rita — atualizar mapa de consumos de britas (Santa Eulália e Cano) — incluir no mapa de 5ª feira.','industria','medium')">+ Tarefa</button>
+      <span>Ana Rita — atualizar mapa de consumos de britas (Santa Eulália e Cano) — incluir no mapa de 5ª feira.</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Ana Rita — avaliar com Ricardo Santos a viabilidade de recolhas periódicas de amostras nas pedreiras.','industria','medium')">+ Tarefa</button>
+      <span>Ana Rita — avaliar com Ricardo Santos a viabilidade de recolhas periódicas de amostras nas pedreiras.</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Ana Rita — preparar projeção de consumo de britas do Cano (incl. cenário IBERA Sines).','industria','medium')">+ Tarefa</button>
+      <span>Ana Rita — preparar projeção de consumo de britas do Cano (incl. cenário IBERA Sines).</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Ricardo Santos — apresentar projeção de stock de blocos/arranques (ABA/ABB) na próxima semana.','ops','medium')">+ Tarefa</button>
+      <span>Ricardo Santos — apresentar projeção de stock de blocos/arranques (ABA/ABB) na próxima semana.</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Ana Rita — falar com o Tiago sobre pendente (a especificar).','ops','medium')">+ Tarefa</button>
+      <span>Ana Rita — falar com o Tiago sobre pendente (a especificar).</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Cano — Brita 1 — definir plano para o stock a zero a 1 mês (rever fornecimentos com o Comercial; sem reforço previsto; paragem sequencial).','industria','medium')">+ Tarefa</button>
+      <span>Cano — Brita 1 — definir plano para o stock a zero a 1 mês (rever fornecimentos com o Comercial; sem reforço previsto; paragem sequencial).</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Santa Eulália — Brita 1 betão — preparar decisão a 4 semanas (produzir Brita 1 betão ou fornecimento externo).','industria','medium')">+ Tarefa</button>
+      <span>Santa Eulália — Brita 1 betão — preparar decisão a 4 semanas (produzir Brita 1 betão ou fornecimento externo).</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Vale Rodrigues — gerir o Pó de Pedra para evitar saturação (escoamento/expedição).','industria','medium')">+ Tarefa</button>
+      <span>Vale Rodrigues — gerir o Pó de Pedra para evitar saturação (escoamento/expedição).</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Sobrissul — manter o reforço de Brita 1 (~3.500 t/semana; recuperação em ~6 semanas) e planear a limpeza da parte superior (a decidir se ainda este verão — JMP em dúvida).','industria','medium')">+ Tarefa</button>
+      <span>Sobrissul — manter o reforço de Brita 1 (~3.500 t/semana; recuperação em ~6 semanas) e planear a limpeza da parte superior (a decidir se ainda este verão — JMP em dúvida).</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Manutenção — acompanhar eficácia do Tambor-secador (rolo substituído; ensaio em vazio na 6ª feira).','frota','medium')">+ Tarefa</button>
+      <span>Manutenção — acompanhar eficácia do Tambor-secador (rolo substituído; ensaio em vazio na 6ª feira).</span>
+    </div>
   </div>
+</div>
+<div class="m-card">
+  <div class="m-header">
+    <div class="m-title">Comercial Indústria · 2026-07-02</div>
+    <div class="m-date">02 jul 2026</div>
   </div>
-  <div class="m-card">
-    <div class="m-header"><div class="m-title">Reunião Comercial Indústria · 2026-07-02</div><div class="m-date">02 jul 2026</div></div>
-    <div class="m-body">Reunião comercial do segmento Indústria para alinhar carteira de fornecimentos por pedreira, reclamações de qualidade em aberto e obras em pipeline. Ponto central: definir se a Alves Ribeiro (Camarate) é cliente estratégico que justifique parar produção em Santa Eulália. Reclamações de excesso de finos na Brita 1 betão (Secil) e em aberto de IBERA, Elci e Secil. WRCTEAM — 30 cargas de Enrocamento 200/500 a arrancar 13/07. Obras em pipeline: Teixeira Duarte (Cascais, setembro), Zagope (Poceirão-Bombel, setembro).</div>
-    <div class="tags mb8">
+  <div class="m-body">Reunião comercial do segmento Indústria para alinhar carteira de fornecimentos por pedreira, reclamações de qualidade em aberto e obras em pipeline. Ponto central: definir se a Alves Ribeiro (Camarate) é cliente estratégico que justifique parar produção em Santa Eulália — depende do custo de rebritagem da Brita e da capacidade de produção (a validar com Ricardo Santos). Reclamações de excesso de finos na Brita 1 betão (Secil) e reclamações em aberto de IBERA, Elci e Secil. O Comercial deve apresentar projeção de consumos de britas a 6 meses para Santa Eulália e Sobrissul.</div>
+  <div class="tags mb8">
     <span class="tag b-info">Comercial</span>
     <span class="tag b-info">Indústria</span>
     <span class="tag b-gray">Pedreiras</span>
-    </div>
+  </div>
   <div class="m-actions">
     <div class="m-actions-title">Acções identificadas</div>
-      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Ana Rita — falar com Ricardo Santos: preço de rebritagem da Brita e capacidade de produção','ops','medium')">+ Tarefa</button><span>Ana Rita — falar com Ricardo Santos: preço de rebritagem da Brita e capacidade de produção</span></div>
-      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Jorge Ferreira — apurar quantidades a fornecer nos próximos 6 meses (Alves Ribeiro / Santa Eulália)','ops','medium')">+ Tarefa</button><span>Jorge Ferreira — apurar quantidades a fornecer nos próximos 6 meses (Alves Ribeiro / Santa Eulália)</span></div>
-      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Comercial — apresentar projeção de consumos de britas a 6 meses (Santa Eulália e Sobrissul)','ops','medium')">+ Tarefa</button><span>Comercial — apresentar projeção de consumos de britas a 6 meses (Santa Eulália e Sobrissul)</span></div>
-      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Alexandre Marques — validar redução de preço dos agregados para IBERA Évora (Brita 2 + Areia)','ops','medium')">+ Tarefa</button><span>Alexandre Marques — validar redução de preço dos agregados para IBERA Évora (Brita 2 + Areia)</span></div>
-      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Tratar reclamações em aberto: IBERA, Elci, Secil (excesso de finos — Brita 1 betão)','ops','medium')">+ Tarefa</button><span>Tratar reclamações em aberto: IBERA, Elci, Secil (excesso de finos — Brita 1 betão)</span></div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Ana Rita — falar com Ricardo Santos: preço de rebritagem da Brita, capacidade de produção e stocks reais de margem.','industria','medium')">+ Tarefa</button>
+      <span>Ana Rita — falar com Ricardo Santos: preço de rebritagem da Brita, capacidade de produção e stocks reais de margem.</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Jorge Ferreira — apurar quantidades a fornecer nos próximos 6 meses (Alves Ribeiro / Santa Eulália).','industria','medium')">+ Tarefa</button>
+      <span>Jorge Ferreira — apurar quantidades a fornecer nos próximos 6 meses (Alves Ribeiro / Santa Eulália).</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Comercial — apresentar projeção de consumos de britas a 6 meses (Santa Eulália).','industria','medium')">+ Tarefa</button>
+      <span>Comercial — apresentar projeção de consumos de britas a 6 meses (Santa Eulália).</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Comercial — apresentar projeção de consumos de britas a 6 meses (Sobrissul).','industria','medium')">+ Tarefa</button>
+      <span>Comercial — apresentar projeção de consumos de britas a 6 meses (Sobrissul).</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Alexandre Marques — apurar custo de rebritar a Brita (Santa Eulália / Alves Ribeiro).','industria','medium')">+ Tarefa</button>
+      <span>Alexandre Marques — apurar custo de rebritar a Brita (Santa Eulália / Alves Ribeiro).</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Alexandre Marques — validar redução de preço dos agregados para IBERA Évora (Brita 2 + Areia).','industria','medium')">+ Tarefa</button>
+      <span>Alexandre Marques — validar redução de preço dos agregados para IBERA Évora (Brita 2 + Areia).</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Jorge Ferreira — falar com WRCTEAM para arranque do fornecimento (30 cargas Enroc. 200/500) a partir de 13/07.','ops','medium')">+ Tarefa</button>
+      <span>Jorge Ferreira — falar com WRCTEAM para arranque do fornecimento (30 cargas Enroc. 200/500) a partir de 13/07.</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Envolver administração na decisão estratégica sobre a Alves Ribeiro.','ops','medium')">+ Tarefa</button>
+      <span>Envolver administração na decisão estratégica sobre a Alves Ribeiro.</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Avaliar custo/benefício de recolhas de amostras aleatórias com elemento externo e clarificar periodicidade das recolhas.','ops','medium')">+ Tarefa</button>
+      <span>Avaliar custo/benefício de recolhas de amostras aleatórias com elemento externo e clarificar periodicidade das recolhas.</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Tratar reclamações em aberto: IBERA, Elci, Secil (excesso de finos — Brita 1 betão).','industria','medium')">+ Tarefa</button>
+      <span>Tratar reclamações em aberto: IBERA, Elci, Secil (excesso de finos — Brita 1 betão).</span>
+    </div>
   </div>
+</div>
+<div class="m-card">
+  <div class="m-header">
+    <div class="m-title">Comissão Executiva Weekly · 2026-06-30</div>
+    <div class="m-date">30 jun 2026</div>
   </div>
-  <div class="m-card">
-    <div class="m-header"><div class="m-title">CE Weekly — Estado Operacional Logística · 2026-06-30</div><div class="m-date">30 jun 2026</div></div>
-    <div class="m-body">Estado operacional estável nas Construções. Cisternas sob pressão por elevado número de avarias a condicionar a operação — reforçar manutenção preventiva. Expedição Sobrissul em risco: Paula Lagos com baixas recorrentes, Susete sobrecarregada — decisão de abrir vaga de 3.º elemento. Foco de gestão demasiado concentrado na operação, com pouco tempo para equipa e visão estratégica. Frederico em integração (Fase I — basculantes). Ruben Sousa: licença paternidade em setembro.</div>
-    <div class="tags mb8">
-    <span class="tag b-info">CE</span>
+  <div class="m-body">Estado operacional estável nas Construções; Cisternas sob pressão por elevado número de avarias; Expedição Sobrissul em risco por baixas recorrentes da Paula Lagos e sobrecarga da Susete. Foco de gestão demasiado concentrado na operação, com pouco tempo para acompanhamento de equipa e visão estratégica. Avaliado o desenvolvimento dos gestores de tráfego.</div>
+  <div class="tags mb8">
+    <span class="tag b-info">Comissão Executiva</span>
     <span class="tag b-gray">Weekly</span>
     <span class="tag b-gray">Equipa</span>
-    </div>
+  </div>
   <div class="m-actions">
     <div class="m-actions-title">Acções identificadas</div>
-      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Analisar causas das avarias em Cisternas e reforçar manutenção preventiva','frota','high')">+ Tarefa</button><span>Analisar causas das avarias em Cisternas e reforçar manutenção preventiva</span></div>
-      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Acompanhar fornecimentos a maior distância e uso de subcontratados na Indústria','ops','medium')">+ Tarefa</button><span>Acompanhar fornecimentos a maior distância e uso de subcontratados na Indústria</span></div>
-      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Confirmar plano de substituições de férias, incluindo cobertura imprevisto na Sobrissul','equipa','medium')">+ Tarefa</button><span>Confirmar plano de substituições de férias, incluindo cobertura imprevisto na Sobrissul</span></div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Analisar causas das avarias em Cisternas e reforçar manutenção preventiva','frota','medium')">+ Tarefa</button>
+      <span>Analisar causas das avarias em Cisternas e reforçar manutenção preventiva</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Acompanhar fornecimentos a maior distância e uso de subcontratados na Indústria','ops','medium')">+ Tarefa</button>
+      <span>Acompanhar fornecimentos a maior distância e uso de subcontratados na Indústria</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Confirmar plano de substituições de férias, incluindo o imprevisto na Sobrissul','industria','medium')">+ Tarefa</button>
+      <span>Confirmar plano de substituições de férias, incluindo o imprevisto na Sobrissul</span>
+    </div>
   </div>
+</div>
+<div class="m-card">
+  <div class="m-header">
+    <div class="m-title">CE Indústria · 2026-06-30</div>
+    <div class="m-date">30 jun 2026</div>
   </div>
-  <div class="m-card">
-    <div class="m-header"><div class="m-title">CE Indústria · 2026-06-30</div><div class="m-date">30 jun 2026</div></div>
-    <div class="m-body">Vários materiais com consumo superior à produção: Cano — Brita 1 quebra semana após semana (risco de rutura a ~1300-1500 t/sem), Santa Eulália e Sobrissul — Brita 1. Orientações de João Pragosa: planeamento por projeção de produção (não por cliente), revisão da estratégia de fornecimentos do Cano e projeção de consumos de britas a 6 meses (Sobrissul). Determinado aprovisionamento de 2 motovibradores em stock. Paragem do Cano: semana de 13-15 de julho.</div>
-    <div class="tags mb8">
-    <span class="tag b-info">CE</span>
+  <div class="m-body">Ponto de situação operacional das pedreiras do segmento Indústria com João Machado Pragosa (Administração). Vários materiais com consumo superior à produção (Cano — Brita 1; Santa Eulália; Sobrissul — Brita 1), com risco de rutura no Cano se o consumo de Brita 1 se mantiver. João Pragosa deu várias orientações estratégicas para o Comercial: planeamento por projeção de produção (não por cliente), revisão da estratégia de fornecimentos do Cano e apresentação da projeção de consumos de britas a 6 meses (Sobrissul). Determinou ainda o aprovisionamento de 2 motovibradores em stock para encurtar paragens futuras.</div>
+  <div class="tags mb8">
+    <span class="tag b-info">Comissão Executiva</span>
     <span class="tag b-info">Indústria</span>
     <span class="tag b-gray">Pedreiras</span>
-    </div>
+  </div>
   <div class="m-actions">
     <div class="m-actions-title">Acções identificadas</div>
-      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Ricardo Santos — apresentar projeção de blocos de Moleanos até ao final do ano','industria','medium')">+ Tarefa</button><span>Ricardo Santos — apresentar projeção de blocos de Moleanos até ao final do ano</span></div>
-      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Comercial — rever estratégia de fornecimentos do Cano e avaliar rentabilidade durante a paragem (13-15 jul)','ops','high')">+ Tarefa</button><span>Comercial — rever estratégia de fornecimentos do Cano e avaliar rentabilidade durante a paragem (13-15 jul)</span></div>
-      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Comercial — apresentar projeção de consumos de britas a 6 meses (Sobrissul)','ops','medium')">+ Tarefa</button><span>Comercial — apresentar projeção de consumos de britas a 6 meses (Sobrissul)</span></div>
-      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Vale Rodrigues — resolver ausência de reforço de Enrocamento (troca de martelos prevista para agosto)','industria','medium')">+ Tarefa</button><span>Vale Rodrigues — resolver ausência de reforço de Enrocamento (troca de martelos prevista para agosto)</span></div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Ricardo Santos — apresentar projeção de blocos de Moleanos até ao final do ano.','industria','medium')">+ Tarefa</button>
+      <span>Ricardo Santos — apresentar projeção de blocos de Moleanos até ao final do ano.</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Comercial — rever estratégia de fornecimentos do Cano e avaliar rentabilidade de cortar/manter durante a paragem (13–15 jul) e stocks mínimos.','industria','medium')">+ Tarefa</button>
+      <span>Comercial — rever estratégia de fornecimentos do Cano e avaliar rentabilidade de cortar/manter durante a paragem (13–15 jul) e stocks mínimos.</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Comercial — apresentar projeção de consumos de britas a 6 meses (Sobrissul).','industria','medium')">+ Tarefa</button>
+      <span>Comercial — apresentar projeção de consumos de britas a 6 meses (Sobrissul).</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Planear paragem do Cano (13–15 jul — lavagem + central de britagem) minimizando risco de rutura de Brita 1.','industria','medium')">+ Tarefa</button>
+      <span>Planear paragem do Cano (13–15 jul — lavagem + central de britagem) minimizando risco de rutura de Brita 1.</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Resolver ausência de reforço de Enrocamento em Vale Rodrigues (troca de martelos prevista para agosto).','industria','medium')">+ Tarefa</button>
+      <span>Resolver ausência de reforço de Enrocamento em Vale Rodrigues (troca de martelos prevista para agosto).</span>
+    </div>
   </div>
+</div>
+<div class="m-card">
+  <div class="m-header">
+    <div class="m-title">CE Indústria · 2026-06-22</div>
+    <div class="m-date">22 jun 2026</div>
   </div>
-  <div class="m-card">
-    <div class="m-header"><div class="m-title">CE Indústria · 2026-06-22</div><div class="m-date">22 jun 2026</div></div>
-    <div class="m-body">Vários materiais com consumo superior à produção: Vale Rodrigues (Brita 1), Cano (Tout-Venant 1ª e Brita 1 Lavada), Santa Eulália (Brita 1 MBQ). Sobrissul — Brita 2 volta a atingir stock mínimo em ~1 semana. Paragens de produção planeadas em três pedreiras. Durante a reunião, Comercial suspendeu o fornecimento de Brita 1 Granito MBQ (Santa Eulália) por alegado incumprimento de fuso — Jorge Ferreira a verificar stocks na Central do Seixal.</div>
-    <div class="tags mb8">
-    <span class="tag b-info">CE</span>
+  <div class="m-body">Ponto de situação operacional das pedreiras do segmento Indústria. Vários materiais com consumo superior à produção (Vale Rodrigues, Cano, Santa Eulália), com pontos de rutura próximos na Sobrissul (Brita 2 em ~1 semana). Paragens de produção planeadas em três pedreiras (Vale Rodrigues, Santa Eulália, Sobrissul). Durante a reunião, o Comercial mandou suspender o fornecimento de Brita 1 Granito MBQ (Santa Eulália) por alegado incumprimento de fuso.</div>
+  <div class="tags mb8">
+    <span class="tag b-info">Comissão Executiva</span>
     <span class="tag b-info">Indústria</span>
     <span class="tag b-gray">Pedreiras</span>
-    </div>
+  </div>
   <div class="m-actions">
     <div class="m-actions-title">Acções identificadas</div>
-      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Ana Rita — ver com Jorge Ferreira arranque do fornecimento Enrocamento 200/500 (30 cargas, WRCTEAM) a partir de 13/07','ops','medium')">+ Tarefa</button><span>Ana Rita — ver com Jorge Ferreira arranque do fornecimento Enrocamento 200/500 (30 cargas, WRCTEAM) a partir de 13/07</span></div>
-      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Ana Rita — ver com Jorge Ferreira a reclamação da Secil Évora — Brita 1','ops','medium')">+ Tarefa</button><span>Ana Rita — ver com Jorge Ferreira a reclamação da Secil Évora — Brita 1</span></div>
-      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Organizar transporte da Giratória EC480 (Vale Rodrigues → Cano) para semana de 13-17 jul','frota','medium')">+ Tarefa</button><span>Organizar transporte da Giratória EC480 (Vale Rodrigues → Cano) para semana de 13-17 jul</span></div>
-      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Reforçar stocks de Vale Rodrigues, Santa Eulália e Sobrissul antes das paragens planeadas','industria','medium')">+ Tarefa</button><span>Reforçar stocks de Vale Rodrigues, Santa Eulália e Sobrissul antes das paragens planeadas</span></div>
-  </div>
-  </div>
-  <div class="m-card">
-    <div class="m-header"><div class="m-title">Controlo de Obras, Mobilizações, Custos e Combustível · 2026-06-15</div><div class="m-date">15 jun 2026</div></div>
-    <div class="m-body">Reunião quinzenal de coordenação entre Logística, DTI, Controlo de Gestão, Manutenção e Administração. Três frentes: substituição dos GPS com erros (agendada para 01-03/07, depende de fornecedor externo + nova versão do Traccar), mobilizações (colagem e associação de QR codes em 13 viaturas pesadas e contentores — fluxo DTI → Logística → App), e gasóleo (alargamento da App de Combustíveis ao pessoal das pedreiras, formação a cargo da Logística).</div>
-    <div class="tags mb8">
-    <span class="tag b-gray">Mobilizações</span>
-    <span class="tag b-gray">Frota</span>
-    <span class="tag b-gray">GPS</span>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Ana Rita — ver com Jorge Ferreira se o fornecimento de Enrocamento 200/500 (30 cargas, WRCTEAM) pode arrancar a partir de 13/07.','industria','medium')">+ Tarefa</button>
+      <span>Ana Rita — ver com Jorge Ferreira se o fornecimento de Enrocamento 200/500 (30 cargas, WRCTEAM) pode arrancar a partir de 13/07.</span>
     </div>
-  <div class="m-actions">
-    <div class="m-actions-title">Acções identificadas</div>
-      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Confirmar fornecedor externo e agendar substituição dos GPS entre 01/07 e 03/07','ops','medium')">+ Tarefa</button><span>Confirmar fornecedor externo e agendar substituição dos GPS entre 01/07 e 03/07</span></div>
-      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Colar autocolantes QR nas 13 pesadas em falta (+ reboques) e associar na App','frota','medium')">+ Tarefa</button><span>Colar autocolantes QR nas 13 pesadas em falta (+ reboques) e associar na App</span></div>
-      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Nuno Amado — sincronizar QR codes dos contentores e definir local padronizado de colocação','ops','medium')">+ Tarefa</button><span>Nuno Amado — sincronizar QR codes dos contentores e definir local padronizado de colocação</span></div>
-      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Gestão de Combustíveis — preparar formação e plano de acompanhamento da App nas pedreiras','ops','medium')">+ Tarefa</button><span>Gestão de Combustíveis — preparar formação e plano de acompanhamento da App nas pedreiras</span></div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Ana Rita — ver com Jorge Ferreira a reclamação da Secil Évora — Brita 1.','industria','medium')">+ Tarefa</button>
+      <span>Ana Rita — ver com Jorge Ferreira a reclamação da Secil Évora — Brita 1.</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Ricardo Santos — pedir ao José Santos (Secretariado) para reagendar reunião com João Machado Pragosa (ausência 29/06).','ops','medium')">+ Tarefa</button>
+      <span>Ricardo Santos — pedir ao José Santos (Secretariado) para reagendar reunião com João Machado Pragosa (ausência 29/06).</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Organizar transporte da Giratória EC480 (Vale Rodrigues → Cano) para a semana de 13–17 (jul).','industria','medium')">+ Tarefa</button>
+      <span>Organizar transporte da Giratória EC480 (Vale Rodrigues → Cano) para a semana de 13–17 (jul).</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Acompanhar suspensão da Brita 1 Granito MBQ e validação de stocks na Central do Seixal.','industria','medium')">+ Tarefa</button>
+      <span>Acompanhar suspensão da Brita 1 Granito MBQ e validação de stocks na Central do Seixal.</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Reforçar stocks de Vale Rodrigues, Santa Eulália e Sobrissul antes das paragens planeadas.','industria','medium')">+ Tarefa</button>
+      <span>Reforçar stocks de Vale Rodrigues, Santa Eulália e Sobrissul antes das paragens planeadas.</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Resolver malhas rotas em Santa Eulália (Brita 1 Granito).','industria','medium')">+ Tarefa</button>
+      <span>Resolver malhas rotas em Santa Eulália (Brita 1 Granito).</span>
+    </div>
   </div>
+</div>
+<div class="m-card">
+  <div class="m-header">
+    <div class="m-title">Manutenção · 2026-06-15</div>
+    <div class="m-date">15 jun 2026</div>
   </div>
-  <div class="m-card">
-    <div class="m-header"><div class="m-title">Reunião de Manutenção · 2026-06-15</div><div class="m-date">15 jun 2026</div></div>
-    <div class="m-body">Ponto de situação das viaturas em manutenção. Três viaturas com previsão de término esta/próxima semana (42FF75, 44QI51, 24FA85). Duas resolvidas (24FA87 — toldo/calhas; AJ48BP — tubo despipado). Reparações externas sem previsão: AT57JF na Cortubai, Porta-Máquinas (David) na Unimolas, AU01EM/AC na MAN Turquel. Pendente: folha de inspeção da L-215831 (motorista Celso Cristo).</div>
-    <div class="tags mb8">
+  <div class="m-body">Ponto de situação das viaturas e equipamentos em manutenção. Três viaturas com previsão de término esta/próxima semana (42FF75, 44QI51, 24FA85 — ver tabela), duas resolvidas (24FA87, AJ48BP) e várias em reparação externa sem previsão (Cortubai, Unimolas, MAN Turquel). Pendente a folha de inspeção da L-215831.</div>
+  <div class="tags mb8">
     <span class="tag b-warn">Manutenção</span>
     <span class="tag b-gray">Frota</span>
     <span class="tag b-gray">Oficina</span>
-    </div>
+  </div>
   <div class="m-actions">
     <div class="m-actions-title">Acções identificadas</div>
-      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Obter ponto de situação da Cortubai sobre a AT57JF (sem previsão)','frota','medium')">+ Tarefa</button><span>Obter ponto de situação da Cortubai sobre a AT57JF (sem previsão)</span></div>
-      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Obter previsão da Unimolas para o Porta-Máquinas David (sem previsão)','frota','medium')">+ Tarefa</button><span>Obter previsão da Unimolas para o Porta-Máquinas David (sem previsão)</span></div>
-      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Obter previsão do AC do AU01EM na MAN Turquel','frota','medium')">+ Tarefa</button><span>Obter previsão do AC do AU01EM na MAN Turquel</span></div>
-      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Pedir ao motorista Celso Cristo a folha de inspeção da L-215831','frota','medium')">+ Tarefa</button><span>Pedir ao motorista Celso Cristo a folha de inspeção da L-215831</span></div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Confirmar entrega da 42FF75 a 16/06.','ops','medium')">+ Tarefa</button>
+      <span>Confirmar entrega da 42FF75 a 16/06.</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Confirmar entrega da 44QI51 a 17/06 (4ª feira).','ops','medium')">+ Tarefa</button>
+      <span>Confirmar entrega da 44QI51 a 17/06 (4ª feira).</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Acompanhar reparação da 24FA85 (previsão 26/06).','ops','medium')">+ Tarefa</button>
+      <span>Acompanhar reparação da 24FA85 (previsão 26/06).</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Obter ponto de situação da Cortubai sobre a AT57JF.','ops','medium')">+ Tarefa</button>
+      <span>Obter ponto de situação da Cortubai sobre a AT57JF.</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Definir/destrancar o seguimento da AT08RJ (em espera).','ops','medium')">+ Tarefa</button>
+      <span>Definir/destrancar o seguimento da AT08RJ (em espera).</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Obter previsão da Unimolas para o Porta-Máquinas (David).','frota','medium')">+ Tarefa</button>
+      <span>Obter previsão da Unimolas para o Porta-Máquinas (David).</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Obter previsão do AC do AU01EM na MAN Turquel.','ops','medium')">+ Tarefa</button>
+      <span>Obter previsão do AC do AU01EM na MAN Turquel.</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Pedir ao motorista Celso Cristo a folha de inspeção da L-215831.','ops','medium')">+ Tarefa</button>
+      <span>Pedir ao motorista Celso Cristo a folha de inspeção da L-215831.</span>
+    </div>
   </div>
+</div>
+<div class="m-card">
+  <div class="m-header">
+    <div class="m-title">Controlo de Obras, Mobilizações, Custos e Combustível · 2026-06-15</div>
+    <div class="m-date">15 jun 2026</div>
   </div>
-  <div class="m-card">
-    <div class="m-header"><div class="m-title">CE Indústria · 2026-06-15</div><div class="m-date">15 jun 2026</div></div>
-    <div class="m-body">Vários reforços de stock de britas em curso: Vale Rodrigues (britas), Sobrissul (stocks de reserva + TV 1ª IP sobe para 1.750 t) e Carbomin (10 paletes de Carbo G2000). Comunicação diária de planeamento com Carbomin definida via WhatsApp (hora de almoço). Sobrissul — Brita 2 atinge stock mínimo no final da semana; Brita 1 atinge stock mínimo em ~4 semanas. Prioridades de transporte definidas para Alenquer (caixote).</div>
-    <div class="tags mb8">
-    <span class="tag b-info">CE</span>
+  <div class="m-body">Reunião quinzenal de coordenação entre Logística, DTI, Controlo de Gestão, Manutenção e Administração. Três frentes em curso: substituição dos GPS com erros (agendada para 01–03/07, depende de fornecedor externo + nova versão do Traccar), mobilizações (colagem e associação de QR codes em viaturas pesadas e contentores) e gasóleo (alargamento da App de Combustíveis ao pessoal das pedreiras, com formação a cargo da Logística). Próxima reunião a 29/06.</div>
+  <div class="tags mb8">
+    <span class="tag b-gray">Mobilizações</span>
+    <span class="tag b-gray">Frota</span>
+    <span class="tag b-info">Combustível</span>
+    <span class="tag b-info">Custos</span>
+    <span class="tag b-gray">Gps</span>
+  </div>
+  <div class="m-actions">
+    <div class="m-actions-title">Acções identificadas</div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Confirmar fornecedor externo para a substituição dos GPS. (Logística / DTI)','frota','medium')">+ Tarefa</button>
+      <span>Confirmar fornecedor externo para a substituição dos GPS. (Logística / DTI)</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Agendar e executar substituição dos GPS entre 01/07 e 03/07.','frota','medium')">+ Tarefa</button>
+      <span>Agendar e executar substituição dos GPS entre 01/07 e 03/07.</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Avaliar/planear atualização para a nova versão do Traccar. (DTI)','ops','medium')">+ Tarefa</button>
+      <span>Avaliar/planear atualização para a nova versão do Traccar. (DTI)</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Logística passar no DTI para instalar a App de Mobilizações em modo Administrador.','ops','medium')">+ Tarefa</button>
+      <span>Logística passar no DTI para instalar a App de Mobilizações em modo Administrador.</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Colar autocolantes QR nas 13 pesadas em falta (+ reboques) e associar na App.','frota','high')">+ Tarefa</button>
+      <span>Colar autocolantes QR nas 13 pesadas em falta (+ reboques) e associar na App.</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Nuno Amado — sincronizar QR codes dos contentores e definir local padronizado de colocação.','frota','medium')">+ Tarefa</button>
+      <span>Nuno Amado — sincronizar QR codes dos contentores e definir local padronizado de colocação.</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'DTI — informar quem do pessoal das pedreiras já tem a App de Combustíveis.','industria','medium')">+ Tarefa</button>
+      <span>DTI — informar quem do pessoal das pedreiras já tem a App de Combustíveis.</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Gestão de Combustíveis — preparar formação e plano de acompanhamento de abastecimento nas pedreiras.','industria','medium')">+ Tarefa</button>
+      <span>Gestão de Combustíveis — preparar formação e plano de acompanhamento de abastecimento nas pedreiras.</span>
+    </div>
+  </div>
+</div>
+<div class="m-card">
+  <div class="m-header">
+    <div class="m-title">CE Indústria · 2026-06-15</div>
+    <div class="m-date">15 jun 2026</div>
+  </div>
+  <div class="m-body">Ponto de situação operacional das pedreiras do segmento Indústria. Vários reforços de stock de britas em curso (Vale Rodrigues, Sobrissul, Carbomin) e ajuste de previsões de consumo. Definida comunicação diária de planeamento com a Carbomin via WhatsApp e prioridades de transporte para Alenquer.</div>
+  <div class="tags mb8">
+    <span class="tag b-info">Comissão Executiva</span>
     <span class="tag b-info">Indústria</span>
     <span class="tag b-gray">Pedreiras</span>
-    </div>
+  </div>
   <div class="m-actions">
     <div class="m-actions-title">Acções identificadas</div>
-      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Rita Fialho — ligar ao Ricardo Santos (Areipor) para fornecimento de Carbo G2000 a granel','ops','medium')">+ Tarefa</button><span>Rita Fialho — ligar ao Ricardo Santos (Areipor) para fornecimento de Carbo G2000 a granel</span></div>
-      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Confirmar reforço de stock de reserva na Sobrissul antes da rutura de Brita 2','industria','high')">+ Tarefa</button><span>Confirmar reforço de stock de reserva na Sobrissul antes da rutura de Brita 2</span></div>
-      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Monitorizar consumo de britas no Cano para Montemor (obra 2397)','industria','medium')">+ Tarefa</button><span>Monitorizar consumo de britas no Cano para Montemor (obra 2397)</span></div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Rita Fialho — ligar ao Ricardo Santos (Areipor) para fornecimento de Carbo G2000 a granel.','ops','medium')">+ Tarefa</button>
+      <span>Rita Fialho — ligar ao Ricardo Santos (Areipor) para fornecimento de Carbo G2000 a granel.</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Apontar cargas TOT de Moleanos (4/5 cargas).','industria','medium')">+ Tarefa</button>
+      <span>Apontar cargas TOT de Moleanos (4/5 cargas).</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Garantir reforço de stocks de britas em Vale Rodrigues e Sobrissul. Ricardo Santos','industria','medium')">+ Tarefa</button>
+      <span>Garantir reforço de stocks de britas em Vale Rodrigues e Sobrissul. Ricardo Santos</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Confirmar reforço de stock de reserva na Sobrissul antes da rutura de Brita 2.','industria','medium')">+ Tarefa</button>
+      <span>Confirmar reforço de stock de reserva na Sobrissul antes da rutura de Brita 2.</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Monitorizar consumo de britas no Cano para Montemor (obra 2397).','industria','medium')">+ Tarefa</button>
+      <span>Monitorizar consumo de britas no Cano para Montemor (obra 2397).</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Acompanhar produção de britas MBQ em Santa Eulália.','industria','medium')">+ Tarefa</button>
+      <span>Acompanhar produção de britas MBQ em Santa Eulália.</span>
+    </div>
   </div>
+</div>
+<div class="m-card">
+  <div class="m-header">
+    <div class="m-title">Ponto de Situação Comercial — Betão Liz · 2026-06-14</div>
+    <div class="m-date">14 jun 2026</div>
   </div>
-  <div class="m-card">
-    <div class="m-header"><div class="m-title">CE Logística · 2026-06-14</div><div class="m-date">14 jun 2026</div></div>
-    <div class="m-body">Reunião centrada na transição de responsabilidades comerciais da Ana Rita e do Alexandre Marques para o Filipe Nascimento, com ponto de situação sobre o arranque do Filipe e acompanhamento do controlo pelo Jorge Ferreira. Tratou-se do acompanhamento de clientes (listagens de volume de faturação), feedback ao controlo de encomendas CPSA e necessidade de reforçar a equipa comercial dos agregados (+1 comercial), também para cobrir as férias do Jorge.</div>
-    <div class="tags mb8">
-    <span class="tag b-info">CE</span>
-    <span class="tag b-gray">Logística</span>
+  <div class="m-body">Ponto de situação comercial do fornecimento de inertes ao cliente Betão Liz. Definidos preços de transporte e cadência diária por material. Cadência total estimada em 22 cargas/dia ≈ 700 ton/dia (Brita 1, Brita 2 e Bago de arroz).</div>
+  <div class="tags mb8">
+    <span class="tag b-info">Ponto Situação</span>
     <span class="tag b-info">Comercial</span>
-    </div>
+    <span class="tag b-info">Indústria</span>
+  </div>
   <div class="m-actions">
     <div class="m-actions-title">Acções identificadas</div>
-      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Formalizar âmbito da passagem de responsabilidades para o Filipe Nascimento (clientes, encomendas, faturação)','ops','high')">+ Tarefa</button><span>Formalizar âmbito da passagem de responsabilidades para o Filipe Nascimento (clientes, encomendas, faturação)</span></div>
-      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Definir calendário de handover com marcos e ponto de situação periódico com o Filipe','ops','medium')">+ Tarefa</button><span>Definir calendário de handover com marcos e ponto de situação periódico com o Filipe</span></div>
-      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Produzir listagens de volume de faturação para acompanhamento dos clientes','ops','medium')">+ Tarefa</button><span>Produzir listagens de volume de faturação para acompanhamento dos clientes</span></div>
-      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Avançar recrutamento/afetação de +1 comercial para os agregados','rh','medium')">+ Tarefa</button><span>Avançar recrutamento/afetação de +1 comercial para os agregados</span></div>
-      <div class="m-action-item"><button class="btn-add-task" onclick="addFromMeeting(this,'Definir cobertura da atividade comercial durante as férias do Jorge','ops','medium')">+ Tarefa</button><span>Definir cobertura da atividade comercial durante as férias do Jorge</span></div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Garantir disponibilidade de frota para 22 cargas/dia.','frota','medium')">+ Tarefa</button>
+      <span>Garantir disponibilidade de frota para 22 cargas/dia.</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Confirmar capacidade de produção/stock das pedreiras de origem para sustentar 700 ton/dia.','industria','medium')">+ Tarefa</button>
+      <span>Confirmar capacidade de produção/stock das pedreiras de origem para sustentar 700 ton/dia.</span>
+    </div>
   </div>
-  </div>
+</div>
 </div>
 
 <!-- KPIS -->
@@ -564,15 +1094,15 @@ table.ft tr:hover td{background:#f9f9f7}
   <div class="okr-card mb12"><div class="okr-title">O1 — Eficiencia Operacional da Frota</div>
     <div class="kr"><div class="kr-icon">+</div><div class="kr-text">Taxa de disponibilidade &gt;= 95%</div><span class="badge b-warn">A medir</span></div>
     <div class="kr"><div class="kr-icon">+</div><div class="kr-text">Reduzir manutencoes corretivas em 20%</div><span class="badge b-err">Cisternas com avarias a subir</span></div>
-    <div class="kr"><div class="kr-icon">+</div><div class="kr-text">Projeto Tacografos em producao</div><span class="badge b-info">Ativo</span></div>
+    <div class="kr"><div class="kr-icon">+</div><div class="kr-text">Projeto Tacografos — formacao concluida (20/06). Conformidade G2V2 a verificar urgentemente (prazo legal 11/07 ja passou)</div><span class="badge b-err">Acao urgente</span></div>
   </div>
   <div class="okr-card mb12"><div class="okr-title">O2 — Crescimento Comercial</div>
-    <div class="kr"><div class="kr-icon">+</div><div class="kr-text">Industria — preco alvo 9,50 euros/t</div><span class="badge b-ok">Definido</span></div>
-    <div class="kr"><div class="kr-icon">+</div><div class="kr-text">Teixeira Duarte e Zago — setembro</div><span class="badge b-warn">Em preparacao</span></div>
+    <div class="kr"><div class="kr-icon">+</div><div class="kr-text">Industria — preco alvo €9,50/t confirmado (CE Comercial 09/07). Teste de aceitacao com clientes-chave pendente</div><span class="badge b-ok">Definido</span></div>
+    <div class="kr"><div class="kr-icon">+</div><div class="kr-text">Teixeira Duarte e Zago/Zagope — arranque setembro. Fecho dos contratos: ate inicio de agosto</div><span class="badge b-warn">Fecho ate ago</span></div>
   </div>
   <div class="okr-card mb20"><div class="okr-title">O3 — Digitalizacao</div>
     <div class="kr"><div class="kr-icon">+</div><div class="kr-text">OLACmd em producao</div><span class="badge b-info">Ativo</span></div>
-    <div class="kr"><div class="kr-icon">+</div><div class="kr-text">Telematica/IA — Wialon/Traccar</div><span class="badge b-warn">Fase I pendente</span></div>
+    <div class="kr"><div class="kr-icon">+</div><div class="kr-text">Telematica — App analise de paragens (Traccar) operacional. 86% das paragens em locais recorrentes. Decisao Fase I (API) pendente CE 14/07</div><span class="badge b-warn">Decisao pendente</span></div>
   </div>
   <div class="grid-4 mb16">
     <div class="card"><div class="kpi-lbl">Disponib. Frota</div><div class="kpi-num">—</div><div class="kpi-sub">Meta: &gt;= 95%</div><div class="mt8"><span class="badge b-gray">A medir</span></div></div>
@@ -626,14 +1156,14 @@ table.ft tr:hover td{background:#f9f9f7}
 // ── TEAM DATA ──
 var TEAM_DATA_DEFAULT=[
   {id:'rf',initials:'RF',color:'purple',name:'Rita Fialho',cargo:'Diretora de Logistica',area:'direcao',reportsTo:null,risk:'ok',status:'Lideranca',note:'Gestao operacional de frota, pedreiras, obras e projetos internos.',eval:[],pendentes:[]},
-  {id:'gs',initials:'GS',color:'blue',name:'Gabriela Soares',cargo:'Gest. Trafego — Cisternas',area:'trafego',reportsTo:'rf',risk:'warn',status:'Em evolucao',note:'Responsavel pela gestao operacional da frota de cisternas. Cadencia: semanal 30 min.',eval:[{data:'2026-06-30',estado:'Em evolucao',nota:'A ganhar estabilidade na coordenacao com manutencao.'}],pendentes:[]},
-  {id:'bc',initials:'BC',color:'blue',name:'Bruna Cordeiro',cargo:'Gest. Trafego — Industria',area:'trafego',reportsTo:'rf',risk:'ok',status:'De ferias',note:'Gestao operacional da frota das pedreiras. Cadencia: semanal 30 min.',eval:[{data:'2026-06-30',estado:'Sem avaliacao',nota:'Ausente (ferias). Substituida pela Monica com bom desempenho.'}],pendentes:[]},
-  {id:'fc',initials:'FC',color:'amber',name:'Frederico Catarino',cargo:'Gest. Trafego — CPSA',area:'trafego',reportsTo:'rf',risk:'warn',status:'Em integracao — desde 29 jun',note:'Iniciou 29/06/2026. Cadencia: 2x/sem no arranque. Plano: Fase I basculantes, Fase II T. Especial.',eval:[{data:'2026-06-30',estado:'Em integracao',nota:'Plano de desenvolvimento: Fase I basculantes; Fase II T. Especial.'}],pendentes:['Processos e sistemas internos (trafego, ponto, avarias)','Conhecer frota e motoristas CPSA','Alinhar KPIs e expectativas com Rita']},
-  {id:'mn',initials:'MN',color:'green',name:'Monica Neves',cargo:'Administrativa — Industria',area:'admin',reportsTo:'bc',risk:'ok',status:'Superou expectativas',note:'Apoio administrativo as pedreiras. Reporta a Bruna Cordeiro.',eval:[{data:'2026-06-30',estado:'Superou expectativas',nota:'Substituiu a Bruna nas ferias — desempenho mais estavel do que o esperado.'}],pendentes:[]},
+  {id:'gs',initials:'GS',color:'blue',name:'Gabriela Soares',cargo:'Gest. Trafego — Cisternas',area:'trafego',reportsTo:'rf',risk:'ok',status:'Regressou — Foco Cisternas',note:'Responsavel pela gestao operacional da frota de cisternas. Cadencia: semanal 30 min. Ferias: 7-10 jul (regressou semana 18 jul).',eval:[{data:'2026-06-30',estado:'Em evolucao',nota:'A ganhar estabilidade na coordenacao com manutencao.'},{data:'2026-07-18',estado:'Operacional',nota:'Regressou de ferias (7-10 jul). Foco nas cisternas.'}],pendentes:[]},
+  {id:'bc',initials:'BC',color:'blue',name:'Bruna Cordeiro',cargo:'Gest. Trafego — Industria',area:'trafego',reportsTo:'rf',risk:'ok',status:'Elevado desempenho',note:'Gestao operacional da frota das pedreiras. Cadencia: semanal 30 min. Em funcoes em julho — ferias em junho (22-26).',eval:[{data:'2026-06-30',estado:'Sem avaliacao',nota:'Ausente (ferias). Substituida pela Monica com bom desempenho.'},{data:'2026-07-18',estado:'Elevado desempenho',nota:'Em funcoes com elevado desempenho na gestao da frota. Comeca a ter disponibilidade para analise de frota e integracao noutras areas.'}],pendentes:['Iniciar analise de frota — Industria','Explorar integracao noutras areas operacionais']},
+  {id:'fc',initials:'FC',color:'amber',name:'Frederico Catarino',cargo:'Gest. Trafego — CPSA',area:'trafego',reportsTo:'rf',risk:'warn',status:'Formacao — sem. 1 de 10',note:'Iniciou 29/06/2026. Lidera ~25 motoristas + transportes alugados (basculantes, carros grua, porta-maquinas). Programa de formacao e integracao de 10 semanas (20/07 a 26/09/2026), 4 objetivos: (1) planeamento basculantes sem. 1-2; (2) interacao motoristas/colegas sem. 3-4; (3) autonomia basculantes sem. 5-8; (4) autonomia transportes especiais sem. 9-10. Check-in semanal com Rita (15-20 min). Avaliacao formal a 11/09 (basculantes) e 26/09 (especiais). Riscos: autonomia forcada antes de tempo nos basculantes; sobreposicao entre fecho do Obj.3 e arranque do Obj.4; especiais exigem mais tempo tecnico.',eval:[{data:'2026-06-30',estado:'Em integracao',nota:'Plano de desenvolvimento: Fase I basculantes; Fase II T. Especial.'},{data:'2026-07-18',estado:'Em formacao',nota:'Programa de 10 semanas aprovado (20/07-26/09). Obj. 1 em curso; Obj. 2-4 por iniciar.'}],pendentes:['Processos e sistemas internos (trafego, ponto, avarias)','Conhecer frota e motoristas CPSA','Alinhar KPIs e expectativas com Rita','Obj.1 (20/07-31/07) — planeamento basculantes em modo sombra + desenho da ferramenta','Obj.2 (03/08-14/08) — rotina de contacto diario e mapa de interlocutores','Obj.3 (17/08-11/09) — reduzir supervisao ate autonomia nos basculantes','Obj.4 (14/09-26/09) — transportes especiais (grua, porta-maquinas, estrados)']},
+  {id:'mn',initials:'MN',color:'green',name:'Monica Neves',cargo:'Administrativa — Industria',area:'admin',reportsTo:'bc',risk:'ok',status:'A decorrer com normalidade',note:'Apoio administrativo as pedreiras. Reporta a Bruna Cordeiro.',eval:[{data:'2026-06-30',estado:'Superou expectativas',nota:'Substituiu a Bruna nas ferias — desempenho mais estavel do que o esperado.'},{data:'2026-07-18',estado:'A decorrer com normalidade',nota:'A decorrer com normalidade.'}],pendentes:[]},
   {id:'fn',initials:'FN',color:'blue',name:'Filipe Nascimento',cargo:'Gestor Comercial — Industria',area:'comercial',reportsTo:'rf',risk:'ok',status:'Operacional',note:'Area Comercial das Pedreiras. Colabora com Alexandre Marques (Dir. Comercial) e Jorge Ferreira.',eval:[],pendentes:[]},
   {id:'jf',initials:'JF',color:'blue',name:'Jorge Ferreira',cargo:'Comercial — Industria',area:'comercial',reportsTo:'fn',risk:'ok',status:'Operacional',note:'Gere pedidos e relacao com clientes de inertes. jorge.ferreira@pragosa.pt | 967952314.',eval:[],pendentes:[]},
-  {id:'am',initials:'AM',color:'amber',name:'Antonio Marques',cargo:'Admin. Cisternas + Gestor Frota (parcial)',area:'admin',reportsTo:'rf',risk:'warn',status:'Dupla funcao',note:'Administrativo de Cisternas e Lancamento: propostas, guias de transporte, faturacao, ocorrencias.',eval:[],pendentes:[]},
-  {id:'jc',initials:'JC',color:'red',name:'Joao Campos',cargo:'Admin. Custos + Combustiveis + Gestor Frota (parcial)',area:'admin',reportsTo:'rf',risk:'err',status:'3 funcoes — risco critico',note:'Combustiveis, custos, mobilizacoes, tacografos DL 84/2026, licencas e seguros.',eval:[],pendentes:[]},
+  {id:'am',initials:'AM',color:'amber',name:'Antonio Marques',cargo:'Admin. Cisternas + Gestor Frota (parcial)',area:'admin',reportsTo:'rf',risk:'warn',status:'Dupla funcao — clarificar RACI',note:'Administrativo de Cisternas e Lancamento (propostas, guias, faturacao, ocorrencias) + funcao parcial de Gestor de Frota. Dupla funcao a clarificar formalmente.',eval:[{data:'2026-07-18',estado:'Dupla funcao',nota:'Acumula responsabilidades administrativas das Cisternas com componente de gestao de frota. RACI a formalizar.'}],pendentes:['Clarificar RACI formal da funcao de Gestor de Frota (Marques vs. Campos)']},
+  {id:'jc',initials:'JC',color:'amber',name:'Joao Campos',cargo:'Admin. Custos + Combustiveis + Gestor Frota (parcial)',area:'admin',reportsTo:'rf',risk:'warn',status:'Bom desempenho — combustiveis em acomp.',note:'Combustiveis, custos, mobilizacoes, tacografos DL 84/2026, licencas e seguros.',eval:[{data:'2026-07-18',estado:'Bom desempenho',nota:'Bom desempenho em junho. Mobilizacoes e custos de transporte lancados nos respetivos timings. Combustiveis continua a ser a area de maior dificuldade — em acompanhamento.'}],pendentes:['Combustiveis — manter acompanhamento e identificar causas de dificuldade']},
   {id:'nd',initials:'ND',color:'amber',name:"Nuno D'Avo",cargo:'Expedicao — Vale Rodrigues + Moleanos',area:'expedicao',reportsTo:'rf',risk:'warn',status:'2 locais — sem backup',note:'Dois locais sem backup identificado. Identificar substituto para ausencias.',eval:[],pendentes:[]},
   {id:'le',initials:'L',color:'green',name:'Leonor',cargo:'Expedicao — Do Cano',area:'expedicao',reportsTo:'rf',risk:'ok',status:'Operacional',note:'',eval:[],pendentes:[]},
   {id:'ac',initials:'AC',color:'green',name:'Ana Caiola',cargo:'Expedicao — Santa Eulalia',area:'expedicao',reportsTo:'rf',risk:'ok',status:'Operacional',note:'',eval:[],pendentes:[]},
@@ -908,7 +1438,7 @@ function renderFerias(){
 
   // Alerts section
   var alertMonths={
-    7:'Jul — Gabriela e João em férias em simultâneo (dias 9-10) + António dia 7',
+    7:'Jul — Gabriela regressou (férias 7-10). João com dias isolados (9-10, 24, 27-28). António dia 7.',
     8:'Ago — Agosto crítico: João (dias 3-13), Bruna e António (dias 24-31) ausentes',
     9:'Set — Ana Rita e Gabriela sobrepostas (dias 7-11) + Bruna e António (dias 1-4)',
   };
@@ -1112,8 +1642,311 @@ function setEquipaView(view,btn){
   document.getElementById('equipa-cards-view').style.display=view==='cards'?'block':'none';
   document.getElementById('equipa-org-view').style.display=view==='org'?'block':'none';
   document.getElementById('equipa-ferias-view').style.display=view==='ferias'?'block':'none';
+  document.getElementById('equipa-gantt-view').style.display=view==='gantt'?'block':'none';
   if(view==='org')renderOrgChart();
   if(view==='ferias')renderFerias();
+  if(view==='gantt')renderGantts();
+}
+
+// ── Motor de GANTs — planos de acompanhamento/integracao (multi-plano, multi-categoria) ──
+var GANTT_KEY='pragosa_gantt_v1';
+var GANTT_CORES=[
+  {id:'blue',hdr:'#2563eb',bar:'#93c5fd',nome:'Azul'},
+  {id:'green',hdr:'#059669',bar:'#6ee7b7',nome:'Verde'},
+  {id:'amber',hdr:'#d97706',bar:'#fcd34d',nome:'Ambar'},
+  {id:'purple',hdr:'#7c3aed',bar:'#c4b5fd',nome:'Roxo'},
+  {id:'cyan',hdr:'#0891b2',bar:'#a5f3fc',nome:'Ciano'},
+  {id:'pink',hdr:'#db2777',bar:'#fbcfe8',nome:'Rosa'},
+  {id:'slate',hdr:'#475569',bar:'#cbd5e1',nome:'Cinza'}
+];
+var GANTT_MARCO='#f87171';
+function gCor(id){for(var i=0;i<GANTT_CORES.length;i++)if(GANTT_CORES[i].id===id)return GANTT_CORES[i];return GANTT_CORES[0];}
+
+// Plano original importado do Excel (Plano_Integracao_Frederico_Catarino_Gestao_Frota_CPSA.xlsx)
+function FC_SEED(){return{
+  id:'fc',cat:'Fred.',fromSeed:true,
+  titulo:'Plano de Integracao — Frederico Catarino',
+  sub:'Gestao de Frotas CPSA · Autonomia no planeamento ate ao fim da semana 10',
+  inicio:'2026-07-20',
+  semanas:[
+    {n:1,per:'20/07-24/07',ini:'2026-07-20'},{n:2,per:'27/07-31/07',ini:'2026-07-27'},
+    {n:3,per:'03/08-07/08',ini:'2026-08-03'},{n:4,per:'10/08-14/08',ini:'2026-08-10'},
+    {n:5,per:'17/08-21/08',ini:'2026-08-17'},{n:6,per:'24/08-28/08',ini:'2026-08-24'},
+    {n:7,per:'31/08-04/09',ini:'2026-08-31'},{n:8,per:'07/09-11/09',ini:'2026-09-07'},
+    {n:9,per:'14/09-19/09',ini:'2026-09-14'},{n:10,per:'21/09-26/09',ini:'2026-09-21'}
+  ],
+  objetivos:[
+    {titulo:'OBJETIVO 1 — Planear os servicos das viaturas basculantes (Semanas 1-2)',cor:'blue',tarefas:[
+      {t:'Rever tipos de viaturas basculantes (semi-reboque, rigido 3/4 eixos) e adequacao por tipo de obra/material',w:[1]},
+      {t:'Acompanhar o planeamento em modo sombra (observar processo/ferramenta atual e desenhar ferramenta em desenvolvimento)',w:[1]},
+      {t:'Planear diariamente',w:[1,2,3,4,5,6,7,8,9,10]},
+      {t:'Check-in: do planeamento diario (AF)',w:[3,4,5,6,7],marco:true}
+    ]},
+    {titulo:'OBJETIVO 2 — Interacao com motoristas e colegas de outras areas (Semanas 3-4)',cor:'green',tarefas:[
+      {t:'Contacto diario com motoristas dos basculantes',w:[3,4,5,6,7,8,9,10]},
+      {t:'Mapear interlocutores (obra, centrais, comissao tecnica producao, manutencao)',w:[3,4,5,6,7,8,9,10]},
+      {t:'Estabelecer rotina fixa de comunicacao diaria (ponto da manha / meio-dia)',w:[3,4,5,6,7,8,9,10]},
+      {t:'Check-in: avaliar fluxo de informacao/comunicacao',w:[4],marco:true}
+    ]},
+    {titulo:'OBJETIVO 3 — Autonomia nos basculantes (Semanas 5-8)',cor:'amber',tarefas:[
+      {t:'Reduzir supervisao: revisao diaria -> so excecoes',w:[5,6]},
+      {t:'Testar resposta a imprevistos sozinho (avaria, atraso, troca de viatura)',w:[6,7]},
+      {t:'Conhecer e acompanhar KPIs da area (ocupacao basculante >=60%, OTD, etc.)',w:[6,7,8]},
+      {t:'Autonomia total com check-in semanal apenas',w:[7,8]},
+      {t:'Avaliar autonomia nos Transportes Basculantes',w:[8],marco:true}
+    ]},
+    {titulo:'FASE SEGUINTE (apos 8 semanas) — Transportes Especiais (Semanas 9-10)',cor:'purple',tarefas:[
+      {t:'Compreender a operacao dos transportes especiais (grua, porta-maquinas, estrados)',w:[1,2,3]},
+      {t:'Comecar a planear o dia dos carros grua',w:[3,4,5,6,7,8,9,10]},
+      {t:'Comecar a planear o dia dos porta-maquinas / estrados',w:[3,4,5,6,7,8,9,10]},
+      {t:'Autonomia no planeamento dos Transportes Especiais com check-in semanal',w:[6,7,8]},
+      {t:'Avaliar autonomia nos Transportes Especiais',w:[],marco:true}
+    ]}
+  ],
+  foco:['Obj. 1','Obj. 1','Obj. 2','Obj. 2','Obj. 3','Obj. 3','Obj. 3','Obj. 3','Obj. 4','Obj. 4'],
+  avTitulo:'Avaliacao final — autonomia no Objetivo 3 (fim da semana 8 · 11/09/2026)',
+  avCrit:[
+    'Planeamento diario sem apoio (viatura certa, sem sobreposicoes)',
+    'Gestao de imprevistos sem escalar (avaria, atraso, troca de viatura)',
+    'Relacao estabelecida com motoristas e colegas de outras areas'
+  ],
+  avRecLabel:'Recomendacao: avancar para a fase 2 (transportes especiais)?',
+  ci:{},av:{}
+};}
+
+function gLoad(){
+  var d=JSON.parse(localStorage.getItem(GANTT_KEY)||'null');
+  if(!d||!d.plans||!d.plans.length){
+    var seed=FC_SEED(),old=JSON.parse(localStorage.getItem('pragosa_fc_v1')||'null');
+    if(old){ // migrar dados da versao anterior (so plano FC)
+      if(old.bars)seed.objetivos.forEach(function(o,oi){o.tarefas.forEach(function(t,ti){if(old.bars[oi+'-'+ti])t.w=old.bars[oi+'-'+ti];});});
+      if(old.ci)seed.ci=old.ci; if(old.av)seed.av=old.av;
+    }
+    d={plans:[seed],active:'fc',edit:false};
+    localStorage.setItem(GANTT_KEY,JSON.stringify(d));
+  }
+  return d;
+}
+function gSave(d){localStorage.setItem(GANTT_KEY,JSON.stringify(d));}
+function gPlanIn(d){for(var i=0;i<d.plans.length;i++)if(d.plans[i].id===d.active)return d.plans[i];return d.plans[0];}
+function gPlan(){return gPlanIn(gLoad());}
+function gUpd(fn){var d=gLoad(),p=null;for(var i=0;i<d.plans.length;i++)if(d.plans[i].id===d.active)p=d.plans[i];if(!p)p=d.plans[0];fn(p,d);gSave(d);renderGantts();}
+
+function gWeeksFrom(iniISO,n){
+  var out=[],base=new Date(iniISO+'T00:00:00');
+  function fmt(dt){return ('0'+dt.getDate()).slice(-2)+'/'+('0'+(dt.getMonth()+1)).slice(-2);}
+  for(var i=0;i<n;i++){
+    var a=new Date(base.getTime()+i*7*864e5),b=new Date(a.getTime()+4*864e5);
+    out.push({n:i+1,per:fmt(a)+'-'+fmt(b),ini:a.toISOString().slice(0,10)});
+  }
+  return out;
+}
+function gCurWeek(p){
+  var now=new Date();now.setHours(0,0,0,0);var cur=0;
+  p.semanas.forEach(function(w){if(now>=new Date(w.ini+'T00:00:00'))cur=w.n;});
+  return cur;
+}
+
+// ── Acoes: planos e categorias ──
+function gSelect(id){var d=gLoad();d.active=id;gSave(d);renderGantts();}
+function gToggleEdit(){var d=gLoad();d.edit=!d.edit;gSave(d);renderGantts();}
+function gNovoPlano(cat){
+  var nome=prompt('Nome do novo plano (ex.: Plano de Integracao — Vera Bairros):');
+  if(!nome)return;
+  var ini=prompt('Data de inicio (AAAA-MM-DD) — segunda-feira da semana 1:',new Date().toISOString().slice(0,10));
+  if(!ini||!/^\d{4}-\d{2}-\d{2}$/.test(ini)){alert('Data invalida. Use o formato AAAA-MM-DD.');return;}
+  var ns=parseInt(prompt('Numero de semanas:','10'),10);
+  if(!ns||ns<1||ns>52){alert('Numero de semanas invalido (1 a 52).');return;}
+  var d=gLoad();
+  var p={id:'g'+Date.now(),cat:cat||'Geral',titulo:nome,sub:'',inicio:ini,semanas:gWeeksFrom(ini,ns),
+    objetivos:[{titulo:'OBJETIVO 1 — (editar)',cor:'blue',tarefas:[{t:'Nova tarefa',w:[]}]}],
+    foco:[],avTitulo:'Avaliacao final',avCrit:['Criterio 1'],avRecLabel:'Recomendacao: avancar para a fase seguinte?',ci:{},av:{}};
+  d.plans.push(p);d.active=p.id;d.edit=true;gSave(d);renderGantts();showToast('Plano criado — em modo edicao');
+}
+function gNovaCat(){var c=prompt('Nome da nova categoria (ex.: Fred., Vera, Obras):');if(!c)return;gNovoPlano(c);}
+function gDuplicar(){
+  var d=gLoad(),p=gPlan(),nome=prompt('Nome do novo plano (copia de "'+p.titulo+'"):',p.titulo+' (copia)');
+  if(!nome)return;
+  var cat=prompt('Categoria:',p.cat)||p.cat;
+  var c=JSON.parse(JSON.stringify(p));
+  c.id='g'+Date.now();c.titulo=nome;c.cat=cat;c.fromSeed=false;c.ci={};c.av={};
+  d.plans.push(c);d.active=c.id;gSave(d);renderGantts();showToast('Plano duplicado — check-ins em branco');
+}
+function gEliminar(){
+  var d=gLoad(),p=gPlan();
+  if(d.plans.length<2){alert('Tem de existir pelo menos um plano.');return;}
+  if(!confirm('Eliminar definitivamente o plano "'+p.titulo+'", incluindo check-ins e avaliacao?'))return;
+  d.plans=d.plans.filter(function(x){return x.id!==p.id;});d.active=d.plans[0].id;gSave(d);renderGantts();showToast('Plano eliminado');
+}
+function gReporSeed(){
+  if(!confirm('Repor este plano exatamente como esta no Excel original? As barras, objetivos e tarefas voltam ao estado importado. Os check-ins e a avaliacao sao mantidos.'))return;
+  gUpd(function(p){var s=FC_SEED();p.titulo=s.titulo;p.sub=s.sub;p.inicio=s.inicio;p.semanas=s.semanas;p.objetivos=s.objetivos;p.foco=s.foco;p.avTitulo=s.avTitulo;p.avCrit=s.avCrit;p.avRecLabel=s.avRecLabel;});
+  showToast('Plano reposto');
+}
+
+// ── Acoes: conteudo do plano ──
+function gSetCampo(campo,val){gUpd(function(p){p[campo]=val;});}
+function gSetInicio(val){
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(val)){alert('Data invalida.');return;}
+  gUpd(function(p){p.inicio=val;p.semanas=gWeeksFrom(val,p.semanas.length);});
+  showToast('Datas recalculadas');
+}
+function gSetNSemanas(val){
+  var n=parseInt(val,10);if(!n||n<1||n>52){alert('Entre 1 e 52 semanas.');return;}
+  gUpd(function(p){
+    p.semanas=gWeeksFrom(p.inicio,n);
+    p.objetivos.forEach(function(o){o.tarefas.forEach(function(t){t.w=t.w.filter(function(w){return w<=n;});});});
+    p.foco=p.foco.slice(0,n);
+  });
+  showToast('Plano com '+n+' semanas');
+}
+function gAddObj(){gUpd(function(p){p.objetivos.push({titulo:'OBJETIVO '+(p.objetivos.length+1)+' — (editar)',cor:GANTT_CORES[p.objetivos.length%GANTT_CORES.length].id,tarefas:[{t:'Nova tarefa',w:[]}]});});}
+function gDelObj(oi){var p=gPlan();if(!confirm('Eliminar "'+p.objetivos[oi].titulo+'" e as suas tarefas?'))return;gUpd(function(p){p.objetivos.splice(oi,1);});}
+function gSetObj(oi,campo,val){gUpd(function(p){p.objetivos[oi][campo]=val;});}
+function gAddTask(oi){gUpd(function(p){p.objetivos[oi].tarefas.push({t:'Nova tarefa',w:[]});});}
+function gDelTask(oi,ti){gUpd(function(p){p.objetivos[oi].tarefas.splice(ti,1);});}
+function gSetTask(oi,ti,campo,val){gUpd(function(p){p.objetivos[oi].tarefas[ti][campo]=val;});}
+function gToggleCell(oi,ti,wk){
+  gUpd(function(p){
+    var arr=p.objetivos[oi].tarefas[ti].w||[],i=arr.indexOf(wk);
+    if(i>=0)arr.splice(i,1);else{arr.push(wk);arr.sort(function(a,b){return a-b;});}
+    p.objetivos[oi].tarefas[ti].w=arr;
+  });
+}
+function gSaveCI(wk,campo,val){var d=gLoad(),p=gPlanIn(d);p.ci=p.ci||{};p.ci[wk]=p.ci[wk]||{};p.ci[wk][campo]=val;gSave(d);}
+function gSaveFoco(wk,val){var d=gLoad(),p=gPlanIn(d);p.foco=p.foco||[];p.foco[wk-1]=val;gSave(d);}
+function gSaveAv(campo,val){var d=gLoad(),p=gPlanIn(d);p.av=p.av||{};p.av[campo]=val;gSave(d);}
+function gAddCrit(){gUpd(function(p){p.avCrit.push('Novo criterio');});}
+function gDelCrit(i){gUpd(function(p){p.avCrit.splice(i,1);});}
+function gSetCrit(i,val){gUpd(function(p){p.avCrit[i]=val;});}
+
+// ── Render ──
+function renderGantts(){
+  var d=gLoad(),p=gPlan(),ed=!!d.edit,cur=gCurWeek(p),ci=p.ci||{},av=p.av||{},o='';
+  var cats=[];d.plans.forEach(function(x){if(cats.indexOf(x.cat)<0)cats.push(x.cat);});
+
+  // Barra de categorias e planos
+  o+='<div class="g-cats">';
+  cats.forEach(function(c){
+    o+='<div class="g-cat"><div class="g-cat-name">'+escHtml(c)+'</div>';
+    d.plans.filter(function(x){return x.cat===c;}).forEach(function(x){
+      o+='<button class="g-chip'+(x.id===p.id?' active':'')+'" onclick="gSelect(\''+x.id+'\')">'+escHtml(x.titulo)+'</button>';
+    });
+    o+='<button class="g-chip g-add" title="Novo gantt nesta categoria" onclick="gNovoPlano('+JSON.stringify(c).replace(/"/g,'&quot;')+')">+</button></div>';
+  });
+  o+='<button class="g-chip g-add g-newcat" onclick="gNovaCat()">+ Categoria</button></div>';
+
+  // Cabecalho do plano
+  o+='<div class="g-head">';
+  if(ed){
+    o+='<div class="g-edit-grid">'
+      +'<label>Titulo<input type="text" value="'+escHtml(p.titulo)+'" onchange="gSetCampo(\'titulo\',this.value)"></label>'
+      +'<label>Categoria<input type="text" value="'+escHtml(p.cat)+'" onchange="gSetCampo(\'cat\',this.value)"></label>'
+      +'<label>Subtitulo<input type="text" value="'+escHtml(p.sub||'')+'" onchange="gSetCampo(\'sub\',this.value)"></label>'
+      +'<label>Inicio (segunda-feira)<input type="date" value="'+escHtml(p.inicio)+'" onchange="gSetInicio(this.value)"></label>'
+      +'<label>N.&ordm; de semanas<input type="number" min="1" max="52" value="'+p.semanas.length+'" onchange="gSetNSemanas(this.value)"></label>'
+      +'</div>';
+  }else{
+    o+='<div><div class="g-title">'+escHtml(p.titulo)+'</div>'+(p.sub?'<div class="g-sub">'+escHtml(p.sub)+'</div>':'')+'</div>';
+  }
+  o+='<div class="g-actions">'
+    +'<button class="g-btn'+(ed?' on':'')+'" onclick="gToggleEdit()">'+(ed?'Concluir edicao':'Editar')+'</button>'
+    +'<button class="g-btn" onclick="gDuplicar()">Duplicar</button>'
+    +(p.fromSeed?'<button class="g-btn" onclick="gReporSeed()">Repor original</button>':'')
+    +'<button class="g-btn g-danger" onclick="gEliminar()">Eliminar</button>'
+    +'</div></div>';
+
+  // KPIs
+  var preench=0;for(var k in ci){if(ci[k]&&(ci[k].feito||'').trim())preench++;}
+  var nS=p.semanas.length,marcos=[];
+  p.objetivos.forEach(function(ob){ob.tarefas.forEach(function(t){if(t.marco&&t.w.length)marcos.push({t:t.t,w:Math.max.apply(null,t.w)});});});
+  marcos.sort(function(a,b){return a.w-b.w;});
+  var prox=null;for(var i=0;i<marcos.length;i++){if(marcos[i].w>=cur){prox=marcos[i];break;}}
+  o+='<div class="grid-3 mb12">'
+    +'<div class="card"><div class="kpi-lbl">Semana do programa</div><div class="kpi-num" style="color:var(--accent)">'+(cur===0?'—':cur+'/'+nS)+'</div><div class="kpi-sub">'+(cur===0?'Arranca '+p.semanas[0].per.split('-')[0]:(cur<=nS?p.semanas[cur-1].per:'Concluido'))+'</div></div>'
+    +'<div class="card"><div class="kpi-lbl">Proximo marco</div><div class="kpi-num" style="color:var(--amber);font-size:15px;line-height:1.35">'+escHtml(prox?prox.t:'—')+'</div><div class="kpi-sub">'+(prox?'Semana '+prox.w+' · '+p.semanas[prox.w-1].per:'Sem marcos por cumprir')+'</div></div>'
+    +'<div class="card"><div class="kpi-lbl">Check-ins registados</div><div class="kpi-num" style="color:var(--green)">'+preench+'/'+nS+'</div><div class="kpi-sub">preenchidos abaixo</div></div>'
+    +'</div>';
+
+  if(ed)o+='<div class="alert alert-info mb12"><strong>Modo edicao.</strong> Altere titulos e tarefas nos campos, use <strong>+</strong> para acrescentar objetivos, tarefas ou criterios e <strong>&times;</strong> para remover. A caixa <strong>Marco</strong> pinta a tarefa a vermelho (avaliacao). Clique numa celula do gantt para marcar/desmarcar a barra.</div>';
+
+  // Gantt
+  o+='<div class="sh"><div class="sh-title">Plano semanal</div><div style="font-size:11.5px;color:var(--text-3)">Clique nas celulas para marcar as barras</div></div>';
+  o+='<div class="fc-wrap mb16"><table class="fc-gantt"><thead><tr><th class="fc-th-task">Tarefa</th>';
+  p.semanas.forEach(function(w){o+='<th'+(w.n===cur?' class="fc-now"':'')+'>Sem. '+w.n+'<br>'+escHtml(w.per)+'</th>';});
+  if(ed)o+='<th style="min-width:96px">Editar</th>';
+  o+='</tr></thead><tbody>';
+  p.objetivos.forEach(function(obj,oi){
+    var c=gCor(obj.cor);
+    o+='<tr class="fc-obj-row"><td colspan="'+(nS+1+(ed?1:0))+'" style="background:'+c.hdr+'">';
+    if(ed){
+      o+='<div class="g-obj-edit"><input type="text" value="'+escHtml(obj.titulo)+'" onchange="gSetObj('+oi+',\'titulo\',this.value)">'
+        +'<select onchange="gSetObj('+oi+',\'cor\',this.value)">'+GANTT_CORES.map(function(x){return '<option value="'+x.id+'"'+(x.id===obj.cor?' selected':'')+'>'+x.nome+'</option>';}).join('')+'</select>'
+        +'<button class="g-x" title="Eliminar objetivo" onclick="gDelObj('+oi+')">&times;</button></div>';
+    }else o+=escHtml(obj.titulo);
+    o+='</td></tr>';
+    obj.tarefas.forEach(function(t,ti){
+      var col=t.marco?GANTT_MARCO:c.bar,on=t.w||[];
+      o+='<tr><td class="fc-task">';
+      if(ed)o+='<input class="g-task-input" type="text" value="'+escHtml(t.t)+'" onchange="gSetTask('+oi+','+ti+',\'t\',this.value)">';
+      else o+=(t.marco?'&#9873; ':'')+escHtml(t.t);
+      o+='</td>';
+      p.semanas.forEach(function(w){
+        var mk=on.indexOf(w.n)>=0;
+        o+='<td class="fc-cell'+(w.n===cur?' fc-nowcol':'')+'"'+(mk?' style="background:'+col+'"':'')+' title="Semana '+w.n+' — '+w.per+'" onclick="gToggleCell('+oi+','+ti+','+w.n+')"></td>';
+      });
+      if(ed)o+='<td style="white-space:nowrap"><label class="g-marco"><input type="checkbox"'+(t.marco?' checked':'')+' onchange="gSetTask('+oi+','+ti+',\'marco\',this.checked)"> Marco</label>'
+        +'<button class="g-x" title="Eliminar tarefa" onclick="gDelTask('+oi+','+ti+')">&times;</button></td>';
+      o+='</tr>';
+    });
+    if(ed)o+='<tr><td colspan="'+(nS+2)+'" style="padding:3px 7px"><button class="g-mini" onclick="gAddTask('+oi+')">+ tarefa</button></td></tr>';
+  });
+  o+='</tbody></table>';
+  if(ed)o+='<button class="g-mini mt8" onclick="gAddObj()">+ objetivo</button>';
+  o+='<div class="fc-legend">';
+  p.objetivos.forEach(function(obj){o+='<span><span class="sw" style="background:'+gCor(obj.cor).bar+'"></span>'+escHtml(obj.titulo.split('—')[0].trim())+'</span>';});
+  o+='<span><span class="sw" style="background:'+GANTT_MARCO+'"></span>Marco / avaliacao</span></div></div>';
+
+  // Check-ins
+  o+='<div class="sh"><div class="sh-title">Registo de check-ins semanais</div><div style="font-size:11.5px;color:var(--text-3)">Preencher no fim de cada semana (15-20 min)</div></div>';
+  o+='<div class="fc-wrap mb16"><table class="fc-ci"><thead><tr><th>Semana</th><th>Objetivo</th><th>O que foi feito / observado</th><th>Dificuldades</th><th>Acoes para a semana seguinte</th><th>Avaliacao</th></tr></thead><tbody>';
+  var opts=p.objetivos.map(function(ob,i){return 'Obj. '+(i+1);});
+  p.semanas.forEach(function(w,i){
+    var r=ci[w.n]||{},sel=r.aval||'',fc=(p.foco||[])[i]||'';
+    o+='<tr'+(w.n===cur?' class="fc-ci-now"':'')+'>'
+      +'<td><div class="fc-wk">Semana '+w.n+'</div><div class="fc-per">'+escHtml(w.per)+'</div></td>'
+      +'<td><select onchange="gSaveFoco('+w.n+',this.value)">'
+      +[''].concat(opts).map(function(v){return '<option value="'+v+'"'+(fc===v?' selected':'')+'>'+(v||'—')+'</option>';}).join('')+'</select></td>'
+      +'<td><textarea onchange="gSaveCI('+w.n+',\'feito\',this.value)">'+escHtml(r.feito||'')+'</textarea></td>'
+      +'<td><textarea onchange="gSaveCI('+w.n+',\'dific\',this.value)">'+escHtml(r.dific||'')+'</textarea></td>'
+      +'<td><textarea onchange="gSaveCI('+w.n+',\'acoes\',this.value)">'+escHtml(r.acoes||'')+'</textarea></td>'
+      +'<td><select onchange="gSaveCI('+w.n+',\'aval\',this.value)">'
+      +['','Autonomo','Em progresso','A reforcar'].map(function(v){return '<option value="'+v+'"'+(sel===v?' selected':'')+'>'+(v||'—')+'</option>';}).join('')
+      +'</select></td></tr>';
+  });
+  o+='</tbody></table></div>';
+
+  // Avaliacao
+  o+='<div class="sh"><div class="sh-title">';
+  o+=ed?'Avaliacao final':escHtml(p.avTitulo||'Avaliacao final');
+  o+='</div></div>';
+  o+='<div class="fc-wrap"><table class="fc-av" style="width:100%;border-collapse:collapse"><tbody>';
+  if(ed)o+='<tr><td colspan="2" style="padding:6px 8px"><input class="g-task-input" type="text" value="'+escHtml(p.avTitulo||'')+'" onchange="gSetCampo(\'avTitulo\',this.value)" placeholder="Titulo da avaliacao"></td></tr>';
+  (p.avCrit||[]).forEach(function(c,i){
+    o+='<tr><td class="fc-av-crit">';
+    if(ed)o+='<input class="g-task-input" type="text" value="'+escHtml(c)+'" onchange="gSetCrit('+i+',this.value)"><button class="g-x" onclick="gDelCrit('+i+')">&times;</button>';
+    else o+=escHtml(c);
+    o+='</td><td><textarea onchange="gSaveAv(\'c'+i+'\',this.value)" placeholder="Notas...">'+escHtml(av['c'+i]||'')+'</textarea></td></tr>';
+  });
+  if(ed)o+='<tr><td colspan="2" style="padding:5px 8px"><button class="g-mini" onclick="gAddCrit()">+ criterio</button></td></tr>';
+  var rec=av.rec||'';
+  o+='<tr><td class="fc-av-crit"><strong>';
+  o+=ed?'<input class="g-task-input" type="text" value="'+escHtml(p.avRecLabel||'')+'" onchange="gSetCampo(\'avRecLabel\',this.value)">':escHtml(p.avRecLabel||'Recomendacao');
+  o+='</strong></td><td><select onchange="gSaveAv(\'rec\',this.value)">'
+    +['','Sim','Nao','Adiar'].map(function(v){return '<option value="'+v+'"'+(rec===v?' selected':'')+'>'+(v||'— por decidir')+'</option>';}).join('')
+    +'</select></td></tr></tbody></table></div>';
+
+  document.getElementById('equipa-gantt-view').innerHTML=o;
 }
 // ── Fleet data ──
 var FLEET_DATA={
@@ -1295,7 +2128,7 @@ function saveAvariasUrl(){var u=document.getElementById('urlInput').value.trim()
 function openUrlModal(){document.getElementById('urlConfigForm').classList.add('open');document.getElementById('urlConfigBar').scrollIntoView({behavior:'smooth'});showToast('Configura o URL da APP de Avarias em cima');}
 
 // ── Tasks ──
-var TASKS_KEY='pragosa_tasks_v1',SEED_KEY='pragosa_seed_v1',SEED_VERSION='v1.2';
+var TASKS_KEY='pragosa_tasks_v1',SEED_KEY='pragosa_seed_v1',SEED_VERSION='v1.3';
 var SEED_TASKS=[
   {id:'eq-01',text:'Definir RACI formal da funcao Gestor de Frota (Marques vs. Campos)',area:'equipa',priority:'high',meta:'Prazo: 31 jul - Resp.: Rita Fialho',source:'Plano Capacidade Jul 2026',done:false,createdAt:'2026-07-11',completedAt:null},
   {id:'eq-02',text:'Avaliar carga real de Joao Campos e redistribuir uma das 3 funcoes',area:'equipa',priority:'high',meta:'Prazo: 31 jul - Resp.: Rita Fialho',source:'Plano Capacidade Jul 2026',done:false,createdAt:'2026-07-11',completedAt:null},
@@ -1305,6 +2138,15 @@ var SEED_TASKS=[
   {id:'fc-01',text:'[FC Onboarding] Processos e sistemas internos — trafego, ponto, avarias',area:'equipa',priority:'high',meta:'Resp.: Frederico Catarino · Tutor: Rita Fialho',source:'Onboarding FC — 29 jun 2026',done:false,createdAt:'2026-07-11',completedAt:null},
   {id:'fc-02',text:'[FC Onboarding] Conhecer frota e motoristas CPSA',area:'equipa',priority:'medium',meta:'Resp.: Frederico Catarino',source:'Onboarding FC — 29 jun 2026',done:false,createdAt:'2026-07-11',completedAt:null},
   {id:'fc-03',text:'[FC Onboarding] Alinhar KPIs e expectativas CPSA com Rita',area:'equipa',priority:'medium',meta:'Resp.: Rita Fialho + Frederico Catarino',source:'Onboarding FC — 29 jun 2026',done:false,createdAt:'2026-07-11',completedAt:null},
+  {id:'fc-04',text:'[FC Obj.1] Rever tipos de viaturas basculantes e adequacao por tipo de obra/material',area:'equipa',priority:'high',meta:'Prazo: 24 jul - Resp.: Frederico Catarino',source:'Plano de Integracao FC — 10 semanas',done:false,createdAt:'2026-07-18',completedAt:null},
+  {id:'fc-05',text:'[FC Obj.1] Acompanhar planeamento em modo sombra e apoiar desenho da ferramenta',area:'equipa',priority:'high',meta:'Prazo: 24 jul - Resp.: Frederico Catarino',source:'Plano de Integracao FC — 10 semanas',done:false,createdAt:'2026-07-18',completedAt:null},
+  {id:'fc-06',text:'[FC Obj.1] Check-in do planeamento diario',area:'equipa',priority:'medium',meta:'Prazo: 7 ago - Resp.: Rita Fialho',source:'Plano de Integracao FC — 10 semanas',done:false,createdAt:'2026-07-18',completedAt:null},
+  {id:'fc-07',text:'[FC Obj.2] Rotina fixa de comunicacao diaria com motoristas e mapa de interlocutores',area:'equipa',priority:'medium',meta:'Prazo: 14 ago - Resp.: Frederico Catarino',source:'Plano de Integracao FC — 10 semanas',done:false,createdAt:'2026-07-18',completedAt:null},
+  {id:'fc-08',text:'[FC Obj.2] Check-in: avaliar fluxo de informacao/comunicacao',area:'equipa',priority:'medium',meta:'Prazo: 14 ago - Resp.: Rita Fialho',source:'Plano de Integracao FC — 10 semanas',done:false,createdAt:'2026-07-18',completedAt:null},
+  {id:'fc-09',text:'[FC Obj.3] Reduzir supervisao ate so excecoes e testar resposta a imprevistos sozinho',area:'equipa',priority:'high',meta:'Prazo: 28 ago - Resp.: Frederico Catarino',source:'Plano de Integracao FC — 10 semanas',done:false,createdAt:'2026-07-18',completedAt:null},
+  {id:'fc-10',text:'[FC Obj.3] Avaliar autonomia nos Transportes Basculantes (avaliacao formal)',area:'equipa',priority:'high',meta:'Prazo: 11 set - Resp.: Rita Fialho',source:'Plano de Integracao FC — 10 semanas',done:false,createdAt:'2026-07-18',completedAt:null},
+  {id:'fc-11',text:'[FC Obj.4] Compreender e planear transportes especiais (grua, porta-maquinas, estrados)',area:'equipa',priority:'medium',meta:'Prazo: 19 set - Resp.: Frederico Catarino',source:'Plano de Integracao FC — 10 semanas',done:false,createdAt:'2026-07-18',completedAt:null},
+  {id:'fc-12',text:'[FC Obj.4] Avaliar autonomia nos Transportes Especiais (avaliacao formal)',area:'equipa',priority:'high',meta:'Prazo: 26 set - Resp.: Rita Fialho',source:'Plano de Integracao FC — 10 semanas',done:false,createdAt:'2026-07-18',completedAt:null},
   {id:'fr-01',text:'Avaliar abate L-37858 (1976, 50 anos) e 77-56-AB (Mercedes 1992)',area:'frota',priority:'high',meta:'Urgente',source:'Plano Capacidade Jul 2026',done:false,createdAt:'2026-07-11',completedAt:null},
   {id:'fr-02',text:'Resolver viaturas externas sem previsao: AT57JF, Porta-Maq. David, AU01EM/AC',area:'frota',priority:'medium',meta:'Resp.: Antonio Marques',source:'Reuniao Manutencao 15 jun',done:false,createdAt:'2026-07-11',completedAt:null},
   {id:'fr-03',text:'Analisar causas avarias Cisternas e reforcar manutencao preventiva',area:'frota',priority:'medium',meta:'Resp.: Gabriela Soares',source:'CE Logistica 30 jun',done:false,createdAt:'2026-07-11',completedAt:null},
