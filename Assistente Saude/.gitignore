@@ -1,0 +1,13 @@
+# Credenciais — NUNCA commitar
+.env
+
+# Tokens de sessao Garmin
+.garth/
+
+# Dados pessoais de saude — nao pertencem ao repositorio da empresa
+dados/
+registos/
+
+# Ambiente Python
+.venv/
+__pycache__/

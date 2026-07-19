@@ -8,8 +8,8 @@
 
 → (escreve 2-3 coisas positivas)
 
-1. 
-2. 
+1. Planeamentos das Construções e Indústria a decorrer sem constrangimentos.
+2. Conversa com o António Marques de forma sincera
 3. 
 
 ---
@@ -18,8 +18,9 @@
 
 → (lista o que não concluíste e porquê)
 
-- 
-- 
+- Definição de Preços
+- Melhor acompanhamento da Equipa, nomeadamente do Frederico.
+- Após a conversa om o Antonio ficou pendente a definição de tarefas no futuro
 
 ---
 
@@ -27,15 +28,15 @@
 
 → (define 1-3 prioridades claras)
 
-1. 
-2. 
+1. Definição de Tarefas e Acompanhamento da Equipa
+2. Redifinir exigências à Bruna que começa a ficar com folga
 3. 
 
 ---
 
 ## 💭 Algo que quero melhorar ou aprender?
 
-→ (reflexão pessoal ou profissional)
+→ Impor limites e regras.
 
 
 

@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Assistente de Saúde</title>
+<style>
+:root{
+  color-scheme: light;
+  --surface-1:#fcfcfb; --plane:#f9f9f7;
+  --ink:#0b0b0b; --ink-2:#52514e; --muted:#898781;
+  --grid:#e1e0d9; --axis:#c3c2b7; --border:rgba(11,11,11,.10);
+  --s1:#2a78d6; --s2:#008300; --s3:#e87ba4; --s4:#eda100;
+  --good:#0ca30c; --warn:#fab219; --serious:#ec835a; --crit:#d03b3b;
+}
+@media (prefers-color-scheme: dark){
+  :root:where(:not([data-theme="light"])){
+    color-scheme: dark;
+    --surface-1:#1a1a19; --plane:#0d0d0d;
+    --ink:#fff; --ink-2:#c3c2b7; --muted:#898781;
+    --grid:#2c2c2a; --axis:#383835; --border:rgba(255,255,255,.10);
+    --s1:#3987e5; --s2:#008300; --s3:#d55181; --s4:#c98500;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --surface-1:#1a1a19; --plane:#0d0d0d;
+  --ink:#fff; --ink-2:#c3c2b7; --muted:#898781;
+  --grid:#2c2c2a; --axis:#383835; --border:rgba(255,255,255,.10);
+  --s1:#3987e5; --s2:#008300; --s3:#d55181; --s4:#c98500;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--plane);color:var(--ink);
+  font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+header{padding:20px 24px 0;max-width:1180px;margin:0 auto}
+h1{font-size:21px;margin:0 0 2px}
+.sub{color:var(--ink-2);font-size:13px;margin:0 0 16px}
+main{max-width:1180px;margin:0 auto;padding:0 24px 60px}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--border);margin-bottom:22px}
+.tabs button{background:none;border:0;padding:10px 16px;font:inherit;font-weight:500;
+  color:var(--ink-2);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px}
+.tabs button[aria-selected=true]{color:var(--ink);border-bottom-color:var(--s1)}
+.panel[hidden]{display:none}
+.card{background:var(--surface-1);border:1px solid var(--border);border-radius:10px;
+  padding:18px 20px;margin-bottom:16px}
+.card h2{font-size:15px;margin:0 0 14px;font-weight:600}
+.card h2 .hint{font-weight:400;color:var(--muted);font-size:13px;margin-left:8px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:16px}
+.tile{background:var(--surface-1);border:1px solid var(--border);border-radius:10px;padding:14px 16px}
+.tile .lab{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.tile .val{font-size:27px;font-weight:600;margin:4px 0 2px}
+.tile .dl{font-size:12px;color:var(--ink-2)}
+.up{color:var(--good)} .dn{color:var(--crit)}
+/* formulário */
+.q{padding:13px 0;border-bottom:1px solid var(--grid)}
+.q:last-child{border-bottom:0}
+.q .lbl{font-weight:500;margin-bottom:3px}
+.q .desc{font-size:12.5px;color:var(--muted);margin-bottom:9px}
+.scale{display:flex;gap:6px;flex-wrap:wrap}
+.scale label{flex:1;min-width:56px}
+.scale input{position:absolute;opacity:0;pointer-events:none}
+.scale span{display:block;text-align:center;padding:9px 4px;border:1px solid var(--border);
+  border-radius:7px;cursor:pointer;font-size:13px;background:var(--plane);
+  transition:.12s;line-height:1.25}
+.scale span b{display:block;font-size:15px;font-weight:600}
+.scale input:checked+span{background:var(--s1);border-color:var(--s1);color:#fff}
+.scale input:focus-visible+span{outline:2px solid var(--s1);outline-offset:2px}
+textarea,input[type=number],input[type=date]{width:100%;padding:9px 11px;border-radius:7px;
+  border:1px solid var(--border);background:var(--plane);color:var(--ink);font:inherit}
+textarea{min-height:64px;resize:vertical}
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end}
+.row>div{flex:1;min-width:130px}
+.chips{display:flex;gap:7px;flex-wrap:wrap}
+.chips label input{position:absolute;opacity:0;pointer-events:none}
+.chips span{display:block;padding:7px 13px;border:1px solid var(--border);border-radius:99px;
+  cursor:pointer;font-size:13px;background:var(--plane)}
+.chips input:checked+span{background:var(--s1);border-color:var(--s1);color:#fff}
+button.act{background:var(--s1);color:#fff;border:0;padding:11px 20px;border-radius:8px;
+  font:inherit;font-weight:600;cursor:pointer}
+button.ghost{background:none;border:1px solid var(--border);color:var(--ink);
+  padding:10px 16px;border-radius:8px;font:inherit;cursor:pointer}
+.bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:18px}
+.msg{font-size:13px;color:var(--ink-2)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--grid)}
+th{color:var(--muted);font-weight:500;font-size:12px;text-transform:uppercase;letter-spacing:.03em}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+.empty{color:var(--muted);font-size:14px;padding:28px 0;text-align:center}
+svg{display:block;width:100%;height:auto;overflow:visible}
+.leg{display:flex;gap:16px;flex-wrap:wrap;font-size:12.5px;color:var(--ink-2);margin-bottom:10px}
+.leg i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+details summary{cursor:pointer;font-size:13px;color:var(--ink-2);padding:8px 0}
+.tip{position:fixed;pointer-events:none;background:var(--surface-1);border:1px solid var(--border);
+  border-radius:7px;padding:8px 11px;font-size:12.5px;box-shadow:0 4px 14px rgba(0,0,0,.14);
+  opacity:0;transition:opacity .1s;z-index:9;white-space:nowrap}
+</style>
+</head>
+<body>
+<header>
+  <h1>Assistente de Saúde</h1>
+  <p class="sub" id="estado">A carregar dados…</p>
+</header>
+<main>
+  <div class="tabs" role="tablist">
+    <button role="tab" aria-selected="true" data-p="checkin">Check-in diário</button>
+    <button role="tab" aria-selected="false" data-p="painel">Painel</button>
+    <button role="tab" aria-selected="false" data-p="treinos">Treinos</button>
+    <button role="tab" aria-selected="false" data-p="plano">Plano</button>
+  </div>
+
+  <!-- ============ CHECK-IN ============ -->
+  <section class="panel" id="p-checkin">
+    <div class="card">
+      <div class="row" style="margin-bottom:6px">
+        <div style="flex:0 0 180px">
+          <div class="lbl" style="font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:5px">Data</div>
+          <input type="date" id="data">
+        </div>
+        <div style="flex:1"><p class="msg" id="jaPreenchido"></p></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Manhã <span class="hint">ao acordar · ~30 s</span></h2>
+      <div id="manha"></div>
+    </div>
+
+    <div class="card">
+      <h2>Sintomas <span class="hint">o travão — independente de como te sentes</span></h2>
+      <div id="sintomas"></div>
+      <div id="semaforo"></div>
+    </div>
+
+    <div class="card">
+      <h2>Noite <span class="hint">ao deitar · ~30 s</span></h2>
+      <div id="noite"></div>
+      <div class="q">
+        <div class="lbl">Treinaste hoje?</div>
+        <div class="desc">Se sim, o esforço percebido × duração dá a carga real da sessão.</div>
+        <div class="row">
+          <div style="flex:0 0 120px">
+            <label style="font-size:12.5px;color:var(--ink-2)">Duração (min)</label>
+            <input type="number" id="dur" min="0" step="5" placeholder="0">
+          </div>
+          <div style="flex:2;min-width:220px">
+            <label style="font-size:12.5px;color:var(--ink-2)">Esforço percebido (RPE 1–10)</label>
+            <input type="number" id="rpe" min="1" max="10" step="1" placeholder="—">
+          </div>
+          <div style="flex:0 0 120px">
+            <label style="font-size:12.5px;color:var(--ink-2)">Carga</label>
+            <div id="carga" style="font-size:20px;font-weight:600;padding:7px 0">—</div>
+          </div>
+        </div>
+      </div>
+      <div class="q">
+        <div class="lbl">Fatores do dia</div>
+        <div class="desc">Marca o que se aplicou. Servem para explicar desvios nos dados.</div>
+        <div class="chips" id="fatores"></div>
+      </div>
+      <div class="q">
+        <div class="lbl">Nota livre</div>
+        <div class="desc">Contexto que os números não captam.</div>
+        <textarea id="nota" placeholder="ex.: dia longo em obra, dormi mal por causa do ruído…"></textarea>
+      </div>
+      <div class="bar">
+        <button class="act" id="guardar">Guardar check-in</button>
+        <button class="ghost" id="exportar">Exportar tudo (JSON)</button>
+        <span class="msg" id="msg"></span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Histórico de check-ins</h2>
+      <div id="hist"></div>
+    </div>
+  </section>
+
+  <!-- ============ PAINEL ============ -->
+  <section class="panel" id="p-painel" hidden>
+    <div class="tiles" id="tiles"></div>
+    <div class="card">
+      <h2>Sono <span class="hint">horas por noite · barra = total, linha = média móvel 7 d</span></h2>
+      <div id="g-sono"></div>
+    </div>
+    <div class="card">
+      <h2>HRV noturno <span class="hint">variabilidade da frequência cardíaca (ms)</span></h2>
+      <div id="g-hrv"></div>
+    </div>
+    <div class="card">
+      <h2>FC em repouso <span class="hint">batimentos por minuto</span></h2>
+      <div id="g-fc"></div>
+    </div>
+    <div class="card">
+      <h2>Subjetivo × objetivo <span class="hint">a tua prontidão percebida vs. o que o relógio mediu</span></h2>
+      <div class="leg">
+        <span><i style="background:var(--s1)"></i>Prontidão subjetiva (0–100)</span>
+        <span><i style="background:var(--s4)"></i>HRV normalizado (0–100)</span>
+      </div>
+      <div id="g-corr"></div>
+      <p class="msg" id="corrNota"></p>
+    </div>
+    <div class="card">
+      <h2>Tabela de dados</h2>
+      <details><summary>Ver todos os valores</summary><div id="tabela"></div></details>
+    </div>
+  </section>
+
+  <!-- ============ TREINOS ============ -->
+  <section class="panel" id="p-treinos" hidden>
+    <div class="tiles" id="tilesT"></div>
+    <div class="card">
+      <h2>Carga semanal <span class="hint">soma da carga de treino por semana</span></h2>
+      <div id="g-carga"></div>
+    </div>
+    <div class="card">
+      <h2>Sessões</h2>
+      <div id="tabelaT"></div>
+    </div>
+  </section>
+
+  <!-- ============ PLANO ============ -->
+  <section class="panel" id="p-plano" hidden>
+    <div id="faseAtual"></div>
+    <div class="card">
+      <h2>Semana-tipo <span class="hint">2ª a 6ª: 30–40 min · fim de semana: volume</span></h2>
+      <div id="semanaTipo"></div>
+    </div>
+    <div class="card">
+      <h2>Progressão do longo <span class="hint">3 semanas a subir, 1 a descarregar</span></h2>
+      <div id="progressao"></div>
+    </div>
+    <div class="card">
+      <h2>Regras que não se negoceiam</h2>
+      <div id="regras"></div>
+    </div>
+    <div class="card">
+      <h2>Todas as fases</h2>
+      <div id="fases"></div>
+    </div>
+  </section>
+</main>
+<div class="tip" id="tip"></div>
+
+<script>
+/* ============================================================
+   PROTOCOLO DE AUTO-AVALIAÇÃO
+   Baseado no índice de Hooper (bem-estar) + sRPE (carga interna).
+   Escalas de 1–5 sempre no mesmo sentido: 5 = melhor estado.
+   ============================================================ */
+const MANHA = [
+  {id:'sono_q',  lbl:'Qualidade do sono',      desc:'Como sentes que dormiste — independentemente do que diz o relógio.',
+   op:['Péssima','Má','Razoável','Boa','Excelente']},
+  {id:'energia', lbl:'Energia ao acordar',     desc:'Custou a sair da cama ou acordaste desperta?',
+   op:['Exausta','Cansada','Neutra','Bem','Cheia de energia']},
+  {id:'dores',   lbl:'Dores musculares',       desc:'5 = sem dores nenhumas.',
+   op:['Muito dorida','Dorida','Alguma','Leve','Sem dores']},
+  {id:'motiv',   lbl:'Vontade de treinar',     desc:'Apetece-te mexer hoje?',
+   op:['Nenhuma','Pouca','Indiferente','Boa','Muita']},
+];
+const NOITE = [
+  {id:'carga_mental', lbl:'Carga mental do trabalho', desc:'5 = dia leve. Obra, frota e reuniões contam.',
+   op:['Esmagadora','Pesada','Normal','Leve','Muito leve']},
+  {id:'stress',       lbl:'Stress percebido',         desc:'5 = calma.',
+   op:['Muito alto','Alto','Médio','Baixo','Calma']},
+  {id:'alimentacao',  lbl:'Alimentação',              desc:'Comeste bem e a horas?',
+   op:['Muito mal','Mal','Assim-assim','Bem','Muito bem']},
+];
+/* Sintomas — NÃO entram na prontidão. São um travão independente:
+   um dia excelente com ciático a queixar-se continua a ser dia de recuar. */
+const SINTOMAS = [
+  {id:'ciatico', lbl:'Ciático / posterior de coxa e glúteo', desc:'Formigueiro, ardor, "linha" a descer a perna. 5 = nada.',
+   op:['Forte','Marcado','Presente','Vestígio','Nada']},
+  {id:'tendoes', lbl:'Tendões', desc:'Aquiles, joelho, isquiotibial proximal. Rigidez matinal conta.',
+   op:['Dor marcada','Dor','Desconforto','Leve rigidez','Sem queixas']},
+];
+const FATORES = ['Álcool','Cafeína depois das 16h','Refeição fora','Viagem longa','Ecrã até tarde',
+                 'Menstruação','Doente / constipada','Noite mal dormida por terceiros'];
+
+const CH = 'saude_checkins';
+const $ = s => document.querySelector(s);
+const ler = () => JSON.parse(localStorage.getItem(CH) || '{}');
+const gravar = o => localStorage.setItem(CH, JSON.stringify(o));
+const hoje = () => new Date().toISOString().slice(0,10);
+
+/* ---------- construir formulário ---------- */
+function escala(q){
+  return `<div class="q"><div class="lbl">${q.lbl}</div><div class="desc">${q.desc}</div>
+    <div class="scale">${q.op.map((t,i)=>
+      `<label><input type="radio" name="${q.id}" value="${i+1}"><span><b>${i+1}</b>${t}</span></label>`
+    ).join('')}</div></div>`;
+}
+$('#manha').innerHTML = MANHA.map(escala).join('');
+$('#noite').innerHTML = NOITE.map(escala).join('');
+$('#sintomas').innerHTML = SINTOMAS.map(escala).join('');
+$('#fatores').innerHTML = FATORES.map((f,i)=>
+  `<label><input type="checkbox" name="fator" value="${f}"><span>${f}</span></label>`).join('');
+
+/* ---------- carga sRPE ---------- */
+function calcCarga(){
+  const d = +$('#dur').value, r = +$('#rpe').value;
+  $('#carga').textContent = (d && r) ? (d*r) : '—';
+}
+$('#dur').oninput = calcCarga; $('#rpe').oninput = calcCarga;
+
+/* ---------- guardar / carregar ---------- */
+$('#data').value = hoje();
+
+function carregaDia(){
+  const d = $('#data').value, todos = ler(), r = todos[d];
+  document.querySelectorAll('input[type=radio]').forEach(i=>i.checked=false);
+  document.querySelectorAll('input[name=fator]').forEach(i=>i.checked=false);
+  $('#dur').value=''; $('#rpe').value=''; $('#nota').value=''; calcCarga();
+  if(r){
+    [...MANHA,...NOITE,...SINTOMAS].forEach(q=>{
+      if(r[q.id]){const el=document.querySelector(`input[name=${q.id}][value="${r[q.id]}"]`); if(el)el.checked=true;}
+    });
+    (r.fatores||[]).forEach(f=>{
+      const el=[...document.querySelectorAll('input[name=fator]')].find(i=>i.value===f); if(el)el.checked=true;
+    });
+    $('#dur').value=r.dur||''; $('#rpe').value=r.rpe||''; $('#nota').value=r.nota||''; calcCarga();
+    $('#jaPreenchido').textContent = 'Já existe um check-in neste dia — podes editar e voltar a guardar.';
+  } else $('#jaPreenchido').textContent = '';
+}
+$('#data').onchange = carregaDia;
+
+$('#guardar').onclick = () => {
+  const d = $('#data').value;
+  if(!d){ $('#msg').textContent='Escolhe uma data.'; return; }
+  const r = {data:d};
+  [...MANHA,...NOITE,...SINTOMAS].forEach(q=>{
+    const el = document.querySelector(`input[name=${q.id}]:checked`);
+    if(el) r[q.id] = +el.value;
+  });
+  r.fatores = [...document.querySelectorAll('input[name=fator]:checked')].map(i=>i.value);
+  if(+$('#dur').value) r.dur = +$('#dur').value;
+  if(+$('#rpe').value) r.rpe = +$('#rpe').value;
+  if(r.dur && r.rpe) r.carga = r.dur * r.rpe;
+  if($('#nota').value.trim()) r.nota = $('#nota').value.trim();
+  const todos = ler(); todos[d] = r; gravar(todos);
+  $('#msg').textContent = 'Guardado ✓';
+  setTimeout(()=>$('#msg').textContent='', 2500);
+  render();
+};
+
+$('#exportar').onclick = () => {
+  const blob = new Blob([JSON.stringify(ler(),null,1)],{type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `checkins-${hoje()}.json`; a.click();
+};
+
+/* ---------- prontidão subjetiva 0–100 (sintomas excluídos de propósito) ---------- */
+function prontidao(r){
+  const its = [...MANHA,...NOITE].map(q=>r[q.id]).filter(Boolean);
+  if(its.length < 3) return null;
+  return Math.round((its.reduce((a,b)=>a+b,0)/its.length - 1) / 4 * 100);
+}
+
+/* ---------- semáforo: sintomas mandam sobre a prontidão ---------- */
+function semaforo(r){
+  const p = prontidao(r), ci = r.ciatico, te = r.tendoes;
+  if(ci && ci<=2 || te && te<=2)
+    return {c:'crit', t:'Vermelho — não corras hoje',
+      d:'Sintomas ativos. Mobilidade, marcha fácil ou descanso. Se persistir 3 dias seguidos, fala com o fisioterapeuta.'};
+  if(ci===3 || te===3 || (p!=null && p<40))
+    return {c:'serious', t:'Amarelo — corta a sessão a meio',
+      d:'Mantém a intensidade baixa e reduz o volume. Nunca compenses cortando volume e subindo intensidade.'};
+  if(p!=null && p<60)
+    return {c:'warn', t:'Amarelo claro — sessão planeada, sem extras',
+      d:'Faz o que está no plano e não mais. Hoje não é dia de "já que estou aqui".'};
+  if(p==null) return null;
+  return {c:'good', t:'Verde — sessão planeada',
+    d:'Sem sintomas e prontidão boa. Segue o plano da semana.'};
+}
+
+function pintaSemaforo(){
+  const r = {};
+  [...MANHA,...NOITE,...SINTOMAS].forEach(q=>{
+    const el = document.querySelector(`input[name=${q.id}]:checked`);
+    if(el) r[q.id] = +el.value;
+  });
+  const s = semaforo(r);
+  $('#semaforo').innerHTML = !s ? '' :
+    `<div style="margin-top:14px;padding:13px 15px;border-radius:8px;
+      border-left:4px solid var(--${s.c});background:var(--plane)">
+      <div style="font-weight:600;margin-bottom:3px">${s.t}</div>
+      <div style="font-size:13px;color:var(--ink-2)">${s.d}</div></div>`;
+}
+document.addEventListener('change', e => {
+  if(e.target.type === 'radio') pintaSemaforo();
+});
+
+/* ============================================================
+   GRÁFICOS — SVG puro, sem dependências
+   ============================================================ */
+const tip = $('#tip');
+function mostraTip(e, html){
+  tip.innerHTML = html; tip.style.opacity = 1;
+  tip.style.left = Math.min(e.clientX+14, innerWidth-tip.offsetWidth-10)+'px';
+  tip.style.top  = (e.clientY-12)+'px';
+}
+function escondeTip(){ tip.style.opacity = 0; }
+
+const W=880, H=230, M={t:14,r:16,b:26,l:40};
+
+function eixos(pts, min, max, ticksY){
+  const iw = W-M.l-M.r, ih = H-M.t-M.b;
+  let g = '';
+  ticksY.forEach(v=>{
+    const y = M.t + ih - (v-min)/(max-min)*ih;
+    g += `<line x1="${M.l}" x2="${W-M.r}" y1="${y}" y2="${y}" stroke="var(--grid)" stroke-width="1"/>`;
+    g += `<text x="${M.l-8}" y="${y+4}" text-anchor="end" font-size="11" fill="var(--muted)">${v}</text>`;
+  });
+  const passo = Math.max(1, Math.ceil(pts.length/8));
+  pts.forEach((p,i)=>{
+    if(i % passo) return;
+    const x = M.l + (pts.length===1?iw/2:i/(pts.length-1)*iw);
+    g += `<text x="${x}" y="${H-6}" text-anchor="middle" font-size="11" fill="var(--muted)">${p.data.slice(5)}</text>`;
+  });
+  g += `<line x1="${M.l}" x2="${W-M.r}" y1="${M.t+ih}" y2="${M.t+ih}" stroke="var(--axis)" stroke-width="1"/>`;
+  return g;
+}
+function escalaY(vals){
+  let min = Math.min(...vals), max = Math.max(...vals);
+  const pad = (max-min)*.18 || 1;
+  min = Math.max(0, Math.floor(min-pad)); max = Math.ceil(max+pad);
+  const n = 4, step = (max-min)/n;
+  return {min, max, ticks: Array.from({length:n+1},(_,i)=>Math.round(min+i*step))};
+}
+const px = (i,n) => M.l + (n===1 ? (W-M.l-M.r)/2 : i/(n-1)*(W-M.l-M.r));
+const py = (v,min,max) => M.t + (H-M.t-M.b) - (v-min)/(max-min)*(H-M.t-M.b);
+
+function mediaMovel(vals, n=7){
+  return vals.map((_,i)=>{
+    const f = vals.slice(Math.max(0,i-n+1), i+1).filter(v=>v!=null);
+    return f.length ? f.reduce((a,b)=>a+b,0)/f.length : null;
+  });
+}
+
+function grafBarras(el, pts, campo, cor, unid){
+  const dados = pts.filter(p=>p[campo]!=null);
+  if(dados.length<2){ el.innerHTML='<p class="empty">Sem dados suficientes.</p>'; return; }
+  const vals = dados.map(p=>p[campo]);
+  const {min,max,ticks} = escalaY([0,...vals]);
+  const mm = mediaMovel(vals);
+  const n = dados.length, lg = (W-M.l-M.r)/n, bw = Math.max(3, lg-2);
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img">${eixos(dados,min,max,ticks)}`;
+  dados.forEach((p,i)=>{
+    const x = M.l + i*lg + (lg-bw)/2, y = py(p[campo],min,max);
+    s += `<rect x="${x}" y="${y}" width="${bw}" height="${Math.max(1,M.t+H-M.t-M.b-y)}" rx="4"
+      fill="${cor}" data-t="${p.data} — ${p[campo]} ${unid}"/>`;
+  });
+  const linha = mm.map((v,i)=>v==null?null:`${px(i,n)},${py(v,min,max)}`).filter(Boolean).join(' ');
+  s += `<polyline points="${linha}" fill="none" stroke="var(--ink)" stroke-width="2"
+    stroke-linecap="round" opacity=".55"/>`;
+  s += `</svg>`;
+  el.innerHTML = s;
+  liga(el);
+}
+
+function grafLinha(el, pts, campo, cor, unid, rotulaUltimo){
+  const dados = pts.filter(p=>p[campo]!=null);
+  if(dados.length<2){ el.innerHTML='<p class="empty">Sem dados suficientes.</p>'; return; }
+  const vals = dados.map(p=>p[campo]);
+  const {min,max,ticks} = escalaY(vals);
+  const n = dados.length;
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img">${eixos(dados,min,max,ticks)}`;
+  s += `<polyline points="${dados.map((p,i)=>`${px(i,n)},${py(p[campo],min,max)}`).join(' ')}"
+    fill="none" stroke="${cor}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`;
+  dados.forEach((p,i)=>{
+    s += `<circle cx="${px(i,n)}" cy="${py(p[campo],min,max)}" r="4.5" fill="${cor}"
+      stroke="var(--surface-1)" stroke-width="2" data-t="${p.data} — ${p[campo]} ${unid}"/>`;
+  });
+  if(rotulaUltimo){
+    const u = dados[n-1];
+    s += `<text x="${px(n-1,n)-8}" y="${py(u[campo],min,max)-11}" text-anchor="end"
+      font-size="12" font-weight="600" fill="var(--ink)">${u[campo]} ${unid}</text>`;
+  }
+  s += `</svg>`;
+  el.innerHTML = s;
+  liga(el);
+}
+
+function liga(el){
+  el.querySelectorAll('[data-t]').forEach(m=>{
+    m.style.cursor='pointer';
+    m.onmousemove = e => mostraTip(e, m.dataset.t);
+    m.onmouseleave = escondeTip;
+  });
+}
+
+/* inverso = true quando descer é bom (FC em repouso, stress) */
+function tile(lab, val, delta, inverso){
+  let d = '';
+  if(delta != null && delta !== 0){
+    const bom = inverso ? delta < 0 : delta > 0;
+    d = `<div class="dl ${bom?'up':'dn'}">${delta>0?'▲':'▼'} ${Math.abs(delta)} vs. 7 d antes</div>`;
+  } else if(delta === 0){
+    d = `<div class="dl">– sem alteração vs. 7 d antes</div>`;
+  }
+  return `<div class="tile"><div class="lab">${lab}</div><div class="val">${val}</div>${d}</div>`;
+}
+
+/* ============================================================
+   DADOS
+   ============================================================ */
+let GARMIN = {dias:{}, treinos:{}};
+
+async function carregaGarmin(){
+  try{
+    const r = await fetch('dados/garmin.json', {cache:'no-store'});
+    if(!r.ok) throw 0;
+    GARMIN = await r.json();
+    const n = Object.keys(GARMIN.dias||{}).length;
+    $('#estado').textContent =
+      `${n} dias do Garmin · atualizado ${(GARMIN.atualizado||'').replace('T',' ').slice(0,16)}`;
+  }catch(e){
+    $('#estado').innerHTML =
+      'Sem dados do Garmin ainda — corre <code>sync.bat</code>. ' +
+      'O check-in diário funciona à mesma.';
+  }
+}
+
+function render(){
+  const dias = GARMIN.dias || {};
+  const checks = ler();
+  const chaves = [...new Set([...Object.keys(dias), ...Object.keys(checks)])].sort();
+  const pts = chaves.map(d=>{
+    const g = dias[d]||{}, c = checks[d]||{};
+    return {data:d, ...g, prontidao_subj: prontidao(c), carga_subj: c.carga};
+  });
+  const rec = pts.slice(-42);
+
+  /* tiles */
+  const ult = v => { const f = rec.filter(p=>p[v]!=null); return f.length?f[f.length-1][v]:null; };
+  const med = (v,a,b) => { const f = rec.slice(a,b).map(p=>p[v]).filter(x=>x!=null);
+    return f.length ? f.reduce((x,y)=>x+y,0)/f.length : null; };
+  const cmp = v => { const a=med(v,-7), b=med(v,-14,-7);
+    return (a!=null&&b!=null) ? Math.round((a-b)*10)/10 : null; };
+
+  $('#tiles').innerHTML =
+    tile('Sono (média 7 d)', med('sono_h',-7)!=null ? med('sono_h',-7).toFixed(1)+' h' : '—', cmp('sono_h')) +
+    tile('HRV noturno',      ult('hrv_noturno') ? ult('hrv_noturno')+' ms' : '—', cmp('hrv_noturno')) +
+    tile('FC repouso',       ult('fc_repouso') ? ult('fc_repouso')+' bpm' : '—', cmp('fc_repouso'), true) +
+    tile('Prontidão subj.',  ult('prontidao_subj')!=null ? ult('prontidao_subj') : '—', cmp('prontidao_subj'));
+
+  grafBarras($('#g-sono'), rec, 'sono_h', 'var(--s2)', 'h');
+  grafLinha($('#g-hrv'),  rec, 'hrv_noturno', 'var(--s1)', 'ms', true);
+  grafLinha($('#g-fc'),   rec, 'fc_repouso',  'var(--s1)', 'bpm', true);
+
+  /* correlação subjetivo × objetivo */
+  const comAmbos = rec.filter(p=>p.prontidao_subj!=null && p.hrv_noturno!=null);
+  if(comAmbos.length >= 5){
+    const hs = comAmbos.map(p=>p.hrv_noturno);
+    const lo = Math.min(...hs), hi = Math.max(...hs);
+    const norm = comAmbos.map(p=>({data:p.data,
+      a:p.prontidao_subj, b: hi>lo ? Math.round((p.hrv_noturno-lo)/(hi-lo)*100) : 50}));
+    const n = norm.length;
+    let s = `<svg viewBox="0 0 ${W} ${H}" role="img">${eixos(norm,0,100,[0,25,50,75,100])}`;
+    [['a','var(--s1)','Prontidão'],['b','var(--s4)','HRV']].forEach(([k,c,nm])=>{
+      s += `<polyline points="${norm.map((p,i)=>`${px(i,n)},${py(p[k],0,100)}`).join(' ')}"
+        fill="none" stroke="${c}" stroke-width="2" stroke-linejoin="round"/>`;
+      norm.forEach((p,i)=>{
+        s += `<circle cx="${px(i,n)}" cy="${py(p[k],0,100)}" r="4" fill="${c}"
+          stroke="var(--surface-1)" stroke-width="2" data-t="${p.data} — ${nm}: ${p[k]}"/>`;
+      });
+      const u = norm[n-1];
+      s += `<text x="${px(n-1,n)-8}" y="${py(u[k],0,100)-10}" text-anchor="end" font-size="12"
+        font-weight="600" fill="var(--ink)">${nm} ${u[k]}</text>`;
+    });
+    $('#g-corr').innerHTML = s + '</svg>';
+    liga($('#g-corr'));
+    /* Pearson */
+    const xs = norm.map(p=>p.a), ys = norm.map(p=>p.b);
+    const mx = xs.reduce((a,b)=>a+b,0)/n, my = ys.reduce((a,b)=>a+b,0)/n;
+    const cov = xs.reduce((a,_,i)=>a+(xs[i]-mx)*(ys[i]-my),0);
+    const den = Math.sqrt(xs.reduce((a,x)=>a+(x-mx)**2,0) * ys.reduce((a,y)=>a+(y-my)**2,0));
+    const r = den ? cov/den : 0;
+    $('#corrNota').textContent =
+      `Correlação r = ${r.toFixed(2)} em ${n} dias. ` +
+      (n < 21 ? 'Ainda são poucos dias — indicativo, não conclusivo.'
+       : Math.abs(r) > .5 ? 'A tua perceção acompanha bem o sinal fisiológico.'
+       : 'A tua perceção e o HRV divergem — vale a pena perceber porquê.');
+  } else {
+    $('#g-corr').innerHTML = '<p class="empty">Precisa de pelo menos 5 dias com check-in e HRV.</p>';
+    $('#corrNota').textContent = '';
+  }
+
+  /* tabela */
+  const cols = [['data','Data'],['sono_h','Sono h'],['sono_score','Score'],['hrv_noturno','HRV'],
+                ['fc_repouso','FC rep'],['stress_medio','Stress'],['passos','Passos'],
+                ['prontidao_subj','Prontidão']];
+  $('#tabela').innerHTML = `<table><thead><tr>${
+    cols.map(([k,l],i)=>`<th class="${i?'num':''}">${l}</th>`).join('')
+  }</tr></thead><tbody>${
+    rec.slice().reverse().map(p=>`<tr>${
+      cols.map(([k],i)=>`<td class="${i?'num':''}">${p[k]??'–'}</td>`).join('')
+    }</tr>`).join('')
+  }</tbody></table>`;
+
+  /* histórico check-ins */
+  const hs = Object.values(checks).sort((a,b)=>b.data.localeCompare(a.data)).slice(0,30);
+  $('#hist').innerHTML = hs.length ? `<table><thead><tr>
+    <th>Data</th><th class="num">Prontidão</th><th class="num">Carga</th><th>Fatores</th><th>Nota</th>
+    </tr></thead><tbody>${hs.map(r=>`<tr>
+      <td>${r.data}</td><td class="num">${prontidao(r)??'–'}</td><td class="num">${r.carga??'–'}</td>
+      <td>${(r.fatores||[]).join(', ')||'–'}</td><td>${r.nota||'–'}</td></tr>`).join('')}
+    </tbody></table>` : '<p class="empty">Ainda sem check-ins guardados.</p>';
+
+  renderTreinos();
+}
+
+function renderTreinos(){
+  const ts = Object.values(GARMIN.treinos||{}).sort((a,b)=>b.data.localeCompare(a.data));
+  if(!ts.length){
+    $('#tilesT').innerHTML=''; $('#g-carga').innerHTML='<p class="empty">Sem treinos sincronizados.</p>';
+    $('#tabelaT').innerHTML='<p class="empty">Corre o sync para trazer as sessões do Garmin.</p>';
+    return;
+  }
+  const d30 = ts.filter(t=>t.data >= new Date(Date.now()-30*864e5).toISOString().slice(0,10));
+  const somaKm = d30.reduce((a,t)=>a+(t.distancia_km||0),0);
+  const somaMin = d30.reduce((a,t)=>a+(t.duracao_min||0),0);
+  $('#tilesT').innerHTML =
+    tile('Sessões (30 d)', d30.length) +
+    tile('Tempo (30 d)', Math.round(somaMin)+' min') +
+    tile('Distância (30 d)', somaKm.toFixed(1)+' km') +
+    tile('Média / semana', (d30.length/4.3).toFixed(1)+' sessões');
+
+  /* carga por semana */
+  const sem = {};
+  ts.forEach(t=>{
+    const dt = new Date(t.data+'T00:00:00');
+    const seg = new Date(dt); seg.setDate(dt.getDate()-((dt.getDay()+6)%7));
+    const k = seg.toISOString().slice(0,10);
+    sem[k] = (sem[k]||0) + (t.carga || (t.duracao_min||0));
+  });
+  const pts = Object.keys(sem).sort().slice(-16).map(k=>({data:k, v:Math.round(sem[k])}));
+  grafBarras($('#g-carga'), pts, 'v', 'var(--s1)', '');
+
+  $('#tabelaT').innerHTML = `<table><thead><tr>
+    <th>Data</th><th>Tipo</th><th class="num">Min</th><th class="num">Km</th>
+    <th class="num">FC méd</th><th class="num">Carga</th></tr></thead><tbody>${
+    ts.slice(0,60).map(t=>`<tr><td>${t.data}</td><td>${t.tipo||'–'}</td>
+      <td class="num">${t.duracao_min??'–'}</td><td class="num">${t.distancia_km||'–'}</td>
+      <td class="num">${t.fc_media??'–'}</td><td class="num">${t.carga??'–'}</td></tr>`).join('')
+  }</tbody></table>`;
+}
+
+/* ============================================================
+   PLANO DE TREINO — regresso pós-lesão do ciático
+   ============================================================ */
+const FASES = [
+  {
+    nome:'Fase 1 — Reconstrução', ini:'2026-07-20', fim:'2026-09-13', sem:8,
+    foco:'Base aeróbica em plano e carga progressiva do posterior. Zero altimetria.',
+    semana:[
+      ['2ª','Força posterior','35 min · isométricos de isquiotibial (5×45 s) → progride para peso morto romeno e ponte a uma perna. Carga alta, execução lenta.'],
+      ['3ª','Corrida fácil','30–40 min · plano, Z2, conversável. Se não consegues falar, está rápido demais.'],
+      ['4ª','Força completa','35 min · gémeo e sóleo (os aquiles agradecem), core anti-rotação, glúteo médio.'],
+      ['5ª','Corrida fácil','30–40 min · plano, Z2.'],
+      ['6ª','Mobilidade','20 min · neurodinâmica do ciático — deslizamentos, não alongamentos.'],
+      ['Sáb','Longo','60 → 90 min · plano, Z2. É aqui que o volume cresce.'],
+      ['Dom','Opcional','45–60 min de marcha ou bicicleta fácil. Ou descanso — sem culpa.'],
+    ],
+    prog:[60,70,80,60,80,90,100,75],
+  },
+  {
+    nome:'Fase 2 — Altimetria', ini:'2026-09-14', fim:'2026-11-08', sem:8,
+    foco:'Introduzir subida — o gesto que mais carrega o isquiotibial proximal. Devagar.',
+    semana:[
+      ['2ª','Força + pliometria leve','35 min · acrescenta saltos baixos e contactos curtos.'],
+      ['3ª','Corrida ondulada','35–40 min · subidas suaves, primeiro em caminhada rápida.'],
+      ['4ª','Força completa','35 min · mantém o trabalho de tendão.'],
+      ['5ª','Corrida fácil','35–40 min · plano.'],
+      ['6ª','Mobilidade','20 min.'],
+      ['Sáb','Longo trail','1h30 → 2h30 · altimetria a subir 10 % por semana, não mais.'],
+      ['Dom','2ª sessão','45–60 min fácil, se sábado correu bem. Caso contrário, descanso.'],
+    ],
+    prog:[90,100,110,80,110,125,140,100],
+  },
+  {
+    nome:'Fase 3 — Específico trail', ini:'2026-11-09', fim:'2026-12-20', sem:6,
+    foco:'Descidas e terreno técnico. Objetivo: trail de 20–30 km no fim da fase.',
+    semana:[
+      ['2ª','Força manutenção','30 min · menos volume, mantém a intensidade.'],
+      ['3ª','Ritmo controlado','40 min · primeiro trabalho de qualidade desde a lesão.'],
+      ['4ª','Força + pliometria','35 min.'],
+      ['5ª','Corrida fácil','35 min.'],
+      ['6ª','Mobilidade','20 min.'],
+      ['Sáb','Longo específico','2h → 3h · com descidas. Excêntrico é o que mais castiga tendões — entra por último.'],
+      ['Dom','Recuperação','45 min muito fácil.'],
+    ],
+    prog:[120,140,160,110,160,180],
+  },
+];
+
+const REGRAS = [
+  ['Dor durante a corrida acima de 3/10 → pára nesse momento','Não "aquece e passa". Com nervo envolvido, insistir custa semanas.'],
+  ['Pior nas 24 h seguintes → a sessão foi excessiva','Recua um degrau na progressão e repete a semana anterior.'],
+  ['Volume sobe no máximo 10 % por semana','E só o volume. Nunca subir volume e altimetria na mesma semana.'],
+  ['A cada 4ª semana descarrega para ~60 %','O tecido adapta-se no descanso, não no treino.'],
+  ['Nada de alongamento passivo profundo do isquiotibial','Em flexão profunda da anca comprime o nervo. Carga progressiva sim, esticar não.'],
+  ['Pace lento é decisão técnica, não falta de forma','Mantém-no até ao fim da Fase 2. A velocidade volta sozinha.'],
+];
+
+function faseDe(d){
+  return FASES.find(f => d >= f.ini && d <= f.fim);
+}
+function semanaDaFase(f, d){
+  const dias = (new Date(d) - new Date(f.ini)) / 864e5;
+  return Math.min(f.sem, Math.floor(dias/7) + 1);
+}
+
+function renderPlano(){
+  const h = hoje();
+  const f = faseDe(h);
+  const diaSem = ['Dom','2ª','3ª','4ª','5ª','6ª','Sáb'][new Date(h+'T00:00:00').getDay()];
+
+  if(!f){
+    $('#faseAtual').innerHTML = `<div class="card"><p class="empty">
+      ${h < FASES[0].ini ? 'O plano começa a 20 de julho de 2026.'
+        : 'O plano vai até 20 de dezembro de 2026. Altura de desenhar a época de 2027.'}
+    </p></div>`;
+    $('#semanaTipo').innerHTML = ''; $('#progressao').innerHTML = '';
+  } else {
+    const sem = semanaDaFase(f, h);
+    const desc = (sem % 4 === 0);
+    $('#faseAtual').innerHTML = `<div class="tiles">
+      ${tile('Fase', f.nome.split('—')[0].trim())}
+      ${tile('Semana', sem + ' de ' + f.sem)}
+      ${tile('Longo de sábado', f.prog[sem-1] + ' min')}
+      ${tile('Tipo de semana', desc ? 'Descarga' : 'Carga')}
+    </div>
+    <div class="card"><h2>${f.nome}</h2>
+      <p style="margin:0;color:var(--ink-2)">${f.foco}</p>
+      ${desc ? '<p style="margin:10px 0 0;color:var(--serious);font-weight:500">Semana de descarga — reduz tudo a cerca de 60 %. É parte do plano, não uma falha.</p>' : ''}
+    </div>`;
+
+    $('#semanaTipo').innerHTML = `<table><thead><tr><th>Dia</th><th>Sessão</th><th>Detalhe</th></tr></thead>
+      <tbody>${f.semana.map(([d,s,det])=>`<tr${d===diaSem?' style="background:var(--plane);font-weight:500"':''}>
+        <td>${d}${d===diaSem?' ←':''}</td><td>${s}</td>
+        <td style="font-weight:400;color:var(--ink-2)">${det}</td></tr>`).join('')}</tbody></table>`;
+
+    const pts = f.prog.map((v,i)=>({data:'S'+(i+1), v}));
+    grafBarras($('#progressao'), pts, 'v', 'var(--s1)', 'min');
+  }
+
+  $('#regras').innerHTML = `<table><tbody>${REGRAS.map(([r,p])=>
+    `<tr><td style="font-weight:500;width:44%">${r}</td>
+     <td style="color:var(--ink-2)">${p}</td></tr>`).join('')}</tbody></table>`;
+
+  $('#fases').innerHTML = `<table><thead><tr><th>Fase</th><th>Período</th>
+    <th class="num">Semanas</th><th>Foco</th></tr></thead><tbody>${
+    FASES.map(x=>`<tr${x===f?' style="background:var(--plane);font-weight:500"':''}>
+      <td>${x.nome}</td><td>${x.ini.slice(5)} → ${x.fim.slice(5)}</td>
+      <td class="num">${x.sem}</td>
+      <td style="font-weight:400;color:var(--ink-2)">${x.foco}</td></tr>`).join('')
+  }</tbody></table>`;
+}
+
+/* ---------- tabs ---------- */
+document.querySelectorAll('.tabs button').forEach(b=>{
+  b.onclick = () => {
+    document.querySelectorAll('.tabs button').forEach(x=>x.setAttribute('aria-selected', x===b));
+    document.querySelectorAll('.panel').forEach(p=>p.hidden = p.id !== 'p'+'-'+b.dataset.p);
+  };
+});
+
+carregaDia();
+pintaSemaforo();
+renderPlano();
+carregaGarmin().then(render);
+</script>
+</body>
+</html>
