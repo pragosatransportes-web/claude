@@ -109,16 +109,16 @@ Reunião semanal de produção e expedição de inertes por pedreira, com foco n
 
 ## Tarefas
 - [ ] **[[03 Pessoas/Ricardo Santos|Ricardo Santos]]** — **apresentar proposta** para o **Cano** fazer face aos consumos de britas (corrigir desequilíbrio Brita 1/Brita 2). *(prioritário)*
-- [ ] **[[03 Pessoas/Ricardo Santos|Ricardo Santos]]** — efetuar **limpeza de stocks** do **Bago de Arroz do Cano** (tulha da caída contaminada com argila/barro).
-- [ ] **[[03 Pessoas/Ricardo Santos|Ricardo Santos]]** — dar a **estimativa de exploração restante ("pedreira cega")** de **Moleanos** a JMP.
-- [ ] **[[03 Pessoas/Ricardo Santos|Ricardo Santos]]** — para a **obra 2456 (Sesimbra/CPSA)**: preparar o espaço na **Pedreira do Risco** e indicar **necessidade de Buldózer** para regularização; fornecer **dados concretos** (datas/prazos) a JMP.
+- [x] **[[03 Pessoas/Ricardo Santos|Ricardo Santos]]** — efetuar **limpeza de stocks** do **Bago de Arroz do Cano** (tulha da caída contaminada com argila/barro).
+- [x] **[[03 Pessoas/Ricardo Santos|Ricardo Santos]]** — dar a **estimativa de exploração restante ("pedreira cega")** de **Moleanos** a JMP.
+- [x] **[[03 Pessoas/Ricardo Santos|Ricardo Santos]]** — para a **obra 2456 (Sesimbra/CPSA)**: preparar o espaço na **Pedreira do Risco** e indicar **necessidade de Buldózer** para regularização; fornecer **dados concretos** (datas/prazos) a JMP.
 - [ ] **[[03 Pessoas/Filipe Nascimento|Filipe Nascimento]]** — **corrigir os dados de horas** de Santa Eulália (62 h/semana, não 30 h — enviesados pela paragem).
 - [ ] **[[03 Pessoas/Filipe Nascimento|Filipe Nascimento]]** — **responder ao cliente Alves Ribeiro** (Brita 1 Brisa só a partir de janeiro).
 - [ ] **[[03 Pessoas/Filipe Nascimento|Filipe Nascimento]]** — **ligar as previsões do 2.º semestre ao orçamento** e **juntar o histórico do 1.º semestre** (incluir bancadas de Moleanos).
 - [ ] **[[03 Pessoas/Filipe Nascimento|Filipe Nascimento]] / Comercial** — reavaliar o **valor comercial da Brita 3** (Sobrissul) face à baixa produtividade e impacto nas restantes produções.
 - [ ] **Vale Rodrigues** — reparar o **tapete do último crivo** e gerir a **acumulação de Brita 2 / Bago de Arroz** e a **saturação de Pó de Pedra**.
 - [ ] **Carbomin** — priorizar produção/expedição de **Big Bags de Carbo G2000** (Granel G2000 crítico).
-- [ ] **[[03 Pessoas/Rita Fialho|Ana Rita]]** — acompanhar o **fornecimento de Brita 1 à IBERA de Évora** (principal causa do desequilíbrio do Cano) e articular cadências.
+- [x] **[[03 Pessoas/Rita Fialho|Ana Rita]]** — acompanhar o **fornecimento de Brita 1 à IBERA de Évora** (principal causa do desequilíbrio do Cano) e articular cadências.
 
 ## Riscos
 - 🔴 **Cano — Brita 1 lavada:** produção **−1.600 t/semana** face ao consumo (3.000 t), pressionada pelo fornecimento à **IBERA de Évora** → risco de rutura sem proposta corretiva.
