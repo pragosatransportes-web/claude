@@ -23,13 +23,20 @@
       "name": "paragens-traccar",
       "runtimeExecutable": "python",
       "runtimeArgs": ["-m", "http.server", "8778", "-d", "C:\\Users\\ana.fialho\\paragens-traccar\\public"],
-      "port": 8778
+      "port": 8778,
+      "autoPort": false
     },
     {
       "name": "assistente-saude",
       "runtimeExecutable": "python",
       "runtimeArgs": ["-m", "http.server", "8779", "-d", "C:\\Users\\ana.fialho\\Desktop\\Rita\\Assistente Saude"],
       "port": 8779
+    },
+    {
+      "name": "assistente-saude-web",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "http.server", "8780", "-d", "C:\\Users\\ana.fialho\\Desktop\\Rita\\assistente-saude-web"],
+      "port": 8780
     }
   ]
 }

@@ -25,14 +25,14 @@ tags:
 Reunião de decisão sobre **três eixos**: (1) definir o **modelo de gestão das aquisições de frota** — porta-máquinas, novos tratores + semirreboques e o porta-máquinas de 3 eixos — garantindo afetação, prioridades, responsabilidade, custos e conjugação técnica antes da compra; (2) fechar o **âmbito e a fase do projeto de telemática/IA** que ficou pendente da última reunião; (3) rever **salários e categorias dos motoristas**, comparando as estruturas da Pragosa Transportes e da CPSA, corrigindo incoerências e definindo o enquadramento do motorista do novo porta-máquinas. O objetivo é sair com decisão nos três, não apenas discussão.
 
 ## Quadro Resumo — Sugestões & Decisões
-| # | Tema | Sugestão / Proposta | Estado | Próximo passo · responsável |
-|---|------|---------------------|--------|------------------------------|
-| 1 | Frota · gestão | Gestão **centralizada na Logística** (pedido formal + regra de prioridades) | 🟡 Proposta | Decidir na CE · [[03 Pessoas/João Machado Pragosa]] |
-| 2 | Frota · conjugação | **Mapa de necessidades e conjugações** tratores ↔ semirreboques | 🔵 A fazer | Ana Rita c/ [[03 Pessoas/João Silva]] |
-| 3 | Frota · porta-máquinas 3 eixos | Adquirir **Nooteboom OSDS-48-03** para equipas da massa (cilindros) | 🟢 Carga validada (16 t « 36 t) | Confirmar trator compatível + gabarito |
-| 4 | Telemática / IA | Projeto por fases: **I API (Wialon/Traccar) · II rotas · III alertas/IA** | 🟡 Proposta | Aprovar Fase I + escolher fonte |
-| 5 | Salários · enquadramento | Diferencial PTSA vs CPSA é **estrutural/legal** (transportes vs construção) | ⚪ Esclarecido | Comunicar base legal (evitar «injustiça») |
-| 6 | Salários · nova categoria | Criar categoria PTSA **«Porta-Máquinas/Estrado»** (única, Cenário A: 2 216–2 416 €) | 🟡 Proposta | Validar RH → aprovar CE |
+| #   | Tema                           | Sugestão / Proposta                                                                 | Estado                          | Próximo passo · responsável                         |
+| --- | ------------------------------ | ----------------------------------------------------------------------------------- | ------------------------------- | --------------------------------------------------- |
+| 1   | Frota · gestão                 | Gestão **centralizada na Logística** (pedido formal + regra de prioridades)         | 🟡 Proposta                     | Decidir na CE · [[03 Pessoas/João Machado Pragosa]] |
+| 2   | Frota · conjugação             | **Mapa de necessidades e conjugações** tratores ↔ semirreboques                     | 🔵 A fazer                      | Ana Rita c/ [[03 Pessoas/João Silva]]               |
+| 3   | Frota · porta-máquinas 3 eixos | Adquirir **Nooteboom OSDS-48-03** para equipas da massa (cilindros)                 | 🟢 Carga validada (16 t « 36 t) | Confirmar trator compatível + gabarito              |
+| 4   | Telemática / IA                | Projeto por fases: **I API (Wialon/Traccar) · II rotas · III alertas/IA**           | 🟡 Proposta                     | Aprovar Fase I + escolher fonte                     |
+| 5   | Salários · enquadramento       | Diferencial PTSA vs CPSA é **estrutural/legal** (transportes vs construção)         | ⚪ Esclarecido                   | Comunicar base legal (evitar «injustiça»)           |
+| 6   | Salários · nova categoria      | Criar categoria PTSA **«Porta-Máquinas/Estrado»** (única, Cenário A: 2 216–2 416 €) | 🟡 Proposta                     | Validar RH → aprovar CE                             |
 
 ## Contexto
 - Várias aquisições de frota em curso/avaliação — decisão sobre o **modelo de gestão** e as **conjugações técnicas** ainda em aberto.

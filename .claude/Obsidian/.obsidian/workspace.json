@@ -13,15 +13,30 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "02 Reuniões/2026/2026-07-20 - Ponto de Situação Indústria (prep CE).md",
+                "file": "02 Reuniões/2026/2026-07-21 - CE Logística.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "2026-07-20 - Ponto de Situação Indústria (prep CE)"
+              "title": "2026-07-21 - CE Logística"
+            }
+          },
+          {
+            "id": "97122b6befc3cf90",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "02 Reuniões/2026/2026-07-21 - CE Indústria.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "2026-07-21 - CE Indústria"
             }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -41,7 +56,9 @@
               "type": "file-explorer",
               "state": {
                 "sortOrder": "alphabetical",
-                "autoReveal": false
+                "autoReveal": false,
+                "showSearch": false,
+                "searchQuery": ""
               },
               "icon": "lucide-folder-closed",
               "title": "Explorador de ficheiros"
@@ -78,7 +95,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 200
+    "width": 288.5
   },
   "right": {
     "id": "80da935f4e8478c9",
@@ -181,18 +198,25 @@
       "bases:Criar nova base": false
     }
   },
-  "active": "56474a7c59606a9e",
+  "active": "97122b6befc3cf90",
   "lastOpenFiles": [
+    "02 Reuniões/2026/2026-07-27 - CE Indústria.md",
+    "02 Reuniões/2026/2026-07-27 - Controlo de Obras.md",
+    "03 Pessoas/João Campos.md",
+    "02 Reuniões/2026/2026-07-21 - CE Indústria.md",
+    "01 Diário/2026/2026-07-27.md.tmp.21876.b25cc188b04a",
+    "02 Reuniões/2026/2026-07-23 - Reunião Comercial Indústria.md",
+    "02 Reuniões/2026/2026-07-21 - CE Logística.md",
+    "02 Reuniões/2026/2026-07-06 - CE Logística.md",
+    "02 Reuniões/2026/2026-07-20 - Ponto de Situação Indústria (prep CE).md",
     "02 Reuniões/2026/2026-07-20 - CE Indústria.md",
     "02 Reuniões/2026/2026-07-13 - CE Indústria.md",
-    "02 Reuniões/2026/2026-07-20 - Ponto de Situação Indústria (prep CE).md",
     "01 Diário/2026/2026-07-16 Check-in Semanal.md",
     "01 Diário/2026/2026-07-17.md",
     "02 Reuniões/2026/2026-06-13 - Melhorias Controlo de Obra.md",
     "02 Reuniões/2026/2026-06-14 - CE Logística.md",
     "02 Reuniões/2026/2026-06-14 - Ponto de Situação Comercial - Betão Liz.md",
     "02 Reuniões/2026/2026-07-06 - CE Indústria.md",
-    "02 Reuniões/2026/2026-07-06 - CE Logística.md",
     "02 Reuniões/2026/CE Logística 2026-07-14 - Salários Motoristas (detalhe editável).html",
     "02 Reuniões/2026/CE Logística 2026-07-14 - Apresentação.html",
     "05 Projetos/Projeto Tacógrafos.md",
@@ -206,18 +230,11 @@
     "01 Diário/2026/2026-06-10.md",
     "01 Diário/2026/2026-06-30.md",
     "01 Diário/2026/2026-07-06.md",
-    "05 Projetos/Projeto OLACmd.md",
-    "Dashboard.md",
-    "02 Reuniões/2026/2026-07-02 - Reunião Comercial Indústria.md",
-    "03 Pessoas/Filipe Nascimento.md",
     "02 Reuniões/2026/2026-07-06 - CE Logística.md.tmp.21436.71a07ce1fb0d",
     "02 Reuniões/2026/2026-07-06 - CE Indústria.md.tmp.18608.e5f3d7bbf7b8",
-    "02 Reuniões/2026/2026-06-30 - CE- Logística.md",
-    "02 Reuniões/2026/2026-06-02 - Reunião Comercial Indústria.md",
     "03 Pessoas/Alexandre Marques.md.tmp.18384.2c9989565daf",
     "08 Conhecimento/Frota/Dashboard Tacografos.pdf",
     "08 Conhecimento/Frota/Nota_Orientacao_n5.pdf",
-    "04 Obras e Clientes",
-    "10 Decisões"
+    "04 Obras e Clientes"
   ]
 }

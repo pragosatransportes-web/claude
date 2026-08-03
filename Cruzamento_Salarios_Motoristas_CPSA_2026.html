@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cruzamento Salários × CPSA 2026 · Motoristas CP</title>
+<style>
+:root{
+  --bg:#f1f5f9;--paper:#fff;--ink:#1e293b;--muted:#64748b;--line:#e2e8f0;
+  --red:#dc2626;--rbg:#fef2f2;--rbdr:#fecaca;
+  --grn:#16a34a;--gbg:#f0fdf4;--gbdr:#bbf7d0;
+  --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);background:var(--bg);color:var(--ink);font-size:13px}
+.wrap{max-width:1820px;margin:0 auto;padding:22px 14px 60px}
+
+/* HEADER */
+header{background:linear-gradient(135deg,#0f172a,#1e3a5f);color:#e8f0fc;
+  border-radius:16px;padding:22px 26px;margin-bottom:16px;box-shadow:0 10px 30px rgba(15,23,42,.22)}
+header h1{font-size:22px;font-weight:800;margin-bottom:3px}
+header p{font-size:12.5px;color:#94aabf}
+
+/* FILTER BAR */
+.filter-bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px;font-size:12px;color:var(--muted)}
+.filter-bar span{font-weight:700}
+.filter-reset{border:1px solid var(--line);background:var(--paper);color:var(--muted);
+  font-weight:700;font-size:11.5px;padding:5px 12px;border-radius:8px;cursor:pointer;
+  display:none;transition:.15s}
+.filter-reset:hover{border-color:#dc2626;color:#dc2626}
+.filter-reset.visible{display:inline-block}
+#filter-label{font-size:12px;color:var(--muted)}
+
+/* STAT CARDS */
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.stat{background:var(--paper);border:2px solid var(--line);border-radius:12px;
+  padding:13px 16px;flex:1;min-width:155px;cursor:pointer;
+  box-shadow:0 2px 8px rgba(0,0,0,.04);transition:.18s;user-select:none}
+.stat:hover{border-color:#94a3b8;box-shadow:0 4px 14px rgba(0,0,0,.1)}
+.stat.active{box-shadow:0 0 0 3px currentColor;}
+.stat .n{font-size:26px;font-weight:800;line-height:1}
+.stat .l{font-size:11px;color:var(--muted);margin-top:3px;font-weight:600}
+.stat.red .n{color:var(--red)}.stat.red.active{border-color:var(--red);box-shadow:0 0 0 3px #fecaca}
+.stat.grn .n{color:var(--grn)}.stat.grn.active{border-color:var(--grn);box-shadow:0 0 0 3px #bbf7d0}
+.stat.blu .n{color:#2563eb}.stat.blu.active{border-color:#2563eb;box-shadow:0 0 0 3px #bfdbfe}
+.stat.neutral.active{border-color:#64748b;box-shadow:0 0 0 3px #cbd5e1}
+.stat .icon{font-size:18px;margin-bottom:4px}
+
+/* LEGEND */
+.legend{background:var(--paper);border:1px solid var(--line);border-radius:10px;
+  padding:9px 14px;margin-bottom:13px;font-size:12px;display:flex;gap:16px;flex-wrap:wrap;align-items:center}
+.leg{display:flex;align-items:center;gap:5px}
+.ls{width:12px;height:12px;border-radius:3px;flex-shrink:0}
+
+/* TABLE */
+.tbl-wrap{overflow-x:auto;border-radius:14px;box-shadow:0 4px 16px rgba(15,23,42,.07)}
+table{width:100%;border-collapse:collapse;background:var(--paper);white-space:nowrap}
+thead th{background:#1e293b;color:#e2e8f0;padding:9px 9px;font-size:10px;
+  letter-spacing:.06em;text-transform:uppercase;font-weight:700;text-align:right}
+thead th.tl{text-align:left}
+td{padding:7px 9px;border-bottom:1px solid #f1f5f9;vertical-align:middle}
+.num{text-align:right;font-variant-numeric:tabular-nums}
+.col-no{color:var(--muted);font-size:11px;font-weight:600}
+.col-nome{font-weight:700;min-width:220px}
+.col-local{color:var(--muted);font-size:11.5px}
+.anos,.bkt{font-size:12px;color:var(--muted)}
+.catbadge{display:inline-block;padding:3px 8px;border-radius:6px;font-size:11px;
+  font-weight:700;cursor:pointer;transition:.15s}
+.catbadge:hover{opacity:.75;transform:scale(.97)}
+.sub-info{display:block;font-size:10.5px;margin-top:2px;line-height:1.4}
+.sub-info em{color:#94a3b8;font-style:normal}
+.anomaly-tag{display:inline-block;font-size:9.5px;font-weight:800;color:#d97706;
+  border:1px solid #fcd34d;background:#fffbeb;border-radius:5px;
+  padding:1px 5px;margin-left:6px;vertical-align:middle}
+tr.row-low td{background:var(--rbg)}
+tr.row-low td.col-nome{box-shadow:inset 4px 0 0 var(--red)}
+tr.row-high td{background:var(--gbg)}
+tr.row-high td.col-nome{box-shadow:inset 4px 0 0 var(--grn)}
+tr.hidden-row{display:none}
+tr:hover:not(.hidden-row) td{filter:brightness(.97)}
+td.low{background:#ffe4e6!important;color:var(--red);font-weight:700}
+td.high{background:#dcfce7!important;color:var(--grn);font-weight:700}
+td.same{color:#475569}
+td.total-a{font-weight:800;font-size:14px}
+td.total-c{color:var(--muted);font-weight:600;font-size:12.5px}
+td.diff-cell{font-weight:800;font-size:13px;text-align:right;min-width:145px}
+.above{color:var(--grn)}.below{color:var(--red)}.zero{color:var(--muted)}
+.no-results{text-align:center;padding:32px;color:var(--muted);font-size:14px;display:none}
+.note{margin-top:14px;font-size:11.5px;color:#94a3b8;line-height:1.7}
+@media print{
+  tr.hidden-row{display:none!important}
+  tr.row-low td,.stats,.filter-bar,.legend{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  tr.row-low td{background:var(--rbg)!important}
+  tr.row-high td{background:var(--gbg)!important}
+  td.low{background:#ffe4e6!important}td.high{background:#dcfce7!important}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Cruzamento Salários × CPSA — Motoristas de Pesados</h1>
+    <p>Construções Pragosa, S.A. &nbsp;·&nbsp; Referência: CPSA Revisão Janeiro 2026 &nbsp;·&nbsp; Gerado em 21/07/2026 &nbsp;·&nbsp; Ordenado por antiguidade</p>
+  </header>
+
+  <div class="stats">
+    <div class="stat neutral" data-filter="all" onclick="filterBy('all',this)">
+      <div class="icon">👥</div><div class="n">30</div><div class="l">Todos os motoristas</div>
+    </div>
+    <div class="stat red" data-filter="status:abaixo" onclick="filterBy('status:abaixo',this)">
+      <div class="icon">▼</div><div class="n">9</div><div class="l">Abaixo do CPSA</div>
+    </div>
+    <div class="stat grn" data-filter="status:acima" onclick="filterBy('status:acima',this)">
+      <div class="icon">▲</div><div class="n">5</div><div class="l">Acima do CPSA</div>
+    </div>
+    <div class="stat blu" data-filter="status:ok" onclick="filterBy('status:ok',this)">
+      <div class="icon">✓</div><div class="n">16</div><div class="l">Alinhados com CPSA</div>
+    </div>
+    <div class="stat red" style="cursor:default">
+      <div class="icon">💸</div><div class="n">−1.256,48 €</div><div class="l">Total mensal em falta</div>
+    </div>
+    <div class="stat grn" style="cursor:default">
+      <div class="icon">💰</div><div class="n">+409,46 €</div><div class="l">Total mensal acima</div>
+    </div>
+  </div>
+
+  <div class="filter-bar">
+    <span>Filtro activo:</span>
+    <span id="filter-label">Todos</span>
+    <button class="filter-reset" id="reset-btn" onclick="filterBy('all',null)">✕ Limpar filtro</button>
+  </div>
+
+  <div class="legend">
+    <div class="leg"><div class="ls" style="background:var(--rbg);border:1px solid var(--rbdr)"></div> Abaixo do CPSA</div>
+    <div class="leg"><div class="ls" style="background:var(--gbg);border:1px solid var(--gbdr)"></div> Acima do CPSA</div>
+    <div class="leg"><div class="ls" style="background:#fff;border:1px solid var(--line)"></div> Alinhado</div>
+    <span style="color:var(--muted);font-size:11.5px">Células coloridas mostram <b>Teórico</b> e a diferença. Clica numa categoria ou num cartão para filtrar.</span>
+  </div>
+
+  <div class="tbl-wrap">
+  <table id="main-table">
+    <thead><tr>
+      <th class="tl">Nº</th><th class="tl">Nome</th><th class="tl">Local</th>
+      <th>Admissão</th><th>Anos</th><th class="tl">Categoria CPSA</th><th>Escalão</th>
+      <th>Venc. Base</th><th>IHT</th><th>Disp.</th><th>Manut.</th>
+      <th>P. Equip</th><th>Sub. Ref.</th>
+      <th>Total Atual</th><th>Total Teórico</th><th>Diferença</th>
+    </tr></thead>
+    <tbody id="tbody">
+<tr data-status="ok" data-cat="Semi_reboques">
+  <td class="col-no">174</td>
+  <td class="col-nome">AGOSTINHO JOSE SANTOS LOURO</td>
+  <td class="col-local">Tojal</td>
+  <td class="num">11/06/1997</td>
+  <td class="num anos">29.1</td>
+  <td class="col-cat"><span class="catbadge" style="background:#7c3aed18;color:#7c3aed;border:1px solid #7c3aed50" data-catkey="Semi_reboques">Semi-reboques</span></td>
+  <td class="num bkt">≥10 anos</td>
+  <td class="num same" data-val="1183.0000">1.183,00 €</td>
+  <td class="num same" data-val="473.2000">473,20 €</td>
+  <td class="num same" data-val="118.3000">118,30 €</td>
+  <td class="num same" data-val="118.3000">118,30 €</td>
+  <td class="num same" data-val="200.0000">200,00 €</td>
+  <td class="num same" data-val="183.9200">183,92 €</td>
+  <td class="num total-a">2.276,72 €</td>
+  <td class="num total-c">2.276,72 €</td>
+  <td class="diff-cell"><span class="zero">= 0,00 €</span></td>
+</tr>
+<tr data-status="ok" data-cat="3_4_Eixos">
+  <td class="col-no">201</td>
+  <td class="col-nome">PEDRO MIGUEL HENRIQUES</td>
+  <td class="col-local">Tojal</td>
+  <td class="num">10/07/1998</td>
+  <td class="num anos">28.0</td>
+  <td class="col-cat"><span class="catbadge" style="background:#2563eb18;color:#2563eb;border:1px solid #2563eb50" data-catkey="3_4_Eixos">3/4 Eixos</span></td>
+  <td class="num bkt">≥10 anos</td>
+  <td class="num same" data-val="1083.0000">1.083,00 €</td>
+  <td class="num same" data-val="433.2000">433,20 €</td>
+  <td class="num same" data-val="108.3000">108,30 €</td>
+  <td class="num same" data-val="108.3000">108,30 €</td>
+  <td class="num same" data-val="200.0000">200,00 €</td>
+  <td class="num same" data-val="183.9200">183,92 €</td>
+  <td class="num total-a">2.116,72 €</td>
+  <td class="num total-c">2.116,72 €</td>
+  <td class="diff-cell"><span class="zero">= 0,00 €</span></td>
+</tr>
+<tr data-status="ok" data-cat="3_4_Eixos">
+  <td class="col-no">297</td>
+  <td class="col-nome">ANTONIO FERNANDES LUIS</td>
+  <td class="col-local">Tojal</td>
+  <td class="num">02/04/2001</td>
+  <td class="num anos">25.3</td>
+  <td class="col-cat"><span class="catbadge" style="background:#2563eb18;color:#2563eb;border:1px solid #2563eb50" data-catkey="3_4_Eixos">3/4 Eixos</span></td>
+  <td class="num bkt">≥10 anos</td>
+  <td class="num same" data-val="1083.0000">1.083,00 €</td>
+  <td class="num same" data-val="433.2000">433,20 €</td>
+  <td class="num same" data-val="108.3000">108,30 €</td>
+  <td class="num same" data-val="108.3000">108,30 €</td>
+  <td class="num same" data-val="200.0000">200,00 €</td>
+  <td class="num same" data-val="183.9200">183,92 €</td>
+  <td class="num total-a">2.116,72 €</td>
+  <td class="num total-c">2.116,72 €</td>
+  <td class="diff-cell"><span class="zero">= 0,00 €</span></td>
+</tr>
+<tr data-status="acima" data-cat="3_4_Eixos">
+  <td class="col-no">598</td>
+  <td class="col-nome">JOSE PEREIRA DOS SANTOS</td>
+  <td class="col-local">Tojal</td>
+  <td class="num">21/08/2008</td>
+  <td class="num anos">17.9</td>
+  <td class="col-cat"><span class="catbadge" style="background:#2563eb18;color:#2563eb;border:1px solid #2563eb50" data-catkey="3_4_Eixos">3/4 Eixos</span></td>
+  <td class="num bkt">≥10 anos</td>
+  <td class="num same" data-val="1083.0000">1.083,00 €</td>
+  <td class="num same" data-val="433.2000">433,20 €</td>
+  <td class="num same" data-val="108.3000">108,30 €</td>
+  <td class="num same" data-val="108.3000">108,30 €</td>
+  <td class="num high" data-val="250.0000">250,00 €<span class="sub-info">Teórico: 200,00 €<br><em>(+50,00 €)</em></span></td>
+  <td class="num same" data-val="183.9200">183,92 €</td>
+  <td class="num total-a">2.166,72 €</td>
+  <td class="num total-c">2.116,72 €</td>
+  <td class="diff-cell"><span class="above">▲ +50,00 €</span></td>
+</tr>
+<tr data-status="ok" data-cat="Transp_Especial_Articulado">
+  <td class="col-no">675</td>
+  <td class="col-nome">AMILCAR JOSE DE ASSUNÇAO CARREIRA</td>
+  <td class="col-local">Tojal</td>
+  <td class="num">01/06/2010</td>
+  <td class="num anos">16.1</td>
+  <td class="col-cat"><span class="catbadge" style="background:#05966918;color:#059669;border:1px solid #05966950" data-catkey="Transp_Especial_Articulado">Transp. Especial Articulado</span></td>
+  <td class="num bkt">≥10 anos</td>
+  <td class="num same" data-val="1375.0000">1.375,00 €</td>
+  <td class="num same" data-val="550.0000">550,00 €</td>
+  <td class="num same" data-val="137.5000">137,50 €</td>
+  <td class="num same" data-val="137.5000">137,50 €</td>
+  <td class="num same" data-val="300.0000">300,00 €</td>
+  <td class="num same" data-val="183.9200">183,92 €</td>
+  <td class="num total-a">2.683,92 €</td>
+  <td class="num total-c">2.683,92 €</td>
+  <td class="diff-cell"><span class="zero">= 0,00 €</span></td>
+</tr>
+<tr data-status="ok" data-cat="Semi_reboques">
+  <td class="col-no">788</td>
+  <td class="col-nome">JOSE MARIA FIRMINO VILELA</td>
+  <td class="col-local">Tojal</td>
+  <td class="num">10/10/2012</td>
+  <td class="num anos">13.8</td>
+  <td class="col-cat"><span class="catbadge" style="background:#7c3aed18;color:#7c3aed;border:1px solid #7c3aed50" data-catkey="Semi_reboques">Semi-reboques</span></td>
+  <td class="num bkt">≥10 anos</td>
+  <td class="num same" data-val="1183.0000">1.183,00 €</td>
+  <td class="num same" data-val="473.2000">473,20 €</td>
+  <td class="num same" data-val="118.3000">118,30 €</td>
+  <td class="num same" data-val="118.3000">118,30 €</td>
+  <td class="num same" data-val="200.0000">200,00 €</td>
+  <td class="num same" data-val="183.9200">183,92 €</td>
+  <td class="num total-a">2.276,72 €</td>
+  <td class="num total-c">2.276,72 €</td>
+  <td class="diff-cell"><span class="zero">= 0,00 €</span></td>
+</tr>
+<tr data-status="acima" data-cat="Transp_Especial_Articulado">
+  <td class="col-no">1264</td>
+  <td class="col-nome">VITOR JOSE DO ROSARIO JANUARIO<span class="anomaly-tag">⚠ fora do padrão</span></td>
+  <td class="col-local">Tojal</td>
+  <td class="num">12/06/2017</td>
+  <td class="num anos">9.1</td>
+  <td class="col-cat"><span class="catbadge" style="background:#05966918;color:#059669;border:1px solid #05966950" data-catkey="Transp_Especial_Articulado">Transp. Especial Articulado</span></td>
+  <td class="num bkt">>4–10 anos</td>
+  <td class="num high" data-val="1500.0000">1.500,00 €<span class="sub-info">Teórico: 1.375,00 €<br><em>(+125,00 €)</em></span></td>
+  <td class="num high" data-val="600.0000">600,00 €<span class="sub-info">Teórico: 550,00 €<br><em>(+50,00 €)</em></span></td>
+  <td class="num high" data-val="150.0000">150,00 €<span class="sub-info">Teórico: 137,50 €<br><em>(+12,50 €)</em></span></td>
+  <td class="num high" data-val="150.0000">150,00 €<span class="sub-info">Teórico: 137,50 €<br><em>(+12,50 €)</em></span></td>
+  <td class="num same" data-val="250.0000">250,00 €</td>
+  <td class="num same" data-val="183.9200">183,92 €</td>
+  <td class="num total-a">2.833,92 €</td>
+  <td class="num total-c">2.633,92 €</td>
+  <td class="diff-cell"><span class="above">▲ +200,00 €</span></td>
+</tr>
+<tr data-status="abaixo" data-cat="Semi_reboques">
+  <td class="col-no">1278</td>
+  <td class="col-nome">ADRIANO INACIO MACHADO<span class="anomaly-tag">⚠ fora do padrão</span></td>
+  <td class="col-local">Tojal</td>
+  <td class="num">17/07/2017</td>
+  <td class="num anos">9.0</td>
+  <td class="col-cat"><span class="catbadge" style="background:#7c3aed18;color:#7c3aed;border:1px solid #7c3aed50" data-catkey="Semi_reboques">Semi-reboques</span></td>
+  <td class="num bkt">>4–10 anos</td>
+  <td class="num low" data-val="1037.9000">1.037,90 €<span class="sub-info">Teórico: 1.183,00 €<br><em>(−145,10 €)</em></span></td>
+  <td class="num low" data-val="415.1600">415,16 €<span class="sub-info">Teórico: 473,20 €<br><em>(−58,04 €)</em></span></td>
+  <td class="num low" data-val="103.7900">103,79 €<span class="sub-info">Teórico: 118,30 €<br><em>(−14,51 €)</em></span></td>
+  <td class="num low" data-val="103.7900">103,79 €<span class="sub-info">Teórico: 118,30 €<br><em>(−14,51 €)</em></span></td>
+  <td class="num low" data-val="0.0000">0,00 €<span class="sub-info">Teórico: 150,00 €<br><em>(−150,00 €)</em></span></td>
+  <td class="num same" data-val="183.9200">183,92 €</td>
+  <td class="num total-a">1.844,56 €</td>
+  <td class="num total-c">2.226,72 €</td>
+  <td class="diff-cell"><span class="below">▼ −382,16 €</span></td>
+</tr>
+<tr data-status="ok" data-cat="3_4_Eixos">
+  <td class="col-no">1410</td>
+  <td class="col-nome">RUI RODRIGUES RIBEIRO</td>
+  <td class="col-local">Tojal</td>
+  <td class="num">16/08/2018</td>
+  <td class="num anos">7.9</td>
+  <td class="col-cat"><span class="catbadge" style="background:#2563eb18;color:#2563eb;border:1px solid #2563eb50" data-catkey="3_4_Eixos">3/4 Eixos</span></td>
+  <td class="num bkt">>4–10 anos</td>
+  <td class="num same" data-val="1083.0000">1.083,00 €</td>
+  <td class="num same" data-val="433.2000">433,20 €</td>
+  <td class="num same" data-val="108.3000">108,30 €</td>
+  <td class="num same" data-val="108.3000">108,30 €</td>
+  <td class="num same" data-val="150.0000">150,00 €</td>
+  <td class="num same" data-val="183.9200">183,92 €</td>
+  <td class="num total-a">2.066,72 €</td>
+  <td class="num total-c">2.066,72 €</td>
+  <td class="diff-cell"><span class="zero">= 0,00 €</span></td>
+</tr>
+<tr data-status="acima" data-cat="Porta_maquinas_s_articulado">
+  <td class="col-no">1445</td>
+  <td class="col-nome">TIAGO SANTOS FARIA<span class="anomaly-tag">⚠ fora do padrão</span></td>
+  <td class="col-local">Tojal</td>
+  <td class="num">07/01/2019</td>
+  <td class="num anos">7.5</td>
+  <td class="col-cat"><span class="catbadge" style="background:#d9770618;color:#d97706;border:1px solid #d9770650" data-catkey="Porta_maquinas_s_articulado">Porta-máquinas s/articulado</span></td>
+  <td class="num bkt">>4–10 anos</td>
+  <td class="num high" data-val="1183.8800">1.183,88 €<span class="sub-info">Teórico: 1.083,00 €<br><em>(+100,88 €)</em></span></td>
+  <td class="num high" data-val="236.7800">236,78 €<span class="sub-info">Teórico: 216,60 €<br><em>(+20,18 €)</em></span></td>
+  <td class="num high" data-val="118.3900">118,39 €<span class="sub-info">Teórico: 108,30 €<br><em>(+10,09 €)</em></span></td>
+  <td class="num high" data-val="118.3900">118,39 €<span class="sub-info">Teórico: 108,30 €<br><em>(+10,09 €)</em></span></td>
+  <td class="num high" data-val="200.0000">200,00 €<span class="sub-info">Teórico: 150,00 €<br><em>(+50,00 €)</em></span></td>
+  <td class="num same" data-val="183.9200">183,92 €</td>
+  <td class="num total-a">2.041,36 €</td>
+  <td class="num total-c">2.000,12 €</td>
+  <td class="diff-cell"><span class="above">▲ +41,24 €</span></td>
+</tr>
+<tr data-status="ok" data-cat="Transp_Especial_Articulado">
+  <td class="col-no">1612</td>
+  <td class="col-nome">ADRIANO MARCOS DE SOUSA</td>
+  <td class="col-local">Tojal</td>
+  <td class="num">02/03/2020</td>
+  <td class="num anos">6.4</td>
+  <td class="col-cat"><span class="catbadge" style="background:#05966918;color:#059669;border:1px solid #05966950" data-catkey="Transp_Especial_Articulado">Transp. Especial Articulado</span></td>
+  <td class="num bkt">>4–10 anos</td>
+  <td class="num same" data-val="1375.0000">1.375,00 €</td>
+  <td class="num same" data-val="550.0000">550,00 €</td>
+  <td class="num same" data-val="137.5000">137,50 €</td>
+  <td class="num same" data-val="137.5000">137,50 €</td>
+  <td class="num same" data-val="250.0000">250,00 €</td>
+  <td class="num same" data-val="183.9200">183,92 €</td>
+  <td class="num total-a">2.633,92 €</td>
+  <td class="num total-c">2.633,92 €</td>
+  <td class="diff-cell"><span class="zero">= 0,00 €</span></td>
+</tr>
+<tr data-status="acima" data-cat="Porta_maquinas_s_articulado">
+  <td class="col-no">1671</td>
+  <td class="col-nome">PAULO SERGIO DA SILVA FRITZ<span class="anomaly-tag">⚠ fora do padrão</span></td>
+  <td class="col-local">Tojal</td>
+  <td class="num">22/07/2020</td>
+  <td class="num anos">6.0</td>
+  <td class="col-cat"><span class="catbadge" style="background:#d9770618;color:#d97706;border:1px solid #d9770650" data-catkey="Porta_maquinas_s_articulado">Porta-máquinas s/articulado</span></td>
+  <td class="num bkt">>4–10 anos</td>
+  <td class="num high" data-val="1235.0000">1.235,00 €<span class="sub-info">Teórico: 1.083,00 €<br><em>(+152,00 €)</em></span></td>
+  <td class="num high" data-val="247.0000">247,00 €<span class="sub-info">Teórico: 216,60 €<br><em>(+30,40 €)</em></span></td>
+  <td class="num high" data-val="123.5000">123,50 €<span class="sub-info">Teórico: 108,30 €<br><em>(+15,20 €)</em></span></td>
+  <td class="num high" data-val="123.5000">123,50 €<span class="sub-info">Teórico: 108,30 €<br><em>(+15,20 €)</em></span></td>
+  <td class="num high" data-val="200.0000">200,00 €<span class="sub-info">Teórico: 150,00 €<br><em>(+50,00 €)</em></span></td>
+  <td class="num same" data-val="183.9200">183,92 €</td>
+  <td class="num total-a">2.112,92 €</td>
+  <td class="num total-c">2.000,12 €</td>
+  <td class="diff-cell"><span class="above">▲ +112,80 €</span></td>
+</tr>
+<tr data-status="abaixo" data-cat="Semi_reboques">
+  <td class="col-no">1683</td>
+  <td class="col-nome">NUNO MIGUEL DA CRUZ AMARO<span class="anomaly-tag">⚠ fora do padrão</span></td>
+  <td class="col-local">Alenquer</td>
+  <td class="num">07/09/2020</td>
+  <td class="num anos">5.9</td>
+  <td class="col-cat"><span class="catbadge" style="background:#7c3aed18;color:#7c3aed;border:1px solid #7c3aed50" data-catkey="Semi_reboques">Semi-reboques</span></td>
+  <td class="num bkt">>4–10 anos</td>
+  <td class="num same" data-val="1183.0000">1.183,00 €</td>
+  <td class="num low" data-val="434.8000">434,80 €<span class="sub-info">Teórico: 473,20 €<br><em>(−38,40 €)</em></span></td>
+  <td class="num same" data-val="118.3000">118,30 €</td>
+  <td class="num same" data-val="118.3000">118,30 €</td>
+  <td class="num same" data-val="150.0000">150,00 €</td>
+  <td class="num same" data-val="183.9200">183,92 €</td>
+  <td class="num total-a">2.188,32 €</td>
+  <td class="num total-c">2.226,72 €</td>
+  <td class="diff-cell"><span class="below">▼ −38,40 €</span></td>
+</tr>
+<tr data-status="ok" data-cat="Semi_reboques">
+  <td class="col-no">1917</td>
+  <td class="col-nome">JOÃO ONOFRE BENTO MAXIMIANO</td>
+  <td class="col-local">Tojal</td>
+  <td class="num">05/12/2022</td>
+  <td class="num anos">3.6</td>
+  <td class="col-cat"><span class="catbadge" style="background:#7c3aed18;color:#7c3aed;border:1px solid #7c3aed50" data-catkey="Semi_reboques">Semi-reboques</span></td>
+  <td class="num bkt">>2–4 anos</td>
+  <td class="num same" data-val="1183.0000">1.183,00 €</td>
+  <td class="num same" data-val="473.2000">473,20 €</td>
+  <td class="num same" data-val="118.3000">118,30 €</td>
+  <td class="num same" data-val="118.3000">118,30 €</td>
+  <td class="num same" data-val="100.0000">100,00 €</td>
+  <td class="num same" data-val="183.9200">183,92 €</td>
+  <td class="num total-a">2.176,72 €</td>
+  <td class="num total-c">2.176,72 €</td>
+  <td class="diff-cell"><span class="zero">= 0,00 €</span></td>
+</tr>
+<tr data-status="abaixo" data-cat="3_4_Eixos">
+  <td class="col-no">1986</td>
+  <td class="col-nome">NUNES LUIS RONDINHO</td>
+  <td class="col-local">Alenquer</td>
+  <td class="num">02/05/2023</td>
+  <td class="num anos">3.2</td>
+  <td class="col-cat"><span class="catbadge" style="background:#2563eb18;color:#2563eb;border:1px solid #2563eb50" data-catkey="3_4_Eixos">3/4 Eixos</span></td>
+  <td class="num bkt">>2–4 anos</td>
+  <td class="num low" data-val="978.0000">978,00 €<span class="sub-info">Teórico: 1.083,00 €<br><em>(−105,00 €)</em></span></td>
+  <td class="num low" data-val="391.2000">391,20 €<span class="sub-info">Teórico: 433,20 €<br><em>(−42,00 €)</em></span></td>
+  <td class="num low" data-val="97.8000">97,80 €<span class="sub-info">Teórico: 108,30 €<br><em>(−10,50 €)</em></span></td>
+  <td class="num low" data-val="97.8000">97,80 €<span class="sub-info">Teórico: 108,30 €<br><em>(−10,50 €)</em></span></td>
+  <td class="num low" data-val="0.0000">0,00 €<span class="sub-info">Teórico: 100,00 €<br><em>(−100,00 €)</em></span></td>
+  <td class="num low" data-val="0.0000">0,00 €<span class="sub-info">Teórico: 183,92 €<br><em>(−183,92 €)</em></span></td>
+  <td class="num total-a">1.564,80 €</td>
+  <td class="num total-c">2.016,72 €</td>
+  <td class="diff-cell"><span class="below">▼ −451,92 €</span></td>
+</tr>
+<tr data-status="abaixo" data-cat="Transp_Especial_Articulado">
+  <td class="col-no">2111</td>
+  <td class="col-nome">RICARDO GUILHERME FERREIRA MACHADO</td>
+  <td class="col-local">Tojal</td>
+  <td class="num">26/02/2024</td>
+  <td class="num anos">2.4</td>
+  <td class="col-cat"><span class="catbadge" style="background:#05966918;color:#059669;border:1px solid #05966950" data-catkey="Transp_Especial_Articulado">Transp. Especial Articulado</span></td>
+  <td class="num bkt">>2–4 anos</td>
+  <td class="num low" data-val="1228.0000">1.228,00 €<span class="sub-info">Teórico: 1.233,00 €<br><em>(−5,00 €)</em></span></td>
+  <td class="num low" data-val="491.2000">491,20 €<span class="sub-info">Teórico: 493,20 €<br><em>(−2,00 €)</em></span></td>
+  <td class="num low" data-val="122.8000">122,80 €<span class="sub-info">Teórico: 123,30 €<br><em>(−0,50 €)</em></span></td>
+  <td class="num low" data-val="122.8000">122,80 €<span class="sub-info">Teórico: 123,30 €<br><em>(−0,50 €)</em></span></td>
+  <td class="num low" data-val="150.0000">150,00 €<span class="sub-info">Teórico: 200,00 €<br><em>(−50,00 €)</em></span></td>
+  <td class="num same" data-val="183.9200">183,92 €</td>
+  <td class="num total-a">2.298,72 €</td>
+  <td class="num total-c">2.356,72 €</td>
+  <td class="diff-cell"><span class="below">▼ −58,00 €</span></td>
+</tr>
+<tr data-status="abaixo" data-cat="Semi_reboques">
+  <td class="col-no">2130</td>
+  <td class="col-nome">CARMINO MANUEL DA SILVA CALIXTO</td>
+  <td class="col-local">Alenquer</td>
+  <td class="num">01/04/2024</td>
+  <td class="num anos">2.3</td>
+  <td class="col-cat"><span class="catbadge" style="background:#7c3aed18;color:#7c3aed;border:1px solid #7c3aed50" data-catkey="Semi_reboques">Semi-reboques</span></td>
+  <td class="num bkt">>2–4 anos</td>
+  <td class="num low" data-val="1128.0000">1.128,00 €<span class="sub-info">Teórico: 1.183,00 €<br><em>(−55,00 €)</em></span></td>
+  <td class="num low" data-val="451.2000">451,20 €<span class="sub-info">Teórico: 473,20 €<br><em>(−22,00 €)</em></span></td>
+  <td class="num low" data-val="112.8000">112,80 €<span class="sub-info">Teórico: 118,30 €<br><em>(−5,50 €)</em></span></td>
+  <td class="num low" data-val="112.8000">112,80 €<span class="sub-info">Teórico: 118,30 €<br><em>(−5,50 €)</em></span></td>
+  <td class="num same" data-val="100.0000">100,00 €</td>
+  <td class="num same" data-val="183.9200">183,92 €</td>
+  <td class="num total-a">2.088,72 €</td>
+  <td class="num total-c">2.176,72 €</td>
+  <td class="diff-cell"><span class="below">▼ −88,00 €</span></td>
+</tr>
+<tr data-status="abaixo" data-cat="Semi_reboques">
+  <td class="col-no">2146</td>
+  <td class="col-nome">FRANCISCO BAGAGEM LEITAO</td>
+  <td class="col-local">Tojal</td>
+  <td class="num">09/05/2024</td>
+  <td class="num anos">2.2</td>
+  <td class="col-cat"><span class="catbadge" style="background:#7c3aed18;color:#7c3aed;border:1px solid #7c3aed50" data-catkey="Semi_reboques">Semi-reboques</span></td>
+  <td class="num bkt">>2–4 anos</td>
+  <td class="num low" data-val="1128.0000">1.128,00 €<span class="sub-info">Teórico: 1.183,00 €<br><em>(−55,00 €)</em></span></td>
+  <td class="num low" data-val="451.2000">451,20 €<span class="sub-info">Teórico: 473,20 €<br><em>(−22,00 €)</em></span></td>
+  <td class="num low" data-val="112.8000">112,80 €<span class="sub-info">Teórico: 118,30 €<br><em>(−5,50 €)</em></span></td>
+  <td class="num low" data-val="112.8000">112,80 €<span class="sub-info">Teórico: 118,30 €<br><em>(−5,50 €)</em></span></td>
+  <td class="num same" data-val="100.0000">100,00 €</td>
+  <td class="num same" data-val="183.9200">183,92 €</td>
+  <td class="num total-a">2.088,72 €</td>
+  <td class="num total-c">2.176,72 €</td>
+  <td class="diff-cell"><span class="below">▼ −88,00 €</span></td>
+</tr>
+<tr data-status="acima" data-cat="3_4_Eixos">
+  <td class="col-no">2201</td>
+  <td class="col-nome">ANDRESA MICHELE DE OLIVEIRA</td>
+  <td class="col-local">Tojal</td>
+  <td class="num">03/09/2024</td>
+  <td class="num anos">1.9</td>
+  <td class="col-cat"><span class="catbadge" style="background:#2563eb18;color:#2563eb;border:1px solid #2563eb50" data-catkey="3_4_Eixos">3/4 Eixos</span></td>
+  <td class="num bkt">>1–2 anos</td>
+  <td class="num high" data-val="987.0000">987,00 €<span class="sub-info">Teórico: 978,00 €<br><em>(+9,00 €)</em></span></td>
+  <td class="num high" data-val="394.8000">394,80 €<span class="sub-info">Teórico: 391,20 €<br><em>(+3,60 €)</em></span></td>
+  <td class="num low" data-val="94.2100">94,21 €<span class="sub-info">Teórico: 97,80 €<br><em>(−3,59 €)</em></span></td>
+  <td class="num low" data-val="94.2100">94,21 €<span class="sub-info">Teórico: 97,80 €<br><em>(−3,59 €)</em></span></td>
+  <td class="num same" data-val="50.0000">50,00 €</td>
+  <td class="num same" data-val="183.9200">183,92 €</td>
+  <td class="num total-a">1.804,14 €</td>
+  <td class="num total-c">1.798,72 €</td>
+  <td class="diff-cell"><span class="above">▲ +5,42 €</span></td>
+</tr>
+<tr data-status="ok" data-cat="3_4_Eixos">
+  <td class="col-no">2245</td>
+  <td class="col-nome">MARIO RUI VENDA GOMES</td>
+  <td class="col-local">Tojal</td>
+  <td class="num">02/12/2024</td>
+  <td class="num anos">1.6</td>
+  <td class="col-cat"><span class="catbadge" style="background:#2563eb18;color:#2563eb;border:1px solid #2563eb50" data-catkey="3_4_Eixos">3/4 Eixos</span></td>
+  <td class="num bkt">>1–2 anos</td>
+  <td class="num same" data-val="978.0000">978,00 €</td>
+  <td class="num same" data-val="391.2000">391,20 €</td>
+  <td class="num same" data-val="97.8000">97,80 €</td>
+  <td class="num same" data-val="97.8000">97,80 €</td>
+  <td class="num same" data-val="50.0000">50,00 €</td>
+  <td class="num same" data-val="183.9200">183,92 €</td>
+  <td class="num total-a">1.798,72 €</td>
+  <td class="num total-c">1.798,72 €</td>
+  <td class="diff-cell"><span class="zero">= 0,00 €</span></td>
+</tr>
+<tr data-status="ok" data-cat="Semi_reboques">
+  <td class="col-no">2259</td>
+  <td class="col-nome">CELSO OLIVEIRA ANTUNES CRISTO</td>
+  <td class="col-local">Alenquer</td>
+  <td class="num">20/01/2025</td>
+  <td class="num anos">1.5</td>
+  <td class="col-cat"><span class="catbadge" style="background:#7c3aed18;color:#7c3aed;border:1px solid #7c3aed50" data-catkey="Semi_reboques">Semi-reboques</span></td>
+  <td class="num bkt">>1–2 anos</td>
+  <td class="num same" data-val="1128.0000">1.128,00 €</td>
+  <td class="num same" data-val="451.2000">451,20 €</td>
+  <td class="num same" data-val="112.8000">112,80 €</td>
+  <td class="num same" data-val="112.8000">112,80 €</td>
+  <td class="num same" data-val="0.0000">0,00 €</td>
+  <td class="num same" data-val="183.9200">183,92 €</td>
+  <td class="num total-a">1.988,72 €</td>
+  <td class="num total-c">1.988,72 €</td>
+  <td class="diff-cell"><span class="zero">= 0,00 €</span></td>
+</tr>
+<tr data-status="ok" data-cat="Semi_reboques">
+  <td class="col-no">2309</td>
+  <td class="col-nome">BERNARDO FREITAS FALE</td>
+  <td class="col-local">Alenquer</td>
+  <td class="num">05/05/2025</td>
+  <td class="num anos">1.2</td>
+  <td class="col-cat"><span class="catbadge" style="background:#7c3aed18;color:#7c3aed;border:1px solid #7c3aed50" data-catkey="Semi_reboques">Semi-reboques</span></td>
+  <td class="num bkt">>1–2 anos</td>
+  <td class="num same" data-val="1128.0000">1.128,00 €</td>
+  <td class="num same" data-val="451.2000">451,20 €</td>
+  <td class="num same" data-val="112.8000">112,80 €</td>
+  <td class="num same" data-val="112.8000">112,80 €</td>
+  <td class="num same" data-val="0.0000">0,00 €</td>
+  <td class="num same" data-val="183.9200">183,92 €</td>
+  <td class="num total-a">1.988,72 €</td>
+  <td class="num total-c">1.988,72 €</td>
+  <td class="diff-cell"><span class="zero">= 0,00 €</span></td>
+</tr>
+<tr data-status="abaixo" data-cat="3_4_Eixos">
+  <td class="col-no">2316</td>
+  <td class="col-nome">CARLOS ALBERTO GREGORIO CEREJO</td>
+  <td class="col-local">Tojal</td>
+  <td class="num">02/06/2025</td>
+  <td class="num anos">1.1</td>
+  <td class="col-cat"><span class="catbadge" style="background:#2563eb18;color:#2563eb;border:1px solid #2563eb50" data-catkey="3_4_Eixos">3/4 Eixos</span></td>
+  <td class="num bkt">>1–2 anos</td>
+  <td class="num same" data-val="978.0000">978,00 €</td>
+  <td class="num same" data-val="391.2000">391,20 €</td>
+  <td class="num same" data-val="97.8000">97,80 €</td>
+  <td class="num same" data-val="97.8000">97,80 €</td>
+  <td class="num low" data-val="0.0000">0,00 €<span class="sub-info">Teórico: 50,00 €<br><em>(−50,00 €)</em></span></td>
+  <td class="num same" data-val="183.9200">183,92 €</td>
+  <td class="num total-a">1.748,72 €</td>
+  <td class="num total-c">1.798,72 €</td>
+  <td class="diff-cell"><span class="below">▼ −50,00 €</span></td>
+</tr>
+<tr data-status="abaixo" data-cat="3_4_Eixos">
+  <td class="col-no">2319</td>
+  <td class="col-nome">JOSE MIGUEL CALHELHA FERREIRA</td>
+  <td class="col-local">Alenquer</td>
+  <td class="num">02/06/2025</td>
+  <td class="num anos">1.1</td>
+  <td class="col-cat"><span class="catbadge" style="background:#2563eb18;color:#2563eb;border:1px solid #2563eb50" data-catkey="3_4_Eixos">3/4 Eixos</span></td>
+  <td class="num bkt">>1–2 anos</td>
+  <td class="num same" data-val="978.0000">978,00 €</td>
+  <td class="num same" data-val="391.2000">391,20 €</td>
+  <td class="num same" data-val="97.8000">97,80 €</td>
+  <td class="num same" data-val="97.8000">97,80 €</td>
+  <td class="num low" data-val="0.0000">0,00 €<span class="sub-info">Teórico: 50,00 €<br><em>(−50,00 €)</em></span></td>
+  <td class="num same" data-val="183.9200">183,92 €</td>
+  <td class="num total-a">1.748,72 €</td>
+  <td class="num total-c">1.798,72 €</td>
+  <td class="diff-cell"><span class="below">▼ −50,00 €</span></td>
+</tr>
+<tr data-status="abaixo" data-cat="3_4_Eixos">
+  <td class="col-no">2334</td>
+  <td class="col-nome">JOAO RAFAEL DA SILVA ALMEIDA</td>
+  <td class="col-local">Tojal</td>
+  <td class="num">01/07/2025</td>
+  <td class="num anos">1.1</td>
+  <td class="col-cat"><span class="catbadge" style="background:#2563eb18;color:#2563eb;border:1px solid #2563eb50" data-catkey="3_4_Eixos">3/4 Eixos</span></td>
+  <td class="num bkt">>1–2 anos</td>
+  <td class="num same" data-val="978.0000">978,00 €</td>
+  <td class="num same" data-val="391.2000">391,20 €</td>
+  <td class="num same" data-val="97.8000">97,80 €</td>
+  <td class="num same" data-val="97.8000">97,80 €</td>
+  <td class="num low" data-val="0.0000">0,00 €<span class="sub-info">Teórico: 50,00 €<br><em>(−50,00 €)</em></span></td>
+  <td class="num same" data-val="183.9200">183,92 €</td>
+  <td class="num total-a">1.748,72 €</td>
+  <td class="num total-c">1.798,72 €</td>
+  <td class="diff-cell"><span class="below">▼ −50,00 €</span></td>
+</tr>
+<tr data-status="ok" data-cat="3_4_Eixos">
+  <td class="col-no">2457</td>
+  <td class="col-nome">CATIA ALEXANDRA CARVALHO ROMAO</td>
+  <td class="col-local">Alenquer</td>
+  <td class="num">20/04/2026</td>
+  <td class="num anos">0.3</td>
+  <td class="col-cat"><span class="catbadge" style="background:#2563eb18;color:#2563eb;border:1px solid #2563eb50" data-catkey="3_4_Eixos">3/4 Eixos</span></td>
+  <td class="num bkt">≤1 ano</td>
+  <td class="num same" data-val="978.0000">978,00 €</td>
+  <td class="num same" data-val="391.2000">391,20 €</td>
+  <td class="num same" data-val="97.8000">97,80 €</td>
+  <td class="num same" data-val="97.8000">97,80 €</td>
+  <td class="num same" data-val="0.0000">0,00 €</td>
+  <td class="num same" data-val="183.9200">183,92 €</td>
+  <td class="num total-a">1.748,72 €</td>
+  <td class="num total-c">1.748,72 €</td>
+  <td class="diff-cell"><span class="zero">= 0,00 €</span></td>
+</tr>
+<tr data-status="ok" data-cat="3_4_Eixos">
+  <td class="col-no">2459</td>
+  <td class="col-nome">LUIS MIGUEL LANCA MARQUES BERNARDO</td>
+  <td class="col-local">Tojal</td>
+  <td class="num">20/04/2026</td>
+  <td class="num anos">0.3</td>
+  <td class="col-cat"><span class="catbadge" style="background:#2563eb18;color:#2563eb;border:1px solid #2563eb50" data-catkey="3_4_Eixos">3/4 Eixos</span></td>
+  <td class="num bkt">≤1 ano</td>
+  <td class="num same" data-val="978.0000">978,00 €</td>
+  <td class="num same" data-val="391.2000">391,20 €</td>
+  <td class="num same" data-val="97.8000">97,80 €</td>
+  <td class="num same" data-val="97.8000">97,80 €</td>
+  <td class="num same" data-val="0.0000">0,00 €</td>
+  <td class="num same" data-val="183.9200">183,92 €</td>
+  <td class="num total-a">1.748,72 €</td>
+  <td class="num total-c">1.748,72 €</td>
+  <td class="diff-cell"><span class="zero">= 0,00 €</span></td>
+</tr>
+<tr data-status="ok" data-cat="3_4_Eixos">
+  <td class="col-no">2472</td>
+  <td class="col-nome">JOSE DANIEL PEREIRA PASCOAL</td>
+  <td class="col-local">Tojal</td>
+  <td class="num">18/05/2026</td>
+  <td class="num anos">0.2</td>
+  <td class="col-cat"><span class="catbadge" style="background:#2563eb18;color:#2563eb;border:1px solid #2563eb50" data-catkey="3_4_Eixos">3/4 Eixos</span></td>
+  <td class="num bkt">≤1 ano</td>
+  <td class="num same" data-val="978.0000">978,00 €</td>
+  <td class="num same" data-val="391.2000">391,20 €</td>
+  <td class="num same" data-val="97.8000">97,80 €</td>
+  <td class="num same" data-val="97.8000">97,80 €</td>
+  <td class="num same" data-val="0.0000">0,00 €</td>
+  <td class="num same" data-val="183.9200">183,92 €</td>
+  <td class="num total-a">1.748,72 €</td>
+  <td class="num total-c">1.748,72 €</td>
+  <td class="diff-cell"><span class="zero">= 0,00 €</span></td>
+</tr>
+<tr data-status="ok" data-cat="3_4_Eixos">
+  <td class="col-no">2475</td>
+  <td class="col-nome">ALEX PANSIERI</td>
+  <td class="col-local">Tojal</td>
+  <td class="num">25/05/2026</td>
+  <td class="num anos">0.2</td>
+  <td class="col-cat"><span class="catbadge" style="background:#2563eb18;color:#2563eb;border:1px solid #2563eb50" data-catkey="3_4_Eixos">3/4 Eixos</span></td>
+  <td class="num bkt">≤1 ano</td>
+  <td class="num same" data-val="978.0000">978,00 €</td>
+  <td class="num same" data-val="391.2000">391,20 €</td>
+  <td class="num same" data-val="97.8000">97,80 €</td>
+  <td class="num same" data-val="97.8000">97,80 €</td>
+  <td class="num same" data-val="0.0000">0,00 €</td>
+  <td class="num same" data-val="183.9200">183,92 €</td>
+  <td class="num total-a">1.748,72 €</td>
+  <td class="num total-c">1.748,72 €</td>
+  <td class="diff-cell"><span class="zero">= 0,00 €</span></td>
+</tr>
+<tr data-status="ok" data-cat="3_4_Eixos">
+  <td class="col-no">2477</td>
+  <td class="col-nome">RUBEN ALEXANDRE RIBEIRO FERREIRA</td>
+  <td class="col-local">Alenquer</td>
+  <td class="num">01/06/2026</td>
+  <td class="num anos">0.1</td>
+  <td class="col-cat"><span class="catbadge" style="background:#2563eb18;color:#2563eb;border:1px solid #2563eb50" data-catkey="3_4_Eixos">3/4 Eixos</span></td>
+  <td class="num bkt">≤1 ano</td>
+  <td class="num same" data-val="978.0000">978,00 €</td>
+  <td class="num same" data-val="391.2000">391,20 €</td>
+  <td class="num same" data-val="97.8000">97,80 €</td>
+  <td class="num same" data-val="97.8000">97,80 €</td>
+  <td class="num same" data-val="0.0000">0,00 €</td>
+  <td class="num same" data-val="183.9200">183,92 €</td>
+  <td class="num total-a">1.748,72 €</td>
+  <td class="num total-c">1.748,72 €</td>
+  <td class="diff-cell"><span class="zero">= 0,00 €</span></td>
+</tr></tbody>
+  </table>
+  <div class="no-results" id="no-results">Nenhum motorista corresponde ao filtro seleccionado.</div>
+  </div>
+
+  <div class="note">
+    ⚠ Categoria CPSA inferida por correspondência de base + IHT com a tabela CPSA Jan 2026. 
+    Validar manualmente os marcados com "fora do padrão" (Nº 1264, 1278, 1445, 1671, 1683). 
+    Sub. Refeição referência: 8,36 € × 22 dias = 183,92 €/mês. Nº 1986 sem sub. refeição — verificar.
+    Prémio Transporte Sem Articulado (Porta-máquinas) pode estar incluído no Prémio de Equipamento na folha de vencimentos.
+  </div>
+</div>
+
+<script>
+let activeFilter = 'all';
+
+function filterBy(filter, clickedEl) {
+  activeFilter = filter;
+
+  // Update active card styling
+  document.querySelectorAll('.stat[data-filter]').forEach(s => s.classList.remove('active'));
+  if (clickedEl && clickedEl.dataset.filter) clickedEl.classList.add('active');
+
+  // Apply filter
+  const rows = document.querySelectorAll('#tbody tr');
+  let visible = 0;
+  rows.forEach(row => {
+    let show = false;
+    if (filter === 'all') {
+      show = true;
+    } else if (filter.startsWith('status:')) {
+      show = row.dataset.status === filter.replace('status:','');
+    } else if (filter.startsWith('cat:')) {
+      show = row.dataset.cat === filter.replace('cat:','');
+    }
+    row.classList.toggle('hidden-row', !show);
+    if (show) visible++;
+  });
+
+  // Update label
+  const labelMap = {
+    'all': 'Todos',
+    'status:abaixo': 'Abaixo do CPSA',
+    'status:acima': 'Acima do CPSA',
+    'status:ok': 'Alinhados com CPSA',
+  };
+  let label = labelMap[filter] || filter.replace('cat:','Categoria: ').replace(/_/g,' ');
+  document.getElementById('filter-label').textContent = label + ' (' + visible + ' motoristas)';
+
+  const resetBtn = document.getElementById('reset-btn');
+  resetBtn.classList.toggle('visible', filter !== 'all');
+
+  document.getElementById('no-results').style.display = visible === 0 ? 'block' : 'none';
+}
+
+// Category badge click
+document.querySelectorAll('.catbadge').forEach(badge => {
+  badge.addEventListener('click', function(e) {
+    e.stopPropagation();
+    const catKey = this.dataset.catkey;
+    const filter = 'cat:' + catKey;
+    if (activeFilter === filter) {
+      filterBy('all', null);
+      document.querySelector('.stat[data-filter="all"]').classList.add('active');
+    } else {
+      filterBy(filter, null);
+    }
+  });
+});
+
+// Set "Todos" as active on load
+document.querySelector('.stat[data-filter="all"]').classList.add('active');
+</script>
+</body>
+</html>
