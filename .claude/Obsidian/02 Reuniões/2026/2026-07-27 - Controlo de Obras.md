@@ -65,12 +65,12 @@ Controlo de obras com foco em consumos de gasóleo (cartões **Solred** e requis
 > - Passar a **identificar os transportes prestados à JCBento** (Tojal ↔ JCBento) — [[03 Pessoas/Joana Pragosa]].
 
 ## Tarefas
-- [ ] Corrigir/atualizar **KMs reais no PHC** e reconciliar a **ficha de equipamento do AJ49BP** (206 054 vs 168 638 km). *(Logística / Controlo de Gestão)*
-- [ ] Esclarecer se **os abastecimentos são fechados todos no mesmo dia** e normalizar o processo de fecho. *(Logística)*
-- [ ] **Levantamento de motoristas que fazem requisições de gasóleo externo** — PTSA + Pragosa Betão. *(Logística)*
-- [ ] **Confirmar com Emanuel** a **instalação da App de Combustíveis** e a **formação** em Santa Eulália, Cano e Moleanos.
-- [ ] Levantar **capacidade (litros)** e **data de entrada** do **tanque grande de Xévora**.
-- [ ] Passar a **identificar os transportes para a JCBento** (Tojal → JCBento e JCBento → Tojal). *([[03 Pessoas/Joana Pragosa]])*
+- [ ] Corrigir/atualizar **KMs reais no PHC** e reconciliar a **ficha de equipamento do AJ49BP** (206 054 vs 168 638 km). *(Resp.: [[03 Pessoas/Hugo Carreira]] — Controlo de Gestão, c/ [[03 Pessoas/Rita Fialho]] — Logística)* 📅 2026-08-07
+- [ ] Esclarecer se **os abastecimentos são fechados todos no mesmo dia** e normalizar o processo de fecho. *(Resp.: [[03 Pessoas/Rita Fialho]] — Logística)* 📅 2026-08-07
+- [ ] **Levantamento de motoristas que fazem requisições de gasóleo externo** — PTSA + Pragosa Betão. *(Resp.: [[03 Pessoas/Rita Fialho]] — Logística)* 📅 2026-08-07
+- [ ] **Confirmar com Emanuel** a **instalação da App de Combustíveis** e a **formação** em Santa Eulália, Cano e Moleanos. *(Resp.: [[03 Pessoas/Rita Fialho]] — Logística; execução: Emanuel)* 📅 2026-08-07
+- [ ] Levantar **capacidade (litros)** e **data de entrada** do **tanque grande de Xévora**. *(Resp.: [[03 Pessoas/Rita Fialho]] — Logística)* 📅 2026-08-07
+- [ ] Passar a **identificar os transportes para a JCBento** (Tojal → JCBento e JCBento → Tojal). *(Resp.: [[03 Pessoas/Joana Pragosa]] — Administração)* 📅 2026-08-07
 
 ## Riscos
 - ⚠️ **PHC desatualizado nos KMs** → consumos por viatura não fiáveis; qualquer análise de custo de combustível fica comprometida enquanto não houver reconciliação.
