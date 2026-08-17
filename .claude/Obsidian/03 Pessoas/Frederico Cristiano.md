@@ -12,7 +12,7 @@ tags:
   - frota
 ---
 
-# Frederico Catarino
+# Frederico Cristiano
 
 ## Função e Responsabilidades
 Gestor de Frota / Tráfego CPSA. Responsável pela gestão operacional e logística da frota afeta à CPSA. **Iniciou funções a 29/06/2026** — em fase de onboarding. **Reporta hierarquicamente a [[03 Pessoas/Rita Fialho|Ana Rita]]** (Diretora de Logística).
@@ -118,6 +118,7 @@ SORT data DESC
 ```
 
 ## Projetos Envolvidos
+- [[05 Projetos/App CPSA Smart Logistics]] *(catálogo de equipamentos — apoio à compreensão da aptidão/composição da frota)*
 
 ## Obras / Clientes Associados
 

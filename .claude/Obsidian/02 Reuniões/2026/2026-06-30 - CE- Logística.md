@@ -43,7 +43,7 @@ Estado operacional estável nas Construções; **Cisternas sob pressão** por el
 |-------------|--------|---------|
 | [[03 Pessoas/Gabriela Soares\|Gabriela]] | 🟡 Em evolução | A ganhar estabilidade na coordenação com manutenção (ponto a desenvolver da reunião anterior) |
 | [[03 Pessoas/Bruna Cordeiro\|Bruna]] | ⚪ Sem avaliação | Ausente (férias). Mantém-se o ponto "a desenvolver" da reunião anterior |
-| [[03 Pessoas/Frederico Catarino\|Frederico]] | 🔵 Em integração | Plano de desenvolvimento em curso (ver nota) |
+| [[03 Pessoas/Frederico Cristiano\|Frederico]] | 🔵 Em integração | Plano de desenvolvimento em curso (ver nota) |
 | [[03 Pessoas/Mónica Neves|Mónica]] | 🟢 Autonomia QB | Substituiu a Bruna nas férias; desempenho mais estável do que o esperado |
 
 ### Frederico — Plano de Desenvolvimento
@@ -76,6 +76,6 @@ Estado operacional estável nas Construções; **Cisternas sob pressão** por el
 
 ## Ligações
 ### Pessoas
-- [[03 Pessoas/Gabriela Soares]] · [[03 Pessoas/Bruna Cordeiro]] · [[03 Pessoas/Frederico Catarino]] · [[03 Pessoas/Mónica Neves|Mónica]]
+- [[03 Pessoas/Gabriela Soares]] · [[03 Pessoas/Bruna Cordeiro]] · [[03 Pessoas/Frederico Cristiano]] · [[03 Pessoas/Mónica Neves|Mónica]]
 ### Operações
 - [[06 Operações/Cisternas]] · [[06 Operações/Indústria]] · [[06 Operações/Construções Pragosa]]

@@ -95,7 +95,7 @@
   <button data-tab="sim" class="active">🚛 Simulador</button>
   <button data-tab="cat">📋 Catálogo</button>
   <button data-tab="grp">🧩 Grupos</button>
-  <button data-tab="reg">📝 Registo de Fretes</button>
+  <button data-tab="reg">📋 Histórico de Fretes</button>
   <button data-tab="dash">📊 Dashboard</button>
   <button data-tab="param">⚙️ Parâmetros</button>
 </nav>
@@ -150,7 +150,10 @@
         <option value="combo">Carga única (tudo num só porta-máquinas)</option>
       </select>
     </div>
-    <button class="btn" id="btnRun">▶ Calcular</button>
+    <div class="flex" style="gap:8px">
+      <button class="ghost btn" id="btnToPedidos">➕ Enviar p/ pedidos do Planeador</button>
+      <button class="btn" id="btnRun">▶ Calcular</button>
+    </div>
   </div>
 
   <div id="results"></div>
@@ -168,7 +171,7 @@
           <button class="ghost btn mini" id="btnClearReq">limpar</button>
         </div>
       </div>
-      <p class="small muted">Insere <b>todos</b> os transportes de máquinas pendentes — à mão (tipo → máquina) ou <b>importa o ficheiro de pedido padronizado</b> (DE/PARA, equipamento, data, período, observações). O motor devolve as conjugações possíveis e otimiza a afetação dos 3 conjuntos.</p>
+      <p class="small muted">Pool único de pedidos — junta as <b>duas fontes</b>: <span class="tag" style="color:#93c5fd">Excel</span> (importar) e <span class="tag" style="color:#fcd34d">Manual</span> (à mão aqui, ou enviados da <b>Consulta Rápida</b>). O motor otimiza <b>tudo em conjunto</b> e pode conjugar viagens entre as duas fontes. Para combinar, importe o Excel com «substituir» <b>desligado</b>.</p>
       <div id="pedidoImportArea"></div>
       <div class="scrollx"><table id="reqTable">
         <thead><tr><th>#</th><th>Tipo</th><th>Máquina</th><th>Origem</th><th>Destino</th><th>Disponível desde</th><th>Entregar até</th><th>Obs / Período</th><th></th></tr></thead>
@@ -214,6 +217,7 @@
 
 <!-- ============ REGISTO ============ -->
 <section id="reg" class="tab">
+  <div class="note" style="margin-bottom:14px">📋 <b>Histórico</b> = transportes já <b>realizados</b> (histórico 2026 + planos guardados + registos manuais) — alimenta os dashboards e a confiança do motor. Os transportes <b>por planear</b> estão no <b>Simulador › Planeamento de rotas</b>.</div>
   <div class="grid g2">
     <div class="card">
       <h2>Registar frete realizado</h2>
@@ -264,9 +268,14 @@
 <!-- ============ PARÂMETROS ============ -->
 <section id="param" class="tab">
   <div class="card">
-    <h2>Conjuntos Trator + Porta-Máquinas</h2>
-    <div class="scrollx"><table id="pmTable"><thead><tr><th>ID</th><th>Trator</th><th>Porta-Máquinas</th><th>Motorista</th><th>Descrição</th><th>Tara conj. (kg)</th><th>Cap. útil (kg)</th><th>Estrado útil (m)</th></tr></thead><tbody></tbody></table></div>
-    <p class="small muted">Capacidade útil = carga máxima transportável. Editável (clique nos valores).</p>
+    <div class="flex between"><h2 style="margin:0">Conjuntos Trator + Porta-Máquinas</h2><button class="btn mini" id="btnAddPM">+ Conjunto</button></div>
+    <div class="scrollx"><table id="pmTable"><thead><tr><th>ID</th><th>Trator</th><th>Porta-Máquinas</th><th>Motorista</th><th>Descrição</th><th>Tara conj. (kg)</th><th>Cap. útil (kg)</th><th>Estrado útil (m)</th><th></th></tr></thead><tbody></tbody></table></div>
+    <p class="small muted">Todos os campos são editáveis (clique para escrever). Use <b>+ Conjunto</b> para acrescentar linhas e ✕ para remover. O ID (ex.: PM01) identifica o conjunto no histórico e nas simulações.</p>
+  </div>
+  <div class="card">
+    <h2>🎯 Conjugações guardadas (preferências de conjunto)</h2>
+    <p class="small muted">Regras criadas no Simulador: para cada combinação de classes de equipamento, só os conjuntos que marcou são sugeridos. Remova uma regra para voltar a sugerir todos os conjuntos nessa combinação.</p>
+    <div class="scrollx"><table id="prefTable"><thead><tr><th>Classes de equipamento</th><th>Conjuntos permitidos</th><th>Guardado</th><th></th></tr></thead><tbody></tbody></table></div>
   </div>
   <div class="card">
     <h2>Parâmetros legais</h2>
@@ -290,8 +299,22 @@
     <div class="scrollx maxh"><table id="locTable"><thead><tr><th>Local</th><th>Latitude</th><th>Longitude</th><th></th></tr></thead><tbody></tbody></table></div>
   </div>
   <div class="card">
+    <h2>⏱ Tempos de condução — Reg. (CE) n.º 561/2006</h2>
+    <div class="warnbox">Transpõe a distância (Locais) para <b>tempo de condução</b> e valida a viabilidade diária de cada conjunto: uma viatura não faz num só dia mais do que o limite legal. O planeador distribui as viagens por dias e assinala prazos em risco. Valores por defeito conservadores — confirme com o tacógrafo e a escala real.</div>
+    <div class="grid g3">
+      <div><label>Limite de velocidade de referência (km/h)</label><input type="number" step="5" id="velLimite"></div>
+      <div><label>Redução sobre o limite (%)</label><input type="number" step="5" id="velReducao"></div>
+      <div><label>Velocidade média efetiva</label><input type="text" id="velEffOut" readonly style="font-weight:700;color:var(--acc)"></div>
+      <div><label>Condução máx. diária (h) — Art. 6.º</label><input type="number" step="0.5" id="condMaxDia"></div>
+      <div><label>Carga + descarga por viagem (h)</label><input type="number" step="0.25" id="tManobra"></div>
+      <div><label>Pausa obrigatória após (h condução) — Art. 7.º</label><input type="number" step="0.25" id="pausaApos"></div>
+      <div><label>Duração da pausa (h)</label><input type="number" step="0.25" id="pausaDur"></div>
+    </div>
+    <p class="small muted" style="margin-top:8px">Velocidade média = limite − redução (ex.: 80 km/h de pesados − 40% = 48 km/h). Baixe o limite para 70 km/h se as rotas forem sobretudo em estradas nacionais.</p>
+  </div>
+  <div class="card">
     <div class="flex between"><h2 style="margin:0">Dados</h2>
-      <div class="flex"><button class="ghost btn mini" id="btnReseed">↻ Recarregar histórico (400 fretes)</button><button class="ghost btn mini" id="btnResetSpecs">↺ Repor pesos/dimensões</button><button class="ghost btn mini" id="btnWipe">🗑 Apagar tudo (local)</button></div>
+      <div class="flex"><button class="ghost btn mini" id="btnResetPM">↺ Repor conjuntos (frota oficial)</button><button class="ghost btn mini" id="btnReseed">↻ Recarregar histórico (400 fretes)</button><button class="ghost btn mini" id="btnResetSpecs">↺ Repor pesos/dimensões</button><button class="ghost btn mini" id="btnWipe">🗑 Apagar tudo (local)</button></div>
     </div>
     <p class="small muted">Dados guardados localmente no navegador (localStorage). O histórico (400 fretes de 2026) foi extraído por palavras-chave da «Folha de Fretes Produção» — os fretes marcados <span class="tag">hist</span> refletem essa leitura automática e podem conter imprecisões.</p>
   </div>
@@ -386,8 +409,9 @@ const MODEL_OVERRIDES = [
 /* ================= DEFAULT PM SETS ================= */
 const DEFAULT_PM = [
   {id:'PM01',trator:'BG-52-ZE',pm:'AV-55672',mot:'Vitor Januário',desc:'Volvo FH750 · conjunto pesado (excecional)',tara:26000,cap:64700,deck:13.6},
-  {id:'PM02',trator:'94-TA-96',pm:'SE-1082',mot:'Amilcar Carreira',desc:'Volvo FH540',tara:16000,cap:25360,deck:10.5},
-  {id:'PM03',trator:'BE-10-MB',pm:'L-154494',mot:'Davide Nunes',desc:'Volvo FH500',tara:15000,cap:22900,deck:9.5}
+  {id:'PM02',trator:'BE-09-MB',pm:'SE-1082',mot:'',desc:'Semirreboque SE-1082 · AET 44t · (confirmar modelo do trator)',tara:16000,cap:44000,deck:10.5},
+  {id:'PM03',trator:'BE-10-MB',pm:'L-154494',mot:'Davide Nunes',desc:'Volvo FH500 · AET 44t',tara:15000,cap:44000,deck:9.5},
+  {id:'PM04',trator:'94-TA-46',pm:'SA-4378',mot:'Amilcar Carreira',desc:'Nooteboom OSDS-48-03(EB) · rebaixado 3 eixos (PMA 48t) · AET 44t',tara:22437,cap:44000,deck:9.25}
 ];
 
 /* ================= DEFAULT GROUPS ================= */
@@ -442,16 +466,59 @@ let ST = load();
 function load(){
   let d={};
   try{ d=JSON.parse(localStorage.getItem(LS))||{}; }catch(e){}
-  return {
+  const s={
     specs:d.specs||{}, pm:d.pm||JSON.parse(JSON.stringify(DEFAULT_PM)),
     groups:d.groups||JSON.parse(JSON.stringify(DEFAULT_GROUPS)),
     legal:Object.assign({},DEFAULT_LEGAL,d.legal||{}),
     deckH:d.deckH!=null?d.deckH:1.05, baseL:d.baseL!=null?d.baseL:16.5,
-    fretes:d.fretes||[], seeded:!!d.seeded, req:d.req||[],
+    fretes:d.fretes||[], seeded:!!d.seeded, req:d.req||[], prefs:d.prefs||[],
     locais:d.locais||JSON.parse(JSON.stringify(DEFAULT_LOCAIS)),
     roadFactor:d.roadFactor!=null?d.roadFactor:1.3, chainKm:d.chainKm!=null?d.chainKm:40,
-    eqLoc:d.eqLoc||{}
+    velLimite:d.velLimite!=null?d.velLimite:80, velReducao:d.velReducao!=null?d.velReducao:40,
+    condMaxDia:d.condMaxDia!=null?d.condMaxDia:9,
+    pausaApos:d.pausaApos!=null?d.pausaApos:4.5, pausaDur:d.pausaDur!=null?d.pausaDur:0.75,
+    tManobra:d.tManobra!=null?d.tManobra:2,
+    eqLoc:d.eqLoc||{}, pmMig:d.pmMig||0
   };
+  // ---- Migração de conjuntos (frota) v2 · 2026-08 ----
+  // Novo porta-máquinas SA-4378 (Nooteboom OSDS-48-03) no trator 94-TA-46;
+  // SE-1082 passa do trator 94-TA-96 para o BE-09-MB. Preserva valores já editados.
+  if(s.pmMig<2){
+    const byMat=m=>s.pm.find(p=>p.pm===m);
+    const p2=byMat('SE-1082');
+    if(p2 && p2.trator==='94-TA-96'){ p2.trator='BE-09-MB'; if(p2.mot==='Amilcar Carreira')p2.mot=''; if(p2.desc==='Volvo FH540')p2.desc='Semirreboque SE-1082 · (confirmar modelo do trator)'; }
+    if(!byMat('SA-4378')){
+      let n=1; const ids=new Set(s.pm.map(p=>p.id)); while(ids.has('PM'+String(n).padStart(2,'0')))n++;
+      s.pm.push({id:'PM'+String(n).padStart(2,'0'),trator:'94-TA-46',pm:'SA-4378',mot:'Amilcar Carreira',desc:'Nooteboom OSDS-48-03(EB) · rebaixado 3 eixos (PMA 48t)',tara:22437,cap:36000,deck:9.25});
+    }
+    s.pmMig=2;
+    try{ localStorage.setItem(LS, JSON.stringify(s)); }catch(e){}
+  }
+  // ---- Migração v3 · tara real do conjunto SA-4378 (reboque 12 000 + trator 94-TA-46 10 437 = 22 437 kg) ----
+  if(s.pmMig<3){
+    const sa=s.pm.find(p=>p.pm==='SA-4378');
+    if(sa && sa.tara===21000){ sa.tara=22437; }   // substitui só a estimativa anterior
+    s.pmMig=3;
+    try{ localStorage.setItem(LS, JSON.stringify(s)); }catch(e){}
+  }
+  // ---- Migração v5 · REVERTER o valor uniforme de 40 000 kg ----
+  // PM01 tem mais capacidade e os restantes conjuntos operam com AET (autorização especial
+  // de transporte), pelo que a capacidade útil NÃO é uniforme. Repõe os valores por conjunto.
+  if(s.pmMig<5){
+    const REV={'AV-55672':64700,'SE-1082':25360,'L-154494':22900,'SA-4378':36000};
+    s.pm.forEach(p=>{ if(p.cap===40000 && REV[p.pm]!=null) p.cap=REV[p.pm]; });
+    s.pmMig=5;
+    try{ localStorage.setItem(LS, JSON.stringify(s)); }catch(e){}
+  }
+  // ---- Migração v6 · capacidade autorizada por AET: PM02/PM03/PM04 = 44 000 kg; PM01 fica 64 700 kg ----
+  if(s.pmMig<6){
+    const AET={'SE-1082':44000,'L-154494':44000,'SA-4378':44000};
+    const OLD={'SE-1082':25360,'L-154494':22900,'SA-4378':36000}; // só substitui a estimativa anterior
+    s.pm.forEach(p=>{ if(AET[p.pm]!=null && p.cap===OLD[p.pm]) p.cap=AET[p.pm]; });
+    s.pmMig=6;
+    try{ localStorage.setItem(LS, JSON.stringify(s)); }catch(e){}
+  }
+  return s;
 }
 function seedHistory(force){
   if(force){ ST.fretes=ST.fretes.filter(f=>f.src!=='hist'); }
@@ -478,12 +545,21 @@ const byNum = n => CATALOGO.find(x=>x.num===n);
 /* ================= SIMULATOR STATE ================= */
 let SEL=[]; // selected equipment nums
 let LAST_RESULT=null; // último resultado calculado (para guardar no histórico)
+let LAST_PREF_CTX=null; // contexto (classes) da última simulação, para guardar preferência de conjuntos
 let PLAN=null; // plano do planeador (rotas+viagens), ajustável manualmente
 function dhTo(fromDest,toOrig){let dh=kmBetween(fromDest,toOrig);if(dh==null)dh=normLoc(fromDest)===normLoc(toOrig)?0:null;return dh;}
 function moveTrip(id,pmId){
   if(!PLAN)return; const t=PLAN.trips.find(x=>String(x.id)===String(id)); if(!t)return;
   const pm=ST.pm.find(p=>p.id===pmId); if(!pm)return;
-  if(t.peso>pm.cap||t.comp>(pm.deck||99)){alert(pmId+' não aguenta esta viagem (peso/comprimento).');renderPlan();return;}
+  const overW=t.peso>pm.cap, overL=t.comp>(pm.deck||99);
+  if(overW||overL){
+    const motivos=[];
+    if(overW)motivos.push('Peso '+(t.peso/1000).toFixed(1)+' t excede a capacidade útil ('+(pm.cap/1000).toFixed(1)+' t)');
+    if(overL)motivos.push('Comprimento '+t.comp.toFixed(1)+' m excede o estrado útil ('+(pm.deck||0).toFixed(1)+' m)');
+    if(!confirm('⚠ ATENÇÃO — '+pm.id+' ('+pm.trator+') fica fora dos limites para esta viagem:\n\n• '+motivos.join('\n• ')+'\n\nQuer mesmo atribuir esta carga ao '+pm.id+'?')){
+      renderPlan(); return; // cancelou → repõe o seletor
+    }
+  }
   t.assigned=pmId; renderPlan();
 }
 function saveBtnHTML(){return '<div class="flex" style="margin-top:14px;gap:10px;align-items:center"><button class="btn" onclick="saveResultToHistory()">💾 Guardar no histórico</button><span id="saveHistMsg" class="small muted"></span></div>';}
@@ -505,6 +581,35 @@ function saveResultToHistory(){
   if(msg)msg.textContent=`${n} viagem(ns) no Registo de Fretes · dashboards atualizados.`;
 }
 
+function savePrefFromResult(){
+  if(!LAST_PREF_CTX||!LAST_PREF_CTX.classes.length){return;}
+  const allow=[...document.querySelectorAll('.prefPM:checked')].map(c=>c.value);
+  const m=document.getElementById('prefMsg');
+  if(!allow.length){ if(m)m.textContent='Marque pelo menos um conjunto.'; return; }
+  const key=prefKey(LAST_PREF_CTX.classes);
+  const rec={key, classes:[...new Set(LAST_PREF_CTX.classes)].sort(), allow, ts:new Date().toISOString().slice(0,16)};
+  const ix=ST.prefs.findIndex(p=>p.key===key);
+  if(ix>=0)ST.prefs[ix]=rec; else ST.prefs.push(rec);
+  save(); renderPrefs();
+  if(m)m.textContent='✔ Guardado. Só '+allow.join(', ')+' serão sugeridos para esta conjugação.';
+  runEngine();
+}
+function clearPrefFor(){
+  if(!LAST_PREF_CTX)return;
+  const key=prefKey(LAST_PREF_CTX.classes);
+  ST.prefs=ST.prefs.filter(p=>p.key!==key);
+  save(); renderPrefs(); runEngine();
+}
+function renderPrefs(){
+  const tb=document.querySelector('#prefTable tbody'); if(!tb)return;
+  if(!ST.prefs.length){ tb.innerHTML='<tr><td colspan="4" class="muted small">Sem conjugações guardadas. Crie regras no Simulador (Consulta rápida).</td></tr>'; return; }
+  tb.innerHTML=ST.prefs.map((p,i)=>`<tr>
+    <td>${p.classes.join(', ')}</td>
+    <td>${p.allow.map(id=>{const pm=ST.pm.find(x=>x.id===id);return '<span class="chip"><b>'+id+'</b>'+(pm?' · '+(pm.trator||''):'')+'</span>';}).join(' ')}</td>
+    <td class="muted small">${(p.ts||'').replace('T',' ')}</td>
+    <td><span class="x link" style="color:var(--dang);cursor:pointer;font-weight:700" onclick="delPref(${i})">✕</span></td></tr>`).join('');
+}
+function delPref(i){ if(!confirm('Remover esta regra de conjugação?'))return; ST.prefs.splice(i,1); save(); renderPrefs(); }
 function eqLabel(eq){ return `#${eq.num} · ${eq.marca} ${eq.modelo}`.trim(); }
 function eqMatch(eq,q){ q=q.toLowerCase(); return (eq.num+' '+eq.marca+' '+eq.modelo+' '+eq.tipo+' '+eq.classe+' '+eq.desc).toLowerCase().includes(q); }
 
@@ -654,8 +759,11 @@ function historyStats(){
   });
   return {eqCount,comboCount,pmCount,classCount};
 }
+function prefKey(classes){ return [...new Set(classes)].sort().join(' | '); }
+function findPref(classes){ if(!classes.length)return null; const k=prefKey(classes); return ST.prefs.find(p=>p.key===k)||null; }
 function rankPM(L){
   const selClasses=[...new Set(L.items.map(it=>it.e.classe))];
+  const pref=findPref(selClasses);
   const pmHistScore={};
   ST.fretes.forEach(f=>{ const fc=freteClasses(f); if(selClasses.some(c=>fc.includes(c))) pmHistScore[f.pm]=(pmHistScore[f.pm]||0)+1; });
   const list = ST.pm.map(pm=>{
@@ -664,17 +772,19 @@ function rankPM(L){
     const hist = pmHistScore[pm.id]||0;
     let conf=0;
     if(fits){
-      conf=55;
+      conf=60;
       if(margin>=0.08 && margin<=0.45) conf+=22; else if(margin>0.45) conf+=10; else conf+=6;
-      conf += Math.min(20, hist*4);
+      // histórico = sinal SUAVE; um conjunto novo (0 fretes) fica neutro, não penalizado
+      conf += hist>=3 ? 12 : hist>0 ? 9 : 6;
       if(pm.id==='PM01' && L.peso<pm.cap*0.5) conf-=8;
     }else{
       conf = 12 - Math.min(10, (L.peso-pm.cap)/pm.cap*20);
     }
     conf=Math.max(1,Math.min(99,Math.round(conf)));
-    return {pm,fits,margin,hist,conf,pilot:pilotCar(L,pm),pb:L.peso+pm.tara};
-  }).sort((a,b)=> (b.fits-a.fits) || (b.conf-a.conf) || (a.margin-b.margin));
-  return {list, totalHistMatch:Object.values(pmHistScore).reduce((a,b)=>a+b,0)};
+    const excluded = pref ? !pref.allow.includes(pm.id) : false;
+    return {pm,fits,margin,hist,conf,pilot:pilotCar(L,pm),pb:L.peso+pm.tara,excluded};
+  }).sort((a,b)=> (a.excluded-b.excluded) || (b.fits-a.fits) || (b.conf-a.conf) || (a.margin-b.margin));
+  return {list, totalHistMatch:Object.values(pmHistScore).reduce((a,b)=>a+b,0), pref, selClasses};
 }
 function levelPillHTML(level){
   return level==='normal'?'<span class="pill p-ok">✅ Transporte normal</span>':level==='especial'?'<span class="pill p-warn">⚠ Transporte especial</span>':'<span class="pill p-dang">🚨 Transporte excecional</span>';
@@ -687,7 +797,8 @@ function runEngine(){
   const L=combinedLoad(SEL);
   const cls=classify(L);
   const rk=rankPM(L); const ranked=rk.list; const totalHistMatch=rk.totalHistMatch;
-  const best=ranked[0];
+  LAST_PREF_CTX={classes:rk.selClasses};
+  const best=ranked.find(r=>!r.excluded)||ranked[0];
   const levelPill = cls.level==='normal'?'<span class="pill p-ok">✅ Transporte normal</span>':cls.level==='especial'?'<span class="pill p-warn">⚠ Transporte especial</span>':'<span class="pill p-dang">🚨 Transporte excecional</span>';
 
   let html=`<div class="card ${best.fits?'result-best':''}">
@@ -718,7 +829,7 @@ function runEngine(){
   // alternatives
   html+=`<div class="card"><h2>Alternativas</h2><div class="scrollx"><table><thead><tr><th>Opção</th><th>Conjunto</th><th>Cobre carga?</th><th>Folga</th><th>Confiança</th><th>Carro piloto</th><th>Histórico</th></tr></thead><tbody>`;
   ranked.forEach((r,i)=>{
-    html+=`<tr><td>${i+1}ª</td><td><b>${r.pm.trator} + ${r.pm.pm}</b><br><span class="muted small">${r.pm.id}</span></td>
+    html+=`<tr style="${r.excluded?'opacity:.5':''}"><td>${i+1}ª</td><td><b>${r.pm.trator} + ${r.pm.pm}</b><br><span class="muted small">${r.pm.id}${r.excluded?' · <span style="color:var(--dang)">excluído</span>':''}</span></td>
       <td>${r.fits?'<span class="pill p-ok">Sim</span>':'<span class="pill p-dang">Não</span>'}</td>
       <td>${r.fits?(r.margin*100).toFixed(0)+'%':'−'}</td>
       <td><b>${r.conf}%</b></td>
@@ -726,6 +837,22 @@ function runEngine(){
       <td>${r.hist}</td></tr>`;
   });
   html+=`</tbody></table></div></div>`;
+
+  // preferência de conjuntos — permitir >1 e excluir os não escolhidos de sugestões futuras
+  const prefApplied=rk.pref;
+  html+=`<div class="card"><div class="flex between"><h2 style="margin:0">🎯 Conjuntos permitidos para esta conjugação</h2>${prefApplied?'<span class="pill p-ok">preferência ativa</span>':'<span class="pill p-mut">sem regra</span>'}</div>
+    <p class="small muted">Marque um <b>ou mais</b> porta-máquinas que aceita para esta combinação (${rk.selClasses.join(', ')||'—'}). Os que <b>não</b> marcar deixam de ser sugeridos no futuro para esta conjugação.</p>
+    <div class="flex" style="gap:12px;flex-wrap:wrap;margin:8px 0 12px">`;
+  ranked.forEach(r=>{
+    const checked = prefApplied ? prefApplied.allow.includes(r.pm.id) : r.fits;
+    html+=`<label class="msel-row ${checked?'on':''}"><input type="checkbox" class="prefPM" value="${r.pm.id}" ${checked?'checked':''}> <span><b>${r.pm.id}</b> · ${r.pm.trator}+${r.pm.pm}${r.fits?'':' <span class="muted small">(não cobre)</span>'}</span></label>`;
+  });
+  html+=`</div>
+    <div class="flex" style="gap:10px;align-items:center">
+      <button class="btn" onclick="savePrefFromResult()">💾 Guardar conjugação</button>
+      ${prefApplied?'<button class="ghost btn" onclick="clearPrefFor()">remover regra</button>':''}
+      <span id="prefMsg" class="small muted"></span>
+    </div></div>`;
 
   // per-machine detail
   html+=`<div class="card"><h2>Detalhe da carga</h2><div class="scrollx"><table><thead><tr><th>Equipamento</th><th>Classe</th><th>Peso</th><th>C×L×A</th><th></th></tr></thead><tbody>`;
@@ -817,6 +944,16 @@ function runOptimized(){
 }
 function goEditSpec(n){document.querySelector('[data-tab="cat"]').click();setTimeout(()=>{document.getElementById('catSearch').value=n;renderCat();},50);}
 document.getElementById('btnRun').onclick=runEngine;
+document.getElementById('btnToPedidos').onclick=()=>{
+  if(!SEL.length){alert('Selecione equipamentos primeiro.');return;}
+  const orig=document.getElementById('origem').value, dest=document.getElementById('destino').value;
+  const n=SEL.length;
+  SEL.forEach(num=>{const e=byNum(num);ST.req.push({tipo:e.classe,num,orig,dest,disp:'',entregar:'',obs:'',src:'manual'});});
+  save(); SEL=[]; renderSel(); renderMselList();
+  document.querySelector('.modeBtn[data-m="plan"]').click(); renderReqTable();
+  const rc=document.getElementById('reqCount'); if(rc)rc.innerHTML='<span class="pill p-ok">✔ '+n+' equipamento(s) enviados da Consulta Rápida</span> '+rc.textContent;
+  document.getElementById('reqTable').scrollIntoView({block:'center'});
+};
 
 /* ================= PLANEADOR DE ROTAS ================= */
 document.querySelectorAll('.modeBtn').forEach(b=>b.onclick=()=>{
@@ -836,8 +973,9 @@ function renderReqTable(){
     if(r.num&&!pool.some(e=>e.num===r.num)){const e=byNum(r.num);if(e)pool=[e,...pool];}
     const machOpts='<option value="">— máquina —</option>'+pool.sort((a,b)=>(a.marca+a.modelo).localeCompare(b.marca+b.modelo)).map(e=>`<option value="${e.num}" ${r.num===e.num?'selected':''}>${eqLabel(e)}</option>`).join('');
     const semMaq = !r.num && (r.tipo||r.orig||r.dest);
+    const srcTag = r.src==='excel'?'<br><span class="tag" style="font-size:9px;color:#93c5fd">Excel</span>':r.src==='manual'?'<br><span class="tag" style="font-size:9px;color:#fcd34d">Manual</span>':'';
     return `<tr${semMaq?' style="background:rgba(217,138,0,.10)"':''}>
-      <td>${i+1}</td>
+      <td>${i+1}${srcTag}</td>
       <td><select data-i="${i}" data-f="tipo" style="min-width:150px">${clsOpts}</select></td>
       <td><select data-i="${i}" data-f="num" style="min-width:180px">${machOpts}</select></td>
       <td><input data-i="${i}" data-f="orig" list="origens" value="${(r.orig||'').replace(/"/g,'&quot;')}" style="min-width:110px" placeholder="origem"></td>
@@ -856,7 +994,7 @@ function renderReqTable(){
   tb.querySelectorAll('[data-del]').forEach(x=>x.onclick=()=>{ST.req.splice(+x.dataset.del,1);save();renderReqTable();});
   document.getElementById('reqCount').textContent=`${ST.req.filter(r=>r.num).length} pedido(s) com máquina · ${ST.req.length} linha(s)`;
 }
-document.getElementById('btnAddReq').onclick=()=>{ST.req.push({tipo:'',num:'',orig:'',dest:'',disp:'',entregar:''});save();renderReqTable();};
+document.getElementById('btnAddReq').onclick=()=>{ST.req.push({tipo:'',num:'',orig:'',dest:'',disp:'',entregar:'',src:'manual'});save();renderReqTable();};
 document.getElementById('btnDemoReq').onclick=()=>{
   const pick=rx=>{const e=CATALOGO.find(x=>rx.test(x.marca+' '+x.modelo+' '+x.desc));return e?e.num:'';};
   ST.req=[
@@ -865,7 +1003,7 @@ document.getElementById('btnDemoReq').onclick=()=>{
     {tipo:'Bobcat',num:pick(/R220/),orig:'Leiria',dest:'Évora',disp:'',entregar:'2026-08-10T08:00'},
     {tipo:'Escavadora de rastos',num:pick(/EC 480/),orig:'Évora',dest:'Marinha Grande',disp:'2026-08-11T08:00',entregar:''},
     {tipo:'Escavadora de rastos',num:pick(/EC 220/),orig:'Santarém',dest:'Leiria',disp:'',entregar:'2026-08-09T17:00'}
-  ];save();renderReqTable();
+  ].map(r=>({...r,src:'manual'}));save();renderReqTable();
 };
 document.getElementById('btnPlan').onclick=planRoutes;
 document.getElementById('btnClearReq').onclick=()=>{if(confirm('Limpar todos os pedidos?')){ST.req=[];save();renderReqTable();document.getElementById('planResults').innerHTML='';}};
@@ -961,7 +1099,7 @@ function parsePedidoSheet(sheetName){
     const t=periodoToTime(perT);
     const entregar=(lastDate?lastDate+'T'+(t||'12:00'):'');
     const obsParts=[perT,obsT,(!num&&(numT||desigT)?('Eq '+(numT||'')+' '+desigT).trim():'')].filter(Boolean);
-    out.push({tipo:classe,num,orig,dest,disp:'',entregar,obs:obsParts.join(' · '),_desig:desigT,_tipoT:tipoT,_resolved:!!num});
+    out.push({tipo:classe,num,orig,dest,disp:'',entregar,obs:obsParts.join(' · '),src:'excel',_desig:desigT,_tipoT:tipoT,_resolved:!!num});
   }
   return {rows:out};
 }
@@ -981,6 +1119,7 @@ function importSheetDirect(){
 
 function normLoc(s){return (s||'').toString().trim().toLowerCase().replace(/\s+/g,' ');}
 function fmtDT(s){return s?s.replace('T',' ').slice(0,16):'—';}
+function fmtDate(s){if(!s)return '—';const p=s.slice(0,10).split('-');return p.length===3?`${p[2]}/${p[1]}/${p[0]}`:s;}
 function locResolve(name){
   const n=normLoc(name); if(!n)return null;
   let hit=ST.locais.find(l=>normLoc(l.nome)===n);
@@ -994,6 +1133,33 @@ function haversine(a,b){
   return 2*R*Math.asin(Math.sqrt(s));
 }
 function kmBetween(o,d){ const a=locResolve(o),b=locResolve(d); if(!a||!b)return null; if(a===b)return 0; return Math.round(haversine(a,b)*ST.roadFactor); }
+/* ===== Reg. (CE) n.º 561/2006 — tempos de condução ===== */
+function velEff(){ const v=(ST.velLimite||80)*(1-(ST.velReducao||40)/100); return v>0?v:1; }
+function driveH(km){ return km==null?null:km/velEff(); }
+function tripCycle(t){
+  const ret=kmBetween(t.dest,t.orig); const loaded=t.km;
+  let round=null; if(loaded!=null) round=loaded+(ret!=null?ret:loaded); // ida carregada + volta vazia à base
+  const dh=driveH(round);
+  const nB=dh!=null?Math.floor(dh/(ST.pausaApos||4.5)):0; const pausas=nB*(ST.pausaDur||0.75);
+  return {round, driveH:dh, pausas, work: dh!=null? dh+pausas+(ST.tManobra||1):null};
+}
+function dPlus(dstr,n){ const p=(dstr||'').slice(0,10).split('-'); if(p.length<3)return dstr; const dt=new Date(Date.UTC(+p[0],+p[1]-1,+p[2])); dt.setUTCDate(dt.getUTCDate()+n); return dt.toISOString().slice(0,10); }
+function dCmp(a,b){ a=(a||'').slice(0,10); b=(b||'').slice(0,10); return a<b?-1:a>b?1:0; }
+function planDays(list){
+  const cap=(ST.condMaxDia||9); const today=new Date().toISOString().slice(0,10);
+  let curDate=null, dayDrive=0, dayIdx=0;
+  list.forEach(t=>{
+    const cyc=tripCycle(t); t._driveH=cyc.driveH; t._round=cyc.round; t._work=cyc.work; t._late=false; t._overDay=false;
+    const earliest=(t.disp&&t.disp.slice(0,10))||today;
+    const floor=dCmp(earliest,today)>0?earliest:today;
+    if(curDate===null){ curDate=floor; dayDrive=0; dayIdx=1; }
+    else if(dCmp(floor,curDate)>0){ curDate=floor; dayDrive=0; dayIdx++; }
+    else if(dayDrive>0 && cyc.driveH!=null && dayDrive+cyc.driveH>cap+0.001){ curDate=dPlus(curDate,1); dayDrive=0; dayIdx++; }
+    t._date=curDate; t._day=dayIdx;
+    if(cyc.driveH!=null){ dayDrive+=cyc.driveH; t._overDay=cyc.driveH>cap+0.001; }
+    if(t.entregar && dCmp(curDate,t.entregar.slice(0,10))>0) t._late=true;
+  });
+}
 function minStr(a,b){return !a?b:(!b?a:(a<b?a:b));}
 function maxStr(a,b){return !a?b:(!b?a:(a>b?a:b));}
 function pickPMfor(peso,comp){const c=[...ST.pm].sort((a,b)=>a.cap-b.cap);for(const p of c){if(peso<=p.cap&&comp<=(p.deck||99))return p;}return null;}
@@ -1002,7 +1168,7 @@ function tripLabel(t){return t.items.map(i=>i.label).join(' + ');}
 function planRoutes(){
   const reqs=ST.req.filter(r=>r.num).map(r=>{const e=byNum(r.num);const s=specOf(e);
     return {e,num:r.num,label:eqLabel(e),classe:e.classe,peso:s.peso,comp:s.c,larg:s.l,alt:s.a,
-            orig:r.orig||'',dest:r.dest||'',disp:r.disp||'',entregar:r.entregar||''};});
+            orig:r.orig||'',dest:r.dest||'',disp:r.disp||'',entregar:r.entregar||'',src:r.src||'manual'};});
   if(!reqs.length){document.getElementById('planResults').innerHTML='<div class="card warnbox">Adicione pedidos com máquina selecionada.</div>';return;}
   const MAXCAP=Math.max(...ST.pm.map(p=>p.cap)), MAXDECK=Math.max(...ST.pm.map(p=>p.deck||99));
   const routes={};
@@ -1067,32 +1233,55 @@ function renderPlan(){
   Object.values(routes).forEach(rt=>{
     const rtrips=trips.filter(t=>normLoc(t.orig)===normLoc(rt.orig)&&normLoc(t.dest)===normLoc(rt.dest));
     const rkm=kmBetween(rt.orig,rt.dest);
+    const srcs=[...new Set(rt.items.map(m=>m.src||'manual'))];
+    const crossBadge = srcs.length>1 ? ' <span class="pill p-warn" title="Conjuga pedidos das duas origens">⇄ cruza Excel + Manual</span>' : '';
     html+=`<div style="border:1px solid var(--line);border-radius:8px;padding:10px;margin-bottom:8px">
-      <div class="flex between"><b>${rt.orig||'—'} → ${rt.dest||'—'}${rkm!=null?` <span class="tag">${rkm} km</span>`:''}</b><span class="pill p-mut">${rt.items.length} máq · ${rtrips.length} viagem(ns)</span></div>
+      <div class="flex between"><b>${rt.orig||'—'} → ${rt.dest||'—'}${rkm!=null?` <span class="tag">${rkm} km</span>`:''}${crossBadge}</b><span class="pill p-mut">${rt.items.length} máq · ${rtrips.length} viagem(ns)</span></div>
       <div style="margin-top:6px">${rt.items.map(m=>`<span class="chip">${m.label}</span>`).join('')}</div>
       ${rtrips.some(t=>t.items.length>1)?'<div class="small" style="color:#4ade80;margin-top:6px">✔ máquinas empilhadas numa só viagem: '+rtrips.filter(t=>t.items.length>1).map(t=>tripLabel(t)).join(' | ')+'</div>':''}
     </div>`;
   });
   html+=`</div>`;
   html+=`<div class="card"><div class="flex between"><h2 style="margin:0">Plano por conjunto (ordenado por prazo)</h2><button class="ghost btn mini" onclick="planRoutes()">↺ Reotimizar</button></div>
-    <p class="small muted">O plano é otimizado automaticamente, mas podes <b>mover cada viagem</b> entre PM01/02/03 no seletor «mover p/» — os km, prazos e encadeamentos recalculam. Conjuntos que não aguentam o peso/comprimento ficam desativados.</p>
+    <p class="small muted">O plano é otimizado automaticamente, mas podes <b>mover cada viagem</b> entre PM01/02/03 no seletor «mover p/» — os km, prazos e encadeamentos recalculam. Se atribuíres a um conjunto que excede o peso/comprimento (marcado ⚠), aparece um <b>alerta a confirmar</b> antes de avançar.</p>
     <div class="grid g3">`;
+  let fleetDays=0, fleetLate=0, fleetNoCoord=false, fleetDrive=0;
   ST.pm.forEach(p=>{
     const list=sched[p.id]||[];
+    planDays(list);
+    const daysNeeded=list.length?Math.max(...list.map(t=>t._day)):0;
+    fleetDays=Math.max(fleetDays,daysNeeded);
+    const dayTot={}; list.forEach(t=>{ if(t._driveH!=null){dayTot[t._day]=(dayTot[t._day]||0)+t._driveH; fleetDrive+=t._driveH;} });
     html+=`<div style="border:1px solid var(--line);border-radius:8px;padding:10px">
-      <div class="flex between"><b>${p.id}</b><span class="tag">${list.length} viagem(ns)</span></div>
+      <div class="flex between"><b>${p.id}</b><span class="tag">${list.length} viagem(ns)${daysNeeded>1?' · '+daysNeeded+' dias':''}</span></div>
       <div class="muted small">${p.trator} + ${p.pm}${p.mot?' · '+p.mot:''}</div>`;
+    let curDay=null;
     list.forEach((t,ix)=>{
+      if(t._day!==curDay){
+        curDay=t._day; const tot=dayTot[t._day], cap=(ST.condMaxDia||9);
+        const overD=tot!=null&&tot>cap+0.001;
+        const pill=tot==null?'<span class="pill p-mut">condução n/d</span>'
+          :`<span class="pill ${overD?'p-warn':'p-ok'}">🕒 ${tot.toFixed(1)}h / ${cap}h condução</span>`;
+        html+=`<div style="margin-top:10px;padding:6px 8px;background:var(--panel2);border-radius:6px;display:flex;justify-content:space-between;align-items:center;gap:6px">
+          <b class="small">📅 Dia ${t._day} · ${fmtDate(t._date)}</b>${pill}</div>`;
+      }
       const dh=t._dh;
       const chainMsg = ix>0 ? (dh===0?'↳ encadeado — sem volta vazia':(dh!=null?`↳ encadeado — ${dh} km de posicionamento`:'')) : '';
       const pilot=pilotCar(combinedLoad(t.items.map(i=>i.num)),p);
-      const moveSel=`<select onchange="moveTrip('${t.id}',this.value)" style="width:auto;font-size:11px;padding:2px 5px">${ST.pm.map(pp=>{const ok=t.peso<=pp.cap&&t.comp<=(pp.deck||99);return `<option value="${pp.id}" ${pp.id===p.id?'selected':''} ${ok?'':'disabled'}>${pp.id}${ok?'':' ✕'}</option>`;}).join('')}</select>`;
-      html+=`<div style="margin-top:8px;padding-top:8px;border-top:1px dashed var(--line)">
+      const overW=t.peso>p.cap, overL=t.comp>(p.deck||99), over=overW||overL;
+      if(t._late)fleetLate++; if(t._driveH==null)fleetNoCoord=true;
+      const driveTag=t._driveH!=null
+        ? ` <span class="tag" title="ida + volta vazia ≈ ${t._round} km a ${velEff().toFixed(0)} km/h">🕒 ${t._driveH.toFixed(1)}h</span>`
+        : ' <span class="tag" title="falta coordenada de origem/destino">🕒 n/d</span>';
+      const moveSel=`<select onchange="moveTrip('${t.id}',this.value)" style="width:auto;font-size:11px;padding:2px 5px">${ST.pm.map(pp=>{const ok=t.peso<=pp.cap&&t.comp<=(pp.deck||99);return `<option value="${pp.id}" ${pp.id===p.id?'selected':''}>${pp.id}${ok?'':' ⚠'}</option>`;}).join('')}</select>`;
+      html+=`<div style="margin-top:8px;padding-top:8px;border-top:1px dashed var(--line)${over?';outline:1px solid var(--dang);outline-offset:2px;border-radius:6px':''}">
         ${chainMsg?`<div class="small" style="color:${dh===0?'#4ade80':'#fbbf24'}">${chainMsg}</div>`:''}
-        <div><b>${ix+1}. ${t.orig||'—'} → ${t.dest||'—'}</b>${t.km!=null?` <span class="tag">${t.km} km</span>`:''}</div>
+        <div><b>${ix+1}. ${t.orig||'—'} → ${t.dest||'—'}</b>${t.km!=null?` <span class="tag">${t.km} km</span>`:''}${driveTag}</div>
         <div class="small">${tripLabel(t)}</div>
         <div class="small muted">${(t.peso/1000).toFixed(1)}t · ${t.legal.level!=='normal'?levelPillHTML(t.legal.level):'<span class="pill p-ok">normal</span>'} ${pilot.n>0?' · 🚨 piloto '+pilot.n+'×':''}</div>
-        ${t.entregar?`<div class="small muted">⏱ entregar até ${fmtDT(t.entregar)}</div>`:''}${t.disp?`<div class="small muted">disp. desde ${fmtDT(t.disp)}</div>`:''}
+        ${t._overDay?`<div class="small" style="color:#f87171">⚠ ida-volta ≈ ${t._driveH.toFixed(1)}h excede a condução diária de ${(ST.condMaxDia||9)}h (Reg. 561/2006) — prever pernoita ou 2.º condutor</div>`:''}
+        ${over?`<div class="small" style="color:#f87171">⚠ acima do limite do ${p.id}: ${[overW?'peso > '+(p.cap/1000).toFixed(1)+'t':'',overL?'comp. > '+(p.deck||0).toFixed(1)+'m':''].filter(Boolean).join(' · ')}</div>`:''}
+        ${t.entregar?`<div class="small muted"${t._late?' style="color:#f87171"':''}>⏱ entregar até ${fmtDT(t.entregar)}${t._late?' — ⚠ prazo em risco (agendado p/ '+fmtDate(t._date)+')':''}</div>`:''}${t.disp?`<div class="small muted">disp. desde ${fmtDT(t.disp)}</div>`:''}
         <div class="flex" style="gap:5px;margin-top:5px;align-items:center"><span class="small muted">mover p/:</span>${moveSel}</div>
       </div>`;
     });
@@ -1100,6 +1289,16 @@ function renderPlan(){
     html+='</div>';
   });
   html+=`</div></div>`;
+  html+=`<div class="card"><h2>⏱ Tempos de condução — Reg. (CE) n.º 561/2006</h2>
+    <div class="grid g3">
+      <div class="kpi"><div class="l">Dias de condução necessários</div><div class="n">${fleetDays||0}</div></div>
+      <div class="kpi"><div class="l">Condução total estimada</div><div class="n" style="font-size:22px">${fleetDrive.toFixed(1)}<span style="font-size:13px"> h</span></div></div>
+      <div class="kpi"><div class="l">Viagens com prazo em risco</div><div class="n" style="font-size:22px;color:${fleetLate?'var(--dang)':'var(--acc)'}">${fleetLate}</div></div>
+    </div>
+    <p class="small muted" style="margin-top:8px">Limite diário de condução <b>${ST.condMaxDia||9}h</b> (extensível a 10h 2×/semana) · pausa de <b>${Math.round((ST.pausaDur||0.75)*60)} min</b> após <b>${ST.pausaApos||4.5}h</b> · velocidade média <b>${velEff().toFixed(0)} km/h</b> (${ST.velReducao||40}% abaixo do limite de ${ST.velLimite||80} km/h) · carga+descarga <b>${ST.tManobra||2}h</b>/viagem. Cada viagem conta <b>ida carregada + volta vazia à base</b>. Encadeamentos (abaixo) reduzem estes tempos. Ajuste em <b>Parâmetros › Tempos de condução</b>.</p>
+    ${fleetNoCoord?'<div class="warnbox">Há viagens sem distância (falta coordenada de origem/destino) — os respetivos tempos de condução não foram validados. Preencha as coordenadas das bases/pedreiras em <b>Parâmetros › Locais</b>.</div>':''}
+    ${fleetLate?'<div class="warnbox">Há viagens cujo dia de execução ultrapassa o prazo de entrega quando se respeita o limite diário de condução. Reforce com outro conjunto/motorista, antecipe a recolha, ou recorra a terceiros.</div>':''}
+  </div>`;
   if(chains.length){
     html+=`<div class="card"><h2>Encadeamentos sugeridos (evitar viagem vazia)</h2>`;
     chains.forEach(([a,b,dh])=>{html+=`<div class="note">Após entregar <b>${tripLabel(a)}</b> em <b>${a.dest}</b>, o conjunto pode recolher <b>${tripLabel(b)}</b> (sai de ${b.orig}${dh>0?`, a ≈${dh} km`:', mesmo local'}) em vez de voltar vazio.</div>`;});
@@ -1251,14 +1450,45 @@ function renderDash(){
 /* ================= PARÂMETROS ================= */
 function renderPM(){
   const tb=document.querySelector('#pmTable tbody');
+  const esc=s=>(s==null?'':s).toString().replace(/"/g,'&quot;');
   tb.innerHTML=ST.pm.map((p,i)=>`<tr>
-    <td><b>${p.id}</b></td><td>${p.trator}</td><td>${p.pm}</td><td>${p.mot||'—'}</td><td class="muted small">${p.desc}</td>
-    <td><input type="number" style="width:100px;padding:4px" value="${p.tara}" onchange="ST.pm[${i}].tara=+this.value;save()"></td>
-    <td><input type="number" style="width:100px;padding:4px" value="${p.cap}" onchange="ST.pm[${i}].cap=+this.value;save()"></td>
-    <td><input type="number" step="0.1" style="width:70px;padding:4px" value="${p.deck!=null?p.deck:''}" onchange="ST.pm[${i}].deck=+this.value;save()"></td></tr>`).join('');
+    <td><input style="width:64px;padding:4px;font-weight:700" value="${esc(p.id)}" onchange="setPMId(${i},this.value)"></td>
+    <td><input style="width:100px;padding:4px" value="${esc(p.trator)}" onchange="ST.pm[${i}].trator=this.value;save();renderPM()"></td>
+    <td><input style="width:100px;padding:4px" value="${esc(p.pm)}" onchange="ST.pm[${i}].pm=this.value;save();renderPM()"></td>
+    <td><input style="width:130px;padding:4px" value="${esc(p.mot)}" onchange="ST.pm[${i}].mot=this.value;save()"></td>
+    <td><input style="width:220px;padding:4px" value="${esc(p.desc)}" onchange="ST.pm[${i}].desc=this.value;save()"></td>
+    <td><input type="number" style="width:96px;padding:4px" value="${p.tara}" onchange="ST.pm[${i}].tara=+this.value;save()"></td>
+    <td><input type="number" style="width:96px;padding:4px" value="${p.cap}" onchange="ST.pm[${i}].cap=+this.value;save()"></td>
+    <td><input type="number" step="0.1" style="width:70px;padding:4px" value="${p.deck!=null?p.deck:''}" onchange="ST.pm[${i}].deck=+this.value;save()"></td>
+    <td><span class="x link" style="color:var(--dang);cursor:pointer;font-weight:700" onclick="delPM(${i})">✕</span></td></tr>`).join('');
   // PM selects
   const opts=ST.pm.map(p=>`<option value="${p.id}">${p.id} · ${p.trator}+${p.pm}</option>`).join('');
   document.getElementById('rPM').innerHTML=opts;
+}
+function setPMId(i,v){
+  v=(v||'').trim(); const old=ST.pm[i].id;
+  if(!v){ alert('O ID não pode ficar vazio.'); renderPM(); return; }
+  if(ST.pm.some((p,j)=>j!==i&&p.id===v)){ alert('Já existe um conjunto com o ID «'+v+'».'); renderPM(); return; }
+  ST.pm[i].id=v;
+  if(old!==v){ // manter coerência das referências existentes
+    ST.fretes.forEach(f=>{ if(f.pm===old)f.pm=v; });
+    ST.prefs.forEach(pr=>{ pr.allow=pr.allow.map(id=>id===old?v:id); });
+  }
+  save(); renderPM(); renderPrefs();
+}
+function delPM(i){
+  const p=ST.pm[i]; if(!p)return;
+  if(!confirm('Remover o conjunto '+p.id+' ('+p.trator+' + '+p.pm+')?'))return;
+  ST.pm.splice(i,1);
+  ST.prefs.forEach(pr=>{ pr.allow=pr.allow.filter(id=>id!==p.id); });
+  ST.prefs=ST.prefs.filter(pr=>pr.allow.length);
+  save(); renderPM(); renderPrefs();
+}
+function addPM(){
+  let n=1; const ids=new Set(ST.pm.map(p=>p.id));
+  while(ids.has('PM'+String(n).padStart(2,'0')))n++;
+  ST.pm.push({id:'PM'+String(n).padStart(2,'0'),trator:'',pm:'',mot:'',desc:'',tara:15000,cap:20000,deck:9.5});
+  save(); renderPM();
 }
 function renderLegal(){
   const L=ST.legal;const F=[
@@ -1271,6 +1501,8 @@ function renderLegal(){
   ];
   document.getElementById('legalParams').innerHTML=F.map(([k,lab])=>`<div><label>${lab}</label><input type="number" step="0.05" value="${L[k]}" onchange="ST.legal['${k}']=+this.value;save()"></div>`).join('');
   document.getElementById('deckH').value=ST.deckH;document.getElementById('baseL').value=ST.baseL;
+  ['velLimite','velReducao','condMaxDia','pausaApos','pausaDur','tManobra'].forEach(k=>{const el=document.getElementById(k);if(el)el.value=ST[k];});
+  const ve=document.getElementById('velEffOut');if(ve)ve.value=velEff().toFixed(0)+' km/h';
 }
 function renderLocais(){
   const tb=document.querySelector('#locTable tbody');
@@ -1282,11 +1514,14 @@ function renderLocais(){
   document.getElementById('roadFactor').value=ST.roadFactor;
   document.getElementById('chainKm').value=ST.chainKm;
 }
+document.getElementById('btnAddPM').onclick=addPM;
 document.getElementById('btnAddLoc').onclick=()=>{ST.locais.push({nome:'',lat:null,lon:null});save();renderLocais();};
 document.getElementById('roadFactor').onchange=e=>{ST.roadFactor=+e.target.value;save();};
 document.getElementById('chainKm').onchange=e=>{ST.chainKm=+e.target.value;save();};
+['velLimite','velReducao','condMaxDia','pausaApos','pausaDur','tManobra'].forEach(k=>{const el=document.getElementById(k);if(el)el.onchange=e=>{ST[k]=+e.target.value;save();const ve=document.getElementById('velEffOut');if(ve)ve.value=velEff().toFixed(0)+' km/h';if(typeof PLAN!=='undefined'&&PLAN)renderPlan();};});
 document.getElementById('deckH').onchange=e=>{ST.deckH=+e.target.value;save();renderLoad();};
 document.getElementById('baseL').onchange=e=>{ST.baseL=+e.target.value;save();renderLoad();};
+document.getElementById('btnResetPM').onclick=()=>{if(confirm('Repor os 4 conjuntos oficiais da frota?\n\n• PM01: BG-52-ZE + AV-55672\n• PM02: BE-09-MB + SE-1082\n• PM03: BE-10-MB + L-154494\n• PM04: 94-TA-46 + SA-4378 (Nooteboom)\n\nMantém o histórico de fretes, specs e conjugações. Só perde ajustes manuais de tara/capacidade nos conjuntos.')){ST.pm=JSON.parse(JSON.stringify(DEFAULT_PM));save();renderPM();renderPrefs();alert('Conjuntos repostos. O histórico do SE-1082 volta a ficar no PM02 e o SA-4378 (PM04) fica com as características corretas.');}};
 document.getElementById('btnResetSpecs').onclick=()=>{if(confirm('Repor todos os pesos/dimensões estimados?')){ST.specs={};save();renderCat();}};
 document.getElementById('btnReseed').onclick=()=>{if(confirm('Recarregar os 400 fretes do histórico? (substitui os fretes marcados «hist»; mantém os que registou manualmente)')){seedHistory(true);renderFretes();renderDash();alert('Histórico recarregado.');}};
 document.getElementById('btnWipe').onclick=()=>{if(confirm('Apagar TODOS os dados locais (fretes, specs, grupos, parâmetros)?')){localStorage.removeItem(LS);location.reload();}};
@@ -1308,7 +1543,7 @@ function initClasses(){
 }
 if(!ST.seeded && SEED_FRETES.length){ seedHistory(false); }
 document.getElementById('rData').value=new Date().toISOString().slice(0,10);
-initClasses();renderSel();renderMselList();renderLocEq();renderGrpQuick();renderCat();renderGroups();renderPM();renderLegal();renderLocais();renderFretes();refreshDatalists();
+initClasses();renderSel();renderMselList();renderLocEq();renderGrpQuick();renderCat();renderGroups();renderPM();renderPrefs();renderLegal();renderLocais();renderFretes();refreshDatalists();
 </script>
 </body>
 </html>

@@ -14,7 +14,7 @@
 | Diretora de Logística | Rita Fialho | ✅ Ativo | |
 | Gestor Tráfego Cisternas | Gabriela Soares | ✅ Ativo | |
 | Gestor Tráfego Indústria | Bruna Cordeiro | ✅ Ativo | |
-| Gestor Tráfego CPSA | Frederico Catarino | ⚠️ Em formação | Entrada: 29 jun. — ainda em ramp-up |
+| Gestor Tráfego CPSA | Frederico Cristiano | ⚠️ Em formação | Entrada: 29 jun. — ainda em ramp-up |
 | Gestor Comercial | Filipe Nascimento | ✅ Ativo | |
 | Comercial Indústria | Jorge Ferreira | ✅ Ativo | |
 
@@ -57,7 +57,7 @@
 | João Campos | 3 — Custos Operacionais + Combustíveis/Equipamentos + Gestor de Frota (part.) | 🔴 Alto |
 | António Marques | 2 — Administrativo Cisternas + Gestor de Frota (part.) | 🟡 Médio |
 | Nuno D'Avo | 2 locais — Vale Rodrigues + Moleanos | 🟡 Médio |
-| Frederico Catarino | 1 — mas ainda em formação, sem autonomia plena | 🟡 Médio |
+| Frederico Cristiano | 1 — mas ainda em formação, sem autonomia plena | 🟡 Médio |
 | Restantes | 1 função cada | 🟢 Normal |
 
 ---
@@ -73,7 +73,7 @@ João Campos acumula três responsabilidades distintas: Administrativo de Custos
 
 ---
 
-### 🟡 Risco 2 — Frederico Catarino ainda em ramp-up (CPSA)
+### 🟡 Risco 2 — Frederico Cristiano ainda em ramp-up (CPSA)
 CPSA é a área com mais motoristas (30 internos + alugados) e maior exposição operacional. O gestor de tráfego desta área entrou em 29 de junho — menos de 2 semanas. Durante o período de formação, a supervisão de Frederico recai sobre Rita ou outros gestores.
 
 **Impacto potencial:** erros de despacho, desvios operacionais não detetados, sobrecarga de Rita no acompanhamento.
@@ -185,7 +185,7 @@ Os seguintes tratores constam em Basculantes **e** Transporte Especial — o mes
 | # | Ação | Responsável | Prazo | Impacto |
 |---|------|-------------|-------|---------|
 | 1 | Definir RACI formal da função Gestor de Frota (Marques vs. Campos) | Rita Fialho | 31 jul. | 🔴 Alto |
-| 2 | Atribuir tutor a Frederico Catarino e definir marco de autonomia | Rita Fialho | 15 jul. | 🟡 Médio |
+| 2 | Atribuir tutor a Frederico Cristiano e definir marco de autonomia | Rita Fialho | 15 jul. | 🟡 Médio |
 | 3 | Avaliar carga real de João Campos e distribuir uma função | Rita Fialho | 31 jul. | 🔴 Alto |
 | 4 | Identificar backups para Vale Rodrigues e Moleanos | Nuno D'Avo | 31 ago. | 🟡 Médio |
 | 5 | Mapear volume e custo de transportes alugados (Indústria + CPSA) | João Campos | 31 jul. | 🟡 Médio |

@@ -57,6 +57,7 @@ Controlo de obras com foco em consumos de gasóleo (cartões **Solred** e requis
 - Fluxos a identificar:
   - **Tojal → JCBento**
   - **JCBento → Tojal**
+- Registo criado: [[04 Obras e Clientes/JCBento]] — tabela para lançar cada transporte.
 
 ## Decisões
 > [!decision]
@@ -67,8 +68,8 @@ Controlo de obras com foco em consumos de gasóleo (cartões **Solred** e requis
 ## Tarefas
 - [ ] Corrigir/atualizar **KMs reais no PHC** e reconciliar a **ficha de equipamento do AJ49BP** (206 054 vs 168 638 km). *(Resp.: [[03 Pessoas/Hugo Carreira]] — Controlo de Gestão, c/ [[03 Pessoas/Rita Fialho]] — Logística)* 📅 2026-08-07
 - [ ] Esclarecer se **os abastecimentos são fechados todos no mesmo dia** e normalizar o processo de fecho. *(Resp.: [[03 Pessoas/Rita Fialho]] — Logística)* 📅 2026-08-07
-- [ ] **Levantamento de motoristas que fazem requisições de gasóleo externo** — PTSA + Pragosa Betão. *(Resp.: [[03 Pessoas/Rita Fialho]] — Logística)* 📅 2026-08-07
-- [ ] **Confirmar com Emanuel** a **instalação da App de Combustíveis** e a **formação** em Santa Eulália, Cano e Moleanos. *(Resp.: [[03 Pessoas/Rita Fialho]] — Logística; execução: Emanuel)* 📅 2026-08-07
+- [x] **Levantamento de motoristas que fazem requisições de gasóleo externo** — PTSA + Pragosa Betão. *(Resp.: [[03 Pessoas/Rita Fialho]] — Logística)* 📅 2026-08-07
+- [x] **Confirmar com Emanuel** a **instalação da App de Combustíveis** e a **formação** em Santa Eulália, Cano e Moleanos. *(Resp.: [[03 Pessoas/Rita Fialho]] — Logística; execução: Emanuel)* 📅 2026-08-07
 - [ ] Levantar **capacidade (litros)** e **data de entrada** do **tanque grande de Xévora**. *(Resp.: [[03 Pessoas/Rita Fialho]] — Logística)* 📅 2026-08-07
 - [ ] Passar a **identificar os transportes para a JCBento** (Tojal → JCBento e JCBento → Tojal). *(Resp.: [[03 Pessoas/Joana Pragosa]] — Administração)* 📅 2026-08-07
 

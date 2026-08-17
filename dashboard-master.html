@@ -120,6 +120,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
 .e-pending-cb{margin-top:2px;cursor:pointer;flex-shrink:0}
 .e-notes-area{width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:7px;font-size:12.5px;resize:vertical;min-height:60px;font-family:inherit;color:var(--text);background:var(--surface)}
 .e-notes-area:focus{border-color:var(--accent);outline:none}
+.btn-sec{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:4px 10px;font-size:11.5px;cursor:pointer;color:var(--text-2);font-weight:500;transition:background .15s}
+.btn-sec:hover{background:var(--bg)}
 .btn-save-notes{padding:6px 14px;background:var(--accent);color:#fff;border:none;border-radius:7px;font-size:12px;font-weight:500;cursor:pointer;margin-top:6px}
 /* Org chart */
 .org-chart-wrap{overflow-x:auto;padding:4px 0 16px}
@@ -248,6 +250,36 @@ table.ft tr:hover td{background:#f9f9f7}
 .resp-select{font-size:11px;width:100%;background:var(--bg-2);color:var(--text-1);border:1px solid var(--border);border-radius:4px;padding:2px 3px;cursor:pointer}
 .resp-add-btn{margin-top:6px;font-size:11.5px;background:none;border:1px dashed var(--border);border-radius:5px;color:var(--accent);padding:4px 12px;cursor:pointer;width:100%;transition:background .15s}
 .resp-add-btn:hover{background:var(--bg-2)}
+/* ── Assistente IA ── */
+.ai-layout{display:grid;grid-template-columns:260px 1fr;gap:16px;height:calc(100vh - 120px);min-height:480px}
+.ai-sidebar{display:flex;flex-direction:column;gap:10px}
+.ai-emp-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:10px 12px;cursor:pointer;transition:border-color .15s,box-shadow .15s}
+.ai-emp-card:hover{border-color:var(--accent)}
+.ai-emp-card.selected{border-color:var(--accent);box-shadow:0 0 0 2px rgba(37,99,235,.12);background:#f0f7ff}
+.ai-emp-card .ai-emp-name{font-size:12.5px;font-weight:600;color:var(--text)}
+.ai-emp-card .ai-emp-role{font-size:11px;color:var(--text-3);margin-top:1px}
+.ai-chat{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.ai-chat-header{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-shrink:0}
+.ai-chat-title{font-size:13px;font-weight:600}
+.ai-chat-sub{font-size:11px;color:var(--text-3);margin-top:1px}
+.ai-msgs{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px}
+.ai-msg{display:flex;flex-direction:column;max-width:82%}
+.ai-msg.user{align-self:flex-end;align-items:flex-end}
+.ai-msg.ai{align-self:flex-start;align-items:flex-start}
+.ai-bubble{padding:9px 13px;border-radius:14px;font-size:12.5px;line-height:1.6;white-space:pre-wrap;word-break:break-word}
+.ai-msg.user .ai-bubble{background:var(--accent);color:#fff;border-bottom-right-radius:4px}
+.ai-msg.ai .ai-bubble{background:#f4f4f5;color:var(--text);border-bottom-left-radius:4px}
+.ai-msg.ai .ai-bubble.loading{color:var(--text-3);font-style:italic}
+.ai-quick{padding:8px 12px;border-top:1px solid var(--border);display:flex;gap:6px;flex-wrap:wrap;flex-shrink:0;background:#fafafa}
+.ai-quick-btn{font-size:11px;padding:4px 10px;border:1px solid var(--border);border-radius:20px;background:var(--surface);color:var(--text-2);cursor:pointer;transition:background .12s,border-color .12s;white-space:nowrap}
+.ai-quick-btn:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
+.ai-input-row{display:flex;gap:8px;padding:10px 12px;border-top:1px solid var(--border);flex-shrink:0}
+.ai-input{flex:1;border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-size:12.5px;font-family:inherit;resize:none;outline:none;line-height:1.5;min-height:44px;max-height:220px;overflow-y:auto;box-sizing:border-box}
+.ai-input:focus{border-color:var(--accent)}
+.ai-send{padding:8px 18px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-size:12.5px;font-weight:500;cursor:pointer;flex-shrink:0;transition:opacity .15s}
+.ai-send:disabled{opacity:.45;cursor:default}
+.ai-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:8px;color:var(--text-3);font-size:13px;text-align:center;padding:24px}
+.ai-empty .ai-empty-icon{font-size:36px;margin-bottom:4px}
 
 
 @media(max-width:700px){.kpi-dept-grid{grid-template-columns:1fr}}
@@ -294,12 +326,115 @@ table.ft tr:hover td{background:#f9f9f7}
 .fd-cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:12px}
 .fd-day-name{text-align:center;font-size:10px;font-weight:600;color:var(--text-3);padding:2px}
 .fd-day{text-align:center;font-size:12px;padding:5px 2px;border-radius:5px;line-height:1}
+.fd-day-toggle{cursor:pointer;transition:filter .15s,transform .12s}
+.fd-day-toggle:hover{filter:brightness(0.85);transform:scale(1.1)}
 .fd-day-vac{background:var(--accent);color:#fff;font-weight:700}
 .fd-day-weekend{color:var(--text-3);font-size:11px}
 .fd-day-normal{color:var(--text-1)}
 .fd-days-list{font-size:12px;color:var(--text-2);border-top:1px solid var(--border);padding-top:10px;margin-top:4px;line-height:1.7}
 .f-month-cell{cursor:pointer;transition:background .15s}
 .f-month-cell:hover{background:var(--bg-2)}
+
+/* ── Pessoas / People Hub ── */
+.pessoas-layout{display:flex;flex-direction:row;height:calc(100vh - 114px);min-height:520px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)}
+.pessoas-sidebar{border-right:none;overflow-y:auto;background:#fafafa;display:flex;flex-direction:column;flex-shrink:0;width:204px;min-width:120px;max-width:400px}
+.psi-head{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text-3);padding:12px 12px 6px}
+.psi-divider{height:1px;background:var(--border);margin:6px 0}
+.p-item{display:flex;align-items:center;gap:8px;padding:7px 12px;cursor:pointer;border-left:3px solid transparent;transition:background .1s}
+.p-item:hover{background:#f0f0ef}
+.p-item.active{background:#eff6ff;border-left-color:var(--accent)}
+.p-item-av{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;flex-shrink:0}
+.p-item-info{flex:1;min-width:0}
+.p-item-name{font-size:11.5px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.p-item-role{font-size:10px;color:var(--text-3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.p-status-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-left:auto}
+.p-view-btn{display:flex;align-items:center;gap:8px;padding:7px 12px;cursor:pointer;font-size:11.5px;color:var(--text-2);background:none;border:none;width:100%;text-align:left;transition:background .1s;border-left:3px solid transparent}
+.p-view-btn:hover{background:#f0f0ef}
+.p-view-btn.active{background:#eff6ff;border-left-color:var(--accent);color:var(--accent);font-weight:500}
+.pessoas-main{display:flex;flex-direction:column;overflow:hidden;flex:1;min-width:0}
+.pessoas-header{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;flex-shrink:0;min-height:60px}
+.p-main-av{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;flex-shrink:0}
+.p-main-name{font-size:14px;font-weight:600}
+.p-main-role{font-size:11px;color:var(--text-2);margin-top:1px}
+.pessoas-subnav{display:flex;border-bottom:1px solid var(--border);background:#fafafa;flex-shrink:0;overflow-x:auto}
+.psnav-btn{padding:9px 14px;font-size:12px;color:var(--text-2);border:none;background:none;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:color .1s;font-family:inherit}
+.psnav-btn:hover{color:var(--text)}
+.psnav-btn.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:500}
+.pessoas-content{flex:1;overflow-y:auto;padding:16px}
+/* Check-in */
+.ci-week-head{font-size:13px;font-weight:600;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.ci-q-block{margin-bottom:12px}
+.ci-q-label{font-size:12.5px;font-weight:500;margin-bottom:5px;color:var(--text)}
+.ci-scale{display:flex;gap:5px;align-items:center}
+.ci-scale-btn{width:33px;height:33px;border-radius:7px;border:1px solid var(--border);background:var(--bg);font-size:12.5px;cursor:pointer;transition:background .1s;font-family:inherit}
+.ci-scale-btn:hover{background:#e4e4e7}
+.ci-scale-btn.sel{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:600}
+.ci-hist-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--border);font-size:11.5px}
+.ci-hist-week{color:var(--text-3);width:60px;flex-shrink:0;font-size:11px}
+.ci-hist-score{font-weight:600;width:22px;text-align:center;flex-shrink:0}
+.ci-hist-bar-w{width:80px;height:5px;background:#e4e4e7;border-radius:3px;flex-shrink:0}
+.ci-hist-bar{height:100%;border-radius:3px}
+.ci-hist-note{color:var(--text-2);flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-size:11px}
+/* Objetivos */
+.obj-card{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin-bottom:8px}
+.obj-title{font-size:13px;font-weight:500;margin-bottom:3px}
+.obj-meta{font-size:11px;color:var(--text-2);margin-bottom:8px}
+.obj-prog-track{height:8px;background:#e4e4e7;border-radius:4px;overflow:hidden;margin-bottom:4px}
+.obj-prog-fill{height:100%;border-radius:4px}
+.obj-footer{display:flex;justify-content:space-between;font-size:10.5px;color:var(--text-3);align-items:center}
+/* Onboarding */
+.onb-phase{margin-bottom:14px}
+.onb-phase-head{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.onb-phase-title{font-size:12.5px;font-weight:500}
+.onb-task{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px;color:var(--text-2)}
+.onb-cb{width:15px;height:15px;border-radius:3px;border:1px solid var(--border);flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:10px}
+.onb-cb.done{background:var(--green);border-color:var(--green);color:#fff}
+.onb-cb.act{background:var(--accent);border-color:var(--accent);color:#fff}
+.onb-who{font-size:10px;color:var(--text-3);margin-left:auto;flex-shrink:0}
+/* PDI */
+.pdi-t{width:100%;border-collapse:collapse;font-size:12px}
+.pdi-t th{text-align:left;padding:5px 8px;font-size:10px;color:var(--text-3);font-weight:600;border-bottom:1px solid var(--border);text-transform:uppercase;letter-spacing:.04em;white-space:nowrap}
+.pdi-t td{padding:7px 8px;border-bottom:1px solid var(--border);vertical-align:middle;color:var(--text-2)}
+.pdi-t tr:last-child td{border-bottom:none}
+.pdi-tag{padding:2px 8px;border-radius:10px;font-size:10.5px;font-weight:500;white-space:nowrap}
+.pt-form{background:#dbeafe;color:#1e40af}.pt-ment{background:#ede9fe;color:#5b21b6}.pt-shad{background:#fef3c7;color:#92400e}.pt-pend{background:#f4f4f5;color:#52525b}.pt-ok{background:#dcfce7;color:#15803d}
+/* Competências matrix */
+.comp-matrix-wrap{overflow-x:auto}
+.comp-matrix{border-collapse:collapse;width:100%;font-size:11.5px}
+.comp-matrix th{padding:5px 8px;text-align:left;font-size:10px;color:var(--text-3);font-weight:600;border-bottom:1px solid var(--border);white-space:nowrap;position:sticky;top:0;background:var(--surface);z-index:1}
+.comp-matrix td{padding:5px 8px;border-bottom:1px solid var(--border);border-right:0.5px solid var(--border)}
+.comp-matrix td:last-child{border-right:none}
+.cm-cell{text-align:center;border-radius:4px;padding:2px 5px;font-size:11.5px;font-weight:600;display:inline-block;min-width:28px}
+.cm1{background:#fee2e2;color:#991b1b}.cm2{background:#fed7aa;color:#9a3412}.cm3{background:#fef9c3;color:#854d0e}.cm4{background:#bbf7d0;color:#166534}.cm5{background:#86efac;color:#14532d}.cmn{background:#f4f4f5;color:#71717a}
+.cm-person{font-size:12px;font-weight:500;white-space:nowrap}
+.cm-avg{font-weight:600}
+/* Vista Geral */
+.vg-kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+.vg-kpi{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;box-shadow:var(--shadow);text-align:center}
+.vg-kpi-n{font-size:22px;font-weight:600;line-height:1.1}
+.vg-kpi-l{font-size:11px;color:var(--text-3);margin-top:3px}
+.vg-alert{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:11px 14px;margin-bottom:8px;display:flex;align-items:flex-start;gap:10px;cursor:pointer;box-shadow:var(--shadow);transition:border-color .1s}
+.vg-alert:hover{border-color:#93c5fd}
+.vg-alert-icon{font-size:18px;flex-shrink:0;margin-top:1px}
+.vg-alert-title{font-size:12.5px;font-weight:500}
+.vg-alert-sub{font-size:11px;color:var(--text-2);margin-top:2px}
+.vg-alert-action{font-size:11px;color:var(--accent);margin-top:4px}
+/* ── Resize handles ── */
+.resize-handle{width:5px;background:transparent;cursor:col-resize;flex-shrink:0;transition:background .15s;z-index:10;position:relative}
+.resize-handle:hover,.resize-handle.dragging{background:var(--accent)}
+.resize-handle::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);height:32px;width:3px;border-radius:2px;background:var(--border);pointer-events:none}
+.panel-resizable{resize:vertical;overflow:auto;min-height:80px}
+.card.resizable{resize:vertical;overflow:auto;min-height:60px}
+
+
+/* ── Fullscreen / Maximize ── */
+.fs-btn{position:absolute;top:8px;right:8px;background:rgba(0,0,0,.04);border:1px solid var(--border);border-radius:6px;width:28px;height:28px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;z-index:20;transition:background .15s;color:var(--text-2)}
+.fs-btn:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
+.section-wrap{position:relative}
+.section-fullscreen{position:fixed!important;top:0!important;left:0!important;width:100vw!important;height:100vh!important;z-index:9999!important;background:var(--surface)!important;overflow:auto!important;border-radius:0!important;padding:12px 16px!important;box-sizing:border-box}
+.section-fullscreen .fs-btn{top:12px;right:16px;background:rgba(239,68,68,.1);color:var(--red,#ef4444);border-color:rgba(239,68,68,.3)}
+.section-fullscreen .fs-btn:hover{background:var(--red,#ef4444);color:#fff}
+.ci-hist-empty{opacity:.45;cursor:not-allowed!important}
 </style>
 </head>
 <body>
@@ -311,50 +446,49 @@ table.ft tr:hover td{background:#f9f9f7}
   <div class="app-header-right"><div>Diretora: Rita Fialho</div><div>Atualizado: 18 jul 2026</div></div>
 </div>
 <div class="nav">
-  <button class="nav-btn active" onclick="showTab('equipa',this)">Equipa</button>
+  <button class="nav-btn active" onclick="showTab('geral',this)">Vista Geral</button>
+  <button class="nav-btn" onclick="showTab('pessoas',this)">Pessoas</button>
+  <button class="nav-btn" onclick="showTab('competencias',this)">Compet&ecirc;ncias</button>
+  <button class="nav-btn" onclick="showTab('reunioes',this)">Reuni&otilde;es</button>
   <button class="nav-btn" onclick="showTab('frota',this)">Frota</button>
-  <button class="nav-btn" onclick="showTab('reunioes',this)">Reunioes</button>
-  <button class="nav-btn" onclick="showTab('kpis',this)">KPIs &amp; OKRs</button>
   <button class="nav-btn" id="nav-tarefas" onclick="showTab('tarefas',this)">Tarefas <span class="nav-badge" id="badge-open" style="display:none"></span></button>
+  <button class="nav-btn" onclick="showTab('assistente',this)">&#129302; Assistente</button>
 </div>
 <div class="main">
 
-<!-- EQUIPA -->
-<div id="tab-equipa" class="section active">
-  <div class="sh mb12">
-    <div class="sh-title">Equipa — 14 colaboradores</div>
-    <div class="view-toggle">
-      <button class="view-toggle-btn active" onclick="setEquipaView('cards',this)">Cartoes</button>
-      <button class="view-toggle-btn" onclick="setEquipaView('org',this)">Organograma</button>
-    <button class="view-toggle-btn" onclick="setEquipaView('ferias',this)">Férias 2026</button>
-    <button class="view-toggle-btn" onclick="setEquipaView('gantt',this)">GANTs</button>
+<!-- VISTA GERAL -->
+<div id="tab-geral" class="section active section-wrap"><button class="fs-btn" onclick="fsToggle('tab-geral')" title="Maximizar / Fechar (Esc)">⛶</button>
+  <div id="geral-content"></div>
+</div>
+
+<!-- PESSOAS / People Hub -->
+<div id="tab-pessoas" class="section section-wrap"><button class="fs-btn" onclick="fsToggle('tab-pessoas')" title="Maximizar / Fechar (Esc)">⛶</button>
+  <div class="pessoas-layout">
+    <div class="pessoas-sidebar" id="pessoas-sidebar"></div>
+    <div class="resize-handle" id="sb-resize-handle" title="Arrastar para redimensionar"></div>
+    <div class="pessoas-main">
+      <div class="pessoas-header" id="pessoas-header">
+        <div style="color:var(--text-3);font-size:13px">Selecione um colaborador na lista</div>
+      </div>
+      <div class="pessoas-subnav" id="pessoas-subnav" style="display:none">
+        <button class="psnav-btn active" id="sn-checkin" onclick="setPersonTab('checkin',this)">Check-in semanal</button>
+        <button class="psnav-btn" id="sn-objetivos" onclick="setPersonTab('objetivos',this)">Objetivos</button>
+        <button class="psnav-btn" id="sn-onboarding" onclick="setPersonTab('onboarding',this)" style="display:none">Onboarding 30/60/90</button>
+        <button class="psnav-btn" id="sn-pdi" onclick="setPersonTab('pdi',this)">Plano de Desenvolvimento</button>
+        <button class="psnav-btn" id="sn-perfil" onclick="setPersonTab('perfil',this)">Perfil</button>
+      </div>
+      <div class="pessoas-content" id="pessoas-content" style="display:flex;align-items:center;justify-content:center;color:var(--text-3);font-size:13px">Selecione um colaborador ←</div>
     </div>
   </div>
-  <div id="equipa-cards-view">
-    <div id="equipa-cards-container"></div>
-    <div class="divider"></div>
-    <div class="grid-3">
-      <div class="card"><div class="kpi-lbl">Cisternas</div><div class="kpi-num" style="color:var(--green)">15</div><div class="kpi-sub">motoristas internos</div><div class="mt8"><span class="badge b-ok">Sem alugados</span></div></div>
-      <div class="card"><div class="kpi-lbl">Industria / CPSA</div><div class="kpi-num" style="color:var(--amber)">40+</div><div class="kpi-sub">internos + alugados variavel</div><div class="mt8"><span class="badge b-warn">Dependencia alugados</span></div></div>
-      <div class="card"><div class="kpi-lbl">CCTs distintos</div><div class="kpi-num" style="color:var(--accent)">2</div><div class="kpi-sub">Pragosa Transportes vs. CPSA</div><div class="mt8"><span class="badge b-info">Atencao</span></div></div>
-    </div>
-    <div class="alert alert-warn mt12"><strong>Equipa — 18 jul 2026:</strong> Bruna em funções com elevado desempenho — disponibilidade crescente para análise de frota e outras áreas. Gabriela regressou de férias (7-10 jul) — foco nas Cisternas. António em dupla função (RACI a clarificar). João Campos: bom desempenho em junho (mobilizações e custos nos timings); combustíveis em acompanhamento. Frederico: arranca programa de formacao de 10 semanas (20/07-26/09) — Obj. 1 (planeamento basculantes) em curso; autonomia basculantes avaliada a 11/09 e transportes especiais a 26/09. Vera Bairros entra em agosto. Ruben Sousa: licença paternidade em setembro.</div>
-  </div>
-  <div id="equipa-org-view" style="display:none">
-    <div class="org-chart-wrap">
-      <div style="display:flex;justify-content:center;margin-bottom:0" id="orgRootRow"></div>
-      <div style="display:flex;justify-content:center"><div style="width:1px;height:20px;background:var(--border)"></div></div>
-      <div style="height:1px;background:var(--border);margin:0 11%"></div>
-      <div id="orgChildrenRow" style="display:flex;gap:8px;align-items:flex-start"></div>
-    </div>
-    <div class="org-edit-panel" id="orgEditPanel" style="display:none"></div>
-  </div>
-  <div id="equipa-ferias-view" style="display:none;padding-top:8px"></div>
-  <div id="equipa-gantt-view" style="display:none;padding-top:8px"></div>
+</div>
+
+<!-- COMPETÊNCIAS -->
+<div id="tab-competencias" class="section section-wrap"><button class="fs-btn" onclick="fsToggle('tab-competencias')" title="Maximizar / Fechar (Esc)">⛶</button>
+  <div id="competencias-content"></div>
 </div>
 
 <!-- FROTA -->
-<div id="tab-frota" class="section">
+<div id="tab-frota" class="section section-wrap"><button class="fs-btn" onclick="fsToggle('tab-frota')" title="Maximizar / Fechar (Esc)">⛶</button>
   <div class="url-config-bar" id="urlConfigBar">
     <div class="url-config-label">APP Gestao de Avarias: <span id="urlStatus">Nao configurada</span></div>
     <button class="btn-url-toggle" onclick="toggleUrlForm()">Configurar URL</button>
@@ -412,7 +546,7 @@ table.ft tr:hover td{background:#f9f9f7}
 </div>
 
 <!-- REUNIOES -->
-<div id="tab-reunioes" class="section">
+<div id="tab-reunioes" class="section section-wrap"><button class="fs-btn" onclick="fsToggle('tab-reunioes')" title="Maximizar / Fechar (Esc)">⛶</button>
 <div class="alert alert-info mb16">Reuniões actualizadas automaticamente · <strong>30 Jul 2026</strong></div>
 <div class="m-card">
   <div class="m-header">
@@ -832,7 +966,7 @@ table.ft tr:hover td{background:#f9f9f7}
 </div>
 
 <!-- TAREFAS -->
-<div id="tab-tarefas" class="section">
+<div id="tab-tarefas" class="section section-wrap"><button class="fs-btn" onclick="fsToggle('tab-tarefas')" title="Maximizar / Fechar (Esc)">⛶</button>
   <div class="task-stats mb12">
     <div class="task-stat s-open"><strong id="stat-open">0</strong>Abertas</div>
     <div class="task-stat s-high"><strong id="stat-high">0</strong>Alta prioridade</div>
@@ -870,26 +1004,79 @@ table.ft tr:hover td{background:#f9f9f7}
 
 </div><!-- /main -->
 <div class="toast" id="toast"></div>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.js" integrity="sha384-iU8HYtnGQ8Cy4zl7gbNMOhsDTTKX02BTXptVP/vqAWIaTfM7isw76iyZCsjL2eVi" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.js" integrity="sha384-iU8HYtnGQ8Cy4zl7gbNMOhsDTTKX02BTXptVP/vqAWIaTfM7isw76iyZCsjL2eVi" crossorigin="anonymous">
+</script>
 <script>
+// ── Sidebar resize ──
+(function(){
+  var handle=null,sidebar=null,startX=0,startW=0;
+  function init(){
+    handle=document.getElementById('sb-resize-handle');
+    sidebar=document.getElementById('pessoas-sidebar');
+    if(!handle||!sidebar)return;
+    handle.addEventListener('mousedown',function(e){
+      startX=e.clientX;startW=sidebar.offsetWidth;
+      handle.classList.add('dragging');
+      document.addEventListener('mousemove',onMove);
+      document.addEventListener('mouseup',onUp);
+      e.preventDefault();
+    });
+  }
+  function onMove(e){
+    var w=Math.max(120,Math.min(400,startW+(e.clientX-startX)));
+    sidebar.style.width=w+'px';
+  }
+  function onUp(){
+    handle.classList.remove('dragging');
+    document.removeEventListener('mousemove',onMove);
+    document.removeEventListener('mouseup',onUp);
+  }
+  document.addEventListener('DOMContentLoaded',init);
+  setTimeout(init,400);
+})();
+
+
+// ── Maximize / Fullscreen ──
+function fsToggle(sectionId){
+  var el=document.getElementById(sectionId);
+  if(!el)return;
+  var isFs=el.classList.contains('section-fullscreen');
+  // Remove from any other
+  document.querySelectorAll('.section-fullscreen').forEach(function(x){
+    x.classList.remove('section-fullscreen');
+    var b=x.querySelector('.fs-btn');if(b)b.textContent='⛶';
+  });
+  if(!isFs){
+    el.classList.add('section-fullscreen');
+    var btn=el.querySelector('.fs-btn');if(btn)btn.textContent='✕';
+  }
+}
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){
+    document.querySelectorAll('.section-fullscreen').forEach(function(x){
+      x.classList.remove('section-fullscreen');
+      var b=x.querySelector('.fs-btn');if(b)b.textContent='⛶';
+    });
+  }
+});
 // ── TEAM DATA ──
 var TEAM_DATA_DEFAULT=[
   {id:'rf',initials:'RF',color:'purple',name:'Rita Fialho',cargo:'Diretora de Logistica',area:'direcao',reportsTo:null,risk:'ok',status:'Lideranca',note:'Gestao operacional de frota, pedreiras, obras e projetos internos.',eval:[],pendentes:[]},
-  {id:'gs',initials:'GS',color:'blue',name:'Gabriela Soares',cargo:'Gest. Trafego — Cisternas',area:'trafego',reportsTo:'rf',risk:'ok',status:'Regressou — Foco Cisternas',note:'Responsavel pela gestao operacional da frota de cisternas. Cadencia: semanal 30 min. Ferias: 7-10 jul (regressou semana 18 jul).',eval:[{data:'2026-06-30',estado:'Em evolucao',nota:'A ganhar estabilidade na coordenacao com manutencao.'},{data:'2026-07-18',estado:'Operacional',nota:'Regressou de ferias (7-10 jul). Foco nas cisternas.'}],pendentes:[]},
-  {id:'bc',initials:'BC',color:'blue',name:'Bruna Cordeiro',cargo:'Gest. Trafego — Industria',area:'trafego',reportsTo:'rf',risk:'ok',status:'Elevado desempenho',note:'Gestao operacional da frota das pedreiras. Cadencia: semanal 30 min. Em funcoes em julho — ferias em junho (22-26).',eval:[{data:'2026-06-30',estado:'Sem avaliacao',nota:'Ausente (ferias). Substituida pela Monica com bom desempenho.'},{data:'2026-07-18',estado:'Elevado desempenho',nota:'Em funcoes com elevado desempenho na gestao da frota. Comeca a ter disponibilidade para analise de frota e integracao noutras areas.'}],pendentes:['Iniciar analise de frota — Industria','Explorar integracao noutras areas operacionais']},
-  {id:'fc',initials:'FC',color:'amber',name:'Frederico Catarino',cargo:'Gest. Trafego — CPSA',area:'trafego',reportsTo:'rf',risk:'warn',status:'Formacao — sem. 1 de 10',note:'Iniciou 29/06/2026. Lidera ~25 motoristas + transportes alugados (basculantes, carros grua, porta-maquinas). Programa de formacao e integracao de 10 semanas (20/07 a 26/09/2026), 4 objetivos: (1) planeamento basculantes sem. 1-2; (2) interacao motoristas/colegas sem. 3-4; (3) autonomia basculantes sem. 5-8; (4) autonomia transportes especiais sem. 9-10. Check-in semanal com Rita (15-20 min). Avaliacao formal a 11/09 (basculantes) e 26/09 (especiais). Riscos: autonomia forcada antes de tempo nos basculantes; sobreposicao entre fecho do Obj.3 e arranque do Obj.4; especiais exigem mais tempo tecnico.',eval:[{data:'2026-06-30',estado:'Em integracao',nota:'Plano de desenvolvimento: Fase I basculantes; Fase II T. Especial.'},{data:'2026-07-18',estado:'Em formacao',nota:'Programa de 10 semanas aprovado (20/07-26/09). Obj. 1 em curso; Obj. 2-4 por iniciar.'}],pendentes:['Processos e sistemas internos (trafego, ponto, avarias)','Conhecer frota e motoristas CPSA','Alinhar KPIs e expectativas com Rita','Obj.1 (20/07-31/07) — planeamento basculantes em modo sombra + desenho da ferramenta','Obj.2 (03/08-14/08) — rotina de contacto diario e mapa de interlocutores','Obj.3 (17/08-11/09) — reduzir supervisao ate autonomia nos basculantes','Obj.4 (14/09-26/09) — transportes especiais (grua, porta-maquinas, estrados)']},
-  {id:'mn',initials:'MN',color:'green',name:'Monica Neves',cargo:'Administrativa — Industria',area:'admin',reportsTo:'bc',risk:'ok',status:'A decorrer com normalidade',note:'Apoio administrativo as pedreiras. Reporta a Bruna Cordeiro.',eval:[{data:'2026-06-30',estado:'Superou expectativas',nota:'Substituiu a Bruna nas ferias — desempenho mais estavel do que o esperado.'},{data:'2026-07-18',estado:'A decorrer com normalidade',nota:'A decorrer com normalidade.'}],pendentes:[]},
-  {id:'fn',initials:'FN',color:'blue',name:'Filipe Nascimento',cargo:'Gestor Comercial — Industria',area:'comercial',reportsTo:'rf',risk:'ok',status:'Operacional',note:'Area Comercial das Pedreiras. Colabora com Alexandre Marques (Dir. Comercial) e Jorge Ferreira.',eval:[],pendentes:[]},
-  {id:'jf',initials:'JF',color:'blue',name:'Jorge Ferreira',cargo:'Comercial — Industria',area:'comercial',reportsTo:'fn',risk:'ok',status:'Operacional',note:'Gere pedidos e relacao com clientes de inertes. jorge.ferreira@pragosa.pt | 967952314.',eval:[],pendentes:[]},
-  {id:'am',initials:'AM',color:'amber',name:'Antonio Marques',cargo:'Admin. Cisternas + Gestor Frota (parcial)',area:'admin',reportsTo:'rf',risk:'warn',status:'Dupla funcao — clarificar RACI',note:'Administrativo de Cisternas e Lancamento (propostas, guias, faturacao, ocorrencias) + funcao parcial de Gestor de Frota. Dupla funcao a clarificar formalmente.',eval:[{data:'2026-07-18',estado:'Dupla funcao',nota:'Acumula responsabilidades administrativas das Cisternas com componente de gestao de frota. RACI a formalizar.'}],pendentes:['Clarificar RACI formal da funcao de Gestor de Frota (Marques vs. Campos)']},
-  {id:'jc',initials:'JC',color:'amber',name:'Joao Campos',cargo:'Admin. Custos + Combustiveis + Gestor Frota (parcial)',area:'admin',reportsTo:'rf',risk:'warn',status:'Bom desempenho — combustiveis em acomp.',note:'Combustiveis, custos, mobilizacoes, tacografos DL 84/2026, licencas e seguros.',eval:[{data:'2026-07-18',estado:'Bom desempenho',nota:'Bom desempenho em junho. Mobilizacoes e custos de transporte lancados nos respetivos timings. Combustiveis continua a ser a area de maior dificuldade — em acompanhamento.'}],pendentes:['Combustiveis — manter acompanhamento e identificar causas de dificuldade']},
-  {id:'nd',initials:'ND',color:'amber',name:"Nuno D'Avo",cargo:'Expedicao — Vale Rodrigues + Moleanos',area:'expedicao',reportsTo:'rf',risk:'warn',status:'2 locais — sem backup',note:'Dois locais sem backup identificado. Identificar substituto para ausencias.',eval:[],pendentes:[]},
-  {id:'le',initials:'L',color:'green',name:'Leonor',cargo:'Expedicao — Do Cano',area:'expedicao',reportsTo:'rf',risk:'ok',status:'Operacional',note:'',eval:[],pendentes:[]},
-  {id:'ac',initials:'AC',color:'green',name:'Ana Caiola',cargo:'Expedicao — Santa Eulalia',area:'expedicao',reportsTo:'rf',risk:'ok',status:'Operacional',note:'',eval:[],pendentes:[]},
-  {id:'st',initials:'ST',color:'amber',name:'Susete Trafaria',cargo:'Expedicao — Sobrissul',area:'expedicao',reportsTo:'rf',risk:'warn',status:'Sobrecarga',note:'Equipa Sobrissul em risco. Paula Lagos com baixas recorrentes.',eval:[],pendentes:[]},
-  {id:'pl',initials:'PL',color:'red',name:'Paula Lagos',cargo:'Expedicao — Sobrissul',area:'expedicao',reportsTo:'rf',risk:'err',status:'Baixas recorrentes',note:'Baixas recorrentes — equipa Sobrissul em risco critico.',eval:[],pendentes:[]},
+  {id:'gs',initials:'GS',color:'blue',name:'Gabriela Soares',cargo:'Tecnica Cisternas',area:'trafego',reportsTo:'rf',risk:'ok',status:'Regressou — Foco Cisternas',note:'Gestao de Trafego e Logistica de Cisternas (planeamento, gestao diaria, prioridades, incidencias, controlo operacional, contratacao de terceiros). Gestao operacional da frota (afetacao, avarias, substituicoes, produtividade, combustiveis). Gestao comercial (negociacao, encomendas, acompanhamento clientes). Gestao do administrativo e dos motoristas. KPIs operacionais.',eval:[{data:'2026-06-30',estado:'Em evolucao',nota:'A ganhar estabilidade na coordenacao com manutencao.'},{data:'2026-07-18',estado:'Operacional',nota:'Regressou de ferias (7-10 jul). Foco nas cisternas.'}],pendentes:[]},
+  {id:'bc',initials:'BC',color:'blue',name:'Bruna Cordeiro',cargo:'Tecnica Industria',area:'trafego',reportsTo:'rf',risk:'ok',status:'Elevado desempenho',note:'Gestao de Trafego e Logistica da Industria (planeamento, gestao diaria, prioridades, incidencias, controlo operacional, contratacao de terceiros). Gestao operacional da frota. Acompanhamento e controlo de encomendas. Gestao das expedicoes e do administrativo. Gestao e avaliacao dos motoristas. KPIs operacionais.',eval:[{data:'2026-06-30',estado:'Sem avaliacao',nota:'Ausente (ferias). Substituida pela Monica com bom desempenho.'},{data:'2026-07-18',estado:'Elevado desempenho',nota:'Em funcoes com elevado desempenho na gestao da frota. Comeca a ter disponibilidade para analise de frota e integracao noutras areas.'}],pendentes:['Iniciar analise de frota — Industria','Explorar integracao noutras areas operacionais']},
+  {id:'fc',initials:'FC',color:'amber',name:'Frederico Cristiano',cargo:'Tecnico Construcoes Pragosa',area:'trafego',reportsTo:'rf',risk:'warn',status:'Formacao — sem. 1 de 10',note:'Iniciou 29/06/2026. Lidera ~25 motoristas + transportes alugados (basculantes, carros grua, porta-maquinas). Programa de formacao e integracao de 10 semanas (20/07 a 26/09/2026), 4 objetivos: (1) planeamento basculantes sem. 1-2; (2) interacao motoristas/colegas sem. 3-4; (3) autonomia basculantes sem. 5-8; (4) autonomia transportes especiais sem. 9-10. Check-in semanal com Rita (15-20 min). Avaliacao formal a 11/09 (basculantes) e 26/09 (especiais). Riscos: autonomia forcada antes de tempo nos basculantes; sobreposicao entre fecho do Obj.3 e arranque do Obj.4; especiais exigem mais tempo tecnico.',eval:[{data:'2026-06-30',estado:'Em integracao',nota:'Plano de desenvolvimento: Fase I basculantes; Fase II T. Especial.'},{data:'2026-07-18',estado:'Em formacao',nota:'Programa de 10 semanas aprovado (20/07-26/09). Obj. 1 em curso; Obj. 2-4 por iniciar.'}],pendentes:['Processos e sistemas internos (trafego, ponto, avarias)','Conhecer frota e motoristas CPSA','Alinhar KPIs e expectativas com Rita','Obj.1 (20/07-31/07) — planeamento basculantes em modo sombra + desenho da ferramenta','Obj.2 (03/08-14/08) — rotina de contacto diario e mapa de interlocutores','Obj.3 (17/08-11/09) — reduzir supervisao ate autonomia nos basculantes','Obj.4 (14/09-26/09) — transportes especiais (grua, porta-maquinas, estrados)']},
+  {id:'mn',initials:'MN',color:'green',name:'Monica Neves',cargo:'Administrativa Industria',area:'admin',reportsTo:'bc',risk:'ok',status:'A decorrer com normalidade',note:'Emissao de propostas de fornecimento e notas de encomenda de agregados. Atualizacao do CRM (Trello Industria). Apoio as expedicoes e faturacao. Contacto e gestao de pequenos clientes. Feedback ao cliente interno (CPSA). Emissao de guias de blocos e folhas de desperdicio. Emissao de relatorios de ocorrencia. Apoio ao Comercial Industria e ao Tecnico responsavel. Substituicao de expedicao em caso de necessidade.',eval:[{data:'2026-06-30',estado:'Superou expectativas',nota:'Substituiu a Bruna nas ferias — desempenho mais estavel do que o esperado.'},{data:'2026-07-18',estado:'A decorrer com normalidade',nota:'A decorrer com normalidade.'}],pendentes:[]},
+  {id:'fn',initials:'FN',color:'blue',name:'Filipe Nascimento',cargo:'Gestor Comercial',area:'comercial',reportsTo:'rf',risk:'ok',status:'Operacional',note:'Supervisao da expedicao de blocos. Confirmacao da documentacao para faturacao. Gestao e acompanhamento de reclamacoes. Participacao nas CE de Industria. Ponte com a Producao. Aprovacao de relatorios de ocorrencia. Respostas a concursos publicos. Supervisao de adjudicacoes de entidades publicas. Levantamento de necessidades de carregamentos em fornecedores externos. Coordenacao do Comercial Industria. Apoio a Direcao Comercial.',eval:[],pendentes:[]},
+  {id:'jf',initials:'JF',color:'blue',name:'Jorge Ferreira',cargo:'Comercial Industria',area:'comercial',reportsTo:'fn',risk:'ok',status:'Operacional',note:'Prospeccao de mercado (Zona Sul e Alentejo). Negociacao com clientes. Comunicar diretrizes de propostas de fornecimento. Acompanhamento de clientes. Gestao do processo de rececao de terras. Solicitacoes LCQ. Gestao do CRM (Trello). Substituicao das expedicoes. jorge.ferreira@pragosa.pt | 967952314.',eval:[],pendentes:[]},
+  {id:'am',initials:'AM',color:'amber',name:'Antonio Marques',cargo:'Adm. Cisternas + Gestor de Frota e Apoio Operacional',area:'admin',reportsTo:'rf',risk:'warn',status:'Dupla funcao — clarificar RACI',note:'Administrativo Cisternas: emissao de propostas, notas de encomenda de transporte, verificacao e lancamento de guias, preparacao de docs para faturacao, envio de NE ao Dep. Compras. Gestor de Frota e Apoio Operacional: coordenacao com oficina, manutencoes preditivas/preventivas/corretivas, controlo de avarias/pneus, inspecoes, tacografos, documentacao, acompanhamento de viaturas e acidentes, licencas. Gestao administrativa de motoristas. Custos de obra. Apoio operacional aos tecnicos.',eval:[{data:'2026-07-18',estado:'Dupla funcao',nota:'Acumula responsabilidades administrativas das Cisternas com componente de gestao de frota. RACI a formalizar.'}],pendentes:['Clarificar RACI formal da funcao de Gestor de Frota (Marques vs. Campos)']},
+  {id:'jc',initials:'JC',color:'amber',name:'Joao Campos',cargo:'Adm. Combustiveis, Custos e Tacografos',area:'admin',reportsTo:'rf',risk:'warn',status:'Bom desempenho — combustiveis em acomp.',note:'Combustiveis/Energia: lancamento e controlo de consumos, abastecimento, analise de desvios, cartoes de combustivel, tanques fixos e moveis, postos de carregamento eletrico, email combustiveis. Mobilizacoes: registo e controlo de maquinas, lancamento de grandes equipamentos afetos a obra. Custos de obra: imputacao homem/obra e camiao/obra. Gestao administrativa de motoristas (horas, ponto, ferias, licencas). Tacografos: confirmacao de descargas, analise/validacao, informar motoristas em caso de anomalia, formacao.',eval:[{data:'2026-07-18',estado:'Bom desempenho',nota:'Bom desempenho em junho. Mobilizacoes e custos de transporte lancados nos respetivos timings. Combustiveis continua a ser a area de maior dificuldade — em acompanhamento.'}],pendentes:['Combustiveis — manter acompanhamento e identificar causas de dificuldade']},
+  {id:'nd',initials:'ND',color:'amber',name:"Nuno D'Avo",cargo:'Expedicao Industria — Vale Rodrigues + Moleanos',area:'expedicao',reportsTo:'rf',risk:'warn',status:'2 locais — sem backup',note:'Dois locais sem backup identificado. Identificar substituto para ausencias.',eval:[],pendentes:[]},
+  {id:'le',initials:'L',color:'green',name:'Leonor',cargo:'Expedicao Industria — Cano',area:'expedicao',reportsTo:'rf',risk:'ok',status:'Operacional',note:'',eval:[],pendentes:[]},
+  {id:'ac',initials:'AC',color:'green',name:'Ana Caiola',cargo:'Expedicao Industria — Santa Eulalia',area:'expedicao',reportsTo:'rf',risk:'ok',status:'Operacional',note:'',eval:[],pendentes:[]},
+  {id:'st',initials:'ST',color:'amber',name:'Susete Trafaria',cargo:'Expedicao Industria — Sobrissul',area:'expedicao',reportsTo:'rf',risk:'warn',status:'Sobrecarga',note:'Equipa Sobrissul em risco. Paula Lagos com baixas recorrentes.',eval:[],pendentes:[]},
+  {id:'pl',initials:'PL',color:'red',name:'Paula Lagos',cargo:'Expedicao Industria — Sobrissul',area:'expedicao',reportsTo:'rf',risk:'err',status:'Baixas recorrentes',note:'Baixas recorrentes — equipa Sobrissul em risco critico.',eval:[],pendentes:[]},
   {id:'vg',initials:'+',color:'blue',name:'Vaga aberta',cargo:'3. elemento — Sobrissul',area:'expedicao',reportsTo:'rf',risk:'info',status:'Em recrutamento',note:'Decisao CE 30 jun: abrir 3. elemento para Sobrissul.',eval:[],pendentes:['Publicar oferta de emprego','Definir perfil e criterios de selecao']},
-  {id:'vb',initials:'VB',color:'blue',name:'Vera Bairros',cargo:'A definir — entrada agosto',area:'equipa',reportsTo:'rf',risk:'info',status:'Pre-entrada — agosto 2026',note:'Entrada prevista agosto 2026. Funcao a definir.',eval:[],pendentes:['Preparar plano de onboarding','Definir funcao e area de integracao']}
+  {id:'vb',initials:'VB',color:'blue',name:'Vera Bairros',cargo:'Administrativa Cisternas',area:'admin',reportsTo:'rf',risk:'ok',status:'Em integracao',note:'Emissao e envio de propostas de fornecimento. Abertura de notas de encomenda de transporte. Verificacao e lancamento de guias de transporte. Preparacao de documentacao para faturacao. Apoio administrativo ao Tecnico responsavel. Envio de NE ao Dep. Compras. Em integracao desde agosto 2026 — apoio e supervisao do Antonio Marques.',eval:[{data:'2026-08-04',estado:'Em integracao',nota:'Inicio de funcoes em agosto 2026. Onboarding em curso.'}],pendentes:['Conhecer processos administrativos das Cisternas','Familiarizar com sistemas internos (guias, faturacao, ocorrencias)','Alinhar rotinas com Antonio Marques']}
 ];
 
 // ── Area responsibilities (from Obsidian person notes) ──
@@ -910,6 +1097,116 @@ var AREA_RESP={
   pl:['Expedicao — Sobrissul (co-responsavel)','Controlo de cargas, guias e comunicacao com motoristas'],
   vg:['[Vaga] A definir no processo de recrutamento']
 };
+// ── Competências & Desenvolvimento ──
+var COMP_DATA={
+  gs:{entrou:'06/10/2025',integracao:false,fase:'',items:[
+    {nome:'Comunicação',atual:4,meta:5},
+    {nome:'Organização e planeamento',atual:4,meta:5},
+    {nome:'Autonomia',atual:3,meta:5},
+    {nome:'Adaptabilidade',atual:3,meta:5},
+    {nome:'Trabalho em equipa',atual:4,meta:5},
+    {nome:'Resolução de problemas',atual:3,meta:5},
+    {nome:'Conhecimento técnico (Cisternas)',atual:4,meta:5},
+    {nome:'Gestão de processos operacionais',atual:3,meta:5},
+    {nome:'Ferramentas digitais / sistemas',atual:2,meta:5},
+    {nome:'Liderança',atual:2,meta:5},
+    {nome:'Controlo de Custos',atual:2,meta:5}
+  ]},
+  bc:{entrou:'',integracao:false,fase:'',items:[
+    {nome:'Comunicação',atual:4,meta:5},
+    {nome:'Organização e planeamento',atual:4,meta:5},
+    {nome:'Autonomia',atual:4,meta:5},
+    {nome:'Adaptabilidade',atual:4,meta:5},
+    {nome:'Trabalho em equipa',atual:4,meta:5},
+    {nome:'Resolução de problemas',atual:4,meta:5},
+    {nome:'Conhecimento técnico (Indústria)',atual:4,meta:5},
+    {nome:'Gestão de processos operacionais',atual:4,meta:5},
+    {nome:'Ferramentas digitais / sistemas',atual:2,meta:5},
+    {nome:'Liderança',atual:4,meta:5},
+    {nome:'Conhecimento 3 Áreas (Bas./T.Esp./Cist.)',atual:3,meta:5}
+  ]},
+  fc:{entrou:'29/06/2026',integracao:true,fase:'31–60 dias',items:[
+    {nome:'Comunicação',atual:3,meta:5},
+    {nome:'Organização e planeamento',atual:2,meta:5},
+    {nome:'Autonomia',atual:1,meta:5},
+    {nome:'Adaptabilidade',atual:1,meta:5},
+    {nome:'Trabalho em equipa',atual:3,meta:5},
+    {nome:'Resolução de problemas',atual:2,meta:5},
+    {nome:'Conhecimento técnico (Construções)',atual:1,meta:5},
+    {nome:'Gestão de processos operacionais',atual:2,meta:5},
+    {nome:'Ferramentas digitais / sistemas',atual:4,meta:5},
+    {nome:'Liderança',atual:null,meta:5},
+    {nome:'Conhecimento de Obra',atual:1,meta:5}
+  ]},
+  mn:{entrou:'02/03/2026',integracao:false,fase:'',items:[
+    {nome:'Comunicação',atual:4,meta:5},
+    {nome:'Organização e planeamento',atual:3,meta:5},
+    {nome:'Autonomia',atual:3,meta:5},
+    {nome:'Adaptabilidade',atual:4,meta:5},
+    {nome:'Trabalho em equipa',atual:4,meta:5},
+    {nome:'Resolução de problemas',atual:4,meta:5},
+    {nome:'Conhecimento técnico (Indústria)',atual:3,meta:5},
+    {nome:'Gestão de processos operacionais',atual:4,meta:5},
+    {nome:'Ferramentas digitais / sistemas',atual:3,meta:5},
+    {nome:'Gestão da Frota',atual:4,meta:5},
+    {nome:'Gestão de Clientes',atual:3,meta:5}
+  ]},
+  vb:{entrou:'03/08/2026',integracao:true,fase:'31–60 dias',items:[
+    {nome:'Comunicação',atual:3,meta:5},
+    {nome:'Organização e planeamento',atual:3,meta:5},
+    {nome:'Autonomia',atual:3,meta:5},
+    {nome:'Adaptabilidade',atual:4,meta:5},
+    {nome:'Trabalho em equipa',atual:4,meta:5},
+    {nome:'Resolução de problemas',atual:3,meta:5},
+    {nome:'Conhecimento técnico (Cisternas)',atual:4,meta:5},
+    {nome:'Gestão de processos operacionais',atual:3,meta:5},
+    {nome:'Ferramentas digitais / sistemas',atual:null,meta:5},
+    {nome:'Planeamento de Cisternas',atual:3,meta:5},
+    {nome:'Liderança',atual:3,meta:5}
+  ]}
+};
+function calcMediaComp(pid){var d=COMP_DATA[pid];if(!d||!d.items)return null;var vals=d.items.filter(function(i){return i.atual!==null;}).map(function(i){return i.atual;});if(!vals.length)return null;return(vals.reduce(function(a,b){return a+b;},0)/vals.length).toFixed(1);}
+function compLevelColor(v){if(v===null)return'var(--text-3)';if(v<=1)return'#ef4444';if(v<=2)return'#f97316';if(v<3.5)return'#eab308';if(v<4.5)return'#22c55e';return'#16a34a';}
+function buildCompSection(pid){
+  var excluded=['fn','jf'];
+  if(excluded.indexOf(pid)!==-1)return'';
+  var d=COMP_DATA[pid];
+  var lbl=['','Inicial','Em desenvolvimento','Autónomo','Avançado','Referência'];
+  var h='<div class="e-section-title">Competências &amp; Desenvolvimento</div>';
+  if(!d){h+='<div style="font-size:12px;color:var(--text-3);font-style:italic;padding:4px 0 8px">Dados ainda não disponíveis para este colaborador.</div>';return h;}
+  if(d.entrou||d.integracao){
+    h+='<div style="font-size:11.5px;color:var(--text-3);margin-bottom:8px">';
+    if(d.entrou)h+='📅 Entrou em <strong style="color:var(--text-2)">'+escHtml(d.entrou)+'</strong>';
+    if(d.integracao)h+=(d.entrou?' &nbsp;·&nbsp; ':'')+'<span style="background:#fef3c7;color:#92400e;border-radius:4px;padding:1px 7px;font-size:10.5px;font-weight:500">Em integração — '+escHtml(d.fase)+'</span>';
+    h+='</div>';
+  }
+  var media=calcMediaComp(pid);
+  if(media!==null){var mc=compLevelColor(parseFloat(media));h+='<div style="margin-bottom:10px;font-size:12px">Média: <strong style="color:'+mc+';font-size:15px">'+media+'</strong><span style="color:var(--text-3)"> / 5</span></div>';}
+  h+='<table style="width:100%;border-collapse:collapse;font-size:12px"><thead><tr>'
+    +'<th style="text-align:left;padding:3px 6px 3px 0;font-size:10.5px;color:var(--text-3);font-weight:500;width:190px">Competência</th>'
+    +'<th style="text-align:left;padding:3px 6px;font-size:10.5px;color:var(--text-3);font-weight:500">Nível actual</th>'
+    +'<th style="text-align:center;padding:3px 6px;font-size:10.5px;color:var(--text-3);font-weight:500;width:44px">Meta</th>'
+    +'</tr></thead><tbody>';
+  d.items.forEach(function(item){
+    var cor=compLevelColor(item.atual);
+    var pct=item.atual!==null?Math.round(item.atual/5*100):0;
+    h+='<tr style="border-bottom:1px solid var(--border)">';
+    h+='<td style="padding:5px 6px 5px 0;color:var(--text-2)">'+escHtml(item.nome)+'</td>';
+    h+='<td style="padding:5px 6px">';
+    if(item.atual!==null){
+      h+='<div style="display:flex;align-items:center;gap:8px">'
+        +'<div style="flex:1;height:6px;background:#ebebeb;border-radius:3px;overflow:hidden"><div style="height:100%;width:'+pct+'%;background:'+cor+';border-radius:3px"></div></div>'
+        +'<span style="font-weight:700;color:'+cor+';min-width:14px;text-align:right">'+item.atual+'</span>'
+        +'<span style="color:var(--text-3);font-size:10.5px;min-width:120px">'+escHtml(lbl[item.atual]||'')+'</span>'
+        +'</div>';
+    } else {h+='<span style="color:var(--text-3);font-size:10.5px;font-style:italic">Sem dados</span>';}
+    h+='</td>';
+    h+='<td style="padding:5px 6px;text-align:center;color:var(--text-3);font-size:11px">'+item.meta+'</td>';
+    h+='</tr>';
+  });
+  h+='</tbody></table>';
+  return h;
+}
 function getTeamData(){var s=localStorage.getItem('pragosa_team_v1');return s?JSON.parse(s):JSON.parse(JSON.stringify(TEAM_DATA_DEFAULT));}
 function saveTeamData(d){localStorage.setItem('pragosa_team_v1',JSON.stringify(d));}
 function getPersonNotes(){return JSON.parse(localStorage.getItem('pragosa_person_notes')||'{}');}
@@ -920,30 +1217,34 @@ function savePersonPending(id,items){var a=getPersonPending();a[id]=items;localS
 // ── Card view ──
 var GROUPS=[{area:'direcao',label:'Direcao'},{area:'trafego',label:'Gestao de Trafego'},{area:'comercial',label:'Comercial'},{area:'admin',label:'Administrativo & Custos'},{area:'expedicao',label:'Expedicao'}];
 
-function getPersonResp(id){var s=JSON.parse(localStorage.getItem('pragosa_resp_v1')||'{}');if(s[id])return s[id];var base=AREA_RESP[id]||[];return base.map(function(r){return{text:r,rating:'',shared:''};});}
+function getPersonResp(id){var s=JSON.parse(localStorage.getItem('pragosa_resp_v1')||'{}');if(s[id]){return s[id].map(function(r){if(r.periodicidade===undefined)r.periodicidade='';return r;});}var base=AREA_RESP[id]||[];return base.map(function(r){return{text:r,rating:'',shared:'',periodicidade:''};});}
 function savePersonResp(id,data){var s=JSON.parse(localStorage.getItem('pragosa_resp_v1')||'{}');s[id]=data;localStorage.setItem('pragosa_resp_v1',JSON.stringify(s));}
 function setRespRating(pid,idx,val){var d=getPersonResp(pid);d[idx].rating=val;savePersonResp(pid,d);}
 function setRespShared(pid,idx,val){var d=getPersonResp(pid);d[idx].shared=val;savePersonResp(pid,d);}
 function setRespText(pid,idx,val){var d=getPersonResp(pid);d[idx].text=val;savePersonResp(pid,d);}
-function addResp(pid){var d=getPersonResp(pid);d.push({text:'Nova responsabilidade',rating:'',shared:''});savePersonResp(pid,d);renderCards();var card=document.getElementById('ecard-'+pid);if(card)card.classList.add('expanded');if(selectedOrgId===pid){setTimeout(function(){openOrgEdit(pid);},50);}}
+function setRespPeriodicidade(pid,idx,val){var d=getPersonResp(pid);d[idx].periodicidade=val;savePersonResp(pid,d);}
+function addResp(pid){var d=getPersonResp(pid);d.push({text:'Nova responsabilidade',rating:'',shared:'',periodicidade:''});savePersonResp(pid,d);refreshRespTable(pid);setTimeout(function(){var inputs=document.querySelectorAll('#eresp-'+pid+' .resp-text-input');if(inputs.length){var last=inputs[inputs.length-1];last.focus();last.select();}},30);}
 var _pendingResp=null;
-function deleteResp(pid,idx){var key=pid+'-'+idx;if(_pendingResp!==key){_pendingResp=key;showToast('Clique novamente para confirmar a eliminação.');setTimeout(function(){if(_pendingResp===key)_pendingResp=null;},3000);return;}_pendingResp=null;var d=getPersonResp(pid);d.splice(idx,1);savePersonResp(pid,d);renderCards();if(selectedOrgId===pid){setTimeout(function(){openOrgEdit(pid);},50);}showToast('Responsabilidade eliminada.');}
-function transferResp(pid,idx,targetPid){if(!targetPid)return;var src=getPersonResp(pid);var tgt=getPersonResp(targetPid);var item=src.splice(idx,1)[0];item.shared='';tgt.push(item);savePersonResp(pid,src);savePersonResp(targetPid,tgt);renderCards();if(selectedOrgId===pid){setTimeout(function(){openOrgEdit(pid);},50);}var team=getTeamData();var t=team.find(function(x){return x.id===targetPid;});showToast('Transferida para '+(t?t.name.split(' ')[0]:'colega')+'.');}
+function deleteResp(pid,idx){var key=pid+'-'+idx;if(_pendingResp!==key){_pendingResp=key;showToast('Clique novamente para confirmar a eliminação.');setTimeout(function(){if(_pendingResp===key)_pendingResp=null;},3000);return;}_pendingResp=null;var d=getPersonResp(pid);d.splice(idx,1);savePersonResp(pid,d);refreshRespTable(pid);showToast('Responsabilidade eliminada.');}
+function transferResp(pid,idx,targetPid){if(!targetPid)return;var src=getPersonResp(pid);var tgt=getPersonResp(targetPid);var item=src.splice(idx,1)[0];item.shared='';tgt.push(item);savePersonResp(pid,src);savePersonResp(targetPid,tgt);refreshRespTable(pid);refreshRespTable(targetPid);var team=getTeamData();var t=team.find(function(x){return x.id===targetPid;});showToast('Transferida para '+(t?t.name.split(' ')[0]:'colega')+'.');}
 function buildRespTable(pid,resp,team,inPanel){
   var ratingVals=['Excelente','Bom','Satisfatório','A Melhorar','Crítico'];
-  var h='<div class="e-section-title">Responsabilidades</div>';
+  var h='<div id="eresp-'+pid+'"><div class="e-section-title">Responsabilidades</div>';
   if(!resp.length){
     h+='<button class="resp-add-btn" data-pid="'+pid+'" onclick="addResp(this.dataset.pid)">+ Responsabilidade</button>';
-    return h;
+    return h+'</div>';
   }
-  var colleagues=team.filter(function(x){return x.id!==pid&&x.id!=='vg'&&x.id!=='vb';});
-  h+='<table class="resp-table"><thead><tr><th>Responsabilidade</th><th style="width:110px">Desempenho</th><th style="width:110px">Partilhado com</th><th style="width:130px">Acções</th></tr></thead><tbody>';
+  var colleagues=team.filter(function(x){return x.id!==pid&&x.id!=='vg';});
+  var periodVals=['Diário','Semanal','Quinzenal','Mensal'];
+  h+='<table class="resp-table"><thead><tr><th>Responsabilidade</th><th style="width:95px">Periodicidade</th><th style="width:110px">Desempenho</th><th style="width:110px">Partilhado com</th><th style="width:130px">Acções</th></tr></thead><tbody>';
   resp.forEach(function(r,i){
     var rOpts='<option value="">—</option>'+ratingVals.map(function(v){return'<option value="'+v+'"'+(r.rating===v?' selected':'')+'>'+v+'</option>';}).join('');
     var sOpts='<option value="">—</option>'+colleagues.map(function(x){var nm=x.name.split(' ');return'<option value="'+x.id+'"'+(r.shared===x.id?' selected':'')+'>'+nm[0]+(nm[1]?' '+nm[1].charAt(0)+'.':'')+' </option>';}).join('');
     var tOpts='<option value="">Transferir →</option>'+colleagues.map(function(x){var nm=x.name.split(' ');return'<option value="'+x.id+'">'+nm[0]+(nm[1]?' '+nm[1].charAt(0)+'.':'')+' </option>';}).join('');
+    var pOpts='<option value="">—</option>'+periodVals.map(function(v){return'<option value="'+v+'"'+((r.periodicidade||'')===v?' selected':'')+'>'+v+'</option>';}).join('');
     h+='<tr>';
     h+='<td><input class="resp-text-input" data-pid="'+pid+'" data-idx="'+i+'" value="'+escHtml(r.text)+'" onchange="setRespText(this.dataset.pid,+this.dataset.idx,this.value)"></td>';
+    h+='<td><select class="resp-select" data-pid="'+pid+'" data-idx="'+i+'" onchange="setRespPeriodicidade(this.dataset.pid,+this.dataset.idx,this.value)">'+pOpts+'</select></td>';
     h+='<td><select class="resp-select" data-pid="'+pid+'" data-idx="'+i+'" onchange="setRespRating(this.dataset.pid,+this.dataset.idx,this.value)">'+rOpts+'</select></td>';
     h+='<td><select class="resp-select" data-pid="'+pid+'" data-idx="'+i+'" onchange="setRespShared(this.dataset.pid,+this.dataset.idx,this.value)">'+sOpts+'</select></td>';
     h+='<td style="white-space:nowrap;display:flex;gap:4px;align-items:center;padding:3px 4px">';
@@ -954,7 +1255,14 @@ function buildRespTable(pid,resp,team,inPanel){
   });
   h+='</tbody></table>';
   h+='<button class="resp-add-btn" data-pid="'+pid+'" onclick="addResp(this.dataset.pid)">+ Responsabilidade</button>';
-  return h;
+  return h+'</div>';
+}
+function refreshRespTable(pid){
+  var team=getTeamData(),resp=getPersonResp(pid),html=buildRespTable(pid,resp,team,false);
+  document.querySelectorAll('#eresp-'+pid).forEach(function(el){
+    var tmp=document.createElement('div');tmp.innerHTML=html;
+    el.parentNode.replaceChild(tmp.firstChild,el);
+  });
 }
 
 
@@ -1086,12 +1394,38 @@ var FERIAS_2026={
   'am':{name:'Antonio Marques',initials:'AM',color:'amber',m:{1:[2,16],4:[6,7,8,9,10],6:[5,8,9,11,12],7:[7],8:[24,25,26,27,28,31],9:[1,2,3,4]}}
 };
 var FERIAS_META=22;
+var FERIAS_KEY='pragosa_ferias_v1';
+function getFeriasData(){
+  var s=localStorage.getItem(FERIAS_KEY);
+  if(s){try{return JSON.parse(s);}catch(e){}}
+  var c={};
+  Object.keys(FERIAS_2026).forEach(function(pid){
+    var p=FERIAS_2026[pid];
+    c[pid]={name:p.name,initials:p.initials,color:p.color,m:{}};
+    Object.keys(p.m).forEach(function(m){c[pid].m[m]=p.m[m].slice();});
+  });
+  return c;
+}
+function saveFeriasData(d){localStorage.setItem(FERIAS_KEY,JSON.stringify(d));}
+function toggleFeriasDay(pid,month,day){
+  var d=getFeriasData();
+  if(!d[pid])return;
+  var m=d[pid].m;
+  if(!m[month])m[month]=[];
+  var idx=m[month].indexOf(day);
+  if(idx>=0){m[month].splice(idx,1);if(!m[month].length)delete m[month];}
+  else{m[month].push(day);m[month].sort(function(a,b){return a-b;});}
+  saveFeriasData(d);
+  renderFerias();
+  showFeriasDetail(pid,month);
+}
 var MONTHS_LABEL=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
 
 function getFeriasOverlaps(){
+  var FDATA=getFeriasData();
   var dayMap={};
-  Object.keys(FERIAS_2026).forEach(function(pid){
-    var p=FERIAS_2026[pid];
+  Object.keys(FDATA).forEach(function(pid){
+    var p=FDATA[pid];
     Object.keys(p.m).forEach(function(m){
       p.m[m].forEach(function(d){
         var k=m+'-'+d; if(!dayMap[k])dayMap[k]=[];
@@ -1113,7 +1447,8 @@ function getFeriasOverlaps(){
 
 
 function showFeriasDetail(pid,month){
-  var p=FERIAS_2026[pid];if(!p)return;
+  var FDATA=getFeriasData();
+  var p=FDATA[pid];if(!p)return;
   var days=p.m[month]||[];
   var mName=MONTHS_LABEL[month-1];
   var firstDow=new Date(2026,month-1,1).getDay(); // 0=Sun
@@ -1131,8 +1466,8 @@ function showFeriasDetail(pid,month){
     var isVac=days.indexOf(d)!==-1;
     var dow=(firstMon+d-1)%7;
     var isWk=dow>=5;
-    var cls=isVac?'fd-day fd-day-vac':isWk?'fd-day fd-day-weekend':'fd-day fd-day-normal';
-    h+='<div class="'+cls+'">'+d+'</div>';
+    var cls=isVac?'fd-day fd-day-vac fd-day-toggle':isWk?'fd-day fd-day-weekend fd-day-toggle':'fd-day fd-day-normal fd-day-toggle';
+    h+='<div class="'+cls+'" title="'+(isVac?'Remover férias':'Marcar férias')+'" onclick="toggleFeriasDay(\''+pid+'\','+month+','+d+')">'+d+'</div>';
   }
   h+='</div>';
   if(days.length){
@@ -1151,6 +1486,7 @@ function showFeriasDetail(pid,month){
 }
 function closeFeriasDetail(){document.getElementById('ferias-detail-modal').style.display='none';}
 function renderFerias(){
+  var DATA=getFeriasData();
   var overlaps=getFeriasOverlaps();
   var curMonth=new Date().getMonth()+1; // 1-indexed
   var out='';
@@ -1187,13 +1523,13 @@ function renderFerias(){
   var absentPerMonth={};
   for(var m=1;m<=12;m++){
     absentPerMonth[m]=0;
-    Object.keys(FERIAS_2026).forEach(function(pid){
-      if(FERIAS_2026[pid].m[m]&&FERIAS_2026[pid].m[m].length>0)absentPerMonth[m]++;
+    Object.keys(DATA).forEach(function(pid){
+      if(DATA[pid].m[m]&&DATA[pid].m[m].length>0)absentPerMonth[m]++;
     });
   }
 
-  Object.keys(FERIAS_2026).forEach(function(pid){
-    var p=FERIAS_2026[pid];
+  Object.keys(DATA).forEach(function(pid){
+    var p=DATA[pid];
     var total=0;
     Object.keys(p.m).forEach(function(k){total+=p.m[k].length;});
     var restam=Math.max(0,FERIAS_META-total);
@@ -1245,9 +1581,11 @@ function renderCards(){
         +'<div style="flex:1;min-width:0"><div class="e-card-name">'+escHtml(p.name)+'</div>'
         +'<div class="e-card-role">'+escHtml(p.cargo)+'</div></div>'
         +'<span class="badge '+sC+'">'+escHtml(p.status)+'</span>'
+        +(function(){var m=calcMediaComp(p.id);if(!m)return'';var c=compLevelColor(parseFloat(m));return'<span style="background:#f8fafc;border:1px solid '+c+';color:'+c+';border-radius:10px;padding:1px 7px;font-size:10.5px;font-weight:700;margin-left:4px;flex-shrink:0" title="Média de competências">'+m+'<span style="font-weight:400;color:var(--text-3)">/5</span></span>';}())
         +'<span class="e-chevron" id="echev-'+p.id+'">&#9660;</span></div>'
         +'<div class="e-card-body" id="ebody-'+p.id+'" style="display:none">';
       if(p.note)html+='<div class="e-section-title">Sobre</div><div style="font-size:12.5px;color:var(--text-2);line-height:1.6">'+escHtml(p.note)+'</div>';
+      html+=buildCompSection(p.id);
       html+=buildRespTable(p.id,getPersonResp(p.id),team,false);
       if(p.reportsTo){var mgr=team.find(function(m){return m.id===p.reportsTo;});if(mgr)html+='<div style="font-size:11.5px;color:var(--text-3);margin-top:4px">Reporta a: <strong>'+mgr.name+'</strong></div>';}
       if(p.eval&&p.eval.length){
@@ -1384,7 +1722,7 @@ function gCor(id){for(var i=0;i<GANTT_CORES.length;i++)if(GANTT_CORES[i].id===id
 // Plano original importado do Excel (Plano_Integracao_Frederico_Catarino_Gestao_Frota_CPSA.xlsx)
 function FC_SEED(){return{
   id:'fc',cat:'Fred.',fromSeed:true,
-  titulo:'Plano de Integracao — Frederico Catarino',
+  titulo:'Plano de Integracao — Frederico Cristiano',
   sub:'Gestao de Frotas CPSA · Autonomia no planeamento ate ao fim da semana 10',
   inicio:'2026-07-20',
   semanas:[
@@ -1852,19 +2190,19 @@ var SEED_TASKS=[
   {id:'eq-01',text:'Definir RACI formal da funcao Gestor de Frota (Marques vs. Campos)',area:'equipa',priority:'high',meta:'Prazo: 31 jul - Resp.: Rita Fialho',source:'Plano Capacidade Jul 2026',done:false,createdAt:'2026-07-11',completedAt:null},
   {id:'eq-02',text:'Avaliar carga real de Joao Campos e redistribuir uma das 3 funcoes',area:'equipa',priority:'high',meta:'Prazo: 31 jul - Resp.: Rita Fialho',source:'Plano Capacidade Jul 2026',done:false,createdAt:'2026-07-11',completedAt:null},
   {id:'eq-03',text:'Abrir vaga 3. elemento Expedicao Sobrissul',area:'equipa',priority:'high',meta:'Estado: Em curso',source:'CE Logistica 30 jun',done:false,createdAt:'2026-07-11',completedAt:null},
-  {id:'eq-04',text:'Atribuir tutor a Frederico Catarino e definir marco de autonomia CPSA',area:'equipa',priority:'medium',meta:'Prazo: 15 jul - Resp.: Rita Fialho',source:'Plano Capacidade Jul 2026',done:false,createdAt:'2026-07-11',completedAt:null},
+  {id:'eq-04',text:'Atribuir tutor a Frederico Cristiano e definir marco de autonomia CPSA',area:'equipa',priority:'medium',meta:'Prazo: 15 jul - Resp.: Rita Fialho',source:'Plano Capacidade Jul 2026',done:false,createdAt:'2026-07-11',completedAt:null},
   {id:'eq-05',text:'Identificar backups para Vale Rodrigues e Moleanos (Nuno D\'Avo)',area:'equipa',priority:'medium',meta:'Prazo: 31 ago',source:'Plano Capacidade Jul 2026',done:false,createdAt:'2026-07-11',completedAt:null},
-  {id:'fc-01',text:'[FC Onboarding] Processos e sistemas internos — trafego, ponto, avarias',area:'equipa',priority:'high',meta:'Resp.: Frederico Catarino · Tutor: Rita Fialho',source:'Onboarding FC — 29 jun 2026',done:false,createdAt:'2026-07-11',completedAt:null},
-  {id:'fc-02',text:'[FC Onboarding] Conhecer frota e motoristas CPSA',area:'equipa',priority:'medium',meta:'Resp.: Frederico Catarino',source:'Onboarding FC — 29 jun 2026',done:false,createdAt:'2026-07-11',completedAt:null},
-  {id:'fc-03',text:'[FC Onboarding] Alinhar KPIs e expectativas CPSA com Rita',area:'equipa',priority:'medium',meta:'Resp.: Rita Fialho + Frederico Catarino',source:'Onboarding FC — 29 jun 2026',done:false,createdAt:'2026-07-11',completedAt:null},
-  {id:'fc-04',text:'[FC Obj.1] Rever tipos de viaturas basculantes e adequacao por tipo de obra/material',area:'equipa',priority:'high',meta:'Prazo: 24 jul - Resp.: Frederico Catarino',source:'Plano de Integracao FC — 10 semanas',done:false,createdAt:'2026-07-18',completedAt:null},
-  {id:'fc-05',text:'[FC Obj.1] Acompanhar planeamento em modo sombra e apoiar desenho da ferramenta',area:'equipa',priority:'high',meta:'Prazo: 24 jul - Resp.: Frederico Catarino',source:'Plano de Integracao FC — 10 semanas',done:false,createdAt:'2026-07-18',completedAt:null},
+  {id:'fc-01',text:'[FC Onboarding] Processos e sistemas internos — trafego, ponto, avarias',area:'equipa',priority:'high',meta:'Resp.: Frederico Cristiano · Tutor: Rita Fialho',source:'Onboarding FC — 29 jun 2026',done:false,createdAt:'2026-07-11',completedAt:null},
+  {id:'fc-02',text:'[FC Onboarding] Conhecer frota e motoristas CPSA',area:'equipa',priority:'medium',meta:'Resp.: Frederico Cristiano',source:'Onboarding FC — 29 jun 2026',done:false,createdAt:'2026-07-11',completedAt:null},
+  {id:'fc-03',text:'[FC Onboarding] Alinhar KPIs e expectativas CPSA com Rita',area:'equipa',priority:'medium',meta:'Resp.: Rita Fialho + Frederico Cristiano',source:'Onboarding FC — 29 jun 2026',done:false,createdAt:'2026-07-11',completedAt:null},
+  {id:'fc-04',text:'[FC Obj.1] Rever tipos de viaturas basculantes e adequacao por tipo de obra/material',area:'equipa',priority:'high',meta:'Prazo: 24 jul - Resp.: Frederico Cristiano',source:'Plano de Integracao FC — 10 semanas',done:false,createdAt:'2026-07-18',completedAt:null},
+  {id:'fc-05',text:'[FC Obj.1] Acompanhar planeamento em modo sombra e apoiar desenho da ferramenta',area:'equipa',priority:'high',meta:'Prazo: 24 jul - Resp.: Frederico Cristiano',source:'Plano de Integracao FC — 10 semanas',done:false,createdAt:'2026-07-18',completedAt:null},
   {id:'fc-06',text:'[FC Obj.1] Check-in do planeamento diario',area:'equipa',priority:'medium',meta:'Prazo: 7 ago - Resp.: Rita Fialho',source:'Plano de Integracao FC — 10 semanas',done:false,createdAt:'2026-07-18',completedAt:null},
-  {id:'fc-07',text:'[FC Obj.2] Rotina fixa de comunicacao diaria com motoristas e mapa de interlocutores',area:'equipa',priority:'medium',meta:'Prazo: 14 ago - Resp.: Frederico Catarino',source:'Plano de Integracao FC — 10 semanas',done:false,createdAt:'2026-07-18',completedAt:null},
+  {id:'fc-07',text:'[FC Obj.2] Rotina fixa de comunicacao diaria com motoristas e mapa de interlocutores',area:'equipa',priority:'medium',meta:'Prazo: 14 ago - Resp.: Frederico Cristiano',source:'Plano de Integracao FC — 10 semanas',done:false,createdAt:'2026-07-18',completedAt:null},
   {id:'fc-08',text:'[FC Obj.2] Check-in: avaliar fluxo de informacao/comunicacao',area:'equipa',priority:'medium',meta:'Prazo: 14 ago - Resp.: Rita Fialho',source:'Plano de Integracao FC — 10 semanas',done:false,createdAt:'2026-07-18',completedAt:null},
-  {id:'fc-09',text:'[FC Obj.3] Reduzir supervisao ate so excecoes e testar resposta a imprevistos sozinho',area:'equipa',priority:'high',meta:'Prazo: 28 ago - Resp.: Frederico Catarino',source:'Plano de Integracao FC — 10 semanas',done:false,createdAt:'2026-07-18',completedAt:null},
+  {id:'fc-09',text:'[FC Obj.3] Reduzir supervisao ate so excecoes e testar resposta a imprevistos sozinho',area:'equipa',priority:'high',meta:'Prazo: 28 ago - Resp.: Frederico Cristiano',source:'Plano de Integracao FC — 10 semanas',done:false,createdAt:'2026-07-18',completedAt:null},
   {id:'fc-10',text:'[FC Obj.3] Avaliar autonomia nos Transportes Basculantes (avaliacao formal)',area:'equipa',priority:'high',meta:'Prazo: 11 set - Resp.: Rita Fialho',source:'Plano de Integracao FC — 10 semanas',done:false,createdAt:'2026-07-18',completedAt:null},
-  {id:'fc-11',text:'[FC Obj.4] Compreender e planear transportes especiais (grua, porta-maquinas, estrados)',area:'equipa',priority:'medium',meta:'Prazo: 19 set - Resp.: Frederico Catarino',source:'Plano de Integracao FC — 10 semanas',done:false,createdAt:'2026-07-18',completedAt:null},
+  {id:'fc-11',text:'[FC Obj.4] Compreender e planear transportes especiais (grua, porta-maquinas, estrados)',area:'equipa',priority:'medium',meta:'Prazo: 19 set - Resp.: Frederico Cristiano',source:'Plano de Integracao FC — 10 semanas',done:false,createdAt:'2026-07-18',completedAt:null},
   {id:'fc-12',text:'[FC Obj.4] Avaliar autonomia nos Transportes Especiais (avaliacao formal)',area:'equipa',priority:'high',meta:'Prazo: 26 set - Resp.: Rita Fialho',source:'Plano de Integracao FC — 10 semanas',done:false,createdAt:'2026-07-18',completedAt:null},
   {id:'fr-01',text:'Avaliar abate L-37858 (1976, 50 anos) e 77-56-AB (Mercedes 1992)',area:'frota',priority:'high',meta:'Urgente',source:'Plano Capacidade Jul 2026',done:false,createdAt:'2026-07-11',completedAt:null},
   {id:'fr-02',text:'Resolver viaturas externas sem previsao: AT57JF, Porta-Maq. David, AU01EM/AC',area:'frota',priority:'medium',meta:'Resp.: Antonio Marques',source:'Reuniao Manutencao 15 jun',done:false,createdAt:'2026-07-11',completedAt:null},
@@ -1930,21 +2268,1075 @@ var addedFromMeeting=JSON.parse(localStorage.getItem('pragosa_meeting_added')||'
 function addFromMeeting(btn,text,area,priority){if(btn.classList.contains('added'))return;var tasks=loadTasks();if(tasks.some(function(t){return t.text===text;})){btn.classList.add('added');btn.textContent='Ja existe';showToast('Ja esta na lista');return;}tasks.push({id:'mtg-'+Date.now(),text:text,area:area,priority:priority,meta:'',source:'Reunião',done:false,createdAt:new Date().toLocaleDateString('pt-PT'),completedAt:null});saveTasks(tasks);btn.classList.add('added');btn.textContent='Adicionada';showToast('Tarefa adicionada');addedFromMeeting[text]=true;localStorage.setItem('pragosa_meeting_added',JSON.stringify(addedFromMeeting));}
 function syncMeetingButtons(){addedFromMeeting=JSON.parse(localStorage.getItem('pragosa_meeting_added')||'{}');var tasks=loadTasks(),txts={};tasks.forEach(function(t){txts[t.text]=true;});document.querySelectorAll('.btn-add-task').forEach(function(btn){var m=(btn.getAttribute('onclick')||'').match(/'([^']+)'/);if(m&&txts[m[1]]){btn.classList.add('added');btn.textContent='Adicionada';}});}
 
+
+// ── Vista Geral ──
+function renderVistaGeral(){
+  var team=getTeamData();
+  var direct=['gs','bc','fc','mn','am','jc','vb'];
+  var integr=team.filter(function(p){var cd=COMP_DATA[p.id];return cd&&cd.integracao;});
+  var ci=getCheckins();
+  var today=new Date();
+  var faltaCi=direct.filter(function(id){var hist=ci[id]||[];if(!hist.length)return true;var last=new Date(hist[hist.length-1].data);var diff=(today-last)/(1000*60*60*24);return diff>8;});
+  var objTotais=0;
+  direct.forEach(function(id){objTotais+=(getObjetivos(id)||[]).length;});
+  var kpis=[
+    {n:integr.length,l:'Em integração',c:'var(--accent)'},
+    {n:faltaCi.length,l:'Check-ins em falta',c:'var(--amber)'},
+    {n:objTotais,l:'Objetivos ativos',c:'var(--green)'},
+    {n:team.filter(function(p){return p.risk==='err';}).length,l:'Risco crítico',c:'var(--red)'}
+  ];
+  var out='<div class="vg-kpi-grid">';
+  kpis.forEach(function(k){out+='<div class="vg-kpi"><div class="vg-kpi-n" style="color:'+k.c+'">'+k.n+'</div><div class="vg-kpi-l">'+k.l+'</div></div>';});
+  out+='</div>';
+  out+='<div class="grid-2" style="gap:12px;margin-bottom:16px">';
+  // left: alerts
+  out+='<div>';
+  out+='<div class="card-title" style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text-3);margin-bottom:8px">Precisa de atenção</div>';
+  // Integration alerts
+  integr.forEach(function(p){
+    var cd=COMP_DATA[p.id];
+    out+='<div class="vg-alert" onclick="gotoP(\''+p.id+'\',\'onboarding\')">'
+      +'<div class="vg-alert-icon">🔵</div>'
+      +'<div><div class="vg-alert-title">'+escHtml(p.name)+' — Em integração ('+escHtml(cd.fase)+')</div>'
+      +'<div class="vg-alert-sub">'+escHtml(p.cargo)+'</div>'
+      +'<div class="vg-alert-action">Ver onboarding →</div></div></div>';
+  });
+  // Risk alerts
+  team.filter(function(p){return p.risk==='err'||p.risk==='warn';}).slice(0,4).forEach(function(p){
+    var col=p.risk==='err'?'🔴':'🟡';
+    out+='<div class="vg-alert" onclick="gotoP(\''+p.id+'\',\'perfil\')">'
+      +'<div class="vg-alert-icon">'+col+'</div>'
+      +'<div><div class="vg-alert-title">'+escHtml(p.name)+' — '+escHtml(p.status)+'</div>'
+      +'<div class="vg-alert-sub">'+escHtml(p.cargo)+'</div>'
+      +'<div class="vg-alert-action">Ver perfil →</div></div></div>';
+  });
+  out+='</div>';
+  // right: team health
+  out+='<div>';
+  out+='<div class="card-title" style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text-3);margin-bottom:8px">Saúde da equipa — competências médias</div>';
+  out+='<div class="card">';
+  var cids=['gs','bc','fc','mn','vb'];
+  cids.forEach(function(id){
+    var m=calcMediaComp(id);if(!m)return;
+    var mv=parseFloat(m);var col=compLevelColor(mv);
+    var p=team.find(function(x){return x.id===id;});
+    out+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">'
+      +'<div style="font-size:11.5px;width:130px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(p?escHtml(p.name.split(' ')[0]+' '+p.name.split(' ')[1]):'')+'</div>'
+      +'<div class="pb" style="flex:1;margin-top:0"><div class="pb-fill" style="width:'+(mv/5*100)+'%;background:'+col+'"></div></div>'
+      +'<div style="font-size:11.5px;font-weight:600;color:'+col+';width:30px;text-align:right">'+m+'</div>'
+      +'</div>';
+  });
+  out+='</div>';
+  out+='</div>';
+  out+='</div>';
+  // Notes from old equipa
+  out+='<div class="alert alert-warn"><strong>Equipa — 12 ago 2026:</strong> Frederico (sem. 7/10 integração) — Obj.2 em curso, Obj.3 em risco. Vera Bairros em integração (dia 9). Gabriela: ferramentas digitais (2/5) sem plano de ação. António Marques: dupla função — RACI a formalizar. João Campos: combustíveis em acompanhamento. Ruben Sousa: licença paternidade em setembro.</div>';
+  document.getElementById('geral-content').innerHTML=out;
+}
+
+function gotoP(id,tab){
+  // Navigate to Pessoas tab and select person
+  document.querySelectorAll('.nav-btn').forEach(function(b){b.classList.remove('active');});
+  var btn=document.querySelector('.nav-btn[onclick*="pessoas"]');
+  if(btn)btn.classList.add('active');
+  document.querySelectorAll('.section').forEach(function(s){s.classList.remove('active');});
+  var sec=document.getElementById('tab-pessoas');
+  if(sec){sec.classList.add('active');renderPessoas(id,tab);}
+}
+
+// ── Pessoas ──
+var _selPerson=null;
+var _personTab='checkin';
+
+function renderPessoas(preSelId,preSelTab){
+  var team=getTeamData();
+  if(preSelId){_selPerson=preSelId;}
+  if(preSelTab){_personTab=preSelTab;}
+  // Build sidebar
+  var sidebar=document.getElementById('pessoas-sidebar');
+  if(!sidebar)return;
+  var avColors={'blue':'av-blue','green':'av-green','amber':'av-amber','red':'av-red','purple':'av-purple'};
+  var dotColors={'ok':'var(--green)','warn':'var(--amber)','err':'var(--red)','info':'var(--accent)'};
+  var groups=[
+    {label:'Gestão de Tráfego',ids:['gs','bc','fc']},
+    {label:'Administrativo',ids:['mn','am','jc','vb']},
+    {label:'Comercial',ids:['fn','jf']},
+    {label:'Expedição',ids:['nd','le','ac','st','pl']}
+  ];
+  var h='';
+  groups.forEach(function(g){
+    var members=team.filter(function(p){return g.ids.indexOf(p.id)>=0;});
+    if(!members.length)return;
+    h+='<div class="psi-head">'+g.label+'</div>';
+    members.forEach(function(p){
+      var ac=_selPerson===p.id?' active':'';
+      var avc=avColors[p.color]||'av-blue';
+      var dot=dotColors[p.risk]||'var(--text-3)';
+      var media=calcMediaComp(p.id);
+      h+='<div class="p-item'+ac+'" id="pi-'+p.id+'" onclick="selectPerson(\''+p.id+'\')">'
+        +'<div class="p-item-av '+avc+'">'+escHtml(p.initials)+'</div>'
+        +'<div class="p-item-info">'
+        +'<div class="p-item-name">'+escHtml(p.name.split(' ').slice(0,2).join(' '))+'</div>'
+        +'<div class="p-item-role">'+escHtml(p.cargo.length>28?p.cargo.slice(0,25)+'…':p.cargo)+'</div>'
+        +'</div>'
+        +(media?'<div style="font-size:9.5px;font-weight:600;color:'+compLevelColor(parseFloat(media))+';flex-shrink:0">'+media+'</div>':'')
+        +'<div class="p-status-dot" style="background:'+dot+'"></div>'
+        +'</div>';
+    });
+    h+='<div class="psi-divider"></div>';
+  });
+  // Global views
+  h+='<div class="psi-head">Vistas Globais</div>';
+  h+='<button class="p-view-btn'+((_selPerson==='__org')?' active':'')+'" onclick="selectGlobalView(\'org\')">🗂 Organograma</button>';
+  h+='<button class="p-view-btn'+((_selPerson==='__ferias')?' active':'')+'" onclick="selectGlobalView(\'ferias\')">🏖 Férias 2026</button>';
+  h+='<button class="p-view-btn'+((_selPerson==='__gantt')?' active':'')+'" onclick="selectGlobalView(\'gantt\')">📅 GANTs</button>';
+  sidebar.innerHTML=h;
+  // If person selected, render them
+  if(_selPerson&&_selPerson.indexOf('__')<0){
+    renderPersonHeader(_selPerson);
+    renderPersonContent(_selPerson,_personTab);
+    document.getElementById('pessoas-subnav').style.display='flex';
+    document.getElementById('pessoas-content').style.display='block';
+    // Sync subnav active state
+    document.querySelectorAll('.psnav-btn').forEach(function(b){b.classList.remove('active');});
+    var activeBtn=document.getElementById('sn-'+_personTab);
+    if(activeBtn)activeBtn.classList.add('active');
+    // Show/hide onboarding
+    var onbBtn=document.getElementById('sn-onboarding');
+    if(onbBtn){var hasOnb=(['fc','vb'].indexOf(_selPerson)>=0);onbBtn.style.display=hasOnb?'':'none';}
+  }
+}
+
+function selectPerson(id){
+  _selPerson=id;
+  _personTab='checkin';
+  document.querySelectorAll('.p-item').forEach(function(el){el.classList.remove('active');});
+  var el=document.getElementById('pi-'+id);if(el)el.classList.add('active');
+  document.querySelectorAll('.p-view-btn').forEach(function(b){b.classList.remove('active');});
+  // Show subnav + content
+  var subnav=document.getElementById('pessoas-subnav');
+  if(subnav)subnav.style.display='flex';
+  var content=document.getElementById('pessoas-content');
+  if(content){content.style.display='block';content.style.justifyContent='';content.style.alignItems='';}
+  // Onboarding visibility
+  var onbBtn=document.getElementById('sn-onboarding');
+  if(onbBtn){var hasOnb=['fc','vb'].indexOf(id)>=0;onbBtn.style.display=hasOnb?'':'none';}
+  // Reset to checkin tab
+  document.querySelectorAll('.psnav-btn').forEach(function(b){b.classList.remove('active');});
+  var ciBtn=document.getElementById('sn-checkin');if(ciBtn)ciBtn.classList.add('active');
+  renderPersonHeader(id);
+  renderPersonContent(id,'checkin');
+}
+
+function gvRescue(){
+  var cache=document.getElementById('_gv-cache');
+  if(!cache)return;
+  ['equipa-org-view','equipa-ferias-view','equipa-gantt-view'].forEach(function(id){
+    var el=document.getElementById(id);
+    if(el){el.style.display='none';cache.appendChild(el);}
+  });
+}
+function selectGlobalView(view){
+  _selPerson='__'+view;
+  document.querySelectorAll('.p-item').forEach(function(el){el.classList.remove('active');});
+  document.querySelectorAll('.p-view-btn').forEach(function(b){b.classList.remove('active');});
+  var activeVBtn=document.querySelector('.p-view-btn[onclick*="\''+view+'\'"]');
+  if(activeVBtn)activeVBtn.classList.add('active');
+  document.getElementById('pessoas-subnav').style.display='none';
+  var content=document.getElementById('pessoas-content');
+  content.style.display='block';
+  content.style.justifyContent='';
+  content.style.alignItems='';
+  gvRescue();
+  content.innerHTML='';
+  var orgDiv=document.getElementById('equipa-org-view');
+  var ferDiv=document.getElementById('equipa-ferias-view');
+  var ganDiv=document.getElementById('equipa-gantt-view');
+  if(view==='org'){
+    renderPersonHeader(null,'Organograma','Vista de equipa');
+    content.appendChild(orgDiv);
+    orgDiv.style.display='block';
+    renderOrgChart();
+  } else if(view==='ferias'){
+    renderPersonHeader(null,'Férias 2026','Planeamento anual');
+    content.appendChild(ferDiv);
+    ferDiv.style.display='block';
+    renderFerias();
+  } else if(view==='gantt'){
+    renderPersonHeader(null,'GANTs','Planos de integração e objetivos');
+    content.appendChild(ganDiv);
+    ganDiv.style.display='block';
+    renderGantts();
+  }
+}
+
+function renderPersonHeader(id,overrideName,overrideRole){
+  var hdr=document.getElementById('pessoas-header');
+  if(!hdr)return;
+  if(overrideName){
+    hdr.innerHTML='<div style="font-size:22px">📋</div><div><div class="p-main-name">'+escHtml(overrideName)+'</div><div class="p-main-role">'+escHtml(overrideRole||'')+'</div></div>';
+    return;
+  }
+  var team=getTeamData();
+  var p=team.find(function(x){return x.id===id;});
+  if(!p)return;
+  var avColors={'blue':'av-blue','green':'av-green','amber':'av-amber','red':'av-red','purple':'av-purple'};
+  var avc=avColors[p.color]||'av-blue';
+  var media=calcMediaComp(id);
+  var mc=media?compLevelColor(parseFloat(media)):'';
+  var cd=COMP_DATA[id];
+  var chips='';
+  if(cd&&cd.integracao){chips+='<span class="badge b-info" style="font-size:10.5px">Em integração &middot; '+escHtml(cd.fase)+'</span>';}
+  if(p.risk==='err'){chips+='<span class="badge b-err" style="font-size:10.5px">Risco crítico</span>';}
+  else if(p.risk==='warn'){chips+='<span class="badge b-warn" style="font-size:10.5px">'+escHtml(p.status)+'</span>';}
+  else{chips+='<span class="badge b-ok" style="font-size:10.5px">'+escHtml(p.status)+'</span>';}
+  if(media){chips+='<span style="background:var(--bg);border:1px solid '+mc+';color:'+mc+';border-radius:10px;padding:2px 8px;font-size:10.5px;font-weight:600">'+media+'/5</span>';}
+  hdr.innerHTML='<div class="p-main-av '+avc+'">'+escHtml(p.initials)+'</div>'
+    +'<div><div class="p-main-name">'+escHtml(p.name)+'</div><div class="p-main-role">'+escHtml(p.cargo)+'</div></div>'
+    +'<div style="margin-left:auto;display:flex;gap:6px;align-items:center;flex-wrap:wrap">'+chips+'</div>';
+}
+
+function setPersonTab(tab,btn){
+  _personTab=tab;
+  document.querySelectorAll('.psnav-btn').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  renderPersonContent(_selPerson,tab);
+}
+
+function renderPersonContent(id,tab){
+  var content=document.getElementById('pessoas-content');
+  if(!content||!id)return;
+  gvRescue();
+  if(tab==='checkin')content.innerHTML=renderCheckin(id);
+  else if(tab==='objetivos')content.innerHTML=renderObjetivos(id);
+  else if(tab==='onboarding')content.innerHTML=renderOnboarding(id);
+  else if(tab==='pdi')content.innerHTML=renderPDI(id);
+  else if(tab==='perfil')content.innerHTML=renderPerfil(id);
+}
+
+// ── Check-in ──
+function getCheckins(){return JSON.parse(localStorage.getItem('pragosa_checkins_v1')||'{}');}
+function saveCheckin(id,entry){
+  var ci=getCheckins();if(!ci[id])ci[id]=[];
+  ci[id]=ci[id].filter(function(e){return e.semana!==entry.semana;});
+  ci[id].push(entry);
+  ci[id].sort(function(a,b){return a.semana<b.semana?-1:1;});
+  localStorage.setItem('pragosa_checkins_v1',JSON.stringify(ci));
+}
+function getISOWeek(d){
+  var date=new Date(d);date.setHours(0,0,0,0);
+  date.setDate(date.getDate()+3-(date.getDay()+6)%7);
+  var week1=new Date(date.getFullYear(),0,4);
+  return 'S'+String(1+Math.round(((date-week1)/86400000-3+(week1.getDay()+6)%7)/7)).padStart(2,'0')+'/'+date.getFullYear();
+}
+function getISOWeekNum(d){
+  var date=new Date(d);date.setHours(0,0,0,0);
+  date.setDate(date.getDate()+3-(date.getDay()+6)%7);
+  var week1=new Date(date.getFullYear(),0,4);
+  return 1+Math.round(((date-week1)/86400000-3+(week1.getDay()+6)%7)/7);
+}
+function getMondayOfWeek(d){
+  var date=new Date(d);
+  var day=date.getDay();
+  var diff=date.getDate()-day+(day===0?-6:1);
+  date.setDate(diff);return date;
+}
+var _ciDraft={};
+var _ciViewHist={};// id→index of history entry being viewed (null = current)
+var CI_QS=[
+  {k:'q1',label:'1. Como te sentes esta semana?',type:'scale'},
+  {k:'q2',label:'2. O que correu bem?',type:'text'},
+  {k:'q3',label:'3. O que foi difícil?',type:'text'},
+  {k:'q4',label:'4. O que precisas da Rita / equipa?',type:'text'},
+  {k:'q5',label:'5. Em que objetivo estás focado?',type:'text'},
+  {k:'q6',label:'6. Prioridade para a próxima semana?',type:'text'},
+  {k:'q7',label:'7. Notas',type:'text'}
+];
+function renderCheckin(id){
+  var ci=getCheckins()[id]||[];
+  var today=new Date();
+  var todayStr=today.toISOString().slice(0,10);
+  var curWeek=getISOWeek(today);
+  var curWeekNum=getISOWeekNum(today);
+  var mon=getMondayOfWeek(today);
+  var monStr=mon.getDate()+'/'+(mon.getMonth()+1)+'/'+mon.getFullYear();
+  // Draft for current week
+  var existingEntry=ci.find(function(e){return e.semana===curWeek;});
+  if(!_ciDraft[id]||_ciDraft[id]._week!==curWeek){
+    _ciDraft[id]=existingEntry
+      ?JSON.parse(JSON.stringify(existingEntry))
+      :{_week:curWeek,semana:curWeek,data:todayStr,q1:0,q2:'',q3:'',q4:'',q5:'',q6:'',q7:''};
+    _ciDraft[id]._week=curWeek;
+  }
+  var d=_ciDraft[id];
+  var scaleLabels=['','😔 Muito mal','😕 Mal','😐 Regular','🙂 Bem','😊 Muito bem'];
+  // ── Header ──
+  var out='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px">'
+    +'<div>'
+    +'<div style="font-size:16px;font-weight:700;color:var(--text)">Semana '+curWeekNum+' <span style="font-size:12px;font-weight:400;color:var(--text-3)">'+curWeek+'</span></div>'
+    +'<div style="font-size:11px;color:var(--text-3);margin-top:2px">Semana de <strong>'+monStr+'</strong>'+(existingEntry?' · ✓ Check-in guardado':'· Ainda não guardado')+'</div>'
+    +'</div>';
+  var histExists=ci.filter(function(e){return e.semana!==curWeek||!e.semana;}).length>0;
+  out+='<button class="btn-sec'+(histExists?'':' ci-hist-empty')+'" '
+    +(histExists?'onclick="ciToggleHist(\''+id+'\''+')"':'disabled title="Sem check-ins anteriores"')
+    +' id="ci-hist-btn-'+id+'">'
+    +'<span id="ci-hist-btn-lbl-'+id+'">◀ Semana anterior</span></button>';
+  out+='</div>';
+  // ── Form ──
+  out+='<div id="ci-form-'+id+'">';
+  CI_QS.forEach(function(q){
+    out+='<div class="ci-q-block"><div class="ci-q-label">'+q.label+'</div>';
+    if(q.type==='scale'){
+      out+='<div class="ci-scale">';
+      for(var i=1;i<=5;i++){
+        out+='<button class="ci-scale-btn'+(d.q1===i?' sel':'')+'" onclick="ciSetScale(\''+id+'\','+i+',this)">'+i+'</button>';
+      }
+      out+='<span style="font-size:10.5px;color:var(--text-3);margin-left:6px">'+(d.q1?scaleLabels[d.q1]:'— seleciona')+'</span>';
+      out+='</div>';
+    } else {
+      out+='<textarea class="e-notes-area" style="min-height:40px;font-size:12px" onchange="ciSetText(\''+id+'\',\''+q.k+'\',this.value)" placeholder="Escreve aqui…">'+escHtml(d[q.k]||'')+'</textarea>';
+    }
+    out+='</div>';
+  });
+  out+='<button class="btn-save-notes" onclick="ciSave(\''+id+'\')">'+(existingEntry?'Actualizar check-in':'Guardar check-in')+'</button>';
+  out+='</div>';
+  // ── Previous week panel (hidden by default) ──
+  out+='<div id="ci-hist-panel-'+id+'" style="display:none;margin-top:16px">';
+  out+=renderCiHistPanel(id,ci);
+  out+='</div>';
+  return out;
+}
+function renderCiHistPanel(id,ci){
+  if(!ci||!ci.length)return'';
+  var today=new Date();
+  var curWeek=getISOWeek(today);
+  // All entries except current week, most recent first
+  var hist=ci.filter(function(e){return e.semana!==curWeek;}).slice().reverse();
+  if(!hist.length)return'<div style="color:var(--text-3);font-size:12px;padding:8px 0">Sem check-ins anteriores.</div>';
+  var idx=_ciViewHist[id]||0;
+  if(idx>=hist.length)idx=0;
+  var e=hist[idx];
+  var scaleLabels=['','😔 Muito mal','😕 Mal','😐 Regular','🙂 Bem','😊 Muito bem'];
+  var col=e.q1>=4?'var(--green)':e.q1>=3?'var(--amber)':'var(--red,#ef4444)';
+  var wNum=parseInt((e.semana||'').replace(/S0?/,''));
+  var out='<div class="card" style="padding:12px 14px">';
+  // Navigation
+  var idQ2=id.replace(/'/g,"\\'");
+  var navBtnL=idx+1<hist.length
+    ?'<button class="btn-sec" onclick="ciNavHist(\'' +idQ2+ '\',' +(idx+1)+ ')">◀ Anterior</button>'
+    :'<button class="btn-sec" disabled style="opacity:.35;cursor:default">◀ Anterior</button>';
+  var navBtnR=idx>0
+    ?'<button class="btn-sec" onclick="ciNavHist(\'' +idQ2+ '\',' +(idx-1)+ ')">Seguinte ▶</button>'
+    :'<button class="btn-sec" disabled style="opacity:.35;cursor:default">Seguinte ▶</button>';
+  out+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">';
+  out+=navBtnL;
+  out+='<div style="flex:1;text-align:center">';
+  out+='<span style="font-weight:700;font-size:14px">Semana '+(wNum?wNum:e.semana||'—')+'</span>';
+  out+='<span style="font-size:11px;color:var(--text-3);margin-left:6px">'+( e.data||e.semana||'')+'</span>';
+  out+='</div>';
+  out+=navBtnR;
+  out+='</div>';
+  // Score badge
+  if(e.q1){
+    out+='<div style="text-align:center;margin-bottom:10px">'
+      +'<span style="font-size:28px;font-weight:800;color:'+col+'">'+e.q1+'</span>'
+      +'<span style="font-size:12px;color:var(--text-3)">/5 · '+scaleLabels[e.q1]+'</span></div>';
+  }
+  // Fields
+  var labels={q2:'O que correu bem',q3:'O que foi difícil',q4:'Pedido à equipa',q5:'Foco no objetivo',q6:'Prioridade seguinte',q7:'Notas'};
+  Object.keys(labels).forEach(function(k){
+    var val=e[k];if(!val)return;
+    out+='<div style="margin-bottom:8px">'
+      +'<div style="font-size:10.5px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px">'+labels[k]+'</div>'
+      +'<div style="font-size:12.5px;color:var(--text);line-height:1.5;background:var(--bg);border-radius:6px;padding:6px 8px">'+escHtml(val)+'</div>'
+      +'</div>';
+  });
+  out+='<div style="font-size:10px;color:var(--text-3);margin-top:4px;text-align:right">'+hist.length+' check-in'+(hist.length!==1?'s':'')+' anteriores · a ver '+( idx+1)+'/'+hist.length+'</div>';
+  out+='</div>';
+  return out;
+}
+function ciNavHist(id,idx){_ciViewHist[id]=+idx;ciRefreshHist(id);}
+function ciRefreshHist(id){
+  var ci=getCheckins()[id]||[];
+  var panel=document.getElementById('ci-hist-panel-'+id);
+  if(panel)panel.innerHTML=renderCiHistPanel(id,ci);
+}
+function ciToggleHist(id){
+  var panel=document.getElementById('ci-hist-panel-'+id);
+  var lbl=document.getElementById('ci-hist-btn-lbl-'+id);
+  if(!panel)return;
+  var open=panel.style.display!=='none';
+  panel.style.display=open?'none':'block';
+  if(lbl)lbl.textContent=open?'◀ Semana anterior':'✕ Fechar histórico';
+}
+function ciSetScale(id,v,btn){
+  if(!_ciDraft[id])_ciDraft[id]={};
+  _ciDraft[id].q1=v;
+  var scale=btn.closest('.ci-scale');
+  if(scale){
+    scale.querySelectorAll('.ci-scale-btn').forEach(function(b){b.classList.remove('sel');});
+    btn.classList.add('sel');
+    var lbl=scale.querySelector('span');
+    if(lbl){var labels=['','😔 Muito mal','😕 Mal','😐 Regular','🙂 Bem','😊 Muito bem'];lbl.textContent=labels[v]||'';}
+  }
+}
+function ciSetText(id,k,val){
+  if(!_ciDraft[id])_ciDraft[id]={};
+  _ciDraft[id][k]=val;
+}
+function ciSave(id){
+  var d=_ciDraft[id]||{};
+  var today=new Date();
+  d.data=today.toISOString().slice(0,10);
+  d.semana=getISOWeek(today);
+  saveCheckin(id,JSON.parse(JSON.stringify(d)));
+  _ciDraft[id]={_week:d.semana,semana:d.semana,data:d.data,q1:0,q2:'',q3:'',q4:'',q5:'',q6:'',q7:''};
+  renderPersonContent(id,'checkin');
+  showToast('Check-in guardado!');
+}
+
+
+// ── Objetivos ──
+var OBJ_DEFAULT={
+  fc:[
+    {id:'fc-obj1',titulo:'Obj.1 — Planeamento basculantes em sombra',resultado:'Ferramenta de planeamento desenhada e testada',prazo:'31 jul 2026',progresso:90,estado:'Concluído',cor:'#22c55e'},
+    {id:'fc-obj2',titulo:'Obj.2 — Rotina de contacto diário com motoristas',resultado:'Mapa de interlocutores completo',prazo:'14 ago 2026',progresso:65,estado:'Em curso',cor:'#eab308'},
+    {id:'fc-obj3',titulo:'Obj.3 — Autonomia basculantes',resultado:'Gerir basculantes sem supervisão',prazo:'11 set 2026',progresso:20,estado:'Em risco',cor:'#f97316'},
+    {id:'fc-obj4',titulo:'Obj.4 — Transportes especiais (grua, porta-máquinas)',resultado:'Autonomia transportes especiais',prazo:'26 set 2026',progresso:0,estado:'Não iniciado',cor:'#a1a1aa'}
+  ]
+};
+function getObjetivos(id){
+  var s=JSON.parse(localStorage.getItem('pragosa_objetivos_v1')||'{}');
+  return s[id]||(OBJ_DEFAULT[id]?JSON.parse(JSON.stringify(OBJ_DEFAULT[id])):null);
+}
+function saveObjetivos(id,data){
+  var s=JSON.parse(localStorage.getItem('pragosa_objetivos_v1')||'{}');
+  s[id]=data;
+  localStorage.setItem('pragosa_objetivos_v1',JSON.stringify(s));
+}
+function renderObjetivos(id){
+  var objs=getObjetivos(id);
+  var out='<div class="sh mb8"><div class="sh-title">Objetivos</div>'
+    +'<button class="g-btn" onclick="objAdd(\''+id+'\')">+ Objetivo</button></div>';
+  if(!objs||!objs.length){
+    return out+'<div style="color:var(--text-3);font-size:13px;padding:24px;text-align:center">Sem objetivos definidos. Clica em "+ Objetivo" para adicionar.</div>';
+  }
+  objs.forEach(function(o,i){
+    var estadoClass=o.estado==='Concluído'?'b-ok':o.estado==='Em risco'?'b-err':o.estado==='Não iniciado'?'b-gray':'b-warn';
+    out+='<div class="obj-card">'
+      +'<div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:3px">'
+      +'<div class="obj-title" style="flex:1">'+escHtml(o.titulo)+'</div>'
+      +'<span class="badge '+estadoClass+'" style="flex-shrink:0;font-size:10.5px">'+escHtml(o.estado)+'</span></div>'
+      +'<div class="obj-meta">'+escHtml(o.resultado)+'<br><span style="color:var(--text-3)">Prazo: '+escHtml(o.prazo)+'</span></div>'
+      +'<div class="obj-prog-track"><div class="obj-prog-fill" style="width:'+o.progresso+'%;background:'+o.cor+'"></div></div>'
+      +'<div class="obj-footer">'
+      +'<span>'+o.progresso+'% concluído</span>'
+      +'<div style="display:flex;gap:6px">'
+      +'<input type="number" min="0" max="100" value="'+o.progresso+'" style="width:52px;border:1px solid var(--border);border-radius:5px;padding:2px 5px;font-size:11px;text-align:center" onchange="objSetProg(\''+id+'\','+i+',+this.value)">'
+      +'<select style="font-size:11px;border:1px solid var(--border);border-radius:5px;padding:2px 4px" onchange="objSetEstado(\''+id+'\','+i+',this.value)">'
+      +['Não iniciado','Em curso','Em risco','Concluído'].map(function(s){return'<option value="'+s+'"'+(o.estado===s?' selected':'')+'>'+s+'</option>';}).join('')
+      +'</select>'
+      +'<button class="g-x" onclick="objDel(\''+id+'\','+i+')" title="Eliminar">×</button>'
+      +'</div></div></div>';
+  });
+  return out;
+}
+function objSetProg(id,i,v){
+  var o=getObjetivos(id);if(!o)return;
+  o[i].progresso=Math.max(0,Math.min(100,v));
+  var colors=[null,'#a1a1aa','#a1a1aa','#f97316','#eab308','#22c55e'];
+  if(v>=100)o[i].estado='Concluído';
+  saveObjetivos(id,o);renderPersonContent(id,'objetivos');
+}
+function objSetEstado(id,i,v){
+  var o=getObjetivos(id);if(!o)return;o[i].estado=v;saveObjetivos(id,o);renderPersonContent(id,'objetivos');
+}
+function objDel(id,i){
+  var o=getObjetivos(id);if(!o)return;o.splice(i,1);saveObjetivos(id,o);renderPersonContent(id,'objetivos');
+}
+function objAdd(id){
+  var o=getObjetivos(id)||[];
+  o.push({id:'obj-'+Date.now(),titulo:'Novo objetivo',resultado:'',prazo:'',progresso:0,estado:'Não iniciado',cor:'#a1a1aa'});
+  saveObjetivos(id,o);renderPersonContent(id,'objetivos');
+}
+
+// ── Onboarding ──
+var ONB_DEFAULT={
+  fc:{entrou:'29 jun 2026',avaliacoes:'11 set (basculantes) / 26 set (especiais)',fases:[
+    {titulo:'Fase 1 — Primeiros 30 dias',badge:'b-ok',estado:'Concluído',tarefas:[
+      {texto:'Conhecer equipa e processos internos',quem:'Rita',st:'done'},
+      {texto:'Processos e sistemas (tráfego, ponto, avarias)',quem:'Rita',st:'done'},
+      {texto:'Conhecer frota e motoristas CPSA',quem:'Frederico',st:'done'},
+      {texto:'Alinhar KPIs e expectativas com Rita',quem:'Rita',st:'done'}
+    ]},
+    {titulo:'Fase 2 — 31 a 60 dias',badge:'b-info',estado:'Em curso',tarefas:[
+      {texto:'Obj.1 — planeamento basculantes em sombra',quem:'Frederico',st:'done'},
+      {texto:'Obj.2 — rotina de contacto e mapa interlocutores',quem:'Frederico',st:'act'},
+      {texto:'Check-in de 6 semanas (Rita + Frederico)',quem:'Rita',st:'none'}
+    ]},
+    {titulo:'Fase 3 — 61 a 90 dias',badge:'b-gray',estado:'Por iniciar',tarefas:[
+      {texto:'Obj.3 — autonomia basculantes sem supervisão',quem:'Frederico',st:'none'},
+      {texto:'Obj.4 — transportes especiais (grua, porta-máquinas)',quem:'Frederico',st:'none'},
+      {texto:'Avaliação final e plano de desenvolvimento pós-integração',quem:'Rita',st:'none'}
+    ]}
+  ]},
+  vb:{entrou:'Ago 2026',avaliacoes:'A definir',fases:[
+    {titulo:'Fase 1 — Primeiros 30 dias',badge:'b-info',estado:'Em curso',tarefas:[
+      {texto:'Conhecer processos administrativos das Cisternas',quem:'António Marques',st:'act'},
+      {texto:'Familiarizar com sistemas internos (guias, faturação, ocorrências)',quem:'António Marques',st:'none'},
+      {texto:'Alinhar rotinas com António Marques',quem:'Rita',st:'none'}
+    ]},
+    {titulo:'Fase 2 — 31 a 60 dias',badge:'b-gray',estado:'Por iniciar',tarefas:[
+      {texto:'Emissão autónoma de propostas e notas de encomenda',quem:'Vera',st:'none'},
+      {texto:'Verificação e lançamento de guias de transporte',quem:'Vera',st:'none'},
+      {texto:'Check-in de 6 semanas (Rita + Vera)',quem:'Rita',st:'none'}
+    ]},
+    {titulo:'Fase 3 — 61 a 90 dias',badge:'b-gray',estado:'Por iniciar',tarefas:[
+      {texto:'Autonomia em preparação documental para faturação',quem:'Vera',st:'none'},
+      {texto:'Apoio pleno ao Técnico responsável',quem:'Vera',st:'none'},
+      {texto:'Avaliação final e plano pós-integração',quem:'Rita',st:'none'}
+    ]}
+  ]}
+};
+function getOnboarding(id){
+  var s=JSON.parse(localStorage.getItem('pragosa_onboarding_v1')||'{}');
+  return s[id]||(ONB_DEFAULT[id]?JSON.parse(JSON.stringify(ONB_DEFAULT[id])):null);
+}
+function saveOnboarding(id,data){
+  var s=JSON.parse(localStorage.getItem('pragosa_onboarding_v1')||'{}');
+  s[id]=data;localStorage.setItem('pragosa_onboarding_v1',JSON.stringify(s));
+}
+function onbToggle(id,fi,ti){
+  var o=getOnboarding(id);if(!o)return;
+  var t=o.fases[fi].tarefas[ti];
+  t.st=t.st==='done'?'none':(t.st==='none'?'done':t.st==='act'?'done':'done');
+  saveOnboarding(id,o);renderPersonContent(id,'onboarding');
+}
+function renderOnboarding(id){
+  var o=getOnboarding(id);
+  if(!o)return '<div style="color:var(--text-3);padding:24px;text-align:center">Sem plano de onboarding definido.</div>';
+  var done=0,total=0;
+  o.fases.forEach(function(f){f.tarefas.forEach(function(t){total++;if(t.st==='done')done++;});});
+  var out='<div class="sh mb12"><div><div class="sh-title">Onboarding — '+escHtml(o.entrou)+'</div><div style="font-size:11.5px;color:var(--text-2)">Avaliações: '+escHtml(o.avaliacoes)+'</div></div>'
+    +'<div class="badge b-info" style="align-self:center">'+done+'/'+total+' concluídas</div></div>';
+  o.fases.forEach(function(f,fi){
+    out+='<div class="onb-phase"><div class="onb-phase-head"><div class="onb-phase-title">'+escHtml(f.titulo)+'</div><span class="badge '+f.badge+'" style="font-size:10.5px">'+escHtml(f.estado)+'</span></div>';
+    f.tarefas.forEach(function(t,ti){
+      out+='<div class="onb-task">'
+        +'<div class="onb-cb '+t.st+'" onclick="onbToggle(\''+id+'\','+fi+','+ti+')">'+(t.st==='done'?'✓':t.st==='act'?'→':'')+'</div>'
+        +'<span>'+escHtml(t.texto)+'</span>'
+        +'<div class="onb-who">'+escHtml(t.quem)+'</div>'
+        +'</div>';
+    });
+    out+='</div>';
+  });
+  return out;
+}
+
+// ── Plano de Desenvolvimento ──
+var PDI_TIPOS=['Formação','Shadowing','Coaching/Mentoria','Autoformação','Projeto interno'];
+function buildPDIFromComp(id){
+  var cd=COMP_DATA[id];if(!cd||!cd.items)return[];
+  var pdi=[];
+  cd.items.forEach(function(c){
+    if(c.atual===null)return;
+    var gap=c.meta-c.atual;
+    var tipo=gap>=3?'Formação':gap>=2?'Shadowing':gap>=1?'Coaching/Mentoria':'';
+    var estado=gap<=0?'Concluído':gap<=1?'A monitorizar':'Pendente';
+    pdi.push({comp:c.nome,atual:c.atual,meta:c.meta,gap:gap,tipo:tipo,responsavel:'Rita',prazo:'',estado:estado,acao:''});
+  });
+  pdi.sort(function(a,b){return b.gap-a.gap;});
+  return pdi;
+}
+function getPDI(id){
+  var s=JSON.parse(localStorage.getItem('pragosa_pdi_v1')||'{}');
+  return s[id]||buildPDIFromComp(id);
+}
+function savePDI(id,data){
+  var s=JSON.parse(localStorage.getItem('pragosa_pdi_v1')||'{}');
+  s[id]=data;localStorage.setItem('pragosa_pdi_v1',JSON.stringify(s));
+}
+function pdiSetField(id,i,field,val){
+  var d=getPDI(id);if(!d||i>=d.length)return;
+  d[i][field]=val;
+  if(field==='atual'||field==='meta'){
+    d[i].atual=parseFloat(d[i].atual)||0;
+    d[i].meta=parseFloat(d[i].meta)||0;
+    d[i].gap=d[i].meta-d[i].atual;
+    var gapEl=document.getElementById('pdi-gap-'+id+'-'+i);
+    if(gapEl){var g=d[i].gap;gapEl.textContent=g>0?'+'+g:g;gapEl.style.color=g>=3?'var(--red)':g>=2?'var(--amber)':g>=1?'var(--green)':'var(--text-3)';}
+  }
+  savePDI(id,d);
+}
+function pdiDeleteRow(id,i){
+  var d=getPDI(id);if(!d)return;
+  d.splice(i,1);savePDI(id,d);
+  var content=document.getElementById('pessoas-content');
+  if(content)content.innerHTML=renderPDI(id);
+}
+function pdiAddRow(id){
+  var d=getPDI(id);if(!d)d=[];
+  d.push({comp:'Nova ação',atual:0,meta:0,gap:0,tipo:'',responsavel:'Rita',prazo:'',estado:'Pendente',acao:''});
+  savePDI(id,d);
+  var content=document.getElementById('pessoas-content');
+  if(content)content.innerHTML=renderPDI(id);
+}
+function pdiReset(id){
+  if(!confirm('Regenerar plano a partir das competências? Os dados actuais são apagados.'))return;
+  var s=JSON.parse(localStorage.getItem('pragosa_pdi_v1')||'{}');
+  delete s[id];localStorage.setItem('pragosa_pdi_v1',JSON.stringify(s));
+  var content=document.getElementById('pessoas-content');
+  if(content)content.innerHTML=renderPDI(id);
+}
+function renderPDI(id){
+  var excluded=['fn','jf'];
+  if(excluded.indexOf(id)>=0)return'<div style="color:var(--text-3);padding:24px;text-align:center">Plano de desenvolvimento não aplicável.</div>';
+  var pdi=getPDI(id);
+  if(!pdi||!pdi.length)return'<div style="color:var(--text-3);padding:24px;text-align:center">Sem dados de competências para gerar plano.</div>';
+  var tipoClass={Formação:'pt-form',Shadowing:'pt-shad','Coaching/Mentoria':'pt-ment',Autoformação:'pt-pend','Projeto interno':'pt-pend','':'pt-pend'};
+  var estadoClass={'Concluído':'pt-ok','A monitorizar':'pt-form','Pendente':'pt-pend','Em curso':'pt-form'};
+  var TIPOS=['Formação','Shadowing','Coaching/Mentoria','Autoformação','Projeto interno',''];
+  var ESTADOS=['Pendente','Em curso','A monitorizar','Concluído'];
+  var idQ=id.replace(/'/g,"\\'");
+  var out='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px">'
+    +'<div><div class="sh-title" style="margin-bottom:2px">Plano de Desenvolvimento Individual</div>'
+    +'<div style="font-size:11px;color:var(--text-3)">Clica em qualquer campo para editar · guardado automaticamente</div></div>'
+    +'<div style="display:flex;gap:6px">'
+    +'<button class="btn-sec" onclick="pdiAddRow(\''+idQ+'\')">＋ Adicionar linha</button>'
+    +'<button class="btn-sec" style="color:var(--text-3)" onclick="pdiReset(\''+idQ+'\')">↺ Regenerar</button>'
+    +'</div></div>';
+  out+='<div class="card" style="padding:0;overflow:auto"><table class="pdi-t"><thead><tr>'
+    +'<th style="min-width:130px">Competência / Objetivo</th>'
+    +'<th style="width:52px;text-align:center">Atual</th>'
+    +'<th style="width:52px;text-align:center">Meta</th>'
+    +'<th style="width:40px;text-align:center">Gap</th>'
+    +'<th style="min-width:160px">Ação de desenvolvimento</th>'
+    +'<th style="width:130px">Tipo</th>'
+    +'<th style="width:90px">Prazo</th>'
+    +'<th style="width:100px">Responsável</th>'
+    +'<th style="width:115px">Estado</th>'
+    +'<th style="width:28px"></th>'
+    +'</tr></thead><tbody>';
+  var INP='border:1px solid var(--border);border-radius:4px;padding:3px 6px;font-size:11.5px;width:100%;box-sizing:border-box;background:var(--bg);color:var(--text)';
+  var INP_T='border:none;background:transparent;font-size:11.5px;width:100%;color:var(--text-2);padding:0';
+  pdi.forEach(function(row,i){
+    var g=row.gap;
+    var gapCol=g>=3?'var(--red)':g>=2?'var(--amber)':g>=1?'var(--green)':'var(--text-3)';
+    var gapTxt=g>0?'+'+g:(g<0?g:g===0?'—':g);
+    out+='<tr>'
+      +'<td><input style="'+INP_T+'" value="'+escHtml(row.comp||'')+'" title="Competência ou objetivo"'
+      +' onchange="pdiSetField(\''+idQ+'\','+i+',\'comp\',this.value)"></td>'
+      +'<td style="text-align:center"><input type="number" min="0" max="5" step="0.5" style="'+INP+';width:46px;text-align:center"'
+      +' value="'+escHtml(String(row.atual||0))+'"'
+      +' onchange="pdiSetField(\''+idQ+'\','+i+',\'atual\',+this.value)"></td>'
+      +'<td style="text-align:center"><input type="number" min="0" max="5" step="0.5" style="'+INP+';width:46px;text-align:center"'
+      +' value="'+escHtml(String(row.meta||0))+'"'
+      +' onchange="pdiSetField(\''+idQ+'\','+i+',\'meta\',+this.value)"></td>'
+      +'<td style="text-align:center;font-weight:700;color:'+gapCol+'" id="pdi-gap-'+id+'-'+i+'">'+gapTxt+'</td>'
+      +'<td><textarea rows="2" style="'+INP+';resize:vertical;min-height:36px" placeholder="Descreve a ação..."'
+      +' onchange="pdiSetField(\''+idQ+'\','+i+',\'acao\',this.value)">'+escHtml(row.acao||'')+'</textarea></td>'
+      +'<td><select style="'+INP+'" onchange="pdiSetField(\''+idQ+'\','+i+',\'tipo\',this.value)">'
+      +TIPOS.map(function(v){return'<option value="'+v+'"'+(row.tipo===v?' selected':'')+'>'+escHtml(v||'— sem tipo —')+'</option>';}).join('')
+      +'</select></td>'
+      +'<td><input type="month" style="'+INP+'" value="'+escHtml(row.prazo||'')+'"'
+      +' onchange="pdiSetField(\''+idQ+'\','+i+',\'prazo\',this.value)"></td>'
+      +'<td><input style="'+INP+'" value="'+escHtml(row.responsavel||'')+'" placeholder="Responsável"'
+      +' onchange="pdiSetField(\''+idQ+'\','+i+',\'responsavel\',this.value)"></td>'
+      +'<td><select style="'+INP+'" onchange="pdiSetField(\''+idQ+'\','+i+',\'estado\',this.value)">'
+      +ESTADOS.map(function(v){return'<option value="'+v+'"'+(row.estado===v?' selected':'')+'>'+escHtml(v)+'</option>';}).join('')
+      +'</select></td>'
+      +'<td style="text-align:center"><button onclick="pdiDeleteRow(\''+idQ+'\','+i+')" title="Remover linha"'
+      +' style="background:none;border:none;cursor:pointer;color:var(--text-3);font-size:16px;line-height:1;padding:2px">&#215;</button></td>'
+      +'</tr>';
+  });
+  out+='<tr><td colspan="10" style="padding:6px 8px">'
+    +'<button class="btn-sec" onclick="pdiAddRow(\''+idQ+'\')" style="font-size:11px">＋ Adicionar linha</button>'
+    +'</td></tr>';
+  out+='</tbody></table></div>';
+  // Summary stats
+  var total=pdi.length,conc=pdi.filter(function(r){return r.estado==='Concluído';}).length;
+  var emcurso=pdi.filter(function(r){return r.estado==='Em curso';}).length;
+  out+='<div style="display:flex;gap:16px;margin-top:10px;font-size:11.5px;color:var(--text-3)">'
+    +'<span>Total: <strong style="color:var(--text)">'+total+'</strong></span>'
+    +'<span>Em curso: <strong style="color:var(--accent)">'+emcurso+'</strong></span>'
+    +'<span>Concluídas: <strong style="color:var(--green)">'+conc+'</strong></span>'
+    +'<span style="margin-left:auto;color:'+(total>0&&conc===total?'var(--green)':'var(--text-3)')+'">Progresso: '
+    +'<strong>'+(total>0?Math.round(conc/total*100):0)+'%</strong></span>'
+    +'</div>';
+  return out;
+}
+
+// ── Perfil ──
+function renderPerfil(id){
+  var team=getTeamData();
+  var p=team.find(function(x){return x.id===id;});if(!p)return'';
+  var notes=getPersonNotes()[id]||'';
+  var cd=COMP_DATA[id];
+  var mgr=p.reportsTo?team.find(function(x){return x.id===p.reportsTo;}):null;
+  var out='<div class="grid-2" style="gap:12px;margin-bottom:12px">'
+    +'<div class="card"><div class="card-title">Informação base</div>'
+    +'<div style="font-size:12px;display:grid;grid-template-columns:1fr 1fr;gap:6px">'
+    +'<div><div style="color:var(--text-3);font-size:10.5px">Cargo</div><div style="margin-top:1px">'+escHtml(p.cargo)+'</div></div>'
+    +'<div><div style="color:var(--text-3);font-size:10.5px">Área</div><div style="margin-top:1px;text-transform:capitalize">'+escHtml(p.area)+'</div></div>'
+    +(mgr?'<div><div style="color:var(--text-3);font-size:10.5px">Reporta a</div><div style="margin-top:1px">'+escHtml(mgr.name.split(' ').slice(0,2).join(' '))+'</div></div>':'')
+    +(cd?'<div><div style="color:var(--text-3);font-size:10.5px">Data entrada</div><div style="margin-top:1px">'+escHtml(cd.entrou||'—')+'</div></div>':'')
+    +'</div>'
+    +(p.note?'<div class="mt8" style="font-size:12px;color:var(--text-2);border-top:1px solid var(--border);padding-top:8px">'+escHtml(p.note)+'</div>':'')
+    +'</div>';
+  // Competências mini
+  if(cd&&cd.items){
+    out+='<div class="card"><div class="card-title">Competências</div>';
+    cd.items.slice(0,6).forEach(function(c){
+      if(c.atual===null)return;
+      var col=compLevelColor(c.atual);
+      out+='<div style="display:flex;align-items:center;gap:7px;margin-bottom:7px">'
+        +'<div style="font-size:11.5px;width:150px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+escHtml(c.nome)+'</div>'
+        +'<div class="pb" style="flex:1;margin-top:0"><div class="pb-fill" style="width:'+(c.atual/5*100)+'%;background:'+col+'"></div></div>'
+        +'<div style="font-size:11px;font-weight:600;color:'+col+';width:24px;text-align:right">'+c.atual+'</div>'
+        +'</div>';
+    });
+    out+='</div></div>';
+  } else {out+='</div>';}
+  // Responsibilities
+  var resp=getPersonResp(id);
+  out+=buildRespTable(id,resp,team,false);
+  // Evaluations
+  if(p.eval&&p.eval.length){
+    out+='<div class="e-section-title" style="margin-top:12px">Avaliações</div>'
+      +'<div class="card" style="padding:0;overflow:hidden"><table class="e-eval-table" style="width:100%"><thead><tr><th>Data</th><th>Estado</th><th>Nota</th></tr></thead><tbody>';
+    p.eval.slice().reverse().forEach(function(e){
+      out+='<tr><td>'+escHtml(e.data)+'</td><td><span class="badge b-info">'+escHtml(e.estado)+'</span></td><td>'+escHtml(e.nota)+'</td></tr>';
+    });
+    out+='</tbody></table></div>';
+  }
+  // Notes
+  out+='<div class="e-section-title" style="margin-top:12px">Observações</div>'
+    +'<textarea class="e-notes-area" onchange="savePersonNote(\''+id+'\',this.value)">'+escHtml(notes)+'</textarea>';
+  return out;
+}
+
+// ── Competências Matrix ──
+var COMP_COLS=['Comunicação','Organização e planeamento','Autonomia','Adaptabilidade','Trabalho em equipa','Resolução de problemas','Conhecimento técnico','Gestão proc. op.','Ferramentas digitais'];
+function getCompVal(id,col){
+  var cd=COMP_DATA[id];if(!cd||!cd.items)return null;
+  var found=cd.items.find(function(c){
+    var cn=c.nome.toLowerCase();
+    var target=col.toLowerCase();
+    if(target==='conhecimento técnico')return cn.indexOf('conhecimento técnico')>=0||cn.indexOf('conhecimento de obra')>=0;
+    if(target==='gestão proc. op.')return cn.indexOf('proc')>=0;
+    return cn.indexOf(target.split(' ')[0])>=0&&cn.indexOf(target.split(' ')[1]||target.split(' ')[0])>=0;
+  });
+  return found?(found.atual):null;
+}
+function renderCompetencias(){
+  var team=getTeamData();
+  var pids=['gs','bc','fc','mn','vb'];
+  var out='<div class="sh mb12"><div class="sh-title">Matriz de Competências — Equipa de Logística</div><div class="sh-sub">Escala 1–5 · ';
+  [[1,'#fee2e2','#991b1b','Inicial'],[2,'#fed7aa','#9a3412','Em dev.'],[3,'#fef9c3','#854d0e','Autónomo'],[4,'#bbf7d0','#166534','Avançado'],[5,'#86efac','#14532d','Referência']].forEach(function(x){
+    out+='<span style="display:inline-flex;align-items:center;gap:4px;margin-right:8px"><span style="background:'+x[1]+';color:'+x[2]+';border-radius:3px;padding:1px 5px;font-weight:600;font-size:10.5px">'+x[0]+'</span>'+x[3]+'</span>';
+  });
+  out+='</div></div>';
+  out+='<div class="card" style="padding:0;overflow:hidden"><div class="comp-matrix-wrap"><table class="comp-matrix"><thead><tr>'
+    +'<th style="min-width:130px">Colaborador</th>';
+  COMP_COLS.forEach(function(c){out+='<th>'+escHtml(c)+'</th>';});
+  out+='<th>Média</th></tr></thead><tbody>';
+  var colSums={},colCounts={};
+  pids.forEach(function(id){
+    var p=team.find(function(x){return x.id===id;});if(!p)return;
+    var media=calcMediaComp(id);
+    var mc=media?compLevelColor(parseFloat(media)):'var(--text-3)';
+    out+='<tr><td class="cm-person">'+escHtml(p.name.split(' ').slice(0,2).join(' '))+'</td>';
+    COMP_COLS.forEach(function(col){
+      var v=getCompVal(id,col);
+      if(v===null){out+='<td><span class="cm-cell cmn">—</span></td>';}
+      else{
+        out+='<td><span class="cm-cell cm'+Math.min(5,Math.max(1,Math.round(v)))+'">'+v+'</span></td>';
+        if(!colSums[col])colSums[col]=0;if(!colCounts[col])colCounts[col]=0;
+        colSums[col]+=v;colCounts[col]++;
+      }
+    });
+    out+='<td><span class="cm-cell cm-avg '+(media?'cm'+Math.min(5,Math.max(1,Math.round(parseFloat(media)))):'cmn')+'" style="color:'+mc+'">'+( media||'—')+'</span></td>';
+    out+='</tr>';
+  });
+  // Average row
+  out+='<tr style="background:#f9f9f7"><td style="font-size:10.5px;color:var(--text-3);font-weight:400">Média equipa</td>';
+  COMP_COLS.forEach(function(col){
+    var avg=colCounts[col]?(colSums[col]/colCounts[col]).toFixed(1):null;
+    if(!avg){out+='<td><span class="cm-cell cmn">—</span></td>';}
+    else{out+='<td><span class="cm-cell cm'+Math.min(5,Math.max(1,Math.round(parseFloat(avg))))+'">'+avg+'</span></td>';}
+  });
+  out+='<td></td></tr>';
+  out+='</tbody></table></div></div>';
+  // Gaps
+  out+='<div class="card-title" style="margin-top:16px;margin-bottom:8px">Gaps críticos da equipa</div>';
+  out+='<div class="grid-3">';
+  var colGaps=COMP_COLS.map(function(col){
+    var avg=colCounts[col]?(colSums[col]/colCounts[col]):null;
+    return{col:col,avg:avg};
+  }).filter(function(x){return x.avg!==null;}).sort(function(a,b){return a.avg-b.avg;}).slice(0,3);
+  colGaps.forEach(function(cg){
+    var col=cg.avg<3?'var(--red)':cg.avg<3.5?'var(--amber)':'var(--text-2)';
+    var bg=cg.avg<3?'#fef2f2':cg.avg<3.5?'#fffbeb':'#f0fdf4';
+    var brd=cg.avg<3?'#fca5a5':cg.avg<3.5?'#fde68a':'#bbf7d0';
+    out+='<div style="background:'+bg+';border:1px solid '+brd+';border-radius:8px;padding:10px 12px">'
+      +'<div style="font-size:11.5px;font-weight:500;color:'+col+'">'+escHtml(cg.col)+' — '+cg.avg.toFixed(1)+'/5</div>'
+      +'<div style="font-size:10.5px;color:'+col+';margin-top:3px">Abaixo da meta de 5</div></div>';
+  });
+  out+='</div>';
+  document.getElementById('competencias-content').innerHTML=out;
+}
+
 // ── Nav ──
 function showTab(name,btn){
   document.querySelectorAll('.section').forEach(function(s){s.classList.remove('active');});
   document.querySelectorAll('.nav-btn').forEach(function(b){b.classList.remove('active');});
   document.getElementById('tab-'+name).classList.add('active');btn.classList.add('active');
+  if(name==='geral')renderVistaGeral();
+  if(name==='pessoas')renderPessoas();
+  if(name==='competencias')renderCompetencias();
   if(name==='frota'){buildTypeFilter(currentCat);renderFleet();}
   if(name==='tarefas'){renderTasks();syncMeetingButtons();}
   if(name==='reunioes')syncMeetingButtons();
+  if(name==='assistente')renderAssistente();
+}
+
+// ── Assistente IA ──
+var _aiSelected=null;
+var _aiHistory=[];
+var _aiLoading=false;
+
+var AI_QUICK={
+  geral:[
+    'Que colaborador precisa de mais atenção agora?',
+    'Onde estão os maiores riscos de dependência na equipa?',
+    'Sugere prioridades de desenvolvimento para este mês',
+    'Que processos deveria delegar ou redistribuir?'
+  ],
+  pessoa:[
+    'Que ações concretas posso tomar esta semana?',
+    'Como estruturo um plano de melhoria de 30 dias?',
+    'Que responsabilidades estão em falta ou mal definidas?',
+    'Como avalio o desempenho e defino objetivos SMART?',
+    'Que riscos vejo nesta função e como os mitigar?'
+  ]
+};
+
+function renderAssistente(){
+  var team=getTeamData().filter(function(p){return p.id!=='vg';});
+  var sidebar='<div class="ai-sidebar"><div class="card" style="padding:10px 12px;margin-bottom:2px"><div class="card-title" style="margin-bottom:6px">Selecionar colaborador</div>';
+  sidebar+='<div class="ai-emp-card'+(_aiSelected===null?' selected':'')+('" onclick="aiSelectEmp(null)"><div class="ai-emp-name">&#127775; Equipa Geral</div><div class="ai-emp-role">Visão global da equipa</div></div>');
+  team.forEach(function(p){
+    var sel=_aiSelected===p.id;
+    var rC=p.risk==='err'?'color:var(--red)':p.risk==='warn'?'color:var(--amber)':'color:var(--green)';
+    sidebar+='<div class="ai-emp-card'+(sel?' selected':'')+'" onclick="aiSelectEmp(\''+p.id+'\')">'
+      +'<div class="ai-emp-name">'+escHtml(p.name)+'</div>'
+      +'<div class="ai-emp-role">'+escHtml(p.cargo)+'</div>'
+      +'<div style="font-size:10.5px;margin-top:3px;'+rC+'">'+escHtml(p.status)+'</div>'
+      +'</div>';
+  });
+  sidebar+='</div></div>';
+
+  var selPerson=_aiSelected?team.find(function(p){return p.id===_aiSelected;}):null;
+  var headerTitle=selPerson?escHtml(selPerson.name):'Equipa Geral';
+  var headerSub=selPerson?escHtml(selPerson.cargo):'Assistente de gestão de equipa — Construções Pragosa';
+
+  var quickList=selPerson?AI_QUICK.pessoa:AI_QUICK.geral;
+  var quickHtml=quickList.map(function(q){
+    return '<button class="ai-quick-btn" onclick="aiQuick(\''+q.replace(/'/g,'&#39;')+'\')">'+q+'</button>';
+  }).join('');
+
+  var msgsHtml='';
+  if(!_aiHistory.length){
+    msgsHtml='<div class="ai-empty"><div class="ai-empty-icon">&#129302;</div>'
+      +(selPerson
+        ?'<div><strong>'+escHtml(selPerson.name)+'</strong> selecionada/o.</div><div style="font-size:12px;margin-top:4px">Use as sugestões abaixo ou escreva a sua pergunta.</div>'
+        :'<div>Selecione um colaborador ou faça uma pergunta sobre a equipa.</div><div style="font-size:12px;margin-top:4px">Use as sugestões abaixo para começar.</div>'
+      )+'</div>';
+  } else {
+    _aiHistory.forEach(function(m){
+      msgsHtml+='<div class="ai-msg '+m.role+'">'
+        +'<div class="ai-bubble'+(m.loading?' loading':'')+'">'+escHtml(m.text)+'</div>'
+        +'</div>';
+    });
+  }
+
+  var chatHtml='<div class="ai-chat">'
+    +'<div class="ai-chat-header"><div><div class="ai-chat-title">'+headerTitle+'</div><div class="ai-chat-sub">'+headerSub+'</div></div>'
+    +(selPerson?'<div style="margin-left:auto"><button style="font-size:11px;padding:4px 10px;border:1px solid var(--border);border-radius:6px;background:none;color:var(--text-3);cursor:pointer" onclick="aiClearHistory()">Limpar conversa</button></div>':'')
+    +'</div>'
+    +'<div class="ai-msgs" id="ai-msgs-area">'+msgsHtml+'</div>'
+    +'<div class="ai-quick" id="ai-quick-area">'+quickHtml+'</div>'
+    +'<div class="ai-input-row">'
+    +'<textarea class="ai-input" id="ai-input" rows="2" placeholder="Escreva a sua pergunta… (Enter para enviar, Shift+Enter para nova linha)" onkeydown="if(event.key===\'Enter\'&&!event.shiftKey){event.preventDefault();aiSend();}" oninput="this.style.height=\'auto\';this.style.height=Math.min(this.scrollHeight,220)+\'px\'"></textarea>'
+    +'<button class="ai-send" id="ai-send-btn" onclick="aiSend()">Enviar</button>'
+    +'</div></div>';
+
+  document.getElementById('tab-assistente').innerHTML='<div class="ai-layout">'+sidebar+chatHtml+'</div>';
+  setTimeout(function(){aiScrollBottom();},50);
+}
+
+function aiSelectEmp(id){
+  _aiSelected=id;
+  _aiHistory=[];
+  renderAssistente();
+}
+
+function aiClearHistory(){
+  _aiHistory=[];
+  renderAssistente();
+}
+
+function aiScrollBottom(){
+  var el=document.getElementById('ai-msgs-area');
+  if(el)el.scrollTop=el.scrollHeight;
+}
+
+function aiQuick(text){
+  var inp=document.getElementById('ai-input');
+  if(!inp)return;
+  inp.value=text;
+  inp.style.height='auto';
+  inp.style.height=Math.min(inp.scrollHeight,220)+'px';
+  aiSend();
+}
+
+function aiBuildContext(){
+  var team=getTeamData();
+  var ctx='Empresa: Construcoes Pragosa, S.A. — construcao civil e obras publicas. Areas: Construcoes, Industria (pedreiras), Cisternas, Combustiveis/Frota, Manutencoes.\n';
+  ctx+='Rita Fialho: Diretora de Logistica — utilizadora deste assistente. Gere toda a equipa de logistica.\n\n';
+
+  if(_aiSelected){
+    var p=team.find(function(x){return x.id===_aiSelected;});
+    if(p){
+      ctx+='=== COLABORADOR EM ANALISE ===\n';
+      ctx+='Nome: '+p.name+'\nCargo: '+p.cargo+'\nArea: '+p.area+'\nRisco: '+p.risk+'\nEstado: '+p.status+'\n';
+      if(p.note)ctx+='Info: '+p.note+'\n';
+      if(p.eval&&p.eval.length){
+        ctx+='\nAvaliacoes:\n';
+        p.eval.forEach(function(e){ctx+='  ['+e.data+'] '+e.estado+' — '+e.nota+'\n';});
+      }
+      var pend=getPersonPending()[p.id]||(p.pendentes&&p.pendentes.length?p.pendentes.map(function(t){return{text:t,done:false};}):null);
+      if(pend&&pend.length){
+        ctx+='\nPendentes:\n';
+        pend.forEach(function(t){ctx+='  ['+(t.done?'OK':'TODO')+'] '+t.text+'\n';});
+      }
+      var resp=getPersonResp(p.id);
+      if(resp&&resp.length){
+        ctx+='\nResponsabilidades definidas:\n';
+        resp.forEach(function(r){
+          ctx+='  - '+r.text+(r.periodicidade?' ('+r.periodicidade+')':'')+(r.rating?' ['+r.rating+']':'')+'\n';
+        });
+      }
+      var mgr=p.reportsTo?team.find(function(x){return x.id===p.reportsTo;}):null;
+      if(mgr)ctx+='\nReporta a: '+mgr.name+' ('+mgr.cargo+')\n';
+    }
+  } else {
+    ctx+='=== EQUIPA COMPLETA ===\n';
+    team.filter(function(p){return p.id!=='vg';}).forEach(function(p){
+      ctx+=p.name+' | '+p.cargo+' | Estado: '+p.status+' | Risco: '+p.risk+'\n';
+    });
+  }
+  return ctx;
+}
+
+async function aiSend(){
+  if(_aiLoading)return;
+  var input=document.getElementById('ai-input');
+  if(!input)return;
+  var text=(input.value||'').trim();
+  if(!text)return;
+  input.value='';
+
+  var msgsArea=document.getElementById('ai-msgs-area');
+  if(!msgsArea)return;
+
+  // Remove estado vazio se existir
+  var emptyEl=msgsArea.querySelector('.ai-empty');
+  if(emptyEl)emptyEl.remove();
+
+  // Adicionar mensagem do utilizador directamente no DOM
+  var userDiv=document.createElement('div');
+  userDiv.className='ai-msg user';
+  userDiv.innerHTML='<div class="ai-bubble">'+escHtml(text)+'</div>';
+  msgsArea.appendChild(userDiv);
+
+  // Adicionar bolha de loading com id único
+  var loadingId='ai-loading-'+Date.now();
+  var loadDiv=document.createElement('div');
+  loadDiv.className='ai-msg ai';
+  loadDiv.id=loadingId;
+  loadDiv.innerHTML='<div class="ai-bubble loading" style="color:var(--text-3);font-style:italic">A pensar…</div>';
+  msgsArea.appendChild(loadDiv);
+  msgsArea.scrollTop=msgsArea.scrollHeight;
+
+  // Bloquear input
+  _aiLoading=true;
+  var sendBtn=document.getElementById('ai-send-btn');
+  if(sendBtn)sendBtn.disabled=true;
+  input.disabled=true;
+
+  // Registar no histórico (sem a bolha de loading)
+  _aiHistory.push({role:'user',text:text});
+
+  var systemPrompt='Es um assistente de gestao de equipa para Rita Fialho, Diretora de Logistica da Construcoes Pragosa. '
+    +'Ajudas a reestruturar funcoes, definir planos de melhoria, identificar riscos, sugerir acoes concretas e melhorar processos. '
+    +'Responde sempre em Portugues de Portugal. Se direto, pratico e orientado a acao. Usa paragrafos curtos. '
+    +'Quando sugeres acoes, sao especificas, com responsavel e prazo. Nao uses markdown (sem asteriscos, sem #). '
+    +'Contexto:\n'+aiBuildContext();
+
+  var historyText='';
+  if(_aiHistory.length>1){
+    historyText='\n\nHistorico da conversa:\n';
+    _aiHistory.slice(0,-1).forEach(function(m){historyText+=(m.role==='user'?'Rita: ':'Assistente: ')+m.text+'\n';});
+  }
+
+  var respText='';
+  try{
+    if(!window.cowork||typeof window.cowork.askClaude!=='function')throw new Error('askClaude nao disponivel');
+    var raw=await window.cowork.askClaude(systemPrompt+historyText+'\n\nPergunta de Rita: '+text,[]);
+    // Extrair texto independentemente do formato devolvido
+    if(typeof raw==='string'){
+      respText=raw;
+    } else if(raw&&typeof raw==='object'){
+      if(typeof raw.text==='string') respText=raw.text;
+      else if(Array.isArray(raw.content)) respText=raw.content.filter(function(b){return b.type==='text';}).map(function(b){return b.text;}).join('\n');
+      else if(Array.isArray(raw)) respText=raw.filter(function(b){return b.type==='text';}).map(function(b){return b.text;}).join('\n');
+      else respText=JSON.stringify(raw);
+    } else {
+      respText=String(raw);
+    }
+    _aiHistory.push({role:'ai',text:respText});
+  } catch(e){
+    respText='Não foi possível obter resposta. Verifique a ligação e tente novamente.';
+    _aiHistory.push({role:'ai',text:respText});
+  }
+
+  // Substituir bolha de loading pela resposta (sem reconstruir o DOM)
+  var loadBubble=document.getElementById(loadingId);
+  if(loadBubble){
+    loadBubble.innerHTML='<div class="ai-bubble">'+escHtml(respText)+'</div>';
+  } else {
+    // Fallback: adicionar nova mensagem se o elemento desapareceu
+    var aiDiv=document.createElement('div');
+    aiDiv.className='ai-msg ai';
+    aiDiv.innerHTML='<div class="ai-bubble">'+escHtml(respText)+'</div>';
+    msgsArea.appendChild(aiDiv);
+  }
+
+  // Desbloquear input
+  _aiLoading=false;
+  if(sendBtn)sendBtn.disabled=false;
+  input.disabled=false;
+  input.focus();
+  msgsArea.scrollTop=msgsArea.scrollHeight;
 }
 function showToast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},2200);}
 function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 
 // ── Init ──
 (function(){
-  renderCards();
+  renderVistaGeral();
+  renderPessoas();
   renderDeptKpis();
   var tasks=loadTasks();updateBadge(tasks);
   var url=localStorage.getItem('pragosa_avarias_url')||'';
@@ -1952,6 +3344,24 @@ function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').
   buildTypeFilter('basculantes');renderFleet();
 })();
 </script>
+
+<!-- ASSISTENTE -->
+<div id="tab-assistente" class="section section-wrap"><button class="fs-btn" onclick="fsToggle('tab-assistente')" title="Maximizar / Fechar (Esc)">⛶</button></div>
+
+<!-- Hidden containers for legacy views -->
+<div id="_gv-cache" style="display:none"></div>
+<div id="equipa-org-view" style="display:none">
+  <div class="org-chart-wrap">
+    <div style="display:flex;justify-content:center;margin-bottom:0" id="orgRootRow"></div>
+    <div style="display:flex;justify-content:center"><div style="width:1px;height:20px;background:var(--border)"></div></div>
+    <div style="height:1px;background:var(--border);margin:0 11%"></div>
+    <div id="orgChildrenRow" style="display:flex;gap:8px;align-items:flex-start"></div>
+  </div>
+  <div class="org-edit-panel" id="orgEditPanel" style="display:none"></div>
+</div>
+<div id="equipa-ferias-view" style="display:none"></div>
+<div id="equipa-gantt-view" style="display:none"></div>
+<div id="equipa-cards-container" style="display:none"></div>
 
 <div id="ferias-detail-modal" onclick="if(event.target===this)closeFeriasDetail()">
   <div id="ferias-detail-content"></div>

@@ -26,7 +26,7 @@ SORT cargo ASC
 |---|---|---|
 | [[03 Pessoas/Gabriela Soares]] | Gestora Frota — Cisternas | Semanal (30 min) |
 | [[03 Pessoas/Bruna Cordeiro]] | Gestora Frota — Indústria | Semanal (30 min) |
-| [[03 Pessoas/Frederico Catarino]] | Gestor Frota — CPSA | 2×/semana (onboarding) |
+| [[03 Pessoas/Frederico Cristiano]] | Gestor Frota — CPSA | 2×/semana (onboarding) |
 | [[03 Pessoas/João Campos]] | Adm. Combustíveis, Custos e Mobilizações | Semanal / quinzenal |
 | [[03 Pessoas/António Marques]] | Adm. Cisternas e Lançamento | Semanal / quinzenal |
 | *Vera Bairros* | *a definir* | *entra em Agosto* |
