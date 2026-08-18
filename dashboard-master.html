@@ -1209,7 +1209,7 @@ function buildCompSection(pid){
   h+='</tbody></table>';
   return h;
 }
-function getTeamData(){var s=localStorage.getItem('pragosa_team_v1');return s?JSON.parse(s):JSON.parse(JSON.stringify(TEAM_DATA_DEFAULT));}
+function getTeamData(){var s=localStorage.getItem('pragosa_team_v1');if(!s)return JSON.parse(JSON.stringify(TEAM_DATA_DEFAULT));var team=JSON.parse(s);var ids={};team.forEach(function(p){ids[p.id]=true;});TEAM_DATA_DEFAULT.forEach(function(p){if(!ids[p.id])team.push(JSON.parse(JSON.stringify(p)));});return team;}
 function saveTeamData(d){localStorage.setItem('pragosa_team_v1',JSON.stringify(d));}
 function getPersonNotes(){return JSON.parse(localStorage.getItem('pragosa_person_notes')||'{}');}
 function savePersonNote(id,note){var n=getPersonNotes();n[id]=note;localStorage.setItem('pragosa_person_notes',JSON.stringify(n));}
@@ -2361,6 +2361,7 @@ function renderPessoas(preSelId,preSelTab){
   var dotColors={'ok':'var(--green)','warn':'var(--amber)','err':'var(--red)','info':'var(--accent)'};
   var groups=[
     {label:'Gestão de Tráfego',ids:['gs','bc','fc']},
+    {label:'Manutenção & Frota',ids:['gmf']},
     {label:'Administrativo',ids:['mn','am','jc','vb']},
     {label:'Comercial',ids:['fn','jf']},
     {label:'Expedição',ids:['nd','le','ac','st','pl']}
