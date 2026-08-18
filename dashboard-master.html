@@ -448,6 +448,7 @@ table.ft tr:hover td{background:#f9f9f7}
 <div class="nav">
   <button class="nav-btn active" onclick="showTab('geral',this)">Vista Geral</button>
   <button class="nav-btn" onclick="showTab('pessoas',this)">Pessoas</button>
+  <button class="nav-btn" onclick="showTab('funcoes',this)">Fun&ccedil;&otilde;es</button>
   <button class="nav-btn" onclick="showTab('competencias',this)">Compet&ecirc;ncias</button>
   <button class="nav-btn" onclick="showTab('reunioes',this)">Reuni&otilde;es</button>
   <button class="nav-btn" onclick="showTab('frota',this)">Frota</button>
@@ -478,6 +479,17 @@ table.ft tr:hover td{background:#f9f9f7}
         <button class="psnav-btn" id="sn-perfil" onclick="setPersonTab('perfil',this)">Perfil</button>
       </div>
       <div class="pessoas-content" id="pessoas-content" style="display:flex;align-items:center;justify-content:center;color:var(--text-3);font-size:13px">Selecione um colaborador ←</div>
+    </div>
+  </div>
+</div>
+
+<!-- FUNÇÕES / Roles Hub -->
+<div id="tab-funcoes" class="section section-wrap"><button class="fs-btn" onclick="fsToggle('tab-funcoes')" title="Maximizar / Fechar (Esc)">⛶</button>
+  <div class="pessoas-layout">
+    <div class="pessoas-sidebar" id="funcoes-sidebar"></div>
+    <div class="pessoas-main">
+      <div class="pessoas-header" id="funcoes-header"></div>
+      <div class="pessoas-content" id="funcoes-content" style="display:block"></div>
     </div>
   </div>
 </div>
@@ -1076,8 +1088,7 @@ var TEAM_DATA_DEFAULT=[
   {id:'st',initials:'ST',color:'amber',name:'Susete Trafaria',cargo:'Expedicao Industria — Sobrissul',area:'expedicao',reportsTo:'rf',risk:'warn',status:'Sobrecarga',note:'Equipa Sobrissul em risco. Paula Lagos com baixas recorrentes.',eval:[],pendentes:[]},
   {id:'pl',initials:'PL',color:'red',name:'Paula Lagos',cargo:'Expedicao Industria — Sobrissul',area:'expedicao',reportsTo:'rf',risk:'err',status:'Baixas recorrentes',note:'Baixas recorrentes — equipa Sobrissul em risco critico.',eval:[],pendentes:[]},
   {id:'vg',initials:'+',color:'blue',name:'Vaga aberta',cargo:'3. elemento — Sobrissul',area:'expedicao',reportsTo:'rf',risk:'info',status:'Em recrutamento',note:'Decisao CE 30 jun: abrir 3. elemento para Sobrissul.',eval:[],pendentes:['Publicar oferta de emprego','Definir perfil e criterios de selecao']},
-  {id:'vb',initials:'VB',color:'blue',name:'Vera Bairros',cargo:'Administrativa Cisternas',area:'admin',reportsTo:'rf',risk:'ok',status:'Em integracao',note:'Emissao e envio de propostas de fornecimento. Abertura de notas de encomenda de transporte. Verificacao e lancamento de guias de transporte. Preparacao de documentacao para faturacao. Apoio administrativo ao Tecnico responsavel. Envio de NE ao Dep. Compras. Em integracao desde agosto 2026 — apoio e supervisao do Antonio Marques.',eval:[{data:'2026-08-04',estado:'Em integracao',nota:'Inicio de funcoes em agosto 2026. Onboarding em curso.'}],pendentes:['Conhecer processos administrativos das Cisternas','Familiarizar com sistemas internos (guias, faturacao, ocorrencias)','Alinhar rotinas com Antonio Marques']},
-  {id:'gmf',initials:'MF',color:'purple',name:'Gestor de Manutenção e Frota',cargo:'Função proposta — a criar / recrutar',area:'manutencao',reportsTo:'rf',risk:'info',status:'Proposta — a criar',note:'Função dedicada de GESTÃO (não é oficina) para centralizar a informação dos equipamentos, planear e acompanhar as manutenções (preventiva, preditiva e corretiva), coordenar oficinas e fornecedores e assegurar a ligação entre manutenção e tráfego. Objetivo: maximizar a disponibilidade da frota, reduzir tempos de imobilização e controlar os custos de manutenção. Evolui a empresa de "avaria → reparar" para "prever → prevenir → acompanhar → analisar → melhorar". Notas completas no Vault: 06 Operações/Função — Gestão de Manutenções e Frota (+ Roadmap + Perfil de Recrutamento).',eval:[{data:'2026-08-18',estado:'Proposta',nota:'Função esboçada e avaliada. 3 decisões estruturantes por fechar: (1) coordena vs. absorve os gestores de frota por área; (2) ferramenta de suporte; (3) limite de aprovação (€).'}],pendentes:['Decidir relação com Gestores de Frota por área (coordena vs. absorve)','Definir ferramenta de suporte (App Avarias / Smart Logistics / Traccar)','Delimitar perímetro da frota abrangida','Fixar limite de valor de aprovação autónoma (€)','Medir baseline de disponibilidade e dias de imobilização','Definir via de recrutamento (interno vs. externo)','Escrever descritivo / anúncio de recrutamento','Apresentar a proposta à Direção']}
+  {id:'vb',initials:'VB',color:'blue',name:'Vera Bairros',cargo:'Administrativa Cisternas',area:'admin',reportsTo:'rf',risk:'ok',status:'Em integracao',note:'Emissao e envio de propostas de fornecimento. Abertura de notas de encomenda de transporte. Verificacao e lancamento de guias de transporte. Preparacao de documentacao para faturacao. Apoio administrativo ao Tecnico responsavel. Envio de NE ao Dep. Compras. Em integracao desde agosto 2026 — apoio e supervisao do Antonio Marques.',eval:[{data:'2026-08-04',estado:'Em integracao',nota:'Inicio de funcoes em agosto 2026. Onboarding em curso.'}],pendentes:['Conhecer processos administrativos das Cisternas','Familiarizar com sistemas internos (guias, faturacao, ocorrencias)','Alinhar rotinas com Antonio Marques']}
 ];
 
 // ── Area responsibilities (from Obsidian person notes) ──
@@ -2361,7 +2372,6 @@ function renderPessoas(preSelId,preSelTab){
   var dotColors={'ok':'var(--green)','warn':'var(--amber)','err':'var(--red)','info':'var(--accent)'};
   var groups=[
     {label:'Gestão de Tráfego',ids:['gs','bc','fc']},
-    {label:'Manutenção & Frota',ids:['gmf']},
     {label:'Administrativo',ids:['mn','am','jc','vb']},
     {label:'Comercial',ids:['fn','jf']},
     {label:'Expedição',ids:['nd','le','ac','st','pl']}
@@ -2412,8 +2422,7 @@ function renderPessoas(preSelId,preSelTab){
 
 function selectPerson(id){
   _selPerson=id;
-  var defTab=(id==='gmf')?'perfil':'checkin';
-  _personTab=defTab;
+  _personTab='checkin';
   document.querySelectorAll('.p-item').forEach(function(el){el.classList.remove('active');});
   var el=document.getElementById('pi-'+id);if(el)el.classList.add('active');
   document.querySelectorAll('.p-view-btn').forEach(function(b){b.classList.remove('active');});
@@ -2425,11 +2434,11 @@ function selectPerson(id){
   // Onboarding visibility
   var onbBtn=document.getElementById('sn-onboarding');
   if(onbBtn){var hasOnb=['fc','vb'].indexOf(id)>=0;onbBtn.style.display=hasOnb?'':'none';}
-  // Reset to default tab
+  // Reset to checkin tab
   document.querySelectorAll('.psnav-btn').forEach(function(b){b.classList.remove('active');});
-  var defBtn=document.getElementById('sn-'+defTab);if(defBtn)defBtn.classList.add('active');
+  var ciBtn=document.getElementById('sn-checkin');if(ciBtn)ciBtn.classList.add('active');
   renderPersonHeader(id);
-  renderPersonContent(id,defTab);
+  renderPersonContent(id,'checkin');
 }
 
 function gvRescue(){
@@ -3061,8 +3070,6 @@ function renderPerfil(id){
   // Notes
   out+='<div class="e-section-title" style="margin-top:12px">Observações</div>'
     +'<textarea class="e-notes-area" onchange="savePersonNote(\''+id+'\',this.value)">'+escHtml(notes)+'</textarea>';
-  // Rich block for the proposed Manutenção & Frota function
-  if(id==='gmf')out+=funcaoGMFBlock();
   return out;
 }
 
@@ -3080,7 +3087,7 @@ function funcaoGMFBlock(){
   // Banner
   h+='<div style="'+CARD+';border-left:3px solid #7c3aed">'
     +'<div style="font-size:13px;font-weight:700;color:var(--text)">Função de Gestão — não é uma oficina</div>'
-    +'<div style="font-size:12px;color:var(--text-2);margin-top:4px;line-height:1.5">O objetivo não é reparar veículos, mas garantir que são reparados corretamente, no momento certo, pela oficina certa, com o menor impacto na operação e com toda a informação registada. Ver o separador <strong>Objetivos</strong> para o Roadmap de implementação faseado.</div>'
+    +'<div style="font-size:12px;color:var(--text-2);margin-top:4px;line-height:1.5">O objetivo não é reparar veículos, mas garantir que são reparados corretamente, no momento certo, pela oficina certa, com o menor impacto na operação e com toda a informação registada.</div>'
     +'</div>';
   // Perfil-alvo
   h+='<div style="'+CARD+'"><div class="card-title">Perfil-alvo de recrutamento</div>';
@@ -3119,6 +3126,119 @@ function funcaoGMFBlock(){
     +'• Roadmap — Implementação Gestão de Manutenções e Frota<br>'
     +'• Perfil de Recrutamento — Gestor de Manutenção e Frota</div>';
   return h;
+}
+
+// ── FUNÇÕES / Roles Hub ──
+var FUNCTIONS=[
+  {id:'gmf',
+   nome:'Gestão Frota — Manutenção e Tacógrafos',
+   estado:'Proposta — a criar',
+   objetivo:'Função dedicada de gestão (não é oficina) para centralizar a informação dos equipamentos, planear e acompanhar as manutenções (preventiva, preditiva e corretiva), coordenar oficinas e fornecedores, assegurar a ligação entre manutenção e tráfego e integrar o controlo de tacógrafos. Objetivo: maximizar a disponibilidade da frota, reduzir tempos de imobilização e controlar os custos de manutenção — evoluindo de "avaria → reparar" para "prever → prevenir → acompanhar → analisar → melhorar".',
+   pessoas:[
+     {pid:'am',papel:'Gestor de Frota / manutenção — hoje em acumulação com Adm. Cisternas'},
+     {pid:'jc',papel:'Tacógrafos — hoje em acumulação (validação de descargas, DL 84/2026)'},
+     {pid:null,papel:'Vaga dedicada proposta — a recrutar / consolidar'}
+   ],
+   tacografos:'Ligar ao projeto em desenvolvimento "Tacógrafos" (dashboard + formação, DL 84/2026 em vigor desde 12/07/2026). A vertente de tacógrafos, hoje com o João Campos, deverá integrar-se nesta função à medida que o projeto avança.',
+   tarefas:[
+     'Decidir a relação da função com os Gestores de Frota por área (coordena vs. absorve)',
+     'Definir a ferramenta de suporte (App Avarias / Smart Logistics / Traccar)',
+     'Delimitar o perímetro da frota abrangida',
+     'Fixar o limite de valor de aprovação autónoma (€)',
+     'Medir baseline de disponibilidade e dias de imobilização',
+     'Definir a via de recrutamento (interno vs. externo)',
+     'Escrever o descritivo / anúncio de recrutamento',
+     'Apresentar a proposta à Direção'
+   ]}
+];
+var _selFuncao=null;
+function gotoPessoa(id){var b=document.querySelector('.nav-btn[onclick*="pessoas"]');if(b)showTab('pessoas',b);selectPerson(id);}
+function renderFuncoes(){
+  var sb=document.getElementById('funcoes-sidebar');
+  if(!sb)return;
+  var h='<div class="psi-head">Funções</div>';
+  FUNCTIONS.forEach(function(f){
+    var ac=(_selFuncao===f.id)?' active':'';
+    h+='<div class="p-item'+ac+'" id="fi-'+f.id+'" onclick="selectFuncao(\''+f.id+'\')">'
+      +'<div class="p-item-av av-purple">🔧</div>'
+      +'<div class="p-item-info"><div class="p-item-name">'+escHtml(f.nome)+'</div><div class="p-item-role">'+escHtml(f.estado)+'</div></div>'
+      +'<div class="p-status-dot" style="background:var(--accent)"></div></div>';
+  });
+  h+='<div class="psi-divider"></div>';
+  h+='<div style="padding:10px 12px;font-size:11px;color:var(--text-3);line-height:1.5">Por agora, apenas funções ligadas às manutenções. Novas funções entram aqui.</div>';
+  sb.innerHTML=h;
+  if(!_selFuncao)_selFuncao=FUNCTIONS[0].id;
+  selectFuncao(_selFuncao);
+}
+function selectFuncao(id){
+  _selFuncao=id;
+  document.querySelectorAll('#funcoes-sidebar .p-item').forEach(function(el){el.classList.remove('active');});
+  var el=document.getElementById('fi-'+id);if(el)el.classList.add('active');
+  var f=FUNCTIONS.find(function(x){return x.id===id;});
+  var hdr=document.getElementById('funcoes-header');
+  if(hdr&&f)hdr.innerHTML='<div class="p-main-av av-purple">🔧</div>'
+    +'<div><div class="p-main-name">'+escHtml(f.nome)+'</div><div class="p-main-role">'+escHtml(f.estado)+'</div></div>'
+    +'<div style="margin-left:auto"><span class="badge b-info" style="font-size:10.5px">'+escHtml(f.estado)+'</span></div>';
+  var c=document.getElementById('funcoes-content');
+  if(c)c.innerHTML=renderFuncaoDetail(id);
+}
+function renderFuncaoDetail(id){
+  var f=FUNCTIONS.find(function(x){return x.id===id;});
+  if(!f)return '';
+  var team=getTeamData();
+  var CARD='background:var(--surface,#fff);border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin-top:12px';
+  var LI='font-size:12px;color:var(--text-2);line-height:1.55;margin-bottom:2px';
+  var out='';
+  // Objetivo
+  out+='<div style="'+CARD+';margin-top:0"><div class="card-title">Objetivo da função</div><div style="font-size:12.5px;color:var(--text-2);line-height:1.55">'+escHtml(f.objetivo)+'</div></div>';
+  // Pessoas ligadas
+  out+='<div style="'+CARD+'"><div class="card-title">Pessoas ligadas a esta função</div><div style="display:flex;flex-direction:column;gap:8px">';
+  f.pessoas.forEach(function(pl){
+    if(pl.pid){
+      var p=team.find(function(x){return x.id===pl.pid;});
+      var nm=p?p.name:pl.pid,initials=p?p.initials:'?',avc=p?('av-'+p.color):'av-blue';
+      out+='<div style="display:flex;align-items:center;gap:9px;cursor:pointer" onclick="gotoPessoa(\''+pl.pid+'\')" title="Abrir ficha em Pessoas">'
+        +'<div class="p-item-av '+avc+'" style="width:30px;height:30px;font-size:11px">'+escHtml(initials)+'</div>'
+        +'<div><div style="font-size:12.5px;font-weight:600;color:var(--text)">'+escHtml(nm)+' <span style="font-size:10.5px;color:var(--accent)">↗</span></div><div style="font-size:11px;color:var(--text-3)">'+escHtml(pl.papel)+'</div></div></div>';
+    } else {
+      out+='<div style="display:flex;align-items:center;gap:9px">'
+        +'<div class="p-item-av" style="width:30px;height:30px;font-size:14px;background:var(--bg);border:1px dashed var(--border);color:var(--text-3);display:flex;align-items:center;justify-content:center">＋</div>'
+        +'<div><div style="font-size:12.5px;font-weight:600;color:var(--text-2)">Vaga dedicada</div><div style="font-size:11px;color:var(--text-3)">'+escHtml(pl.papel)+'</div></div></div>';
+    }
+  });
+  out+='</div><div style="font-size:11px;color:var(--text-3);margin-top:8px;border-top:1px solid var(--border);padding-top:8px">Hoje a função está <strong>distribuída</strong> por várias pessoas em acumulação. A proposta é consolidá-la numa função dedicada.</div></div>';
+  // Responsabilidades (reutiliza AREA_RESP.gmf)
+  var resp=(typeof AREA_RESP!=='undefined'&&AREA_RESP.gmf)?AREA_RESP.gmf:[];
+  if(resp.length){
+    out+='<div style="'+CARD+'"><div class="card-title">Responsabilidades</div><ul style="margin:0;padding-left:16px">';
+    resp.forEach(function(r){out+='<li style="'+LI+'">'+escHtml(r)+'</li>';});
+    out+='</ul></div>';
+  }
+  // Roadmap (reutiliza OBJ_DEFAULT.gmf, só leitura)
+  var road=(typeof OBJ_DEFAULT!=='undefined'&&OBJ_DEFAULT.gmf)?OBJ_DEFAULT.gmf:[];
+  if(road.length){
+    out+='<div style="'+CARD+'"><div class="card-title">Roadmap de implementação</div>';
+    road.forEach(function(o){
+      var bcls=o.estado==='Concluído'?'b-ok':(o.estado==='Em curso'?'b-warn':'b-gray');
+      out+='<div style="margin-bottom:11px"><div style="display:flex;justify-content:space-between;gap:8px;margin-bottom:3px">'
+        +'<div style="font-size:12px;font-weight:600;color:var(--text)">'+escHtml(o.titulo)+'</div>'
+        +'<span class="badge '+bcls+'" style="font-size:10px;flex-shrink:0">'+escHtml(o.estado)+'</span></div>'
+        +'<div style="font-size:11px;color:var(--text-3);margin-bottom:4px">'+escHtml(o.resultado)+' · <strong>'+escHtml(o.prazo)+'</strong></div>'
+        +'<div class="obj-prog-track"><div class="obj-prog-fill" style="width:'+o.progresso+'%;background:'+o.cor+'"></div></div></div>';
+    });
+    out+='</div>';
+  }
+  // Perfil de recrutamento (reutiliza bloco rico)
+  out+=funcaoGMFBlock();
+  // Ligação Tacógrafos
+  if(f.tacografos)out+='<div style="'+CARD+';border-left:3px solid #0ea5e9"><div class="card-title">Ligação futura — Tacógrafos</div><div style="font-size:12px;color:var(--text-2);line-height:1.55">'+escHtml(f.tacografos)+'</div></div>';
+  // Tarefas
+  if(f.tarefas&&f.tarefas.length){
+    out+='<div style="'+CARD+'"><div class="card-title">Decisões e tarefas por fechar</div><ul style="margin:0;padding-left:16px">';
+    f.tarefas.forEach(function(t){out+='<li style="'+LI+'">'+escHtml(t)+'</li>';});
+    out+='</ul></div>';
+  }
+  return out;
 }
 
 // ── Competências Matrix ──
@@ -3199,6 +3319,7 @@ function showTab(name,btn){
   document.getElementById('tab-'+name).classList.add('active');btn.classList.add('active');
   if(name==='geral')renderVistaGeral();
   if(name==='pessoas')renderPessoas();
+  if(name==='funcoes')renderFuncoes();
   if(name==='competencias')renderCompetencias();
   if(name==='frota'){buildTypeFilter(currentCat);renderFleet();}
   if(name==='tarefas'){renderTasks();syncMeetingButtons();}
