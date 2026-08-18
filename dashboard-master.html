@@ -1076,7 +1076,8 @@ var TEAM_DATA_DEFAULT=[
   {id:'st',initials:'ST',color:'amber',name:'Susete Trafaria',cargo:'Expedicao Industria — Sobrissul',area:'expedicao',reportsTo:'rf',risk:'warn',status:'Sobrecarga',note:'Equipa Sobrissul em risco. Paula Lagos com baixas recorrentes.',eval:[],pendentes:[]},
   {id:'pl',initials:'PL',color:'red',name:'Paula Lagos',cargo:'Expedicao Industria — Sobrissul',area:'expedicao',reportsTo:'rf',risk:'err',status:'Baixas recorrentes',note:'Baixas recorrentes — equipa Sobrissul em risco critico.',eval:[],pendentes:[]},
   {id:'vg',initials:'+',color:'blue',name:'Vaga aberta',cargo:'3. elemento — Sobrissul',area:'expedicao',reportsTo:'rf',risk:'info',status:'Em recrutamento',note:'Decisao CE 30 jun: abrir 3. elemento para Sobrissul.',eval:[],pendentes:['Publicar oferta de emprego','Definir perfil e criterios de selecao']},
-  {id:'vb',initials:'VB',color:'blue',name:'Vera Bairros',cargo:'Administrativa Cisternas',area:'admin',reportsTo:'rf',risk:'ok',status:'Em integracao',note:'Emissao e envio de propostas de fornecimento. Abertura de notas de encomenda de transporte. Verificacao e lancamento de guias de transporte. Preparacao de documentacao para faturacao. Apoio administrativo ao Tecnico responsavel. Envio de NE ao Dep. Compras. Em integracao desde agosto 2026 — apoio e supervisao do Antonio Marques.',eval:[{data:'2026-08-04',estado:'Em integracao',nota:'Inicio de funcoes em agosto 2026. Onboarding em curso.'}],pendentes:['Conhecer processos administrativos das Cisternas','Familiarizar com sistemas internos (guias, faturacao, ocorrencias)','Alinhar rotinas com Antonio Marques']}
+  {id:'vb',initials:'VB',color:'blue',name:'Vera Bairros',cargo:'Administrativa Cisternas',area:'admin',reportsTo:'rf',risk:'ok',status:'Em integracao',note:'Emissao e envio de propostas de fornecimento. Abertura de notas de encomenda de transporte. Verificacao e lancamento de guias de transporte. Preparacao de documentacao para faturacao. Apoio administrativo ao Tecnico responsavel. Envio de NE ao Dep. Compras. Em integracao desde agosto 2026 — apoio e supervisao do Antonio Marques.',eval:[{data:'2026-08-04',estado:'Em integracao',nota:'Inicio de funcoes em agosto 2026. Onboarding em curso.'}],pendentes:['Conhecer processos administrativos das Cisternas','Familiarizar com sistemas internos (guias, faturacao, ocorrencias)','Alinhar rotinas com Antonio Marques']},
+  {id:'gmf',initials:'MF',color:'purple',name:'Gestor de Manutenção e Frota',cargo:'Função proposta — a criar / recrutar',area:'manutencao',reportsTo:'rf',risk:'info',status:'Proposta — a criar',note:'Função dedicada de GESTÃO (não é oficina) para centralizar a informação dos equipamentos, planear e acompanhar as manutenções (preventiva, preditiva e corretiva), coordenar oficinas e fornecedores e assegurar a ligação entre manutenção e tráfego. Objetivo: maximizar a disponibilidade da frota, reduzir tempos de imobilização e controlar os custos de manutenção. Evolui a empresa de "avaria → reparar" para "prever → prevenir → acompanhar → analisar → melhorar". Notas completas no Vault: 06 Operações/Função — Gestão de Manutenções e Frota (+ Roadmap + Perfil de Recrutamento).',eval:[{data:'2026-08-18',estado:'Proposta',nota:'Função esboçada e avaliada. 3 decisões estruturantes por fechar: (1) coordena vs. absorve os gestores de frota por área; (2) ferramenta de suporte; (3) limite de aprovação (€).'}],pendentes:['Decidir relação com Gestores de Frota por área (coordena vs. absorve)','Definir ferramenta de suporte (App Avarias / Smart Logistics / Traccar)','Delimitar perímetro da frota abrangida','Fixar limite de valor de aprovação autónoma (€)','Medir baseline de disponibilidade e dias de imobilização','Definir via de recrutamento (interno vs. externo)','Escrever descritivo / anúncio de recrutamento','Apresentar a proposta à Direção']}
 ];
 
 // ── Area responsibilities (from Obsidian person notes) ──
@@ -1095,7 +1096,8 @@ var AREA_RESP={
   ac:['Expedicao — Santa Eulalia','Controlo de cargas e guias de transporte'],
   st:['Expedicao — Sobrissul (co-responsavel)','Controlo de cargas, guias e comunicacao com motoristas'],
   pl:['Expedicao — Sobrissul (co-responsavel)','Controlo de cargas, guias e comunicacao com motoristas'],
-  vg:['[Vaga] A definir no processo de recrutamento']
+  vg:['[Vaga] A definir no processo de recrutamento'],
+  gmf:['Plano de manutenção preventiva (km/horas/tempo) e controlo de prazos','Ciclo da manutenção corretiva — da comunicação ao encerramento','Ponto de contacto único com oficinas (internas e externas)','Base de dados técnica dos equipamentos e referências de peças','Especificação de peças a Compras e ligação com o Tráfego','Relatório mensal e KPIs (disponibilidade, MTTR, custo/km)','Classificação de prioridades P1–P4 e autoridade de segurança (recusar regresso à operação)']
 };
 // ── Competências & Desenvolvimento ──
 var COMP_DATA={
@@ -1215,7 +1217,7 @@ function getPersonPending(){return JSON.parse(localStorage.getItem('pragosa_pers
 function savePersonPending(id,items){var a=getPersonPending();a[id]=items;localStorage.setItem('pragosa_person_pending',JSON.stringify(a));}
 
 // ── Card view ──
-var GROUPS=[{area:'direcao',label:'Direcao'},{area:'trafego',label:'Gestao de Trafego'},{area:'comercial',label:'Comercial'},{area:'admin',label:'Administrativo & Custos'},{area:'expedicao',label:'Expedicao'}];
+var GROUPS=[{area:'direcao',label:'Direcao'},{area:'trafego',label:'Gestao de Trafego'},{area:'manutencao',label:'Manutenção & Frota'},{area:'comercial',label:'Comercial'},{area:'admin',label:'Administrativo & Custos'},{area:'expedicao',label:'Expedicao'}];
 
 function getPersonResp(id){var s=JSON.parse(localStorage.getItem('pragosa_resp_v1')||'{}');if(s[id]){return s[id].map(function(r){if(r.periodicidade===undefined)r.periodicidade='';return r;});}var base=AREA_RESP[id]||[];return base.map(function(r){return{text:r,rating:'',shared:'',periodicidade:''};});}
 function savePersonResp(id,data){var s=JSON.parse(localStorage.getItem('pragosa_resp_v1')||'{}');s[id]=data;localStorage.setItem('pragosa_resp_v1',JSON.stringify(s));}
@@ -2409,7 +2411,8 @@ function renderPessoas(preSelId,preSelTab){
 
 function selectPerson(id){
   _selPerson=id;
-  _personTab='checkin';
+  var defTab=(id==='gmf')?'perfil':'checkin';
+  _personTab=defTab;
   document.querySelectorAll('.p-item').forEach(function(el){el.classList.remove('active');});
   var el=document.getElementById('pi-'+id);if(el)el.classList.add('active');
   document.querySelectorAll('.p-view-btn').forEach(function(b){b.classList.remove('active');});
@@ -2421,11 +2424,11 @@ function selectPerson(id){
   // Onboarding visibility
   var onbBtn=document.getElementById('sn-onboarding');
   if(onbBtn){var hasOnb=['fc','vb'].indexOf(id)>=0;onbBtn.style.display=hasOnb?'':'none';}
-  // Reset to checkin tab
+  // Reset to default tab
   document.querySelectorAll('.psnav-btn').forEach(function(b){b.classList.remove('active');});
-  var ciBtn=document.getElementById('sn-checkin');if(ciBtn)ciBtn.classList.add('active');
+  var defBtn=document.getElementById('sn-'+defTab);if(defBtn)defBtn.classList.add('active');
   renderPersonHeader(id);
-  renderPersonContent(id,'checkin');
+  renderPersonContent(id,defTab);
 }
 
 function gvRescue(){
@@ -2703,6 +2706,13 @@ var OBJ_DEFAULT={
     {id:'fc-obj2',titulo:'Obj.2 — Rotina de contacto diário com motoristas',resultado:'Mapa de interlocutores completo',prazo:'14 ago 2026',progresso:65,estado:'Em curso',cor:'#eab308'},
     {id:'fc-obj3',titulo:'Obj.3 — Autonomia basculantes',resultado:'Gerir basculantes sem supervisão',prazo:'11 set 2026',progresso:20,estado:'Em risco',cor:'#f97316'},
     {id:'fc-obj4',titulo:'Obj.4 — Transportes especiais (grua, porta-máquinas)',resultado:'Autonomia transportes especiais',prazo:'26 set 2026',progresso:0,estado:'Não iniciado',cor:'#a1a1aa'}
+  ],
+  gmf:[
+    {id:'gmf-f0',titulo:'Fase 0 — Decisão e Enquadramento',resultado:'Função aprovada, perímetro fechado, ferramenta escolhida, limite € e via de recrutamento definidos',prazo:'Pré-M0 (2–4 sem.)',progresso:10,estado:'Em curso',cor:'#eab308'},
+    {id:'gmf-f1',titulo:'Fase 1 — Fundação de Informação',resultado:'Inventário técnico + estado da frota + baseline de KPIs (fonte única de verdade)',prazo:'M0 → M3',progresso:0,estado:'Não iniciado',cor:'#a1a1aa'},
+    {id:'gmf-f2',titulo:'Fase 2 — Preventiva a Rolar',resultado:'Plano preventivo a correr + corretiva com prioridades P1–P4',prazo:'M3 → M6',progresso:0,estado:'Não iniciado',cor:'#a1a1aa'},
+    {id:'gmf-f3',titulo:'Fase 3 — Gestão por Dados',resultado:'Relatório mensal fiável + KPIs com metas vs. baseline',prazo:'M6 → M12',progresso:0,estado:'Não iniciado',cor:'#a1a1aa'},
+    {id:'gmf-f4',titulo:'Fase 4 — Manutenção Preditiva',resultado:'Antecipação de falhas por telemetria e histórico consolidado',prazo:'M12+',progresso:0,estado:'Não iniciado',cor:'#a1a1aa'}
   ]
 };
 function getObjetivos(id){
@@ -2714,51 +2724,89 @@ function saveObjetivos(id,data){
   s[id]=data;
   localStorage.setItem('pragosa_objetivos_v1',JSON.stringify(s));
 }
-function renderObjetivos(id){
-  var objs=getObjetivos(id);
-  var out='<div class="sh mb8"><div class="sh-title">Objetivos</div>'
-    +'<button class="g-btn" onclick="objAdd(\''+id+'\')">+ Objetivo</button></div>';
-  if(!objs||!objs.length){
-    return out+'<div style="color:var(--text-3);font-size:13px;padding:24px;text-align:center">Sem objetivos definidos. Clica em "+ Objetivo" para adicionar.</div>';
+function objSetField(id,i,field,val){
+  var o=getObjetivos(id);if(!o||i>=o.length)return;
+  o[i][field]=val;
+  if(field==='progresso'){
+    var v=Math.max(0,Math.min(100,+val));
+    o[i].progresso=v;
+    if(v>=100){o[i].estado='Concluído';o[i].cor='#22c55e';}
+    else if(v===0){o[i].cor='#a1a1aa';}
+    else if(v<30){o[i].cor='#f97316';}
+    else if(v<70){o[i].cor='#eab308';}
+    else{o[i].cor='#22c55e';}
   }
-  objs.forEach(function(o,i){
-    var estadoClass=o.estado==='Concluído'?'b-ok':o.estado==='Em risco'?'b-err':o.estado==='Não iniciado'?'b-gray':'b-warn';
-    out+='<div class="obj-card">'
-      +'<div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:3px">'
-      +'<div class="obj-title" style="flex:1">'+escHtml(o.titulo)+'</div>'
-      +'<span class="badge '+estadoClass+'" style="flex-shrink:0;font-size:10.5px">'+escHtml(o.estado)+'</span></div>'
-      +'<div class="obj-meta">'+escHtml(o.resultado)+'<br><span style="color:var(--text-3)">Prazo: '+escHtml(o.prazo)+'</span></div>'
-      +'<div class="obj-prog-track"><div class="obj-prog-fill" style="width:'+o.progresso+'%;background:'+o.cor+'"></div></div>'
-      +'<div class="obj-footer">'
-      +'<span>'+o.progresso+'% concluído</span>'
-      +'<div style="display:flex;gap:6px">'
-      +'<input type="number" min="0" max="100" value="'+o.progresso+'" style="width:52px;border:1px solid var(--border);border-radius:5px;padding:2px 5px;font-size:11px;text-align:center" onchange="objSetProg(\''+id+'\','+i+',+this.value)">'
-      +'<select style="font-size:11px;border:1px solid var(--border);border-radius:5px;padding:2px 4px" onchange="objSetEstado(\''+id+'\','+i+',this.value)">'
-      +['Não iniciado','Em curso','Em risco','Concluído'].map(function(s){return'<option value="'+s+'"'+(o.estado===s?' selected':'')+'>'+s+'</option>';}).join('')
-      +'</select>'
-      +'<button class="g-x" onclick="objDel(\''+id+'\','+i+')" title="Eliminar">×</button>'
-      +'</div></div></div>';
-  });
-  return out;
+  saveObjetivos(id,o);
+  // Only re-render for fields that affect the progress bar or badge
+  if(field==='progresso'||field==='estado'||field==='cor'){
+    renderPersonContent(id,'objetivos');
+  }
 }
-function objSetProg(id,i,v){
-  var o=getObjetivos(id);if(!o)return;
-  o[i].progresso=Math.max(0,Math.min(100,v));
-  var colors=[null,'#a1a1aa','#a1a1aa','#f97316','#eab308','#22c55e'];
-  if(v>=100)o[i].estado='Concluído';
-  saveObjetivos(id,o);renderPersonContent(id,'objetivos');
-}
-function objSetEstado(id,i,v){
-  var o=getObjetivos(id);if(!o)return;o[i].estado=v;saveObjetivos(id,o);renderPersonContent(id,'objetivos');
-}
+function objSetProg(id,i,v){objSetField(id,i,'progresso',v);}
+function objSetEstado(id,i,v){objSetField(id,i,'estado',v);renderPersonContent(id,'objetivos');}
 function objDel(id,i){
   var o=getObjetivos(id);if(!o)return;o.splice(i,1);saveObjetivos(id,o);renderPersonContent(id,'objetivos');
 }
 function objAdd(id){
   var o=getObjetivos(id)||[];
-  o.push({id:'obj-'+Date.now(),titulo:'Novo objetivo',resultado:'',prazo:'',progresso:0,estado:'Não iniciado',cor:'#a1a1aa'});
+  o.push({id:'obj-'+Date.now(),titulo:'Novo objetivo',resultado:'Resultado esperado',prazo:'',progresso:0,estado:'Não iniciado',cor:'#a1a1aa'});
   saveObjetivos(id,o);renderPersonContent(id,'objetivos');
 }
+function renderObjetivos(id){
+  var objs=getObjetivos(id);
+  var idQ=id.replace(/'/g,"\\'");
+  var INP='border:1px solid var(--border);border-radius:5px;padding:4px 7px;font-size:12px;width:100%;box-sizing:border-box;background:var(--bg);color:var(--text)';
+  var out='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">'
+    +'<div class="sh-title">Objetivos</div>'
+    +'<button class="btn-sec" onclick="objAdd(\''+idQ+'\')">＋ Objetivo</button></div>';
+  if(!objs||!objs.length){
+    return out+'<div style="color:var(--text-3);font-size:13px;padding:24px;text-align:center">Sem objetivos definidos. Clica em "＋ Objetivo" para adicionar.</div>';
+  }
+  objs.forEach(function(o,i){
+    var estadoClass=o.estado==='Concluído'?'b-ok':o.estado==='Em risco'?'b-err':o.estado==='Não iniciado'?'b-gray':'b-warn';
+    out+='<div class="obj-card">';
+    // Row 1: título + badge estado + apagar
+    out+='<div style="display:flex;align-items:center;gap:6px;margin-bottom:6px">'
+      +'<input style="'+INP+';font-weight:600;font-size:13px;flex:1" value="'+escHtml(o.titulo||'')+'" placeholder="Título do objetivo"'
+      +' onchange="objSetField(\''+idQ+'\','+i+',\'titulo\',this.value)">'
+      +'<span class="badge '+estadoClass+'" style="flex-shrink:0;font-size:10.5px">'+escHtml(o.estado)+'</span>'
+      +'<button class="g-x" onclick="objDel(\''+idQ+'\','+i+')" title="Eliminar">×</button>'
+      +'</div>';
+    // Row 2: resultado esperado
+    out+='<div style="margin-bottom:6px">'
+      +'<div style="font-size:10px;color:var(--text-3);font-weight:600;text-transform:uppercase;margin-bottom:2px">Resultado esperado</div>'
+      +'<input style="'+INP+'" value="'+escHtml(o.resultado||'')+'" placeholder="Descreve o resultado esperado…"'
+      +' onchange="objSetField(\''+idQ+'\','+i+',\'resultado\',this.value)">'
+      +'</div>';
+    // Row 3: prazo + cor
+    out+='<div style="display:flex;gap:8px;margin-bottom:6px;align-items:center">'
+      +'<div style="flex:1">'
+      +'<div style="font-size:10px;color:var(--text-3);font-weight:600;text-transform:uppercase;margin-bottom:2px">Prazo</div>'
+      +'<input style="'+INP+'" value="'+escHtml(o.prazo||'')+'" placeholder="ex: 30 set 2026"'
+      +' onchange="objSetField(\''+idQ+'\','+i+',\'prazo\',this.value)">'
+      +'</div>'
+      +'<div>'
+      +'<div style="font-size:10px;color:var(--text-3);font-weight:600;text-transform:uppercase;margin-bottom:2px">Cor</div>'
+      +'<input type="color" value="'+(o.cor||'#a1a1aa')+'" style="width:36px;height:28px;border:1px solid var(--border);border-radius:5px;cursor:pointer;padding:1px"'
+      +' onchange="objSetField(\''+idQ+'\','+i+',\'cor\',this.value)">'
+      +'</div>'
+      +'</div>';
+    // Row 4: progress bar + controls
+    out+='<div class="obj-prog-track" style="margin-bottom:6px"><div class="obj-prog-fill" style="width:'+o.progresso+'%;background:'+o.cor+'"></div></div>';
+    out+='<div class="obj-footer">'
+      +'<span style="font-size:11px;color:var(--text-3)">'+o.progresso+'% concluído</span>'
+      +'<div style="display:flex;gap:6px;align-items:center">'
+      +'<input type="range" min="0" max="100" value="'+o.progresso+'" style="width:80px;accent-color:'+o.cor+'" oninput="objSetField(\''+idQ+'\','+i+',\'progresso\',+this.value)">'
+      +'<input type="number" min="0" max="100" value="'+o.progresso+'" style="width:48px;border:1px solid var(--border);border-radius:5px;padding:2px 4px;font-size:11px;text-align:center" onchange="objSetField(\''+idQ+'\','+i+',\'progresso\',+this.value)">'
+      +'<select style="font-size:11px;border:1px solid var(--border);border-radius:5px;padding:2px 4px" onchange="objSetEstado(\''+idQ+'\','+i+',this.value)">'
+      +['Não iniciado','Em curso','Em risco','Concluído'].map(function(st){return'<option value="'+st+'"'+(o.estado===st?' selected':'')+'>'+st+'</option>';}).join('')
+      +'</select>'
+      +'</div></div>';
+    out+='</div>';
+  });
+  return out;
+}
+
 
 // ── Onboarding ──
 var ONB_DEFAULT={
@@ -3012,7 +3060,64 @@ function renderPerfil(id){
   // Notes
   out+='<div class="e-section-title" style="margin-top:12px">Observações</div>'
     +'<textarea class="e-notes-area" onchange="savePersonNote(\''+id+'\',this.value)">'+escHtml(notes)+'</textarea>';
+  // Rich block for the proposed Manutenção & Frota function
+  if(id==='gmf')out+=funcaoGMFBlock();
   return out;
+}
+
+// ── Bloco rico: Função Gestão de Manutenção e Frota ──
+function funcaoGMFBlock(){
+  var CARD='background:var(--surface,#fff);border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin-top:12px';
+  var LBL='font-size:10.5px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px';
+  var LI='font-size:12px;color:var(--text-2);line-height:1.55;margin:0 0 2px 0';
+  function block(label,items){
+    var s='<div style="margin-bottom:10px"><div style="'+LBL+'">'+label+'</div><ul style="margin:0;padding-left:16px">';
+    items.forEach(function(t){s+='<li style="'+LI+'">'+t+'</li>';});
+    return s+'</ul></div>';
+  }
+  var h='';
+  // Banner
+  h+='<div style="'+CARD+';border-left:3px solid #7c3aed">'
+    +'<div style="font-size:13px;font-weight:700;color:var(--text)">Função de Gestão — não é uma oficina</div>'
+    +'<div style="font-size:12px;color:var(--text-2);margin-top:4px;line-height:1.5">O objetivo não é reparar veículos, mas garantir que são reparados corretamente, no momento certo, pela oficina certa, com o menor impacto na operação e com toda a informação registada. Ver o separador <strong>Objetivos</strong> para o Roadmap de implementação faseado.</div>'
+    +'</div>';
+  // Perfil-alvo
+  h+='<div style="'+CARD+'"><div class="card-title">Perfil-alvo de recrutamento</div>';
+  h+=block('Formação',['Técnica em Mecânica / Manutenção Industrial / Automóvel / Eng. Mecânica (técnico-profissional a licenciatura)','Alternativa: experiência sólida equivalente em gestão de frota / oficina']);
+  h+=block('Experiência',['Gestão de frota, oficina ou manutenção de pesados / equipamento de obra','Vantagem: construção, pedreiras, transportes ou aluguer de equipamento','Experiência a lidar com oficinas externas (orçamentos, prazos, negociação)']);
+  h+=block('Conhecimentos técnicos',['Interpretar diagnósticos e orçamentos e questionar oficinas','Peças e referências (OEM vs. alternativas), consumíveis, pneus, filtros, óleos','Manutenção preventiva por km / horas e inspeções periódicas']);
+  h+=block('Ferramentas e dados',['Folha de cálculo e, idealmente, software de gestão de frota / manutenção','Telemetria (Traccar) e registo de avarias','Construir e ler KPIs (disponibilidade, MTTR, custo/km)']);
+  h+=block('Competências comportamentais (as decisivas)',['<strong>Organização e método</strong> — a função vive de registo consistente','<strong>Firmeza e assertividade</strong> — exigir prazos e impor prioridades','<strong>Comunicação</strong> — traduzir técnico em operacional','<strong>Orientação a dados</strong> — decidir por factos','<strong>Autonomia e proatividade</strong> — antecipar, não esperar pela avaria','<strong>Integridade e coragem</strong> — recusar regresso por segurança']);
+  h+='</div>';
+  // Autoridade vs Limites
+  h+='<div class="grid-2" style="gap:12px">';
+  h+='<div style="'+CARD+';border-left:3px solid #16a34a"><div class="card-title">Autoridade da função</div>'
+    +'<ul style="margin:0;padding-left:16px">'
+    +['Definir a prioridade técnica das intervenções','Encaminhar para oficinas aprovadas','Pedir diagnósticos e orçamentos','Exigir estado das reparações','Questionar prazos','Recomendar prioridades ao Tráfego','<strong>Recusar regresso à operação por segurança</strong>'].map(function(t){return'<li style="'+LI+'">'+t+'</li>';}).join('')
+    +'</ul></div>';
+  h+='<div style="'+CARD+';border-left:3px solid #dc2626"><div class="card-title">Limites (sem autoridade autónoma)</div>'
+    +'<ul style="margin:0;padding-left:16px">'
+    +['Aprovar despesas acima do limite definido','Escolher fornecedores fora da política','Contratar oficinas sem aprovação','Alterar rotas / escalas / horas extra','Decidir substituição definitiva de equipamento','Comprar fora do processo definido'].map(function(t){return'<li style="'+LI+'">'+t+'</li>';}).join('')
+    +'</ul></div>';
+  h+='</div>';
+  // Via de recrutamento
+  h+='<div style="'+CARD+'"><div class="card-title">Via de recrutamento</div>'
+    +'<div style="font-size:12px;color:var(--text-2);line-height:1.55"><span class="badge b-info">Recomendação</span> Privilegiar um <strong>perfil interno com base técnica forte</strong> que demonstre apetência para gestão e dados, reforçado com formação na componente de KPIs e método. Só ir a externo se não existir candidato interno com o perfil comportamental (organização, firmeza, orientação a dados).</div></div>';
+  // Guião de entrevista
+  h+='<div style="'+CARD+'"><div class="card-title">Guião de entrevista</div><ol style="margin:0;padding-left:18px">'
+    +['Descreva como acompanharia uma avaria crítica, da comunicação ao regresso à operação.','Uma oficina diz "fica pronto amanhã". O que faz a seguir?','Como decidiria a prioridade entre dois equipamentos avariados ao mesmo tempo?','Que informação manteria sobre cada equipamento e porquê?','Como convenceria o Tráfego a libertar um equipamento para uma preventiva?','Dê um exemplo em que teve de impor uma decisão técnica contra pressão operacional.','Que indicadores usaria para avaliar se a frota está bem gerida?'].map(function(t){return'<li style="'+LI+'">'+t+'</li>';}).join('')
+    +'</ol></div>';
+  // Resultado esperado
+  h+='<div style="'+CARD+'"><div class="card-title">Resultado esperado</div><ul style="margin:0;padding-left:16px">'
+    +['Maior disponibilidade da frota','Menos avarias inesperadas','Menor tempo de imobilização','Menor risco de erro (informação técnica centralizada)','Melhor decisão de gestão (dados de custos, avarias, oficinas)'].map(function(t){return'<li style="'+LI+'">'+t+'</li>';}).join('')
+    +'</ul></div>';
+  // Ligações
+  h+='<div style="'+CARD+';font-size:11.5px;color:var(--text-3);line-height:1.6">'
+    +'<strong>Notas completas no Vault Obsidian (06 Operações):</strong><br>'
+    +'• Função — Gestão de Manutenções e Frota (proposta + avaliação)<br>'
+    +'• Roadmap — Implementação Gestão de Manutenções e Frota<br>'
+    +'• Perfil de Recrutamento — Gestor de Manutenção e Frota</div>';
+  return h;
 }
 
 // ── Competências Matrix ──
