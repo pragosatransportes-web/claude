@@ -3129,93 +3129,171 @@ function funcaoGMFBlock(){
 }
 
 // ── FUNÇÕES / Roles Hub ──
-var FUNCTIONS=[{"id": "tec_cist", "nome": "Técnico Cisterna", "estado": "Função ativa", "pessoas": [{"pid": "gs", "papel": "Técnica Cisternas"}], "sections": [{"titulo": "Gestão de Tráfego e Logística da Cisternas", "itens": ["Planeamento", "Gestão Diária,", "Gestão de prioridades,", "Gestão de incidencias", "Controlo operacional.", "Levantamento das necessidade e contratação de terceiros."]}, {"titulo": "Gestão Operacional da Frota", "itens": ["Afetação de Viaturas", "Gestão de disponibilidades", "Acompanhamento de Avarias", "Substituições: Frota e Motoristas", "Produtividade da Frota", "Acompanhamento de Consumos (Combustivel)"]}, {"titulo": "Gestão Comercial", "itens": ["Negociação", "Acompanhamento e Controlo de Encomendas", "Acompanhamento de Clientes"]}, {"titulo": "Gestão do Administrativo", "itens": ["Acompanhamento dos processos executados pelo Administrativo", "Validação de Horários", "Validação de Férias", "Validação do Ponto", "Atribuição de Prémios", "Avaliação"]}, {"titulo": "Gestão dos Motoristas", "itens": ["Validação de Horários", "Validaçãp de Férias", "Validação do Ponto", "Acompanhamento e avaliação"]}, {"titulo": "KPIS Operacionais", "itens": ["Produtivdade", "Ocupação da Frota", "Eficiência", "Rentabilidade Operacional", "Análise de Performance Motorista/Viatura"]}, {"titulo": "Gestão do E-mail", "itens": []}]}, {"id": "tec_cpsa", "nome": "Técnico Construções Pragosa", "estado": "Função ativa", "pessoas": [{"pid": "fc", "papel": "Técnico Construções Pragosa"}], "sections": [{"titulo": "Gestão de Tráfego e Logística de Transportes para Obras(T.Basculantes e Especiais)", "itens": ["Planeamento", "Gestão Diária,", "Gestão de prioridades em coordenação com Direção de Produção,", "Gestão de incidencias", "Controlo operacional.", "Levantamento das necessidade e contratação de terceiros."]}, {"titulo": "Gestão Operacional da Frota", "itens": ["Afetação de Viaturas", "Gestão de disponibilidades", "Acompanhamento de Avarias", "Substituições: Frota e Motoristas", "Produtividade da Frota", "Acompanhamento de Consumos (Combustivel)"]}, {"titulo": "Gestão de Pedidos", "itens": []}, {"titulo": "Acompanhamento e Controlo dos pedidos de", "itens": ["Transporte de Materiais", "Transporte de Máquinas", "Viatura ao serviço da Obra"]}, {"titulo": "Gestão dos Motoristas", "itens": ["Validação de Horários", "Validaçãp de Férias", "Validação do Ponto", "Acompanhamento e avaliação"]}, {"titulo": "KPIS Operacionais", "itens": ["Produtivdade", "Ocupação da Frota", "Eficiência", "Rentabilidade Operacional", "Análise de Performance Motorista/Viatura"]}, {"titulo": "Gestão do E-mail", "itens": []}]}, {"id": "tec_ind", "nome": "Técnico Indústria", "estado": "Função ativa", "pessoas": [{"pid": "bc", "papel": "Técnica Indústria"}], "sections": [{"titulo": "Gestão de Tráfego e Logística da Indústria", "itens": ["Planeamento", "Gestão Diária,", "Gestão de prioridades,", "Gestão de incidencias", "Controlo operacional.", "Levantamento das necessidade e contratação de terceiros."]}, {"titulo": "Gestão Operacional da Frota", "itens": ["Afetação de Viaturas", "Gestão de disponibilidades", "Acompanhamento de Avarias", "Substituições: Frota e Motoristas", "Produtividade da Frota", "Acompanhamento de Consumos (Combustivel)"]}, {"titulo": "Gestão Comercial", "itens": ["Acompanhamento e Controlo de Encomendas"]}, {"titulo": "Gestão das Expediões", "itens": ["Acompanhamento dos processos executados", "Validação de Horários", "Validação de Férias", "Validação do Ponto", "Atribuição de Prémios", "Avaliação"]}, {"titulo": "Gestão do Administrativo", "itens": ["Acompanhamento dos processos executados pelo Administrativo", "Validação de Horários", "Validação de Férias", "Validação do Ponto", "Atribuição de Prémios", "Avaliação"]}, {"titulo": "Gestão dos Motoristas", "itens": ["Validação de Horários", "Validaçãp de Férias", "Validação do Ponto", "Acompanhamento e avaliação"]}, {"titulo": "KPIS Operacionais", "itens": ["Produtivdade", "Ocupação da Frota", "Eficiência", "Rentabilidade Operacional", "Análise de Performance Motorista/Viatura"]}, {"titulo": "Gestão do E-mail", "itens": []}]}, {"id": "adm_ind", "nome": "Administrativo Indústria", "estado": "Função ativa", "pessoas": [{"pid": "mn", "papel": "Administrativa Indústria"}], "sections": [{"titulo": "", "itens": ["Emissão e envio das propostas de fornecimento", "Abertura de notas de encomenda referentes a pedidos de Agregados", "Atualização do CRM (Trello Indústria Comercial)", "Apoio às Expedições no âmbito de Encomendas e Faturação", "Substituição de Expedição em caso de necessidade.", "Apoio ao Comercial Indústria.", "Apoio administrativo ao técnico responsável.", "Contacto e gestão de pequenos clientes", "Feedback ao Cliente Interno (CPSA)", "Emissão de Guias de Blocos e Folha de desperdicio", "Emissão de Relatórios de Ocorrência"]}]}, {"id": "exp_ind", "nome": "Expedição Indústria", "estado": "Função ativa", "pessoas": [{"pid": "nd", "papel": "Vale Rodrigues + Moleanos"}, {"pid": "le", "papel": "Cano"}, {"pid": "ac", "papel": "Santa Eulália"}, {"pid": "st", "papel": "Sobrissul"}, {"pid": "pl", "papel": "Sobrissul"}], "sections": [{"titulo": "", "itens": ["Assegurar o cumprimento do planeamento definido pelo Técnico.", "Garantir conformidade com pesos, tolerâncias e regras da balança", "Emitir/validar guias de transporte/remessa no local e preparar documentação de expedição", "Informar as regras de segurança e procedimentos dentro da pedreira a terceiros(motoristas).", "Lançamento de Guias de Fornecedores (Transportadores)", "Emissão de Relatórios de Ocorrência.", "Contactar pequenos clientes", "Abertura de propostas de fornecimento", "Emissão de Faturas Proforma", "Abertura de encomendas PHC", "Controlo de PLAFONDS de Clientes", "Receção de Materiais", "Gestão de Consumíveis (Produtos de Higiene e Limpeza, Àguas, Economato e Roupas de camas)"]}]}, {"id": "adm_cist", "nome": "Administrativo Cisterna", "estado": "Função ativa", "pessoas": [{"pid": "vb", "papel": "Administrativa Cisternas"}, {"pid": "am", "papel": "Supervisão"}], "sections": [{"titulo": "", "itens": ["Emissão e envio das propostas de fornecimento", "Abertura de notas de encomenda referentes a pedidos de transporte", "Verificação e lançamento das guias de transporte", "Preparação de documentação para faturação (validação das listagens)", "Apoio administrativo ao técnico responsável", "Envio de Notas de Encomenda ao Dep.Compras", "Lançamento do Ponto do Departamento de Logística (Pessoal administrativo, Expedições, Motoristas)"]}]}, {"id": "adm_comb", "nome": "Administrativo de Combustíveis/Energia e Equipamentos", "estado": "Função ativa", "pessoas": [{"pid": "jc", "papel": "Adm. Combustíveis/Energia"}], "sections": [{"titulo": "Combustíveis", "itens": []}, {"titulo": "Lançamento e Controlo de Combustíveis", "itens": ["Controlo diário de Consumos", "Abastecimento", "Análise de Desvios", "Controlo de Cartões de Combustível/Energia", "Auditoria -Mapas de Apoio à Gestão", "Tanques Fixos e Móveis", "Abastecimento de Máquinas e Equipamentos", "Monitorização dos postos de carregamento elétrico de todos os complexos", "Gestão do E-mail combustíveis"]}, {"titulo": "Mobilizações", "itens": ["Registo e Controlo de Mobilização de Máquinas", "Lançamento de Grandes Equipamentos afetos à Obra"]}]}, {"id": "gmf", "nome": "Gestor de Frota e Apoio Operacional", "estado": "Ativa — proposta de dedicação", "pessoas": [{"pid": "am", "papel": "Gestor de Frota (em acumulação)"}, {"pid": null, "papel": "Vaga dedicada proposta — a recrutar / consolidar"}], "sections": [{"titulo": "Gestão de Frota", "itens": ["Coordenação entre Oficina e Técnicos de Logística", "Manutenções Preditivas, Preventivas e Corretivas", "Controlo de Avarias, Pneus, etc.", "Gestão de Marcações", "Inspeções de Veiculos", "Aferição de Tacógragos", "Documentação", "Agendamento de intervenções", "Pedidos de peças", "Acompanhamento das Viaturas em oficinas externas", "Controlo e acompanhamento de Sinistros", "Licenças", "Implementação/Monotorização de sistemas de verificação pré-saida da viatura (check-list diário)"]}, {"titulo": "Gestão Administrativa de Motoristas", "itens": ["Controlo de Horas", "Preparação do Ponto", "Disponibilidades", "Registo de Férias", "Licenças"]}, {"titulo": "Custos de Obra", "itens": ["Imputação homem/obra", "Imputação camião/obra"]}, {"titulo": "Tacógrafos", "itens": ["Confirmação de descargas e registos de tacógrafo (camião e motorista)", "Análise e Validação dos dados.", "Informar o motorista em caso de anomalia ou infração.", "Formação e Apoio aos Motoristas", "Disponibilização de informação essencial ao lançamento do ponto.", "Report"]}, {"titulo": "Apoio Operacional", "itens": ["Atualização de Mapas", "Alertas, Reports", "Apoio aos Técnicos gestores de Tráfego"]}], "rich": true, "objetivo": "Consolidar numa função dedicada de GESTÃO (não é oficina) a gestão de frota, manutenções e tacógrafos: planear e acompanhar manutenções (preventiva, preditiva, corretiva), coordenar oficinas e peças, centralizar a informação técnica e integrar o controlo de tacógrafos. Hoje em acumulação/distribuída; proposta de dedicação. Objetivo: maximizar a disponibilidade da frota, reduzir imobilizações e controlar custos.", "tacografos": "Ligar ao projeto em desenvolvimento \"Tacógrafos\" (dashboard + formação, DL 84/2026 em vigor desde 12/07/2026). A vertente de tacógrafos integra-se nesta função à medida que o projeto avança.", "tarefas": ["Decidir a relação da função com os Gestores de Frota por área (coordena vs. absorve)", "Definir a ferramenta de suporte (App Avarias / Smart Logistics / Traccar)", "Delimitar o perímetro da frota abrangida", "Fixar o limite de valor de aprovação autónoma (€)", "Medir baseline de disponibilidade e dias de imobilização", "Definir a via de recrutamento (interno vs. externo)", "Escrever o descritivo / anúncio de recrutamento", "Apresentar a proposta à Direção"]}, {"id": "adm_custos", "nome": "Administrativo de Custos Operacionais", "estado": "Função ativa", "pessoas": [{"pid": "jc", "papel": "Custos operacionais (em acumulação)"}], "sections": [{"titulo": "Custos de Obra", "itens": ["Imputação homem/obra", "Imputação camião/obra"]}, {"titulo": "Gestão Administrativa de Motoristas", "itens": ["Controlo de Horas", "Preparação do Ponto", "Disponibilidades", "Registo de Férias", "Licenças"]}]}];
+var FUNCTIONS=[{"id": "tec_cist", "nome": "Técnico Cisterna", "estado": "Função ativa", "pessoas": [{"pid": "gs", "papel": "Técnica Cisternas"}], "sections": [{"titulo": "Gestão de Tráfego e Logística da Cisternas", "itens": ["Planeamento", "Gestão Diária,", "Gestão de prioridades,", "Gestão de incidencias", "Controlo operacional.", "Levantamento das necessidade e contratação de terceiros."]}, {"titulo": "Gestão Operacional da Frota", "itens": ["Afetação de Viaturas", "Gestão de disponibilidades", "Acompanhamento de Avarias", "Substituições: Frota e Motoristas", "Produtividade da Frota", "Acompanhamento de Consumos (Combustivel)"]}, {"titulo": "Gestão Comercial", "itens": ["Negociação", "Acompanhamento e Controlo de Encomendas", "Acompanhamento de Clientes"]}, {"titulo": "Gestão do Administrativo", "itens": ["Acompanhamento dos processos executados pelo Administrativo", "Validação de Horários", "Validação de Férias", "Validação do Ponto", "Atribuição de Prémios", "Avaliação"]}, {"titulo": "Gestão dos Motoristas", "itens": ["Validação de Horários", "Validaçãp de Férias", "Validação do Ponto", "Acompanhamento e avaliação"]}, {"titulo": "KPIS Operacionais", "itens": ["Produtivdade", "Ocupação da Frota", "Eficiência", "Rentabilidade Operacional", "Análise de Performance Motorista/Viatura"]}, {"titulo": "Gestão do E-mail", "itens": []}]}, {"id": "tec_cpsa", "nome": "Técnico Construções Pragosa", "estado": "Função ativa", "pessoas": [{"pid": "fc", "papel": "Técnico Construções Pragosa"}], "sections": [{"titulo": "Gestão de Tráfego e Logística de Transportes para Obras(T.Basculantes e Especiais)", "itens": ["Planeamento", "Gestão Diária,", "Gestão de prioridades em coordenação com Direção de Produção,", "Gestão de incidencias", "Controlo operacional.", "Levantamento das necessidade e contratação de terceiros."]}, {"titulo": "Gestão Operacional da Frota", "itens": ["Afetação de Viaturas", "Gestão de disponibilidades", "Acompanhamento de Avarias", "Substituições: Frota e Motoristas", "Produtividade da Frota", "Acompanhamento de Consumos (Combustivel)"]}, {"titulo": "Gestão de Pedidos", "itens": []}, {"titulo": "Acompanhamento e Controlo dos pedidos de", "itens": ["Transporte de Materiais", "Transporte de Máquinas", "Viatura ao serviço da Obra"]}, {"titulo": "Gestão dos Motoristas", "itens": ["Validação de Horários", "Validaçãp de Férias", "Validação do Ponto", "Acompanhamento e avaliação"]}, {"titulo": "KPIS Operacionais", "itens": ["Produtivdade", "Ocupação da Frota", "Eficiência", "Rentabilidade Operacional", "Análise de Performance Motorista/Viatura"]}, {"titulo": "Gestão do E-mail", "itens": []}]}, {"id": "tec_ind", "nome": "Técnico Indústria", "estado": "Função ativa", "pessoas": [{"pid": "bc", "papel": "Técnica Indústria"}], "sections": [{"titulo": "Gestão de Tráfego e Logística da Indústria", "itens": ["Planeamento", "Gestão Diária,", "Gestão de prioridades,", "Gestão de incidencias", "Controlo operacional.", "Levantamento das necessidade e contratação de terceiros."]}, {"titulo": "Gestão Operacional da Frota", "itens": ["Afetação de Viaturas", "Gestão de disponibilidades", "Acompanhamento de Avarias", "Substituições: Frota e Motoristas", "Produtividade da Frota", "Acompanhamento de Consumos (Combustivel)"]}, {"titulo": "Gestão Comercial", "itens": ["Acompanhamento e Controlo de Encomendas"]}, {"titulo": "Gestão das Expediões", "itens": ["Acompanhamento dos processos executados", "Validação de Horários", "Validação de Férias", "Validação do Ponto", "Atribuição de Prémios", "Avaliação"]}, {"titulo": "Gestão do Administrativo", "itens": ["Acompanhamento dos processos executados pelo Administrativo", "Validação de Horários", "Validação de Férias", "Validação do Ponto", "Atribuição de Prémios", "Avaliação"]}, {"titulo": "Gestão dos Motoristas", "itens": ["Validação de Horários", "Validaçãp de Férias", "Validação do Ponto", "Acompanhamento e avaliação"]}, {"titulo": "KPIS Operacionais", "itens": ["Produtivdade", "Ocupação da Frota", "Eficiência", "Rentabilidade Operacional", "Análise de Performance Motorista/Viatura"]}, {"titulo": "Gestão do E-mail", "itens": []}]}, {"id": "adm_ind", "nome": "Administrativo Indústria", "estado": "Função ativa", "pessoas": [{"pid": "mn", "papel": "Administrativa Indústria"}], "sections": [{"titulo": "", "itens": ["Emissão e envio das propostas de fornecimento", "Abertura de notas de encomenda referentes a pedidos de Agregados", "Atualização do CRM (Trello Indústria Comercial)", "Apoio às Expedições no âmbito de Encomendas e Faturação", "Substituição de Expedição em caso de necessidade.", "Apoio ao Comercial Indústria.", "Apoio administrativo ao técnico responsável.", "Contacto e gestão de pequenos clientes", "Feedback ao Cliente Interno (CPSA)", "Emissão de Guias de Blocos e Folha de desperdicio", "Emissão de Relatórios de Ocorrência"]}]}, {"id": "exp_ind", "nome": "Expedição Indústria", "estado": "Função ativa", "pessoas": [{"pid": "nd", "papel": "Vale Rodrigues + Moleanos"}, {"pid": "le", "papel": "Cano"}, {"pid": "ac", "papel": "Santa Eulália"}, {"pid": "st", "papel": "Sobrissul"}, {"pid": "pl", "papel": "Sobrissul"}], "sections": [{"titulo": "", "itens": ["Assegurar o cumprimento do planeamento definido pelo Técnico.", "Garantir conformidade com pesos, tolerâncias e regras da balança", "Emitir/validar guias de transporte/remessa no local e preparar documentação de expedição", "Informar as regras de segurança e procedimentos dentro da pedreira a terceiros(motoristas).", "Lançamento de Guias de Fornecedores (Transportadores)", "Emissão de Relatórios de Ocorrência.", "Contactar pequenos clientes", "Abertura de propostas de fornecimento", "Emissão de Faturas Proforma", "Abertura de encomendas PHC", "Controlo de PLAFONDS de Clientes", "Receção de Materiais", "Gestão de Consumíveis (Produtos de Higiene e Limpeza, Àguas, Economato e Roupas de camas)"]}]}, {"id": "adm_cist", "nome": "Administrativo Cisterna", "estado": "Função ativa", "pessoas": [{"pid": "vb", "papel": "Administrativa Cisternas"}, {"pid": "am", "papel": "Supervisão"}], "sections": [{"titulo": "", "itens": ["Emissão e envio das propostas de fornecimento", "Abertura de notas de encomenda referentes a pedidos de transporte", "Verificação e lançamento das guias de transporte", "Preparação de documentação para faturação (validação das listagens)", "Apoio administrativo ao técnico responsável", "Envio de Notas de Encomenda ao Dep.Compras", "Lançamento do Ponto do Departamento de Logística (Pessoal administrativo, Expedições, Motoristas)"]}]}, {"id": "adm_comb", "nome": "Administrativo de Combustíveis/Energia e Equipamentos", "estado": "Função ativa", "pessoas": [{"pid": "jc", "papel": "Adm. Combustíveis/Energia"}], "sections": [{"titulo": "Combustíveis", "itens": []}, {"titulo": "Lançamento e Controlo de Combustíveis", "itens": ["Controlo diário de Consumos", "Abastecimento", "Análise de Desvios", "Controlo de Cartões de Combustível/Energia", "Auditoria -Mapas de Apoio à Gestão", "Tanques Fixos e Móveis", "Abastecimento de Máquinas e Equipamentos", "Monitorização dos postos de carregamento elétrico de todos os complexos", "Gestão do E-mail combustíveis"]}, {"titulo": "Mobilizações", "itens": ["Registo e Controlo de Mobilização de Máquinas", "Lançamento de Grandes Equipamentos afetos à Obra"]}]}, {"id": "gmf", "nome": "Gestor de Frota e Apoio Operacional", "estado": "Ativa — proposta de dedicação", "pessoas": [{"pid": "am", "papel": "Gestor de Frota (em acumulação)"}, {"pid": null, "papel": "Vaga dedicada proposta — a recrutar / consolidar"}], "sections": [{"titulo": "Gestão de Frota", "itens": ["Coordenação entre Oficina e Técnicos de Logística", "Manutenções Preditivas, Preventivas e Corretivas", "Controlo de Avarias, Pneus, etc.", "Gestão de Marcações", "Inspeções de Veiculos", "Aferição de Tacógragos", "Documentação", "Agendamento de intervenções", "Pedidos de peças", "Acompanhamento das Viaturas em oficinas externas", "Controlo e acompanhamento de Sinistros", "Licenças", "Implementação/Monotorização de sistemas de verificação pré-saida da viatura (check-list diário)"]}, {"titulo": "Gestão Administrativa de Motoristas", "itens": ["Controlo de Horas", "Preparação do Ponto", "Disponibilidades", "Registo de Férias", "Licenças"]}, {"titulo": "Custos de Obra", "itens": ["Imputação homem/obra", "Imputação camião/obra"]}, {"titulo": "Tacógrafos", "itens": ["Confirmação de descargas e registos de tacógrafo (camião e motorista)", "Análise e Validação dos dados.", "Informar o motorista em caso de anomalia ou infração.", "Formação e Apoio aos Motoristas", "Disponibilização de informação essencial ao lançamento do ponto.", "Report"]}, {"titulo": "Apoio Operacional", "itens": ["Atualização de Mapas", "Alertas, Reports", "Apoio aos Técnicos gestores de Tráfego"]}], "rich": true, "objetivo": "Consolidar numa função dedicada de GESTÃO (não é oficina) a gestão de frota, manutenções e tacógrafos: planear e acompanhar manutenções (preventiva, preditiva, corretiva), coordenar oficinas e peças, centralizar a informação técnica e integrar o controlo de tacógrafos. Hoje em acumulação/distribuída; proposta de dedicação. Objetivo: maximizar a disponibilidade da frota, reduzir imobilizações e controlar custos.", "tacografos": "Ligar ao projeto em desenvolvimento \"Tacógrafos\" (dashboard + formação, DL 84/2026 em vigor desde 12/07/2026). A vertente de tacógrafos integra-se nesta função à medida que o projeto avança.", "tarefas": ["Decidir a relação da função com os Gestores de Frota por área (coordena vs. absorve)", "Definir a ferramenta de suporte (App Avarias / Smart Logistics / Traccar)", "Delimitar o perímetro da frota abrangida", "Fixar o limite de valor de aprovação autónoma (€)", "Medir baseline de disponibilidade e dias de imobilização", "Definir a via de recrutamento (interno vs. externo)", "Escrever o descritivo / anúncio de recrutamento", "Apresentar a proposta à Direção"], "roadmap": [{"titulo": "Fase 0 — Decisão e Enquadramento", "resultado": "Função aprovada, perímetro fechado, ferramenta escolhida, limite € e via de recrutamento definidos", "prazo": "Pré-M0 (2–4 sem.)", "progresso": 10, "estado": "Em curso", "cor": "#eab308"}, {"titulo": "Fase 1 — Fundação de Informação", "resultado": "Inventário técnico + estado da frota + baseline de KPIs", "prazo": "M0 → M3", "progresso": 0, "estado": "Não iniciado", "cor": "#a1a1aa"}, {"titulo": "Fase 2 — Preventiva a Rolar", "resultado": "Plano preventivo a correr + corretiva com prioridades P1–P4", "prazo": "M3 → M6", "progresso": 0, "estado": "Não iniciado", "cor": "#a1a1aa"}, {"titulo": "Fase 3 — Gestão por Dados", "resultado": "Relatório mensal fiável + KPIs com metas vs. baseline", "prazo": "M6 → M12", "progresso": 0, "estado": "Não iniciado", "cor": "#a1a1aa"}, {"titulo": "Fase 4 — Manutenção Preditiva", "resultado": "Antecipação de falhas por telemetria e histórico consolidado", "prazo": "M12+", "progresso": 0, "estado": "Não iniciado", "cor": "#a1a1aa"}], "blocos": [{"titulo": "Perfil-alvo — Formação", "itens": ["Técnica em Mecânica / Manutenção Industrial / Automóvel / Eng. Mecânica (técnico-profissional a licenciatura)", "Alternativa: experiência sólida equivalente em gestão de frota / oficina"]}, {"titulo": "Perfil-alvo — Experiência", "itens": ["Gestão de frota, oficina ou manutenção de pesados / equipamento de obra", "Vantagem: construção, pedreiras, transportes ou aluguer de equipamento", "Experiência a lidar com oficinas externas (orçamentos, prazos, negociação)"]}, {"titulo": "Perfil-alvo — Conhecimentos técnicos", "itens": ["Interpretar diagnósticos e orçamentos e questionar oficinas", "Peças e referências (OEM vs. alternativas), consumíveis, pneus, filtros, óleos", "Manutenção preventiva por km / horas e inspeções periódicas"]}, {"titulo": "Perfil-alvo — Ferramentas e dados", "itens": ["Folha de cálculo e, idealmente, software de gestão de frota / manutenção", "Telemetria (Traccar) e registo de avarias", "Construir e ler KPIs (disponibilidade, MTTR, custo/km)"]}, {"titulo": "Perfil-alvo — Competências comportamentais", "itens": ["Organização e método — a função vive de registo consistente", "Firmeza e assertividade — exigir prazos e impor prioridades", "Comunicação — traduzir técnico em operacional", "Orientação a dados — decidir por factos", "Autonomia e proatividade — antecipar, não esperar pela avaria", "Integridade e coragem — recusar regresso por segurança"]}, {"titulo": "Autoridade da função", "itens": ["Definir a prioridade técnica das intervenções", "Encaminhar para oficinas aprovadas", "Pedir diagnósticos e orçamentos", "Exigir estado das reparações", "Questionar prazos", "Recomendar prioridades ao Tráfego", "Recusar regresso à operação por segurança"]}, {"titulo": "Limites (sem autoridade autónoma)", "itens": ["Aprovar despesas acima do limite definido", "Escolher fornecedores fora da política", "Contratar oficinas sem aprovação", "Alterar rotas / escalas / horas extra", "Decidir substituição definitiva de equipamento", "Comprar fora do processo definido"]}, {"titulo": "Via de recrutamento", "itens": ["Recomendação: privilegiar um perfil interno com base técnica forte que demonstre apetência para gestão e dados, reforçado com formação em KPIs e método. Só ir a externo se não existir candidato interno com o perfil comportamental."]}, {"titulo": "Guião de entrevista", "itens": ["Descreva como acompanharia uma avaria crítica, da comunicação ao regresso à operação.", "Uma oficina diz \"fica pronto amanhã\". O que faz a seguir?", "Como decidiria a prioridade entre dois equipamentos avariados ao mesmo tempo?", "Que informação manteria sobre cada equipamento e porquê?", "Como convenceria o Tráfego a libertar um equipamento para uma preventiva?", "Dê um exemplo em que teve de impor uma decisão técnica contra pressão operacional.", "Que indicadores usaria para avaliar se a frota está bem gerida?"]}, {"titulo": "Resultado esperado", "itens": ["Maior disponibilidade da frota", "Menos avarias inesperadas", "Menor tempo de imobilização", "Menor risco de erro (informação técnica centralizada)", "Melhor decisão de gestão (dados de custos, avarias, oficinas)"]}]}, {"id": "adm_custos", "nome": "Administrativo de Custos Operacionais", "estado": "Função ativa", "pessoas": [{"pid": "jc", "papel": "Custos operacionais (em acumulação)"}], "sections": [{"titulo": "Custos de Obra", "itens": ["Imputação homem/obra", "Imputação camião/obra"]}, {"titulo": "Gestão Administrativa de Motoristas", "itens": ["Controlo de Horas", "Preparação do Ponto", "Disponibilidades", "Registo de Férias", "Licenças"]}]}];
 var _selFuncao=null;
+var FN_INP='border:1px solid var(--border);border-radius:5px;padding:5px 7px;font-size:12px;width:100%;box-sizing:border-box;background:var(--bg);color:var(--text)';
+var _pendingDelFunc=null;
+// ── Persistência ──
+function getFunctions(){var s=localStorage.getItem('pragosa_funcoes_v1');if(!s)return JSON.parse(JSON.stringify(FUNCTIONS));var arr=JSON.parse(s);var ids={};arr.forEach(function(f){ids[f.id]=true;});FUNCTIONS.forEach(function(f){if(!ids[f.id])arr.push(JSON.parse(JSON.stringify(f)));});return arr;}
+function saveFunctions(arr){localStorage.setItem('pragosa_funcoes_v1',JSON.stringify(arr));}
+function getFuncao(id){return getFunctions().find(function(x){return x.id===id;});}
+function _funcMut(fid,fn){var arr=getFunctions();var f=arr.find(function(x){return x.id===fid;});if(!f)return;fn(f);saveFunctions(arr);}
 function gotoPessoa(id){var b=document.querySelector('.nav-btn[onclick*="pessoas"]');if(b)showTab('pessoas',b);selectPerson(id);}
-function renderFuncoes(){
-  var sb=document.getElementById('funcoes-sidebar');
-  if(!sb)return;
+function funcHeaderHTML(f){return '<div class="p-main-av '+(f.rich?'av-purple':'av-blue')+'">'+(f.rich?'🔧':'📋')+'</div>'
+  +'<div><div class="p-main-name">'+escHtml(f.nome)+'</div><div class="p-main-role">'+escHtml(f.estado||'')+'</div></div>'
+  +'<div style="margin-left:auto"><span class="badge b-info" style="font-size:10.5px">'+escHtml(f.estado||'')+'</span></div>';}
+// ── Sidebar ──
+function renderFuncoesList(){
+  var sb=document.getElementById('funcoes-sidebar');if(!sb)return;
+  var arr=getFunctions();
   var h='<div class="psi-head">Funções</div>';
-  FUNCTIONS.forEach(function(f){
+  arr.forEach(function(f){
     var ac=(_selFuncao===f.id)?' active':'';
     h+='<div class="p-item'+ac+'" id="fi-'+f.id+'" onclick="selectFuncao(\''+f.id+'\')">'
       +'<div class="p-item-av '+(f.rich?'av-purple':'av-blue')+'">'+(f.rich?'🔧':'📋')+'</div>'
-      +'<div class="p-item-info"><div class="p-item-name">'+escHtml(f.nome)+'</div><div class="p-item-role">'+escHtml(f.estado)+'</div></div>'
+      +'<div class="p-item-info"><div class="p-item-name">'+escHtml(f.nome)+'</div><div class="p-item-role">'+escHtml(f.estado||'')+'</div></div>'
       +'<div class="p-status-dot" style="background:var(--accent)"></div></div>';
   });
   h+='<div class="psi-divider"></div>';
-  h+='<div style="padding:10px 12px;font-size:11px;color:var(--text-3);line-height:1.5">Por agora, apenas funções ligadas às manutenções. Novas funções entram aqui.</div>';
+  h+='<div style="padding:8px 12px"><button class="btn-sec" onclick="funcAddFuncao()">＋ Nova função</button></div>';
   sb.innerHTML=h;
-  if(!_selFuncao)_selFuncao=FUNCTIONS[0].id;
-  selectFuncao(_selFuncao);
 }
+function renderFuncoes(){renderFuncoesList();var arr=getFunctions();if(!_selFuncao||!arr.some(function(f){return f.id===_selFuncao;}))_selFuncao=arr.length?arr[0].id:null;if(_selFuncao)selectFuncao(_selFuncao);}
 function selectFuncao(id){
   _selFuncao=id;
   document.querySelectorAll('#funcoes-sidebar .p-item').forEach(function(el){el.classList.remove('active');});
   var el=document.getElementById('fi-'+id);if(el)el.classList.add('active');
-  var f=FUNCTIONS.find(function(x){return x.id===id;});
-  var hdr=document.getElementById('funcoes-header');
-  if(hdr&&f)hdr.innerHTML='<div class="p-main-av '+(f.rich?'av-purple':'av-blue')+'">'+(f.rich?'🔧':'📋')+'</div>'
-    +'<div><div class="p-main-name">'+escHtml(f.nome)+'</div><div class="p-main-role">'+escHtml(f.estado)+'</div></div>'
-    +'<div style="margin-left:auto"><span class="badge b-info" style="font-size:10.5px">'+escHtml(f.estado)+'</span></div>';
-  var c=document.getElementById('funcoes-content');
-  if(c)c.innerHTML=renderFuncaoDetail(id);
+  var f=getFuncao(id);
+  var hdr=document.getElementById('funcoes-header');if(hdr&&f)hdr.innerHTML=funcHeaderHTML(f);
+  var c=document.getElementById('funcoes-content');if(c)c.innerHTML=renderFuncaoDetail(id);
 }
-function renderFuncaoDetail(id){
-  var f=FUNCTIONS.find(function(x){return x.id===id;});
-  if(!f)return '';
-  var team=getTeamData();
-  var CARD='background:var(--surface,#fff);border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin-top:12px';
-  var LI='font-size:12px;color:var(--text-2);line-height:1.5;margin-bottom:2px';
-  var out='';
-  if(f.objetivo)out+='<div style="'+CARD+';margin-top:0"><div class="card-title">Objetivo da função</div><div style="font-size:12.5px;color:var(--text-2);line-height:1.55">'+escHtml(f.objetivo)+'</div></div>';
-  out+='<div style="'+(f.objetivo?CARD:CARD+';margin-top:0')+'"><div class="card-title">Pessoas ligadas a esta função</div><div style="display:flex;flex-direction:column;gap:8px">';
-  (f.pessoas||[]).forEach(function(pl){
-    if(pl.pid){
-      var p=team.find(function(x){return x.id===pl.pid;});
-      var nm=p?p.name:pl.pid,initials=p?p.initials:'?',avc=p?('av-'+p.color):'av-blue';
-      out+='<div style="display:flex;align-items:center;gap:9px;cursor:pointer" onclick="gotoPessoa(\''+pl.pid+'\')" title="Abrir ficha em Pessoas">'
-        +'<div class="p-item-av '+avc+'" style="width:30px;height:30px;font-size:11px">'+escHtml(initials)+'</div>'
-        +'<div><div style="font-size:12.5px;font-weight:600;color:var(--text)">'+escHtml(nm)+' <span style="font-size:10.5px;color:var(--accent)">↗</span></div><div style="font-size:11px;color:var(--text-3)">'+escHtml(pl.papel||'')+'</div></div></div>';
-    } else {
-      out+='<div style="display:flex;align-items:center;gap:9px">'
-        +'<div class="p-item-av" style="width:30px;height:30px;font-size:14px;background:var(--bg);border:1px dashed var(--border);color:var(--text-3);display:flex;align-items:center;justify-content:center">＋</div>'
-        +'<div><div style="font-size:12.5px;font-weight:600;color:var(--text-2)">Vaga dedicada</div><div style="font-size:11px;color:var(--text-3)">'+escHtml(pl.papel||'')+'</div></div></div>';
-    }
-  });
-  out+='</div></div>';
-  if(f.sections&&f.sections.length){
-    out+='<div style="'+CARD+'"><div class="card-title">Responsabilidades</div>';
-    f.sections.forEach(function(s){
-      if(s.titulo)out+='<div style="font-size:11.5px;font-weight:700;color:var(--text-2);margin:8px 0 4px 0">'+escHtml(s.titulo)+'</div>';
-      out+='<ul style="margin:0 0 2px 0;padding-left:16px">';
-      (s.itens||[]).forEach(function(it){out+='<li style="'+LI+'">'+escHtml(it)+'</li>';});
-      out+='</ul>';
+function funcRefresh(fid){
+  var c=document.getElementById('funcoes-content');var st=c?c.scrollTop:0;
+  renderFuncoesList();
+  var el=document.getElementById('fi-'+fid);if(el)el.classList.add('active');
+  var f=getFuncao(fid);var hdr=document.getElementById('funcoes-header');if(hdr&&f)hdr.innerHTML=funcHeaderHTML(f);
+  if(c&&f){c.innerHTML=renderFuncaoDetail(fid);c.scrollTop=st;}
+}
+// ── Handlers ──
+function funcSetNome(fid,val){_funcMut(fid,function(f){f.nome=val;});var it=document.querySelector('#fi-'+fid+' .p-item-name');if(it)it.textContent=val;var hn=document.querySelector('#funcoes-header .p-main-name');if(hn)hn.textContent=val;}
+function funcSetEstado(fid,val){_funcMut(fid,function(f){f.estado=val;});var it=document.querySelector('#fi-'+fid+' .p-item-role');if(it)it.textContent=val;var f=getFuncao(fid);var hdr=document.getElementById('funcoes-header');if(hdr&&f)hdr.innerHTML=funcHeaderHTML(f);}
+function funcSetField(fid,field,val){_funcMut(fid,function(f){f[field]=val;});}
+function funcSetPid(fid,i,val){_funcMut(fid,function(f){f.pessoas[i].pid=(val==='__vaga'?null:(val||''));});funcRefresh(fid);}
+function funcSetPapel(fid,i,val){_funcMut(fid,function(f){f.pessoas[i].papel=val;});}
+function funcAddPessoa(fid){_funcMut(fid,function(f){(f.pessoas=f.pessoas||[]).push({pid:'',papel:''});});funcRefresh(fid);}
+function funcDelPessoa(fid,i){_funcMut(fid,function(f){f.pessoas.splice(i,1);});funcRefresh(fid);}
+function funcSecTitle(fid,key,si,val){_funcMut(fid,function(f){f[key][si].titulo=val;});}
+function funcItem(fid,key,si,ii,val){_funcMut(fid,function(f){f[key][si].itens[ii]=val;});}
+function funcAddItem(fid,key,si){_funcMut(fid,function(f){(f[key][si].itens=f[key][si].itens||[]).push('');});funcRefresh(fid);}
+function funcDelItem(fid,key,si,ii){_funcMut(fid,function(f){f[key][si].itens.splice(ii,1);});funcRefresh(fid);}
+function funcAddSec(fid,key){_funcMut(fid,function(f){(f[key]=f[key]||[]).push({titulo:'Nova secção',itens:['']});});funcRefresh(fid);}
+function funcDelSec(fid,key,si){_funcMut(fid,function(f){f[key].splice(si,1);});funcRefresh(fid);}
+function funcRoad(fid,ri,field,val){_funcMut(fid,function(f){f.roadmap[ri][field]=(field==='progresso'?Math.max(0,Math.min(100,+val||0)):val);});}
+function funcRoadRe(fid,ri,field,val){funcRoad(fid,ri,field,val);funcRefresh(fid);}
+function funcAddRoad(fid){_funcMut(fid,function(f){(f.roadmap=f.roadmap||[]).push({titulo:'Nova fase',resultado:'',prazo:'',progresso:0,estado:'Não iniciado',cor:'#a1a1aa'});});funcRefresh(fid);}
+function funcDelRoad(fid,ri){_funcMut(fid,function(f){f.roadmap.splice(ri,1);});funcRefresh(fid);}
+function funcTarefa(fid,i,val){_funcMut(fid,function(f){f.tarefas[i]=val;});}
+function funcAddTarefa(fid){_funcMut(fid,function(f){(f.tarefas=f.tarefas||[]).push('');});funcRefresh(fid);}
+function funcDelTarefa(fid,i){_funcMut(fid,function(f){f.tarefas.splice(i,1);});funcRefresh(fid);}
+function funcToggleRich(fid,val){_funcMut(fid,function(f){f.rich=!!val;if(f.rich){if(!f.roadmap)f.roadmap=[];if(!f.blocos)f.blocos=[];}});funcRefresh(fid);}
+function funcAddFuncao(){var arr=getFunctions();var id='fn'+Date.now();arr.push({id:id,nome:'Nova função',estado:'Função ativa',pessoas:[],sections:[{titulo:'',itens:['']}]});saveFunctions(arr);_selFuncao=id;renderFuncoes();showToast('Função criada.');}
+function funcDelFuncao(fid){if(_pendingDelFunc!==fid){_pendingDelFunc=fid;showToast('Clique novamente para eliminar esta função.');setTimeout(function(){if(_pendingDelFunc===fid)_pendingDelFunc=null;},3000);return;}_pendingDelFunc=null;var arr=getFunctions().filter(function(x){return x.id!==fid;});saveFunctions(arr);_selFuncao=arr.length?arr[0].id:null;renderFuncoes();showToast('Função eliminada.');}
+function funcResetAll(){if(_pendingDelFunc!=='__reset'){_pendingDelFunc='__reset';showToast('Clique novamente para repor as funções originais (perde edições).');setTimeout(function(){if(_pendingDelFunc==='__reset')_pendingDelFunc=null;},3000);return;}_pendingDelFunc=null;localStorage.removeItem('pragosa_funcoes_v1');_selFuncao=null;renderFuncoes();showToast('Funções repostas.');}
+// ── Editores reutilizáveis ──
+function renderEditSections(fid,key,secs){
+  var q="'"+fid+"','"+key+"'";
+  var h='';
+  (secs||[]).forEach(function(s,si){
+    h+='<div style="border:1px solid var(--border);border-radius:6px;padding:8px;margin-bottom:8px;background:var(--bg)">';
+    h+='<div style="display:flex;gap:6px;margin-bottom:6px;align-items:center">'
+      +'<input style="'+FN_INP+';font-weight:600" value="'+escHtml(s.titulo||'')+'" placeholder="Título da secção (opcional)" onchange="funcSecTitle('+q+','+si+',this.value)">'
+      +'<button class="g-x" title="Eliminar secção" onclick="funcDelSec('+q+','+si+')">×</button></div>';
+    (s.itens||[]).forEach(function(it,ii){
+      h+='<div style="display:flex;gap:6px;margin-bottom:4px;align-items:center">'
+        +'<span style="color:var(--text-3);font-size:11px">•</span>'
+        +'<input style="'+FN_INP+'" value="'+escHtml(it||'')+'" onchange="funcItem('+q+','+si+','+ii+',this.value)">'
+        +'<button class="g-x" title="Eliminar item" onclick="funcDelItem('+q+','+si+','+ii+')">×</button></div>';
     });
-    out+='</div>';
-  }
+    h+='<button class="btn-sec" style="margin-top:4px" onclick="funcAddItem('+q+','+si+')">＋ Item</button>';
+    h+='</div>';
+  });
+  return h;
+}
+function renderEditRoadmap(fid,road){
+  var q="'"+fid+"'";var h='';
+  (road||[]).forEach(function(o,ri){
+    h+='<div style="border:1px solid var(--border);border-radius:6px;padding:8px;margin-bottom:8px;background:var(--bg)">';
+    h+='<div style="display:flex;gap:6px;margin-bottom:5px;align-items:center">'
+      +'<input style="'+FN_INP+';font-weight:600" value="'+escHtml(o.titulo||'')+'" placeholder="Título da fase" onchange="funcRoad('+q+','+ri+',\'titulo\',this.value)">'
+      +'<button class="g-x" onclick="funcDelRoad('+q+','+ri+')">×</button></div>';
+    h+='<input style="'+FN_INP+';margin-bottom:5px" value="'+escHtml(o.resultado||'')+'" placeholder="Resultado esperado" onchange="funcRoad('+q+','+ri+',\'resultado\',this.value)">';
+    h+='<div style="display:flex;gap:6px;margin-bottom:5px">'
+      +'<input style="'+FN_INP+'" value="'+escHtml(o.prazo||'')+'" placeholder="Prazo (ex: M0 → M3)" onchange="funcRoad('+q+','+ri+',\'prazo\',this.value)">'
+      +'<select style="'+FN_INP+';width:auto" onchange="funcRoadRe('+q+','+ri+',\'estado\',this.value)">'
+      +['Não iniciado','Em curso','Em risco','Concluído'].map(function(st){return'<option'+(o.estado===st?' selected':'')+'>'+st+'</option>';}).join('')
+      +'</select>'
+      +'<input type="number" min="0" max="100" style="width:64px;'+FN_INP+'" value="'+(o.progresso||0)+'" onchange="funcRoadRe('+q+','+ri+',\'progresso\',this.value)"></div>';
+    h+='<div class="obj-prog-track"><div class="obj-prog-fill" style="width:'+(o.progresso||0)+'%;background:'+(o.cor||'#a1a1aa')+'"></div></div>';
+    h+='</div>';
+  });
+  return h;
+}
+function renderEditList(fid,arr,setter,delr){
+  var q="'"+fid+"'";var h='';
+  (arr||[]).forEach(function(t,i){
+    h+='<div style="display:flex;gap:6px;margin-bottom:4px;align-items:center">'
+      +'<span style="color:var(--text-3);font-size:11px">•</span>'
+      +'<input style="'+FN_INP+'" value="'+escHtml(t||'')+'" onchange="'+setter+'('+q+','+i+',this.value)">'
+      +'<button class="g-x" onclick="'+delr+'('+q+','+i+')">×</button></div>';
+  });
+  return h;
+}
+// ── Detalhe editável ──
+function renderFuncaoDetail(id){
+  var f=getFuncao(id);if(!f)return '';
+  var team=getTeamData();var q="'"+id+"'";
+  var CARD='background:var(--surface,#fff);border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin-top:12px';
+  var LBL='font-size:10.5px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px';
+  var out='';
+  out+='<div style="font-size:11px;color:var(--text-3);margin-bottom:2px">✎ Todos os campos são editáveis — as alterações guardam-se automaticamente neste computador.</div>';
+  // Identificação
+  out+='<div style="'+CARD+';margin-top:6px">';
+  out+='<div style="display:flex;justify-content:space-between;align-items:center"><div class="card-title">Identificação</div><button class="g-x" title="Eliminar função" onclick="funcDelFuncao('+q+')">🗑 Eliminar</button></div>';
+  out+='<div style="margin-bottom:8px"><div style="'+LBL+'">Nome da função</div><input style="'+FN_INP+';font-weight:600" value="'+escHtml(f.nome||'')+'" onchange="funcSetNome('+q+',this.value)"></div>';
+  out+='<div style="margin-bottom:8px"><div style="'+LBL+'">Estado</div><input style="'+FN_INP+'" value="'+escHtml(f.estado||'')+'" onchange="funcSetEstado('+q+',this.value)"></div>';
+  out+='<div style="margin-bottom:8px"><div style="'+LBL+'">Objetivo</div><textarea style="'+FN_INP+';min-height:56px;resize:vertical" placeholder="Objetivo da função (opcional)" onchange="funcSetField('+q+',\'objetivo\',this.value)">'+escHtml(f.objetivo||'')+'</textarea></div>';
+  out+='<div><label style="font-size:11.5px;color:var(--text-2);display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox"'+(f.rich?' checked':'')+' onchange="funcToggleRich('+q+',this.checked)"> Função com roadmap + perfil de recrutamento</label></div>';
+  out+='</div>';
+  // Pessoas ligadas
+  out+='<div style="'+CARD+'"><div class="card-title">Pessoas ligadas</div>';
+  (f.pessoas||[]).forEach(function(pl,i){
+    var cur=(pl.pid===null)?'__vaga':(pl.pid||'');
+    var opts='<option value=""'+(cur===''?' selected':'')+'>— selecionar pessoa —</option>';
+    team.forEach(function(p){opts+='<option value="'+p.id+'"'+(cur===p.id?' selected':'')+'>'+escHtml(p.name)+'</option>';});
+    opts+='<option value="__vaga"'+(cur==='__vaga'?' selected':'')+'>＋ Vaga dedicada (sem pessoa)</option>';
+    out+='<div style="border:1px solid var(--border);border-radius:6px;padding:8px;margin-bottom:8px;background:var(--bg)">'
+      +'<div style="display:flex;gap:6px;margin-bottom:5px;align-items:center">'
+      +'<select style="'+FN_INP+'" onchange="funcSetPid('+q+','+i+',this.value)">'+opts+'</select>'
+      +(pl.pid?'<button class="btn-sec" title="Abrir ficha" onclick="gotoPessoa(\''+pl.pid+'\')">↗</button>':'')
+      +'<button class="g-x" onclick="funcDelPessoa('+q+','+i+')">×</button></div>'
+      +'<input style="'+FN_INP+'" value="'+escHtml(pl.papel||'')+'" placeholder="Papel nesta função" onchange="funcSetPapel('+q+','+i+',this.value)"></div>';
+  });
+  out+='<button class="btn-sec" onclick="funcAddPessoa('+q+')">＋ Pessoa</button></div>';
+  // Responsabilidades
+  out+='<div style="'+CARD+'"><div class="card-title">Responsabilidades</div>'+renderEditSections(id,'sections',f.sections||[])
+    +'<button class="btn-sec" onclick="funcAddSec('+q+',\'sections\')">＋ Secção</button></div>';
+  // Rich extras
   if(f.rich){
-    var road=(typeof OBJ_DEFAULT!=='undefined'&&OBJ_DEFAULT.gmf)?OBJ_DEFAULT.gmf:[];
-    if(road.length){
-      out+='<div style="'+CARD+'"><div class="card-title">Roadmap de implementação (proposta)</div>';
-      road.forEach(function(o){
-        var bcls=o.estado==='Concluído'?'b-ok':(o.estado==='Em curso'?'b-warn':'b-gray');
-        out+='<div style="margin-bottom:11px"><div style="display:flex;justify-content:space-between;gap:8px;margin-bottom:3px">'
-          +'<div style="font-size:12px;font-weight:600;color:var(--text)">'+escHtml(o.titulo)+'</div>'
-          +'<span class="badge '+bcls+'" style="font-size:10px;flex-shrink:0">'+escHtml(o.estado)+'</span></div>'
-          +'<div style="font-size:11px;color:var(--text-3);margin-bottom:4px">'+escHtml(o.resultado)+' · <strong>'+escHtml(o.prazo)+'</strong></div>'
-          +'<div class="obj-prog-track"><div class="obj-prog-fill" style="width:'+o.progresso+'%;background:'+o.cor+'"></div></div></div>';
-      });
-      out+='</div>';
-    }
-    out+=funcaoGMFBlock();
-    if(f.tacografos)out+='<div style="'+CARD+';border-left:3px solid #0ea5e9"><div class="card-title">Ligação futura — Tacógrafos</div><div style="font-size:12px;color:var(--text-2);line-height:1.55">'+escHtml(f.tacografos)+'</div></div>';
-    if(f.tarefas&&f.tarefas.length){
-      out+='<div style="'+CARD+'"><div class="card-title">Decisões e tarefas por fechar</div><ul style="margin:0;padding-left:16px">';
-      f.tarefas.forEach(function(t){out+='<li style="'+LI+'">'+escHtml(t)+'</li>';});
-      out+='</ul></div>';
-    }
+    out+='<div style="'+CARD+'"><div class="card-title">Roadmap de implementação</div>'+renderEditRoadmap(id,f.roadmap||[])
+      +'<button class="btn-sec" onclick="funcAddRoad('+q+')">＋ Fase</button></div>';
+    out+='<div style="'+CARD+'"><div class="card-title">Perfil de recrutamento</div>'+renderEditSections(id,'blocos',f.blocos||[])
+      +'<button class="btn-sec" onclick="funcAddSec('+q+',\'blocos\')">＋ Bloco</button></div>';
+    out+='<div style="'+CARD+';border-left:3px solid #0ea5e9"><div class="card-title">Ligação futura — Tacógrafos</div>'
+      +'<textarea style="'+FN_INP+';min-height:56px;resize:vertical" onchange="funcSetField('+q+',\'tacografos\',this.value)">'+escHtml(f.tacografos||'')+'</textarea></div>';
+    out+='<div style="'+CARD+'"><div class="card-title">Decisões e tarefas por fechar</div>'+renderEditList(id,f.tarefas||[],'funcTarefa','funcDelTarefa')
+      +'<button class="btn-sec" onclick="funcAddTarefa('+q+')">＋ Tarefa</button></div>';
   }
+  out+='<div style="margin-top:14px;text-align:right"><button class="btn-sec" style="color:var(--text-3)" onclick="funcResetAll()">↺ Repor funções originais</button></div>';
   return out;
 }
 
