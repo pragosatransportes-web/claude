@@ -294,10 +294,18 @@
   <div class="card">
     <div class="flex between"><h2 style="margin:0">📍 Locais e distâncias</h2><button class="btn mini" id="btnAddLoc">+ Local</button></div>
     <p class="small muted">Coordenadas usadas pelo planeador para otimizar por proximidade (distância rodoviária ≈ linha reta × fator). As cidades vêm aproximadas; <b>preencha as coordenadas das suas bases/pedreiras</b> (linhas sem lat/lon a vermelho). Dica: no Google Maps, clique direito no local → copie os dois números.</p>
+    <div class="note" style="margin-bottom:10px">Há <b>duas formas</b> de o planeador saber onde fica um sítio:<br>1) <b>Dar-lhe nome aqui</b> — o nome do local (ex.: <i>Tojal</i>, <i>Santa Eulália</i>, uma obra) e as coordenadas. Depois basta escrever esse nome na Origem/Destino do pedido (funciona por correspondência parcial: «Santa Eulália» combina com «Pedreira Santa Eulália»).<br>2) <b>Colar coordenadas diretamente</b> no campo Origem/Destino do pedido, no formato <code>38.98, -8.98</code> (lat, lon) — sem precisar de as registar aqui.</div>
     <div class="grid g2" style="margin-bottom:10px">
       <div><label>Fator distância rodoviária (× linha reta)</label><input type="number" step="0.05" id="roadFactor"></div>
       <div><label>Limite p/ encadear sem penalizar (km vazios)</label><input type="number" step="5" id="chainKm"></div>
     </div>
+    <label>🔎 Procurar local e adicionar coordenadas automaticamente</label>
+    <div class="flex" style="gap:6px;margin:4px 0 6px">
+      <input id="locSearch" placeholder="Ex.: Pedreira de Pataias · Torres Vedras · Rua X, Loures" style="flex:1" autocomplete="off">
+      <button class="btn mini" id="btnLocSearch">🔍 Procurar</button>
+    </div>
+    <p class="small muted" style="margin:0 0 6px">Usa o OpenStreetMap (requer internet; envia só o texto pesquisado). Escolhe o resultado certo e clica «Adicionar» — depois podes editar o nome na tabela.</p>
+    <div id="locSearchResults" style="margin-bottom:10px"></div>
     <div class="scrollx maxh"><table id="locTable"><thead><tr><th>Local</th><th>Latitude</th><th>Longitude</th><th></th></tr></thead><tbody></tbody></table></div>
   </div>
   <div class="card">
@@ -549,6 +557,7 @@ const byNum = n => CATALOGO.find(x=>x.num===n);
 let SEL=[]; // selected equipment nums
 let LAST_RESULT=null; // último resultado calculado (para guardar no histórico)
 let LAST_PREF_CTX=null; // contexto (classes) da última simulação, para guardar preferência de conjuntos
+let LAST_MISSING_LOCS=[]; // locais sem coordenadas do último plano (para "adicionar aos Locais")
 let PLAN=null; // plano do planeador (rotas+viagens), ajustável manualmente
 function dhTo(fromDest,toOrig){let dh=kmBetween(fromDest,toOrig);if(dh==null)dh=normLoc(fromDest)===normLoc(toOrig)?0:null;return dh;}
 function moveTrip(id,pmId){
@@ -1165,11 +1174,98 @@ function importSheetDirect(){
 function normLoc(s){return (s||'').toString().trim().toLowerCase().replace(/\s+/g,' ');}
 function fmtDT(s){return s?s.replace('T',' ').slice(0,16):'—';}
 function fmtDate(s){if(!s)return '—';const p=s.slice(0,10).split('-');return p.length===3?`${p[2]}/${p[1]}/${p[0]}`:s;}
+/* Aceita coordenadas coladas diretamente no campo (ex.: "38.9876, -8.9876" ou "38.9876 -8.9876").
+   Também tolera vírgula decimal quando o separador é claro (ex.: "38,9876 -8,9876"). */
+function parseCoords(s){
+  if(s==null) return null;
+  let t=s.toString().trim();
+  if(!t) return null;
+  // formato com separador vírgula e decimais em ponto: "38.98, -8.98"
+  let m=t.match(/^(-?\d{1,3}(?:\.\d+)?)\s*,\s*(-?\d{1,3}(?:\.\d+)?)$/);
+  // formato separado por espaço, decimais em ponto: "38.98 -8.98"
+  if(!m) m=t.match(/^(-?\d{1,3}(?:\.\d+)?)\s+(-?\d{1,3}(?:\.\d+)?)$/);
+  // formato com decimais em vírgula separados por ponto-e-vírgula ou espaço: "38,98; -8,98" / "38,98 -8,98"
+  if(!m){ const m2=t.match(/^(-?\d{1,3}(?:,\d+)?)\s*[;\s]\s*(-?\d{1,3}(?:,\d+)?)$/); if(m2) m=[m2[0],m2[1].replace(',','.'),m2[2].replace(',','.')]; }
+  if(!m) return null;
+  const lat=+m[1], lon=+m[2];
+  if(!isFinite(lat)||!isFinite(lon)||Math.abs(lat)>90||Math.abs(lon)>180) return null;
+  return {lat,lon,coord:true};
+}
 function locResolve(name){
+  const c=parseCoords(name); if(c) return c;   // coordenadas coladas diretamente
   const n=normLoc(name); if(!n)return null;
   let hit=ST.locais.find(l=>normLoc(l.nome)===n);
-  if(!hit) hit=ST.locais.find(l=>l.nome&&(n.includes(normLoc(l.nome))||normLoc(l.nome).includes(n)));
+  if(!hit) hit=ST.locais.find(l=>l.nome&&normLoc(l.nome).length>=3&&(n.includes(normLoc(l.nome))||normLoc(l.nome).includes(n)));
   return (hit&&hit.lat!=null&&hit.lon!=null)?hit:null;
+}
+/* nomes de locais que NÃO resolvem (sem coordenadas) numa lista de origens/destinos */
+function unresolvedLocs(names){
+  const out=[]; const seen=new Set();
+  names.forEach(nm=>{ const t=(nm||'').toString().trim(); if(!t)return; if(parseCoords(t))return;
+    const k=normLoc(t); if(seen.has(k))return; seen.add(k);
+    if(!locResolve(t)) out.push(t); });
+  return out;
+}
+/* adiciona os locais em falta à tabela (só o nome) e leva a utilizadora a Parâmetros › Locais para preencher coordenadas */
+function addLocsAndGo(){
+  (LAST_MISSING_LOCS||[]).forEach(nm=>{ const k=normLoc(nm); if(k && !ST.locais.some(l=>normLoc(l.nome)===k)) ST.locais.push({nome:nm,lat:null,lon:null}); });
+  save();
+  const tabBtn=document.querySelector('[data-tab="param"]'); if(tabBtn)tabBtn.click();
+  setTimeout(()=>{ renderLocais(); const tb=document.getElementById('locTable'); if(tb)tb.scrollIntoView({block:'center'}); },60);
+}
+/* ===== Pesquisa de locais (geocoding via OpenStreetMap) =====
+   Resultados normalizados para {display_name, lat, lon}. Tenta Nominatim (mais preciso p/ moradas
+   em Portugal) e, se falhar ou vier vazio, recorre ao Photon/komoot. Ambos gratuitos e com CORS. */
+let GEO_RESULTS=[];
+function geoShortName(r){ return (r.display_name||'').split(',').slice(0,2).join(',').trim() || r.display_name || 'Local'; }
+async function geoNominatim(q){
+  const url='https://nominatim.openstreetmap.org/search?format=jsonv2&limit=6&countrycodes=pt&accept-language=pt&addressdetails=0&q='+encodeURIComponent(q);
+  const r=await fetch(url,{headers:{'Accept':'application/json'}});
+  if(!r.ok) throw new Error('HTTP '+r.status);
+  const j=await r.json();
+  return j.map(x=>({display_name:x.display_name,lat:+x.lat,lon:+x.lon}));
+}
+async function geoPhoton(q){
+  const url='https://photon.komoot.io/api/?limit=6&lang=default&q='+encodeURIComponent(q);
+  const r=await fetch(url,{headers:{'Accept':'application/json'}});
+  if(!r.ok) throw new Error('HTTP '+r.status);
+  const j=await r.json();
+  return (j.features||[])
+    .filter(f=>f.geometry&&f.geometry.coordinates)
+    .filter(f=>!f.properties||!f.properties.countrycode||f.properties.countrycode==='PT')
+    .map(f=>{ const p=f.properties||{}, c=f.geometry.coordinates;
+      const parts=[p.name,p.street,p.city||p.county,p.state,p.country].filter(Boolean);
+      return {display_name:parts.join(', ')||p.name||'Local',lat:+c[1],lon:+c[0]}; });
+}
+async function geocode(q){
+  let res=[];
+  try{ res=await geoNominatim(q); }catch(e){ res=[]; }
+  if(!res.length){ res=await geoPhoton(q); }   // reserva (deixa propagar erro se também falhar)
+  return res;
+}
+async function doLocSearch(){
+  const inp=document.getElementById('locSearch'); const q=(inp?inp.value:'').trim();
+  const box=document.getElementById('locSearchResults'); if(!box) return;
+  if(!q){ box.innerHTML=''; return; }
+  box.innerHTML='<p class="small muted">A procurar…</p>';
+  try{
+    GEO_RESULTS=await geocode(q);
+    if(!GEO_RESULTS.length){ box.innerHTML='<p class="small muted">Sem resultados para «'+q+'». Seja mais específico (ex.: junte a localidade) ou cole as coordenadas manualmente na tabela.</p>'; return; }
+    box.innerHTML='<div class="scrollx"><table><thead><tr><th>Resultado</th><th>Lat</th><th>Lon</th><th></th></tr></thead><tbody>'+
+      GEO_RESULTS.map((r,i)=>`<tr><td class="small">${(r.display_name||'').replace(/</g,'&lt;')}</td><td>${(+r.lat).toFixed(5)}</td><td>${(+r.lon).toFixed(5)}</td><td><button class="ghost btn mini" onclick="addGeoResult(${i})">➕ Adicionar</button></td></tr>`).join('')+
+      '</tbody></table></div>';
+  }catch(e){
+    box.innerHTML='<div class="warnbox">Não foi possível pesquisar (sem internet ou serviço indisponível). Pode colar as coordenadas manualmente na tabela. Detalhe: '+e.message+'</div>';
+  }
+}
+function addGeoResult(i){
+  const r=GEO_RESULTS[i]; if(!r) return;
+  const nome=geoShortName(r); const k=normLoc(nome);
+  const lat=+(+r.lat).toFixed(6), lon=+(+r.lon).toFixed(6);
+  const ex=ST.locais.find(l=>normLoc(l.nome)===k);
+  if(ex){ ex.lat=lat; ex.lon=lon; } else ST.locais.push({nome,lat,lon});
+  save(); renderLocais();
+  const box=document.getElementById('locSearchResults'); if(box) box.innerHTML='<p class="small" style="color:#4ade80">✔ Adicionado «'+nome+'» ('+lat+', '+lon+'). Pode editar o nome na tabela abaixo.</p>';
 }
 function haversine(a,b){
   const R=6371,toR=x=>x*Math.PI/180;
@@ -1277,7 +1373,9 @@ function renderPlan(){
     <div class="kpi"><div class="l">Km vazios (retorno/posicion.)</div><div class="n" style="font-size:22px;color:${(km.deadKm||0)>0?'var(--warn)':'var(--acc)'}">${km.deadKm||0}<span style="font-size:13px"> km</span></div></div>
     <div class="kpi"><div class="l">Km totais estimados</div><div class="n" style="font-size:22px">${totalKm}<span style="font-size:13px"> km</span></div></div>
   </div>`;
-  if(km.unknown) html+=`<div class="note">${km.unknown} viagem(ns) sem distância: falta coordenada de origem/destino. Preencha em <b>Parâmetros › Locais</b> para otimizar por proximidade.</div>`;
+  LAST_MISSING_LOCS = unresolvedLocs(trips.flatMap(t=>[t.orig,t.dest]));
+  if(km.unknown) html+=`<div class="note">${km.unknown} viagem(ns) sem distância.${LAST_MISSING_LOCS.length?` Faltam coordenadas para: ${LAST_MISSING_LOCS.map(x=>'<b>'+(x||'—')+'</b>').join(', ')}.`:''}
+    <div style="margin-top:6px">Preencha em <b>Parâmetros › Locais</b>${LAST_MISSING_LOCS.length?` <button class="ghost btn mini" onclick="addLocsAndGo()">➕ Adicionar estes locais e preencher</button>`:''} — ou cole as coordenadas (ex.: <code>38.98, -8.98</code>) diretamente no campo <b>Origem/Destino</b> do pedido.</div></div>`;
   html+=`<div class="card"><h2>Conjugações por rota</h2>`;
   Object.values(routes).forEach(rt=>{
     const rtrips=trips.filter(t=>normLoc(t.orig)===normLoc(rt.orig)&&normLoc(t.dest)===normLoc(rt.dest));
@@ -1345,7 +1443,7 @@ function renderPlan(){
       <div class="kpi"><div class="l">Viagens com prazo em risco</div><div class="n" style="font-size:22px;color:${fleetLate?'var(--dang)':'var(--acc)'}">${fleetLate}</div></div>
     </div>
     <p class="small muted" style="margin-top:8px">Limite diário de condução <b>${ST.condMaxDia||9}h</b> (extensível a 10h 2×/semana) · pausa de <b>${Math.round((ST.pausaDur||0.75)*60)} min</b> após <b>${ST.pausaApos||4.5}h</b> · velocidade média <b>${velEff().toFixed(0)} km/h</b> (${ST.velReducao||40}% abaixo do limite de ${ST.velLimite||80} km/h) · carga+descarga <b>${ST.tManobra||2}h</b>/viagem. Cada viagem conta <b>ida carregada + volta vazia à base</b>. Encadeamentos (abaixo) reduzem estes tempos. Ajuste em <b>Parâmetros › Tempos de condução</b>.</p>
-    ${fleetNoCoord?'<div class="warnbox">Há viagens sem distância (falta coordenada de origem/destino) — os respetivos tempos de condução não foram validados. Preencha as coordenadas das bases/pedreiras em <b>Parâmetros › Locais</b>.</div>':''}
+    ${fleetNoCoord?`<div class="warnbox">Há viagens sem distância (falta coordenada de origem/destino) — os tempos de condução não foram validados.${LAST_MISSING_LOCS.length?` Em falta: ${LAST_MISSING_LOCS.map(x=>'<b>'+(x||'—')+'</b>').join(', ')}.`:''} Preencha em <b>Parâmetros › Locais</b>${LAST_MISSING_LOCS.length?` <button class="ghost btn mini" onclick="addLocsAndGo()">➕ Adicionar e preencher</button>`:''}, ou cole as coordenadas (ex.: <code>38.98, -8.98</code>) no campo Origem/Destino.</div>`:''}
     ${fleetLate?'<div class="warnbox">Há viagens cujo dia de execução ultrapassa o prazo de entrega quando se respeita o limite diário de condução. Reforce com outro conjunto/motorista, antecipe a recolha, ou recorra a terceiros.</div>':''}
   </div>`;
   if(chains.length){
@@ -1565,6 +1663,8 @@ function renderLocais(){
 }
 document.getElementById('btnAddPM').onclick=addPM;
 document.getElementById('btnAddLoc').onclick=()=>{ST.locais.push({nome:'',lat:null,lon:null});save();renderLocais();};
+document.getElementById('btnLocSearch').onclick=doLocSearch;
+document.getElementById('locSearch').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();doLocSearch();}});
 document.getElementById('roadFactor').onchange=e=>{ST.roadFactor=+e.target.value;save();};
 document.getElementById('chainKm').onchange=e=>{ST.chainKm=+e.target.value;save();};
 ['velLimite','velReducao','condMaxDia','pausaApos','pausaDur','tManobra'].forEach(k=>{const el=document.getElementById(k);if(el)el.onchange=e=>{ST[k]=+e.target.value;save();const ve=document.getElementById('velEffOut');if(ve)ve.value=velEff().toFixed(0)+' km/h';if(typeof PLAN!=='undefined'&&PLAN)renderPlan();};});
