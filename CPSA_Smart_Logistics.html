@@ -118,9 +118,10 @@
     <div class="card">
       <h2>1 · Rota</h2>
       <div class="grid g2">
-        <div><label>Origem</label><input id="origem" list="origens" placeholder="Ex.: Tojal"></div>
-        <div><label>Destino</label><input id="destino" placeholder="Obra / Pedreira / Cliente"></div>
+        <div><label>Origem</label><input id="origem" list="origens" placeholder="Escreva p/ procurar (ex.: Tojal)"></div>
+        <div><label>Destino</label><input id="destino" placeholder="Escreva p/ procurar (obra/pedreira/cliente)"></div>
       </div>
+      <p class="small muted" style="margin:2px 2px 0">💡 Escreva o nome do local (≥3 letras) e escolha na lista — as coordenadas ficam guardadas automaticamente. Também pode colar <code>38.98, -8.98</code>.</p>
       <datalist id="origens"></datalist>
       <h2 style="margin-top:18px">2 · Equipamentos a transportar</h2>
       <label>Tipo de equipamento</label>
@@ -1046,6 +1047,7 @@ function renderReqTable(){
       save();if(f==='tipo'||f==='num')renderReqTable();};
   });
   tb.querySelectorAll('[data-del]').forEach(x=>x.onclick=()=>{ST.req.splice(+x.dataset.del,1);save();renderReqTable();});
+  tb.querySelectorAll('[data-f="orig"],[data-f="dest"]').forEach(el=>attachLocAutocomplete(el));
   document.getElementById('reqCount').textContent=`${ST.req.filter(r=>r.num).length} pedido(s) com máquina · ${ST.req.length} linha(s)`;
 }
 document.getElementById('btnAddReq').onclick=()=>{ST.req.push({tipo:'',num:'',orig:'',dest:'',disp:'',entregar:'',src:'manual'});save();renderReqTable();};
@@ -1258,14 +1260,62 @@ async function doLocSearch(){
     box.innerHTML='<div class="warnbox">Não foi possível pesquisar (sem internet ou serviço indisponível). Pode colar as coordenadas manualmente na tabela. Detalhe: '+e.message+'</div>';
   }
 }
-function addGeoResult(i){
-  const r=GEO_RESULTS[i]; if(!r) return;
-  const nome=geoShortName(r); const k=normLoc(nome);
-  const lat=+(+r.lat).toFixed(6), lon=+(+r.lon).toFixed(6);
+function upsertLoc(nome,lat,lon){
+  const k=normLoc(nome); if(!k) return;
+  lat=+(+lat).toFixed(6); lon=+(+lon).toFixed(6);
   const ex=ST.locais.find(l=>normLoc(l.nome)===k);
   if(ex){ ex.lat=lat; ex.lon=lon; } else ST.locais.push({nome,lat,lon});
-  save(); renderLocais();
-  const box=document.getElementById('locSearchResults'); if(box) box.innerHTML='<p class="small" style="color:#4ade80">✔ Adicionado «'+nome+'» ('+lat+', '+lon+'). Pode editar o nome na tabela abaixo.</p>';
+  save();
+}
+function addGeoResult(i){
+  const r=GEO_RESULTS[i]; if(!r) return;
+  const nome=geoShortName(r); upsertLoc(nome,r.lat,r.lon); renderLocais();
+  const box=document.getElementById('locSearchResults'); if(box) box.innerHTML='<p class="small" style="color:#4ade80">✔ Adicionado «'+nome+'» ('+(+r.lat).toFixed(5)+', '+(+r.lon).toFixed(5)+'). Pode editar o nome na tabela abaixo.</p>';
+}
+/* ===== Autocomplete de locais nos campos Origem/Destino (usa o mesmo geocoding) ===== */
+let AC_BOX=null, AC_INPUT=null, AC_TIMER=null, AC_ITEMS=[];
+function acEnsureBox(){
+  if(AC_BOX) return AC_BOX;
+  AC_BOX=document.createElement('div');
+  AC_BOX.style.cssText='position:fixed;z-index:9999;background:var(--panel2,#1d2b3a);border:1px solid var(--line,#26384b);border-radius:8px;box-shadow:0 10px 28px rgba(0,0,0,.5);max-height:260px;overflow:auto;font-size:12.5px;color:var(--txt,#e6edf3);display:none';
+  document.body.appendChild(AC_BOX);
+  document.addEventListener('scroll',()=>acHide(),true);
+  window.addEventListener('resize',()=>acHide());
+  return AC_BOX;
+}
+function acHide(){ if(AC_BOX)AC_BOX.style.display='none'; AC_INPUT=null; }
+function acPosition(inp){ const r=inp.getBoundingClientRect(); const b=acEnsureBox(); b.style.left=r.left+'px'; b.style.top=(r.bottom+2)+'px'; b.style.width=Math.max(r.width,240)+'px'; }
+function acRender(items,inp){
+  const b=acEnsureBox(); AC_ITEMS=items||[];
+  if(!AC_ITEMS.length){ b.innerHTML='<div style="padding:8px 10px;color:var(--mut,#8aa0b4)">Sem resultados — escreva mais ou cole coordenadas.</div>'; }
+  else b.innerHTML=AC_ITEMS.map((it,i)=>`<div class="ac-it" data-i="${i}" style="padding:7px 10px;cursor:pointer;border-bottom:1px solid var(--line,#26384b)">📍 ${(it.display_name||'').replace(/</g,'&lt;')}</div>`).join('');
+  b.querySelectorAll('.ac-it').forEach(el=>{
+    el.onmousedown=e=>{ e.preventDefault(); acPick(inp,AC_ITEMS[+el.dataset.i]); };
+    el.onmouseenter=()=>el.style.background='rgba(255,177,0,.14)';
+    el.onmouseleave=()=>el.style.background='';
+  });
+  acPosition(inp); b.style.display='block';
+}
+function acPick(inp,it){
+  if(!it) return;
+  const name=geoShortName(it);
+  inp.value=name; upsertLoc(name,+it.lat,+it.lon);
+  acHide();
+  inp.dispatchEvent(new Event('change',{bubbles:true}));
+}
+function attachLocAutocomplete(inp){
+  if(!inp||inp._acAttached) return; inp._acAttached=true; inp.setAttribute('autocomplete','off');
+  inp.addEventListener('input',()=>{
+    const q=inp.value.trim(); clearTimeout(AC_TIMER);
+    if(q.length<3||parseCoords(q)){ acHide(); return; }
+    AC_INPUT=inp;
+    AC_TIMER=setTimeout(async()=>{
+      try{ const res=await geocode(q); if(AC_INPUT===inp) acRender(res,inp); }
+      catch(e){ acHide(); }   // offline: mantém texto livre, sem incomodar
+    },450);
+  });
+  inp.addEventListener('blur',()=>setTimeout(acHide,150));
+  inp.addEventListener('keydown',e=>{ if(e.key==='Escape')acHide(); });
 }
 function haversine(a,b){
   const R=6371,toR=x=>x*Math.PI/180;
@@ -1694,6 +1744,7 @@ function initClasses(){
 if(!ST.seeded && SEED_FRETES.length){ seedHistory(false); }
 document.getElementById('rData').value=new Date().toISOString().slice(0,10);
 initClasses();renderSel();renderMselList();renderLocEq();renderGrpQuick();renderCat();renderGroups();renderPM();renderPrefs();renderLegal();renderLocais();renderFretes();refreshDatalists();
+['origem','destino','rOrig'].forEach(id=>{const el=document.getElementById(id); if(el)attachLocAutocomplete(el);});
 </script>
 </body>
 </html>
