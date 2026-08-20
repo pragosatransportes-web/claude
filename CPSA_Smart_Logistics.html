@@ -147,7 +147,7 @@
       <select id="simMode" style="width:auto">
         <option value="opt">Combinação otimizada (mín. de viagens)</option>
         <option value="split">Uma viagem por equipamento</option>
-        <option value="combo">Carga única (tudo num só porta-máquinas)</option>
+        <option value="combo">Carga única (1 porta-máquinas · 1 viagem)</option>
       </select>
     </div>
     <div class="flex" style="gap:8px">
@@ -287,7 +287,9 @@
     <div class="grid g3">
       <div><label>Altura do estrado (m) — soma-se à altura da máquina</label><input type="number" step="0.05" id="deckH"></div>
       <div><label>Comprimento base do conjunto (m)</label><input type="number" step="0.1" id="baseL"></div>
+      <div><label>Folga entre máquinas na carga (m) — rampas/peamento entre cada máquina</label><input type="number" step="0.05" id="loadGap"></div>
     </div>
+    <p class="small muted">A <b>folga entre máquinas</b> é somada ao comprimento total quando se conjugam várias máquinas no mesmo estrado (espaço de amarração/peamento). Evita conjugações que na prática não cabem.</p>
   </div>
   <div class="card">
     <div class="flex between"><h2 style="margin:0">📍 Locais e distâncias</h2><button class="btn mini" id="btnAddLoc">+ Local</button></div>
@@ -471,6 +473,7 @@ function load(){
     groups:d.groups||JSON.parse(JSON.stringify(DEFAULT_GROUPS)),
     legal:Object.assign({},DEFAULT_LEGAL,d.legal||{}),
     deckH:d.deckH!=null?d.deckH:1.05, baseL:d.baseL!=null?d.baseL:16.5,
+    loadGap:d.loadGap!=null?d.loadGap:0.5,
     fretes:d.fretes||[], seeded:!!d.seeded, req:d.req||[], prefs:d.prefs||[],
     locais:d.locais||JSON.parse(JSON.stringify(DEFAULT_LOCAIS)),
     roadFactor:d.roadFactor!=null?d.roadFactor:1.3, chainKm:d.chainKm!=null?d.chainKm:40,
@@ -685,22 +688,30 @@ function renderSel(){
 function combinedLoad(nums){
   let peso=0,c=0,lmax=0,amax=0, anyEst=false, items=[];
   nums.forEach(n=>{const e=byNum(n);const s=specOf(e);peso+=s.peso;c+=s.c;lmax=Math.max(lmax,s.l);amax=Math.max(amax,s.a);if(s.est)anyEst=true;items.push({e,s});});
-  return {peso,comp:c,larg:lmax,alt:amax,anyEst,items};
+  const n=nums.length;
+  // comprimento de estrado REALMENTE necessário = soma dos comprimentos + folga entre máquinas
+  // (rampas de carga/descarga e espaço de peamento/amarração entre cada máquina)
+  const reqComp = c + Math.max(0,n-1)*(ST.loadGap||0);
+  return {peso,comp:c,reqComp,n,larg:lmax,alt:amax,anyEst,items};
 }
 function renderLoad(){
   const box=document.getElementById('loadSummary');
   if(!SEL.length){box.innerHTML='<p class="muted">Selecione equipamentos para calcular peso e dimensões.</p>';return;}
   const L=combinedLoad(SEL);
-  const totalCompL = ST.baseL; // conjunto base; máquinas assentam sobre estrado
   const altTotal = ST.deckH + L.alt;
+  const bestDeck=Math.max(...ST.pm.map(p=>p.deck||0));
+  const bestCap=Math.max(...ST.pm.map(p=>p.cap));
+  const overL=L.reqComp>bestDeck, overW=L.peso>bestCap;
+  const compLabel = L.n>1?'Comp. necessário':'Comp. máquina';
   box.innerHTML=`
     <div class="dim">
-      <div class="kpi"><div class="l">Peso carga</div><div class="n">${(L.peso/1000).toFixed(1)}<span style="font-size:14px"> t</span></div></div>
-      <div class="kpi"><div class="l">Comp. máquinas Σ</div><div class="n">${L.comp.toFixed(1)}<span style="font-size:14px"> m</span></div></div>
+      <div class="kpi"><div class="l">Peso carga</div><div class="n" style="${overW?'color:var(--dang)':''}">${(L.peso/1000).toFixed(1)}<span style="font-size:14px"> t</span></div></div>
+      <div class="kpi"><div class="l">${compLabel}</div><div class="n" style="${overL?'color:var(--dang)':''}">${L.reqComp.toFixed(1)}<span style="font-size:14px"> m</span></div></div>
       <div class="kpi"><div class="l">Largura máx</div><div class="n">${L.larg.toFixed(2)}<span style="font-size:14px"> m</span></div></div>
       <div class="kpi"><div class="l">Altura total*</div><div class="n">${altTotal.toFixed(2)}<span style="font-size:14px"> m</span></div></div>
     </div>
-    <div class="small muted" style="margin-top:8px">*Altura total = estrado (${ST.deckH} m) + máquina mais alta. ${L.anyEst?'<span class="pill p-warn">alguns valores estimados</span>':''}</div>`;
+    <div class="small muted" style="margin-top:8px">*Altura total = estrado (${ST.deckH} m) + máquina mais alta.${L.n>1?` Comp. necessário = Σ comprimentos (${L.comp.toFixed(1)} m) + ${L.n-1}×${ST.loadGap} m de folga.`:''} ${L.anyEst?'<span class="pill p-warn">alguns valores estimados</span>':''}</div>
+    ${(overL||overW)?`<div class="warnbox" style="margin-top:10px">🚫 Esta seleção <b>não cabe num só porta-máquinas</b>: ${[overL?`comprimento ${L.reqComp.toFixed(1)} m > estrado máx. ${bestDeck.toFixed(1)} m`:'',overW?`peso ${(L.peso/1000).toFixed(1)} t > cap. máx. ${(bestCap/1000).toFixed(1)} t`:''].filter(Boolean).join(' · ')}. Use «Combinação otimizada» ou «Uma viagem por equipamento».</div>`:''}`;
 }
 
 /* quick group buttons */
@@ -766,9 +777,14 @@ function rankPM(L){
   const pref=findPref(selClasses);
   const pmHistScore={};
   ST.fretes.forEach(f=>{ const fc=freteClasses(f); if(selClasses.some(c=>fc.includes(c))) pmHistScore[f.pm]=(pmHistScore[f.pm]||0)+1; });
+  const need = L.reqComp!=null?L.reqComp:L.comp;   // comprimento necessário (com folgas)
   const list = ST.pm.map(pm=>{
-    const fits = L.peso<=pm.cap;
+    const deck = pm.deck||99;
+    const fitsW = L.peso<=pm.cap;                   // cabe em PESO
+    const fitsL = need<=deck;                        // cabe em COMPRIMENTO no estrado
+    const fits = fitsW && fitsL;                     // só "cobre" se cumprir AMBOS
     const margin = (pm.cap-L.peso)/pm.cap;
+    const marginL = (deck-need)/deck;
     const hist = pmHistScore[pm.id]||0;
     let conf=0;
     if(fits){
@@ -777,12 +793,16 @@ function rankPM(L){
       // histórico = sinal SUAVE; um conjunto novo (0 fretes) fica neutro, não penalizado
       conf += hist>=3 ? 12 : hist>0 ? 9 : 6;
       if(pm.id==='PM01' && L.peso<pm.cap*0.5) conf-=8;
+      if(marginL<0.05) conf-=8;   // praticamente sem folga de comprimento → arriscado
     }else{
       conf = 12 - Math.min(10, (L.peso-pm.cap)/pm.cap*20);
     }
     conf=Math.max(1,Math.min(99,Math.round(conf)));
     const excluded = pref ? !pref.allow.includes(pm.id) : false;
-    return {pm,fits,margin,hist,conf,pilot:pilotCar(L,pm),pb:L.peso+pm.tara,excluded};
+    const why=[];
+    if(!fitsW) why.push(`peso ${(L.peso/1000).toFixed(1)}t > cap. ${(pm.cap/1000).toFixed(1)}t`);
+    if(!fitsL) why.push(`comprimento ${need.toFixed(1)}m > estrado ${deck.toFixed(1)}m`);
+    return {pm,fits,fitsW,fitsL,margin,marginL,need,deck,hist,conf,pilot:pilotCar(L,pm),pb:L.peso+pm.tara,excluded,why};
   }).sort((a,b)=> (a.excluded-b.excluded) || (b.fits-a.fits) || (b.conf-a.conf) || (a.margin-b.margin));
   return {list, totalHistMatch:Object.values(pmHistScore).reduce((a,b)=>a+b,0), pref, selClasses};
 }
@@ -798,12 +818,14 @@ function runEngine(){
   const cls=classify(L);
   const rk=rankPM(L); const ranked=rk.list; const totalHistMatch=rk.totalHistMatch;
   LAST_PREF_CTX={classes:rk.selClasses};
-  const best=ranked.find(r=>!r.excluded)||ranked[0];
+  // prioriza um conjunto que COBRE (peso+comprimento); só depois cai para o menos mau
+  const best=ranked.find(r=>r.fits&&!r.excluded)||ranked.find(r=>r.fits)||ranked.find(r=>!r.excluded)||ranked[0];
   const levelPill = cls.level==='normal'?'<span class="pill p-ok">✅ Transporte normal</span>':cls.level==='especial'?'<span class="pill p-warn">⚠ Transporte especial</span>':'<span class="pill p-dang">🚨 Transporte excecional</span>';
 
+  const isMulti = L.n>1;
   let html=`<div class="card ${best.fits?'result-best':''}">
     <div class="flex between">
-      <h2 style="margin:0">${best.fits?'✅ Melhor solução':'⚠ Nenhum conjunto cobre a carga isolado'}</h2>
+      <h2 style="margin:0">${best.fits?'✅ Melhor solução':(isMulti?'🚫 Não é possível numa só viagem':'⚠ Nenhum conjunto cobre a carga')}</h2>
       ${levelPill}
     </div>`;
   if(best.fits){
@@ -816,22 +838,37 @@ function runEngine(){
     <div class="grid g3" style="margin-top:14px">
       <div class="kpi"><div class="l">Peso bruto estimado</div><div class="n" style="font-size:20px">${(best.pb/1000).toFixed(1)} t</div><div class="small muted">carga ${(L.peso/1000).toFixed(1)}t + tara ${(best.pm.tara/1000).toFixed(0)}t</div></div>
       <div class="kpi"><div class="l">Folga de capacidade</div><div class="n" style="font-size:20px">${(best.margin*100).toFixed(0)}%</div><div class="small muted">cap. útil ${(best.pm.cap/1000).toFixed(1)}t</div></div>
+      <div class="kpi"><div class="l">Comprimento na carga</div><div class="n" style="font-size:20px">${best.need.toFixed(1)} m</div><div class="small muted">${L.n>1?L.n+' máq. + folgas · ':''}estrado ${best.deck.toFixed(1)} m (folga ${(best.marginL*100).toFixed(0)}%)</div></div>
+    </div>
+    <div class="grid g3" style="margin-top:0">
       <div class="kpi"><div class="l">Carro piloto</div><div class="n" style="font-size:20px">${best.pilot.n>0?('🚨 '+best.pilot.n+'×'):'❌ Não'}</div><div class="small muted">${best.pilot.why.join(', ')||'dentro dos limites'}</div></div>
     </div>
     <div class="small muted" style="margin-top:10px">Baseado em <b>${best.hist}</b> frete(s) histórico(s) com equipamentos da mesma classe${totalHistMatch?` (${totalHistMatch} no total)`:''}.</div>`;
     if(cls.reasons.length) html+=`<div class="warnbox">Excedências: ${cls.reasons.join(' · ')}. Requer licença/autorização IMT.</div>`;
   }else{
-    html+=`<div class="warnbox">A carga (${(L.peso/1000).toFixed(1)} t) excede a capacidade útil de todos os conjuntos (máx. ${(Math.max(...ST.pm.map(p=>p.cap))/1000).toFixed(1)} t). Considerar: dividir em várias viagens, transporte por terceiros ou conjunto dedicado.</div>`;
+    const bestDeck=Math.max(...ST.pm.map(p=>p.deck||0));
+    const bestCap=Math.max(...ST.pm.map(p=>p.cap));
+    const overL=L.reqComp>bestDeck, overW=L.peso>bestCap;
+    let motivos=[];
+    if(overL) motivos.push(`o <b>comprimento necessário ${L.reqComp.toFixed(1)} m</b> (${L.n} máquina${L.n>1?'s':''}${L.n>1?` + ${(L.n-1)} folga(s) de ${ST.loadGap} m`:''}) excede o maior estrado disponível (<b>${bestDeck.toFixed(1)} m</b>, ${ST.pm.find(p=>(p.deck||0)===bestDeck)?.id||'—'})`);
+    if(overW) motivos.push(`o <b>peso ${(L.peso/1000).toFixed(1)} t</b> excede a maior capacidade útil (<b>${(bestCap/1000).toFixed(1)} t</b>)`);
+    if(!motivos.length) motivos.push('nenhum conjunto reúne peso <b>e</b> comprimento em simultâneo para esta combinação');
+    html+=`<div class="warnbox" style="font-size:15px">
+      <b>🚫 Não é possível transportar est${L.n>1?'es':'e'} ${L.n} equipamento${L.n>1?'s':''} num só porta-máquinas / numa só viagem.</b><br>
+      Motivo: ${motivos.join(' e ')}.<br><br>
+      ➡ Alternativas: use o modo <b>«Combinação otimizada»</b> (divide no mínimo de viagens), <b>«Uma viagem por equipamento»</b>, ou reveja a seleção. Ajuste a folga entre máquinas em <b>Parâmetros</b> se necessário.
+    </div>`;
   }
   if(best.fits){LAST_RESULT={viagens:[{pm:best.pm.id,eqNums:[...SEL],orig:document.getElementById('origem').value,dest:document.getElementById('destino').value,data:new Date().toISOString().slice(0,10),mot:best.pm.mot}]};html+=saveBtnHTML();}else{LAST_RESULT=null;}
   html+=`</div>`;
 
   // alternatives
-  html+=`<div class="card"><h2>Alternativas</h2><div class="scrollx"><table><thead><tr><th>Opção</th><th>Conjunto</th><th>Cobre carga?</th><th>Folga</th><th>Confiança</th><th>Carro piloto</th><th>Histórico</th></tr></thead><tbody>`;
+  html+=`<div class="card"><h2>Alternativas</h2><div class="scrollx"><table><thead><tr><th>Opção</th><th>Conjunto</th><th>Cobre carga?</th><th>Folga peso</th><th>Folga compr.</th><th>Confiança</th><th>Carro piloto</th><th>Histórico</th></tr></thead><tbody>`;
   ranked.forEach((r,i)=>{
     html+=`<tr style="${r.excluded?'opacity:.5':''}"><td>${i+1}ª</td><td><b>${r.pm.trator} + ${r.pm.pm}</b><br><span class="muted small">${r.pm.id}${r.excluded?' · <span style="color:var(--dang)">excluído</span>':''}</span></td>
-      <td>${r.fits?'<span class="pill p-ok">Sim</span>':'<span class="pill p-dang">Não</span>'}</td>
-      <td>${r.fits?(r.margin*100).toFixed(0)+'%':'−'}</td>
+      <td>${r.fits?'<span class="pill p-ok">Sim</span>':'<span class="pill p-dang">Não</span>'+(r.why.length?'<br><span class="muted small">'+r.why.join('; ')+'</span>':'')}</td>
+      <td>${r.fitsW?(r.margin*100).toFixed(0)+'%':'<span style="color:var(--dang)">excede</span>'}</td>
+      <td>${r.fitsL?(r.marginL*100).toFixed(0)+'%':'<span style="color:var(--dang)">excede</span>'}</td>
       <td><b>${r.conf}%</b></td>
       <td>${r.pilot.n>0?'🚨 '+r.pilot.n+'×':'❌'}</td>
       <td>${r.hist}</td></tr>`;
@@ -899,13 +936,19 @@ function runSplit(){
 function runOptimized(){
   const items=SEL.map(n=>{const e=byNum(n);const s=specOf(e);return{e,num:n,label:eqLabel(e),peso:s.peso,comp:s.c};}).sort((a,b)=>b.peso-a.peso);
   const MAXCAP=Math.max(...ST.pm.map(p=>p.cap)), MAXDECK=Math.max(...ST.pm.map(p=>p.deck||99));
-  // bin-packing: first-fit decreasing → mínimo de viagens
+  const gap=ST.loadGap||0;
+  // bin-packing: first-fit decreasing → mínimo de viagens.
+  // t.sumc = soma pura dos comprimentos; t.comp = comprimento REAL necessário no estrado
+  // (soma + folga entre cada máquina). Só junta se couber em PESO e em COMPRIMENTO real.
   let trips=[];
   items.forEach(m=>{
     let placed=false;
-    for(const t of trips){const w=t.peso+m.peso,len=t.comp+m.comp;
-      if(w<=MAXCAP&&len<=MAXDECK){t.items.push(m);t.peso=w;t.comp=len;placed=true;break;}}
-    if(!placed)trips.push({items:[m],peso:m.peso,comp:m.comp});
+    for(const t of trips){
+      const w=t.peso+m.peso;
+      const sumc=t.sumc+m.comp;
+      const need=sumc+Math.max(0,t.items.length)*gap; // já tem t.items.length máq. → +1 folga ao juntar
+      if(w<=MAXCAP&&need<=MAXDECK){t.items.push(m);t.peso=w;t.sumc=sumc;t.comp=need;placed=true;break;}}
+    if(!placed)trips.push({items:[m],peso:m.peso,sumc:m.comp,comp:m.comp});
   });
   trips.forEach(t=>{t.pm=pickPMfor(t.peso,t.comp);t.excede=!t.pm;
     const L=combinedLoad(t.items.map(i=>i.num));t.legal=classify(L);t.pilot=pilotCar(L,t.pm||ST.pm[0]);});
@@ -936,7 +979,7 @@ function runOptimized(){
       <div class="kpi"><div class="l">Vs. uma viagem por máquina</div><div class="n" style="font-size:16px">${items.length} → ${trips.length} viagens</div></div>
     </div>
     ${trips.some(t=>t.excede)?'<div class="warnbox">Há máquina(s) que excedem qualquer conjunto isolado — transporte por terceiros ou solução dedicada.</div>':''}
-    <div class="note">Empilha as máquinas no mínimo de viagens (peso ≤ capacidade e comprimento ≤ estrado), atribuindo a cada viagem o conjunto mais adequado. Ajusta o «Estrado útil» dos conjuntos em Parâmetros para maior rigor.</div>
+    <div class="note">Junta as máquinas no mínimo de viagens respeitando <b>peso ≤ capacidade</b> e <b>comprimento real ≤ estrado</b> (soma dos comprimentos + folga de ${ST.loadGap} m entre cada máquina), atribuindo a cada viagem o conjunto mais adequado. Ajusta o «Estrado útil» dos conjuntos e a «Folga entre máquinas» em Parâmetros para maior rigor.</div>
     ${saveBtnHTML()}
   </div>`;
   LAST_RESULT={viagens:trips.map(t=>({pm:t.pm?t.pm.id:'',eqNums:t.items.map(i=>i.num),orig:document.getElementById('origem').value,dest:document.getElementById('destino').value,data:new Date().toISOString().slice(0,10),mot:t.pm?t.pm.mot:''}))};
@@ -1176,12 +1219,16 @@ function planRoutes(){
   let trips=[];
   Object.values(routes).forEach(rt=>{
     const items=[...rt.items].sort((a,b)=>b.peso-a.peso);
+    const gap=ST.loadGap||0;
     let rtrips=[];
     items.forEach(m=>{
       let placed=false;
-      for(const t of rtrips){const w=t.peso+m.peso,len=t.comp+m.comp;
-        if(w<=MAXCAP&&len<=MAXDECK){t.items.push(m);t.peso=w;t.comp=len;t.entregar=minStr(t.entregar,m.entregar);t.disp=maxStr(t.disp,m.disp);placed=true;break;}}
-      if(!placed)rtrips.push({orig:rt.orig,dest:rt.dest,items:[m],peso:m.peso,comp:m.comp,entregar:m.entregar,disp:m.disp});
+      for(const t of rtrips){
+        const w=t.peso+m.peso;
+        const sumc=t.sumc+m.comp;
+        const need=sumc+Math.max(0,t.items.length)*gap; // folga entre cada máquina no estrado
+        if(w<=MAXCAP&&need<=MAXDECK){t.items.push(m);t.peso=w;t.sumc=sumc;t.comp=need;t.entregar=minStr(t.entregar,m.entregar);t.disp=maxStr(t.disp,m.disp);placed=true;break;}}
+      if(!placed)rtrips.push({orig:rt.orig,dest:rt.dest,items:[m],peso:m.peso,sumc:m.comp,comp:m.comp,entregar:m.entregar,disp:m.disp});
     });
     rtrips.forEach(t=>trips.push(t));
   });
@@ -1500,7 +1547,7 @@ function renderLegal(){
     ['piloto2_larg','2º piloto: largura ≥ (m)']
   ];
   document.getElementById('legalParams').innerHTML=F.map(([k,lab])=>`<div><label>${lab}</label><input type="number" step="0.05" value="${L[k]}" onchange="ST.legal['${k}']=+this.value;save()"></div>`).join('');
-  document.getElementById('deckH').value=ST.deckH;document.getElementById('baseL').value=ST.baseL;
+  document.getElementById('deckH').value=ST.deckH;document.getElementById('baseL').value=ST.baseL;document.getElementById('loadGap').value=ST.loadGap;
   ['velLimite','velReducao','condMaxDia','pausaApos','pausaDur','tManobra'].forEach(k=>{const el=document.getElementById(k);if(el)el.value=ST[k];});
   const ve=document.getElementById('velEffOut');if(ve)ve.value=velEff().toFixed(0)+' km/h';
 }
@@ -1521,6 +1568,7 @@ document.getElementById('chainKm').onchange=e=>{ST.chainKm=+e.target.value;save(
 ['velLimite','velReducao','condMaxDia','pausaApos','pausaDur','tManobra'].forEach(k=>{const el=document.getElementById(k);if(el)el.onchange=e=>{ST[k]=+e.target.value;save();const ve=document.getElementById('velEffOut');if(ve)ve.value=velEff().toFixed(0)+' km/h';if(typeof PLAN!=='undefined'&&PLAN)renderPlan();};});
 document.getElementById('deckH').onchange=e=>{ST.deckH=+e.target.value;save();renderLoad();};
 document.getElementById('baseL').onchange=e=>{ST.baseL=+e.target.value;save();renderLoad();};
+document.getElementById('loadGap').onchange=e=>{ST.loadGap=+e.target.value;save();renderLoad();};
 document.getElementById('btnResetPM').onclick=()=>{if(confirm('Repor os 4 conjuntos oficiais da frota?\n\n• PM01: BG-52-ZE + AV-55672\n• PM02: BE-09-MB + SE-1082\n• PM03: BE-10-MB + L-154494\n• PM04: 94-TA-46 + SA-4378 (Nooteboom)\n\nMantém o histórico de fretes, specs e conjugações. Só perde ajustes manuais de tara/capacidade nos conjuntos.')){ST.pm=JSON.parse(JSON.stringify(DEFAULT_PM));save();renderPM();renderPrefs();alert('Conjuntos repostos. O histórico do SE-1082 volta a ficar no PM02 e o SA-4378 (PM04) fica com as características corretas.');}};
 document.getElementById('btnResetSpecs').onclick=()=>{if(confirm('Repor todos os pesos/dimensões estimados?')){ST.specs={};save();renderCat();}};
 document.getElementById('btnReseed').onclick=()=>{if(confirm('Recarregar os 400 fretes do histórico? (substitui os fretes marcados «hist»; mantém os que registou manualmente)')){seedHistory(true);renderFretes();renderDash();alert('Histórico recarregado.');}};
