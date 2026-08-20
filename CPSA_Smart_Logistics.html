@@ -743,11 +743,13 @@ function classify(L){
   return {level,reasons,altT,w};
 }
 function pilotCar(L,pm){
-  const g=ST.legal, altT=ST.deckH+L.alt, w=L.larg, pb=L.peso+(pm?pm.tara:0);
+  // Carro-piloto / veículo batedor é exigido por DIMENSÕES (largura, altura, comprimento),
+  // NÃO pelo peso. O peso exige AET/autorização e verificação de itinerário (pontes/eixos),
+  // mas não implica, por si só, escolta.
+  const g=ST.legal, altT=ST.deckH+L.alt, w=L.larg;
   let n=0, why=[];
   if(w>g.piloto_larg){n=Math.max(n,1);why.push(`largura ${w.toFixed(2)}m`);}
   if(altT>g.piloto_alt){n=Math.max(n,1);why.push(`altura ${altT.toFixed(2)}m`);}
-  if(pb>g.piloto_peso){n=Math.max(n,1);why.push(`peso bruto ${(pb/1000).toFixed(1)}t`);}
   if(w>g.piloto2_larg){n=2;}
   return {n,why};
 }
@@ -1543,7 +1545,7 @@ function renderLegal(){
     ['alt_normal','Altura normal máx (m)'],['alt_espec','Altura → especial (m)'],['alt_excec','Altura → excecional (m)'],
     ['comp_normal','Comprim. normal (m)'],['comp_espec','Comprim. → especial (m)'],['comp_excec','Comprim. → excecional (m)'],
     ['peso_normal','Peso bruto normal (kg)'],['peso_espec','Peso → especial (kg)'],['peso_excec','Peso → excecional (kg)'],
-    ['piloto_larg','Piloto: largura ≥ (m)'],['piloto_alt','Piloto: altura ≥ (m)'],['piloto_peso','Piloto: peso bruto ≥ (kg)'],
+    ['piloto_larg','Piloto: largura ≥ (m)'],['piloto_alt','Piloto: altura ≥ (m)'],
     ['piloto2_larg','2º piloto: largura ≥ (m)']
   ];
   document.getElementById('legalParams').innerHTML=F.map(([k,lab])=>`<div><label>${lab}</label><input type="number" step="0.05" value="${L[k]}" onchange="ST.legal['${k}']=+this.value;save()"></div>`).join('');
