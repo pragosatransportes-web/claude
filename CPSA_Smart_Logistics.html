@@ -421,7 +421,7 @@ const MODEL_OVERRIDES = [
 const DEFAULT_PM = [
   {id:'PM01',trator:'BG-52-ZE',pm:'AV-55672',mot:'Vitor Januário',desc:'Volvo FH750 · conjunto pesado (excecional)',tara:26000,cap:64700,deck:13.6},
   {id:'PM02',trator:'BE-09-MB',pm:'SE-1082',mot:'',desc:'Semirreboque SE-1082 · AET 44t · (confirmar modelo do trator)',tara:16000,cap:44000,deck:10.5},
-  {id:'PM03',trator:'BE-10-MB',pm:'L-154494',mot:'Davide Nunes',desc:'Volvo FH500 · AET 44t',tara:15000,cap:44000,deck:9.5},
+  {id:'PM03',trator:'BE-10-MB',pm:'L-154494',mot:'Davide Nunes',desc:'Volvo FH500 · AET 44t',tara:15000,cap:44000,deck:12.6},
   {id:'PM04',trator:'94-TA-46',pm:'SA-4378',mot:'Amilcar Carreira',desc:'Nooteboom OSDS-48-03(EB) · rebaixado 3 eixos (PMA 48t) · AET 44t',tara:22437,cap:44000,deck:9.25}
 ];
 
@@ -528,6 +528,14 @@ function load(){
     const OLD={'SE-1082':25360,'L-154494':22900,'SA-4378':36000}; // só substitui a estimativa anterior
     s.pm.forEach(p=>{ if(AET[p.pm]!=null && p.cap===OLD[p.pm]) p.cap=AET[p.pm]; });
     s.pmMig=6;
+    try{ localStorage.setItem(LS, JSON.stringify(s)); }catch(e){}
+  }
+  // ---- Migração v7 · estrado real do PM03 (L-154494) = 12,60 m (confirmado pela Rita) ----
+  // Antes estava 9,5 m (estimativa) e bloqueava máquinas longas que na prática cabem (ex.: Fresadora W200i).
+  if(s.pmMig<7){
+    const pm3=s.pm.find(p=>p.pm==='L-154494');
+    if(pm3 && pm3.deck===9.5) pm3.deck=12.6;   // só substitui a estimativa anterior, preserva edições
+    s.pmMig=7;
     try{ localStorage.setItem(LS, JSON.stringify(s)); }catch(e){}
   }
   return s;
