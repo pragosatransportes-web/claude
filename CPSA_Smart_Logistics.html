@@ -270,7 +270,8 @@
 <section id="param" class="tab">
   <div class="card">
     <div class="flex between"><h2 style="margin:0">Conjuntos Trator + Porta-Máquinas</h2><button class="btn mini" id="btnAddPM">+ Conjunto</button></div>
-    <div class="scrollx"><table id="pmTable"><thead><tr><th>ID</th><th>Trator</th><th>Porta-Máquinas</th><th>Motorista</th><th>Descrição</th><th>Tara conj. (kg)</th><th>Cap. útil (kg)</th><th>Estrado útil (m)</th><th></th></tr></thead><tbody></tbody></table></div>
+    <div class="scrollx"><table id="pmTable"><thead><tr><th>ID</th><th>Trator</th><th>Porta-Máquinas</th><th>Motorista</th><th>Descrição</th><th>Tara conj. (kg)</th><th>Cap. útil (kg)</th><th>Estrado útil (m)</th><th title="Comprimento total de carga = estrado + pescoço + balanço admissível. É este o valor usado para decidir se uma máquina cabe.">Comp. carga total (m)</th><th></th></tr></thead><tbody></tbody></table></div>
+    <p class="small muted">O <b>Estrado útil</b> é a zona plana baixa; o <b>Comprimento de carga total</b> inclui o pescoço e o balanço admissível — é este que o motor usa para saber se uma máquina cabe (uma máquina longa pode sobrepor-se ao pescoço/rampas).</p>
     <p class="small muted">Todos os campos são editáveis (clique para escrever). Use <b>+ Conjunto</b> para acrescentar linhas e ✕ para remover. O ID (ex.: PM01) identifica o conjunto no histórico e nas simulações.</p>
   </div>
   <div class="card">
@@ -302,7 +303,7 @@
     </div>
     <label>🔎 Procurar local e adicionar coordenadas automaticamente</label>
     <div class="flex" style="gap:6px;margin:4px 0 6px">
-      <input id="locSearch" placeholder="Ex.: Pedreira de Pataias · Torres Vedras · Rua X, Loures" style="flex:1" autocomplete="off">
+      <input id="locGeoSearch" placeholder="Ex.: Pedreira de Pataias · Torres Vedras · Rua X, Loures" style="flex:1" autocomplete="off">
       <button class="btn mini" id="btnLocSearch">🔍 Procurar</button>
     </div>
     <p class="small muted" style="margin:0 0 6px">Usa o OpenStreetMap (requer internet; envia só o texto pesquisado). Escolhe o resultado certo e clica «Adicionar» — depois podes editar o nome na tabela.</p>
@@ -419,10 +420,10 @@ const MODEL_OVERRIDES = [
 
 /* ================= DEFAULT PM SETS ================= */
 const DEFAULT_PM = [
-  {id:'PM01',trator:'BG-52-ZE',pm:'AV-55672',mot:'Vitor Januário',desc:'Volvo FH750 · conjunto pesado (excecional)',tara:26000,cap:64700,deck:13.6},
-  {id:'PM02',trator:'BE-09-MB',pm:'SE-1082',mot:'',desc:'Semirreboque SE-1082 · AET 44t · (confirmar modelo do trator)',tara:16000,cap:44000,deck:10.5},
-  {id:'PM03',trator:'BE-10-MB',pm:'L-154494',mot:'Davide Nunes',desc:'Volvo FH500 · AET 44t',tara:15000,cap:44000,deck:12.6},
-  {id:'PM04',trator:'94-TA-46',pm:'SA-4378',mot:'Amilcar Carreira',desc:'Nooteboom OSDS-48-03(EB) · rebaixado 3 eixos (PMA 48t) · AET 44t',tara:22437,cap:44000,deck:9.25}
+  {id:'PM01',trator:'BG-52-ZE',pm:'AV-55672',mot:'Vitor Januário',desc:'Volvo FH750 · conjunto pesado (excecional)',tara:26000,cap:64700,deck:13.6,compTot:13.6},
+  {id:'PM02',trator:'BE-09-MB',pm:'SE-1082',mot:'',desc:'Semirreboque SE-1082 · AET 44t · (confirmar modelo do trator)',tara:16000,cap:44000,deck:10.5,compTot:12.25},
+  {id:'PM03',trator:'BE-10-MB',pm:'L-154494',mot:'Davide Nunes',desc:'Volvo FH500 · AET 44t',tara:15000,cap:44000,deck:12.6,compTot:12.6},
+  {id:'PM04',trator:'94-TA-46',pm:'SA-4378',mot:'Amilcar Carreira',desc:'Nooteboom OSDS-48-03(EB) · rebaixado 3 eixos (PMA 48t) · AET 44t',tara:22437,cap:44000,deck:9.25,compTot:12.25}
 ];
 
 /* ================= DEFAULT GROUPS ================= */
@@ -538,6 +539,16 @@ function load(){
     s.pmMig=7;
     try{ localStorage.setItem(LS, JSON.stringify(s)); }catch(e){}
   }
+  // ---- Migração v8 · comprimento TOTAL de carga por conjunto (estrado + pescoço + balanço) ----
+  // A restrição de comprimento passa a usar o comprimento total de carga do porta-máquinas,
+  // não apenas o estrado plano — uma máquina longa pode sobrepor-se ao pescoço/rampas.
+  // Valores confirmados pela Rita: PM02 e PM04 = 12,25 m.
+  if(s.pmMig<8){
+    const TOT={'AV-55672':13.6,'SE-1082':12.25,'L-154494':12.6,'SA-4378':12.25};
+    s.pm.forEach(p=>{ if(p.compTot==null){ p.compTot = TOT[p.pm]!=null ? TOT[p.pm] : (p.deck||null); } });
+    s.pmMig=8;
+    try{ localStorage.setItem(LS, JSON.stringify(s)); }catch(e){}
+  }
   return s;
 }
 function seedHistory(force){
@@ -572,11 +583,11 @@ function dhTo(fromDest,toOrig){let dh=kmBetween(fromDest,toOrig);if(dh==null)dh=
 function moveTrip(id,pmId){
   if(!PLAN)return; const t=PLAN.trips.find(x=>String(x.id)===String(id)); if(!t)return;
   const pm=ST.pm.find(p=>p.id===pmId); if(!pm)return;
-  const overW=t.peso>pm.cap, overL=t.comp>(pm.deck||99);
+  const overW=t.peso>pm.cap, overL=t.comp>pmLen(pm);
   if(overW||overL){
     const motivos=[];
     if(overW)motivos.push('Peso '+(t.peso/1000).toFixed(1)+' t excede a capacidade útil ('+(pm.cap/1000).toFixed(1)+' t)');
-    if(overL)motivos.push('Comprimento '+t.comp.toFixed(1)+' m excede o estrado útil ('+(pm.deck||0).toFixed(1)+' m)');
+    if(overL)motivos.push('Comprimento '+t.comp.toFixed(1)+' m excede o comprimento de carga ('+pmLen(pm).toFixed(1)+' m)');
     if(!confirm('⚠ ATENÇÃO — '+pm.id+' ('+pm.trator+') fica fora dos limites para esta viagem:\n\n• '+motivos.join('\n• ')+'\n\nQuer mesmo atribuir esta carga ao '+pm.id+'?')){
       renderPlan(); return; // cancelou → repõe o seletor
     }
@@ -717,7 +728,7 @@ function renderLoad(){
   if(!SEL.length){box.innerHTML='<p class="muted">Selecione equipamentos para calcular peso e dimensões.</p>';return;}
   const L=combinedLoad(SEL);
   const altTotal = ST.deckH + L.alt;
-  const bestDeck=Math.max(...ST.pm.map(p=>p.deck||0));
+  const bestDeck=Math.max(...ST.pm.map(p=>pmLen(p)));
   const bestCap=Math.max(...ST.pm.map(p=>p.cap));
   const overL=L.reqComp>bestDeck, overW=L.peso>bestCap;
   const compLabel = L.n>1?'Comp. necessário':'Comp. máquina';
@@ -729,7 +740,7 @@ function renderLoad(){
       <div class="kpi"><div class="l">Altura total*</div><div class="n">${altTotal.toFixed(2)}<span style="font-size:14px"> m</span></div></div>
     </div>
     <div class="small muted" style="margin-top:8px">*Altura total = estrado (${ST.deckH} m) + máquina mais alta.${L.n>1?` Comp. necessário = Σ comprimentos (${L.comp.toFixed(1)} m) + ${L.n-1}×${ST.loadGap} m de folga.`:''} ${L.anyEst?'<span class="pill p-warn">alguns valores estimados</span>':''}</div>
-    ${(overL||overW)?`<div class="warnbox" style="margin-top:10px">🚫 Esta seleção <b>não cabe num só porta-máquinas</b>: ${[overL?`comprimento ${L.reqComp.toFixed(1)} m > estrado máx. ${bestDeck.toFixed(1)} m`:'',overW?`peso ${(L.peso/1000).toFixed(1)} t > cap. máx. ${(bestCap/1000).toFixed(1)} t`:''].filter(Boolean).join(' · ')}. Use «Combinação otimizada» ou «Uma viagem por equipamento».</div>`:''}`;
+    ${(overL||overW)?`<div class="warnbox" style="margin-top:10px">🚫 Esta seleção <b>não cabe num só porta-máquinas</b>: ${[overL?`comprimento ${L.reqComp.toFixed(1)} m > comp. carga máx. ${bestDeck.toFixed(1)} m`:'',overW?`peso ${(L.peso/1000).toFixed(1)} t > cap. máx. ${(bestCap/1000).toFixed(1)} t`:''].filter(Boolean).join(' · ')}. Use «Combinação otimizada» ou «Uma viagem por equipamento».</div>`:''}`;
 }
 
 /* quick group buttons */
@@ -799,9 +810,9 @@ function rankPM(L){
   ST.fretes.forEach(f=>{ const fc=freteClasses(f); if(selClasses.some(c=>fc.includes(c))) pmHistScore[f.pm]=(pmHistScore[f.pm]||0)+1; });
   const need = L.reqComp!=null?L.reqComp:L.comp;   // comprimento necessário (com folgas)
   const list = ST.pm.map(pm=>{
-    const deck = pm.deck||99;
+    const deck = pmLen(pm);                          // comprimento de carga utilizável (total)
     const fitsW = L.peso<=pm.cap;                   // cabe em PESO
-    const fitsL = need<=deck;                        // cabe em COMPRIMENTO no estrado
+    const fitsL = need<=deck;                        // cabe em COMPRIMENTO de carga
     const fits = fitsW && fitsL;                     // só "cobre" se cumprir AMBOS
     const margin = (pm.cap-L.peso)/pm.cap;
     const marginL = (deck-need)/deck;
@@ -821,7 +832,7 @@ function rankPM(L){
     const excluded = pref ? !pref.allow.includes(pm.id) : false;
     const why=[];
     if(!fitsW) why.push(`peso ${(L.peso/1000).toFixed(1)}t > cap. ${(pm.cap/1000).toFixed(1)}t`);
-    if(!fitsL) why.push(`comprimento ${need.toFixed(1)}m > estrado ${deck.toFixed(1)}m`);
+    if(!fitsL) why.push(`comprimento ${need.toFixed(1)}m > comp. carga ${deck.toFixed(1)}m`);
     return {pm,fits,fitsW,fitsL,margin,marginL,need,deck,hist,conf,pilot:pilotCar(L,pm),pb:L.peso+pm.tara,excluded,why};
   }).sort((a,b)=> (a.excluded-b.excluded) || (b.fits-a.fits) || (b.conf-a.conf) || (a.margin-b.margin));
   return {list, totalHistMatch:Object.values(pmHistScore).reduce((a,b)=>a+b,0), pref, selClasses};
@@ -858,7 +869,7 @@ function runEngine(){
     <div class="grid g3" style="margin-top:14px">
       <div class="kpi"><div class="l">Peso bruto estimado</div><div class="n" style="font-size:20px">${(best.pb/1000).toFixed(1)} t</div><div class="small muted">carga ${(L.peso/1000).toFixed(1)}t + tara ${(best.pm.tara/1000).toFixed(0)}t</div></div>
       <div class="kpi"><div class="l">Folga de capacidade</div><div class="n" style="font-size:20px">${(best.margin*100).toFixed(0)}%</div><div class="small muted">cap. útil ${(best.pm.cap/1000).toFixed(1)}t</div></div>
-      <div class="kpi"><div class="l">Comprimento na carga</div><div class="n" style="font-size:20px">${best.need.toFixed(1)} m</div><div class="small muted">${L.n>1?L.n+' máq. + folgas · ':''}estrado ${best.deck.toFixed(1)} m (folga ${(best.marginL*100).toFixed(0)}%)</div></div>
+      <div class="kpi"><div class="l">Comprimento na carga</div><div class="n" style="font-size:20px">${best.need.toFixed(1)} m</div><div class="small muted">${L.n>1?L.n+' máq. + folgas · ':''}comp. carga ${best.deck.toFixed(1)} m (folga ${(best.marginL*100).toFixed(0)}%)</div></div>
     </div>
     <div class="grid g3" style="margin-top:0">
       <div class="kpi"><div class="l">Carro piloto</div><div class="n" style="font-size:20px">${best.pilot.n>0?('🚨 '+best.pilot.n+'×'):'❌ Não'}</div><div class="small muted">${best.pilot.why.join(', ')||'dentro dos limites'}</div></div>
@@ -866,11 +877,11 @@ function runEngine(){
     <div class="small muted" style="margin-top:10px">Baseado em <b>${best.hist}</b> frete(s) histórico(s) com equipamentos da mesma classe${totalHistMatch?` (${totalHistMatch} no total)`:''}.</div>`;
     if(cls.reasons.length) html+=`<div class="warnbox">Excedências: ${cls.reasons.join(' · ')}. Requer licença/autorização IMT.</div>`;
   }else{
-    const bestDeck=Math.max(...ST.pm.map(p=>p.deck||0));
+    const bestDeck=Math.max(...ST.pm.map(p=>pmLen(p)));
     const bestCap=Math.max(...ST.pm.map(p=>p.cap));
     const overL=L.reqComp>bestDeck, overW=L.peso>bestCap;
     let motivos=[];
-    if(overL) motivos.push(`o <b>comprimento necessário ${L.reqComp.toFixed(1)} m</b> (${L.n} máquina${L.n>1?'s':''}${L.n>1?` + ${(L.n-1)} folga(s) de ${ST.loadGap} m`:''}) excede o maior estrado disponível (<b>${bestDeck.toFixed(1)} m</b>, ${ST.pm.find(p=>(p.deck||0)===bestDeck)?.id||'—'})`);
+    if(overL) motivos.push(`o <b>comprimento necessário ${L.reqComp.toFixed(1)} m</b> (${L.n} máquina${L.n>1?'s':''}${L.n>1?` + ${(L.n-1)} folga(s) de ${ST.loadGap} m`:''}) excede o maior comprimento de carga disponível (<b>${bestDeck.toFixed(1)} m</b>, ${ST.pm.find(p=>pmLen(p)===bestDeck)?.id||'—'})`);
     if(overW) motivos.push(`o <b>peso ${(L.peso/1000).toFixed(1)} t</b> excede a maior capacidade útil (<b>${(bestCap/1000).toFixed(1)} t</b>)`);
     if(!motivos.length) motivos.push('nenhum conjunto reúne peso <b>e</b> comprimento em simultâneo para esta combinação');
     html+=`<div class="warnbox" style="font-size:15px">
@@ -955,7 +966,7 @@ function runSplit(){
 }
 function runOptimized(){
   const items=SEL.map(n=>{const e=byNum(n);const s=specOf(e);return{e,num:n,label:eqLabel(e),peso:s.peso,comp:s.c};}).sort((a,b)=>b.peso-a.peso);
-  const MAXCAP=Math.max(...ST.pm.map(p=>p.cap)), MAXDECK=Math.max(...ST.pm.map(p=>p.deck||99));
+  const MAXCAP=Math.max(...ST.pm.map(p=>p.cap)), MAXDECK=Math.max(...ST.pm.map(p=>pmLen(p)));
   const gap=ST.loadGap||0;
   // bin-packing: first-fit decreasing → mínimo de viagens.
   // t.sumc = soma pura dos comprimentos; t.comp = comprimento REAL necessário no estrado
@@ -1254,7 +1265,7 @@ async function geocode(q){
   return res;
 }
 async function doLocSearch(){
-  const inp=document.getElementById('locSearch'); const q=(inp?inp.value:'').trim();
+  const inp=document.getElementById('locGeoSearch'); const q=(inp?inp.value:'').trim();
   const box=document.getElementById('locSearchResults'); if(!box) return;
   if(!q){ box.innerHTML=''; return; }
   box.innerHTML='<p class="small muted">A procurar…</p>';
@@ -1361,7 +1372,9 @@ function planDays(list){
 }
 function minStr(a,b){return !a?b:(!b?a:(a<b?a:b));}
 function maxStr(a,b){return !a?b:(!b?a:(a>b?a:b));}
-function pickPMfor(peso,comp){const c=[...ST.pm].sort((a,b)=>a.cap-b.cap);for(const p of c){if(peso<=p.cap&&comp<=(p.deck||99))return p;}return null;}
+/* comprimento de carga utilizável do conjunto = total de carga (estrado + pescoço + balanço); recua ao estrado se não definido */
+function pmLen(p){ return p.compTot!=null?p.compTot:(p.deck!=null?p.deck:99); }
+function pickPMfor(peso,comp){const c=[...ST.pm].sort((a,b)=>a.cap-b.cap);for(const p of c){if(peso<=p.cap&&comp<=pmLen(p))return p;}return null;}
 function tripLabel(t){return t.items.map(i=>i.label).join(' + ');}
 
 function planRoutes(){
@@ -1369,7 +1382,7 @@ function planRoutes(){
     return {e,num:r.num,label:eqLabel(e),classe:e.classe,peso:s.peso,comp:s.c,larg:s.l,alt:s.a,
             orig:r.orig||'',dest:r.dest||'',disp:r.disp||'',entregar:r.entregar||'',src:r.src||'manual'};});
   if(!reqs.length){document.getElementById('planResults').innerHTML='<div class="card warnbox">Adicione pedidos com máquina selecionada.</div>';return;}
-  const MAXCAP=Math.max(...ST.pm.map(p=>p.cap)), MAXDECK=Math.max(...ST.pm.map(p=>p.deck||99));
+  const MAXCAP=Math.max(...ST.pm.map(p=>p.cap)), MAXDECK=Math.max(...ST.pm.map(p=>pmLen(p)));
   const routes={};
   reqs.forEach(r=>{const k=normLoc(r.orig)+'||'+normLoc(r.dest);(routes[k]=routes[k]||{orig:r.orig,dest:r.dest,items:[]}).items.push(r);});
   let trips=[];
@@ -1395,7 +1408,7 @@ function planRoutes(){
   // atribuição inicial otimizada (encadeamento por proximidade) → t.assigned
   const initSched={};ST.pm.forEach(p=>initSched[p.id]=[]);
   trips.forEach((t,i)=>{ t.id=i; t.assigned=null; if(t.excede)return;
-    const compat=ST.pm.filter(p=>t.peso<=p.cap&&t.comp<=(p.deck||99));
+    const compat=ST.pm.filter(p=>t.peso<=p.cap&&t.comp<=pmLen(p));
     const cand=compat.filter(p=>initSched[p.id].length>0).map(p=>({p,dh:dhTo(initSched[p.id].slice(-1)[0].dest,t.orig)}))
                      .filter(x=>x.dh!=null&&x.dh<=ST.chainKm).sort((a,b)=>a.dh-b.dh);
     let chosen=cand.length?cand[0].p:compat.sort((a,b)=>initSched[a.id].length-initSched[b.id].length)[0];
@@ -1473,19 +1486,19 @@ function renderPlan(){
       const dh=t._dh;
       const chainMsg = ix>0 ? (dh===0?'↳ encadeado — sem volta vazia':(dh!=null?`↳ encadeado — ${dh} km de posicionamento`:'')) : '';
       const pilot=pilotCar(combinedLoad(t.items.map(i=>i.num)),p);
-      const overW=t.peso>p.cap, overL=t.comp>(p.deck||99), over=overW||overL;
+      const overW=t.peso>p.cap, overL=t.comp>pmLen(p), over=overW||overL;
       if(t._late)fleetLate++; if(t._driveH==null)fleetNoCoord=true;
       const driveTag=t._driveH!=null
         ? ` <span class="tag" title="ida + volta vazia ≈ ${t._round} km a ${velEff().toFixed(0)} km/h">🕒 ${t._driveH.toFixed(1)}h</span>`
         : ' <span class="tag" title="falta coordenada de origem/destino">🕒 n/d</span>';
-      const moveSel=`<select onchange="moveTrip('${t.id}',this.value)" style="width:auto;font-size:11px;padding:2px 5px">${ST.pm.map(pp=>{const ok=t.peso<=pp.cap&&t.comp<=(pp.deck||99);return `<option value="${pp.id}" ${pp.id===p.id?'selected':''}>${pp.id}${ok?'':' ⚠'}</option>`;}).join('')}</select>`;
+      const moveSel=`<select onchange="moveTrip('${t.id}',this.value)" style="width:auto;font-size:11px;padding:2px 5px">${ST.pm.map(pp=>{const ok=t.peso<=pp.cap&&t.comp<=pmLen(pp);return `<option value="${pp.id}" ${pp.id===p.id?'selected':''}>${pp.id}${ok?'':' ⚠'}</option>`;}).join('')}</select>`;
       html+=`<div style="margin-top:8px;padding-top:8px;border-top:1px dashed var(--line)${over?';outline:1px solid var(--dang);outline-offset:2px;border-radius:6px':''}">
         ${chainMsg?`<div class="small" style="color:${dh===0?'#4ade80':'#fbbf24'}">${chainMsg}</div>`:''}
         <div><b>${ix+1}. ${t.orig||'—'} → ${t.dest||'—'}</b>${t.km!=null?` <span class="tag">${t.km} km</span>`:''}${driveTag}</div>
         <div class="small">${tripLabel(t)}</div>
         <div class="small muted">${(t.peso/1000).toFixed(1)}t · ${t.legal.level!=='normal'?levelPillHTML(t.legal.level):'<span class="pill p-ok">normal</span>'} ${pilot.n>0?' · 🚨 piloto '+pilot.n+'×':''}</div>
         ${t._overDay?`<div class="small" style="color:#f87171">⚠ ida-volta ≈ ${t._driveH.toFixed(1)}h excede a condução diária de ${(ST.condMaxDia||9)}h (Reg. 561/2006) — prever pernoita ou 2.º condutor</div>`:''}
-        ${over?`<div class="small" style="color:#f87171">⚠ acima do limite do ${p.id}: ${[overW?'peso > '+(p.cap/1000).toFixed(1)+'t':'',overL?'comp. > '+(p.deck||0).toFixed(1)+'m':''].filter(Boolean).join(' · ')}</div>`:''}
+        ${over?`<div class="small" style="color:#f87171">⚠ acima do limite do ${p.id}: ${[overW?'peso > '+(p.cap/1000).toFixed(1)+'t':'',overL?'comp. > '+pmLen(p).toFixed(1)+'m':''].filter(Boolean).join(' · ')}</div>`:''}
         ${t.entregar?`<div class="small muted"${t._late?' style="color:#f87171"':''}>⏱ entregar até ${fmtDT(t.entregar)}${t._late?' — ⚠ prazo em risco (agendado p/ '+fmtDate(t._date)+')':''}</div>`:''}${t.disp?`<div class="small muted">disp. desde ${fmtDT(t.disp)}</div>`:''}
         <div class="flex" style="gap:5px;margin-top:5px;align-items:center"><span class="small muted">mover p/:</span>${moveSel}</div>
       </div>`;
@@ -1665,6 +1678,7 @@ function renderPM(){
     <td><input type="number" style="width:96px;padding:4px" value="${p.tara}" onchange="ST.pm[${i}].tara=+this.value;save()"></td>
     <td><input type="number" style="width:96px;padding:4px" value="${p.cap}" onchange="ST.pm[${i}].cap=+this.value;save()"></td>
     <td><input type="number" step="0.1" style="width:70px;padding:4px" value="${p.deck!=null?p.deck:''}" onchange="ST.pm[${i}].deck=+this.value;save()"></td>
+    <td><input type="number" step="0.1" style="width:80px;padding:4px;font-weight:700" value="${p.compTot!=null?p.compTot:''}" placeholder="${p.deck!=null?p.deck:''}" onchange="ST.pm[${i}].compTot=this.value===''?null:+this.value;save()"></td>
     <td><span class="x link" style="color:var(--dang);cursor:pointer;font-weight:700" onclick="delPM(${i})">✕</span></td></tr>`).join('');
   // PM selects
   const opts=ST.pm.map(p=>`<option value="${p.id}">${p.id} · ${p.trator}+${p.pm}</option>`).join('');
@@ -1692,7 +1706,7 @@ function delPM(i){
 function addPM(){
   let n=1; const ids=new Set(ST.pm.map(p=>p.id));
   while(ids.has('PM'+String(n).padStart(2,'0')))n++;
-  ST.pm.push({id:'PM'+String(n).padStart(2,'0'),trator:'',pm:'',mot:'',desc:'',tara:15000,cap:20000,deck:9.5});
+  ST.pm.push({id:'PM'+String(n).padStart(2,'0'),trator:'',pm:'',mot:'',desc:'',tara:15000,cap:20000,deck:9.5,compTot:9.5});
   save(); renderPM();
 }
 function renderLegal(){
@@ -1722,7 +1736,7 @@ function renderLocais(){
 document.getElementById('btnAddPM').onclick=addPM;
 document.getElementById('btnAddLoc').onclick=()=>{ST.locais.push({nome:'',lat:null,lon:null});save();renderLocais();};
 document.getElementById('btnLocSearch').onclick=doLocSearch;
-document.getElementById('locSearch').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();doLocSearch();}});
+document.getElementById('locGeoSearch').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();doLocSearch();}});
 document.getElementById('roadFactor').onchange=e=>{ST.roadFactor=+e.target.value;save();};
 document.getElementById('chainKm').onchange=e=>{ST.chainKm=+e.target.value;save();};
 ['velLimite','velReducao','condMaxDia','pausaApos','pausaDur','tManobra'].forEach(k=>{const el=document.getElementById(k);if(el)el.onchange=e=>{ST[k]=+e.target.value;save();const ve=document.getElementById('velEffOut');if(ve)ve.value=velEff().toFixed(0)+' km/h';if(typeof PLAN!=='undefined'&&PLAN)renderPlan();};});
