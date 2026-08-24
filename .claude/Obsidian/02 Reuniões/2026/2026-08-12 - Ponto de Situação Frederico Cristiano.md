@@ -69,6 +69,6 @@ Ponto de situação com o **[[03 Pessoas/Frederico Cristiano]]** no âmbito do [
 - [[App CPSA Smart Logistics]] *(catálogo de equipamentos · composição trator+porta-máquinas)*
 
 ### Reuniões relacionadas
-- [[02 Reuniões/2026/2026-08-04 - CE Logística]]
+- [[02 Reuniões/2026/2026-08-07 - CE Logística]]
 </content>
 </invoke>

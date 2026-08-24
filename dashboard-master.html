@@ -11,7 +11,22 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
 .app-header{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:20}
 .app-header-left h1{font-size:15px;font-weight:600}.app-header-left p{font-size:11px;color:var(--text-3);margin-top:1px}
 .app-header-right{font-size:11px;color:var(--text-3);text-align:right}
-.nav{background:var(--surface);border-bottom:1px solid var(--border);display:flex;padding:0 20px;gap:2px}
+.nav{background:var(--surface);border-bottom:1px solid var(--border);display:flex;padding:0 20px;gap:2px;align-items:center}
+.btn-pdf{margin-left:auto;padding:5px 12px;font-size:11.5px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text-2);cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:5px;white-space:nowrap;transition:background .1s}
+.btn-pdf:hover{background:var(--bg);color:var(--text)}
+@media print{
+  .app-header,.nav,.fs-btn,.btn-pdf,button[onclick^="addF"],button[onclick^="deleteFuncao"],button[onclick^="addRoadmap"],button[onclick^="deleteRoadmap"],button[onclick^="addPessoa"],button[onclick^="addFrota"],button[onclick^="addReuniao"],button[onclick^="addTarefa"]{display:none!important}
+  body{background:#fff;font-size:12px}
+  .main{padding:0}
+  .section{display:none!important}
+  .section.active{display:block!important;height:auto!important;overflow:visible!important;box-shadow:none!important;border:none!important;padding:16px!important}
+  .section-wrap{height:auto!important;overflow:visible!important}
+  *{box-shadow:none!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .card{break-inside:avoid;page-break-inside:avoid}
+  #fc-left{display:none!important}
+  #fc-right{padding:0!important}
+  input,select,textarea{border:none!important;background:transparent!important;color:#000!important}
+}
 .nav-btn{padding:10px 14px;font-size:12.5px;font-weight:400;color:var(--text-2);border:none;background:none;cursor:pointer;border-bottom:2px solid transparent;transition:color .12s;white-space:nowrap;position:relative}
 .nav-btn:hover{color:var(--text)}.nav-btn.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:500}
 .nav-badge{position:absolute;top:6px;right:4px;background:var(--red);color:#fff;font-size:9px;font-weight:700;min-width:14px;height:14px;border-radius:7px;display:flex;align-items:center;justify-content:center;padding:0 3px}
@@ -428,7 +443,7 @@ table.ft tr:hover td{background:#f9f9f7}
 
 
 /* ── Fullscreen / Maximize ── */
-.fs-btn{position:absolute;top:8px;right:8px;background:rgba(0,0,0,.04);border:1px solid var(--border);border-radius:6px;width:28px;height:28px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;z-index:20;transition:background .15s;color:var(--text-2)}
+.fs-btn{position:absolute;top:8px;right:8px;background:var(--surface);border:1.5px solid var(--accent);border-radius:6px;width:32px;height:32px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;z-index:20;transition:background .15s,color .15s;color:var(--accent);font-weight:600}
 .fs-btn:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
 .section-wrap{position:relative}
 .section-fullscreen{position:fixed!important;top:0!important;left:0!important;width:100vw!important;height:100vh!important;z-index:9999!important;background:var(--surface)!important;overflow:auto!important;border-radius:0!important;padding:12px 16px!important;box-sizing:border-box}
@@ -448,12 +463,13 @@ table.ft tr:hover td{background:#f9f9f7}
 <div class="nav">
   <button class="nav-btn active" onclick="showTab('geral',this)">Vista Geral</button>
   <button class="nav-btn" onclick="showTab('pessoas',this)">Pessoas</button>
-  <button class="nav-btn" onclick="showTab('funcoes',this)">Fun&ccedil;&otilde;es</button>
   <button class="nav-btn" onclick="showTab('competencias',this)">Compet&ecirc;ncias</button>
   <button class="nav-btn" onclick="showTab('reunioes',this)">Reuni&otilde;es</button>
   <button class="nav-btn" onclick="showTab('frota',this)">Frota</button>
   <button class="nav-btn" id="nav-tarefas" onclick="showTab('tarefas',this)">Tarefas <span class="nav-badge" id="badge-open" style="display:none"></span></button>
+  <button class="nav-btn" onclick="showTab('funcoes',this)">Fun&ccedil;&otilde;es Dept.</button>
   <button class="nav-btn" onclick="showTab('assistente',this)">&#129302; Assistente</button>
+  <button class="btn-pdf" onclick="exportarPDF()" title="Exportar secção atual como PDF">&#128461; Exportar PDF</button>
 </div>
 <div class="main">
 
@@ -479,17 +495,6 @@ table.ft tr:hover td{background:#f9f9f7}
         <button class="psnav-btn" id="sn-perfil" onclick="setPersonTab('perfil',this)">Perfil</button>
       </div>
       <div class="pessoas-content" id="pessoas-content" style="display:flex;align-items:center;justify-content:center;color:var(--text-3);font-size:13px">Selecione um colaborador ←</div>
-    </div>
-  </div>
-</div>
-
-<!-- FUNÇÕES / Roles Hub -->
-<div id="tab-funcoes" class="section section-wrap"><button class="fs-btn" onclick="fsToggle('tab-funcoes')" title="Maximizar / Fechar (Esc)">⛶</button>
-  <div class="pessoas-layout">
-    <div class="pessoas-sidebar" id="funcoes-sidebar"></div>
-    <div class="pessoas-main">
-      <div class="pessoas-header" id="funcoes-header"></div>
-      <div class="pessoas-content" id="funcoes-content" style="display:block"></div>
     </div>
   </div>
 </div>
@@ -559,7 +564,318 @@ table.ft tr:hover td{background:#f9f9f7}
 
 <!-- REUNIOES -->
 <div id="tab-reunioes" class="section section-wrap"><button class="fs-btn" onclick="fsToggle('tab-reunioes')" title="Maximizar / Fechar (Esc)">⛶</button>
-<div class="alert alert-info mb16">Reuniões actualizadas automaticamente · <strong>30 Jul 2026</strong></div>
+<div class="alert alert-info mb16">Reuniões actualizadas automaticamente · <strong>13 Ago 2026</strong> · 22 reuniões compiladas (30 Jun → 13 Ago)</div>
+<div class="alert alert-warn mb16"><strong>Prazo em curso:</strong> Candidatura <strong>DL 110-A/2026</strong> (apoio a combustível + AdBlue, IMT) — submissão até <strong>28 Ago 2026</strong>, por ordem de chegada. Bloqueante: confirmar elegibilidade da CPSA (conta de outrem vs. conta própria) com o Jurídico.</div>
+<div class="m-card">
+  <div class="m-header">
+    <div class="m-title">CE Indústria</div>
+    <div class="m-date">13 Ago 2026</div>
+  </div>
+  <div class="m-body">Semana de estabilização. Vale Rodrigues reforçou stocks de britas e Bago de Arroz (Brita 3 em ligeira quebra); Carbomin concluiu intervenções e opera a 1 turno (retoma horário noturno); Cano reforçou stocks. Em Santa Eulália, a Brita 1 está a ser toda consumida e a Brita 1,5 tem consumo elevado. Bloco central: movimentação de equipamento — Bulldozer D6R (Sobrissul → Cano, 4.ª feira), possível troca com a Giratória Hitachi ZX490 (Cano → Sobrissul) e Dumper A25D avariado para a oficina (~1 semana). JMP propôs a presença regular de Francisco Rodrigues nas reuniões para continuidade nas ausências de Ricardo Santos.</div>
+  <div class="tags mb8">
+    <span class="tag b-info">Comissão Executiva</span>
+    <span class="tag b-gray">Indústria</span>
+    <span class="tag b-warn">Frota</span>
+  </div>
+  <div class="m-actions">
+    <div class="m-actions-title">Acções identificadas</div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Coordenar o transporte do Bulldozer D6R (Sobrissul para o Cano, 4.ª feira).','frota','high')">+ Tarefa</button>
+      <span>Coordenar o transporte do Bulldozer D6R (Sobrissul para o Cano, 4.ª feira).</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Confirmar e planear a movimentação da Giratória Hitachi ZX490 (Cano para a Sobrissul).','frota','medium')">+ Tarefa</button>
+      <span>Confirmar e planear a movimentação da Giratória Hitachi ZX490 (Cano para a Sobrissul).</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Encaminhar o Dumper A25D para a oficina e avaliar camião de apoio à produção durante a reparação.','frota','medium')">+ Tarefa</button>
+      <span>Encaminhar o Dumper A25D para a oficina e avaliar camião de apoio à produção durante a reparação.</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Confirmar o fecho da pedreira de Vale Rodrigues a 20/08 e comunicar aos motoristas.','logistica','high')">+ Tarefa</button>
+      <span>Confirmar o fecho da pedreira de Vale Rodrigues a 20/08 e comunicar aos motoristas.</span>
+    </div>
+  </div>
+</div>
+<div class="m-card">
+  <div class="m-header">
+    <div class="m-title">Ponto de Situação — Frederico Cristiano</div>
+    <div class="m-date">12 Ago 2026</div>
+  </div>
+  <div class="m-body">Ponto de situação de onboarding (semana 4 — Objetivo 2). Dificuldade central: excesso de solicitações em simultâneo e falta de domínio sobre o que cada equipamento pode fazer e a sua constituição (trator + reboques vs. rígidos). A dinâmica rápida das operações gera confusão. Decisão: consolidar a base técnica da frota antes de forçar a autonomia (Objetivo 3, a partir de 17/08) — a composição e capacidade dos equipamentos é pré-requisito.</div>
+  <div class="tags mb8">
+    <span class="tag b-info">Equipa</span>
+    <span class="tag b-gray">Onboarding</span>
+    <span class="tag b-warn">Frota</span>
+  </div>
+  <div class="m-actions">
+    <div class="m-actions-title">Acções identificadas</div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Criar ficha de referência da frota: tipo de equipamento vs. capacidade vs. material/obra adequados.','frota','high')">+ Tarefa</button>
+      <span>Criar ficha de referência da frota: tipo de equipamento vs. capacidade vs. material/obra adequados.</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Criar ficha visual de configurações-tipo (trator + reboques vs. rígidos).','frota','medium')">+ Tarefa</button>
+      <span>Criar ficha visual de configurações-tipo (trator + reboques vs. rígidos).</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Definir regra de triagem e prioridade dos pedidos em simultâneo.','logistica','medium')">+ Tarefa</button>
+      <span>Definir regra de triagem e prioridade dos pedidos em simultâneo.</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Avaliar a CPSA Smart Logistics como ferramenta de consulta da aptidão dos equipamentos.','logistica','medium')">+ Tarefa</button>
+      <span>Avaliar a CPSA Smart Logistics como ferramenta de consulta da aptidão dos equipamentos.</span>
+    </div>
+  </div>
+</div>
+<div class="m-card">
+  <div class="m-header">
+    <div class="m-title">Fornecedor — Transportes Transerrana</div>
+    <div class="m-date">12 Ago 2026</div>
+  </div>
+  <div class="m-body">Reunião de prospeção com a Transerrana (Tiago Ramalho, dono), transportadora de Condeixa com raio de operação Aveiro–Leiria. Foco em transporte basculante (7 semi-reboques até 28 m³) e carga geral (11 viaturas com lonas laterais/teto/traseira). Perfil compatível com a expedição das pedreiras — potencial parceiro de subcontratação a explorar, sobretudo em basculante. Sem compromissos nesta fase.</div>
+  <div class="tags mb8">
+    <span class="tag b-info">Fornecedor</span>
+    <span class="tag b-gray">Transportes</span>
+    <span class="tag b-gray">Logística</span>
+  </div>
+  <div class="m-actions">
+    <div class="m-actions-title">Acções identificadas</div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Pedir à Transerrana tabela de preços (€/t, €/m³ ou €/viagem) para basculante e carga geral.','logistica','medium')">+ Tarefa</button>
+      <span>Pedir à Transerrana tabela de preços (€/t, €/m³ ou €/viagem) para basculante e carga geral.</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Confirmar disponibilidade e tempos de resposta da Transerrana para picos de expedição.','logistica','medium')">+ Tarefa</button>
+      <span>Confirmar disponibilidade e tempos de resposta da Transerrana para picos de expedição.</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Validar enquadramento legal e documental da Transerrana (alvará, seguros, CMR, tacógrafos).','logistica','medium')">+ Tarefa</button>
+      <span>Validar enquadramento legal e documental da Transerrana (alvará, seguros, CMR, tacógrafos).</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Cruzar a zona Aveiro-Leiria com os eixos de expedição atuais para dimensionar a subcontratação.','logistica','medium')">+ Tarefa</button>
+      <span>Cruzar a zona Aveiro-Leiria com os eixos de expedição atuais para dimensionar a subcontratação.</span>
+    </div>
+  </div>
+</div>
+<div class="m-card">
+  <div class="m-header">
+    <div class="m-title">CE Logística</div>
+    <div class="m-date">07 Ago 2026</div>
+  </div>
+  <div class="m-body">Reunião com forte componente de RH e organização do departamento. Entra a Vera Bairros como Administrativa de Logística (foco em Cisternas) e o António Marques passa a assumir a Gestão de Frota (Motoristas). Pendente a admissão de uma Administrativa de Expedição para a Sobrissul e a definição das implicações salariais do alargamento de funções da Susete. Caixa da Sobrissul resolvida (Engª Lúcia com Ricardo Santos), resta o pagamento de faturas em dinheiro ao Jorge Ferreira. Em curso a candidatura DL 110-A/2026 (PT e CPSA, com o Jurídico). Arranca o tema "Agentes" — combinação de cargas de porta-máquinas, ligado ao CPSA Smart Logistics.</div>
+  <div class="tags mb8">
+    <span class="tag b-info">Comissão Executiva</span>
+    <span class="tag b-gray">Logística</span>
+    <span class="tag b-warn">Recursos Humanos</span>
+  </div>
+  <div class="m-actions">
+    <div class="m-actions-title">Acções identificadas</div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Formalizar a passagem de António Marques para Gestão de Frota (Motoristas) e o handover das funções anteriores.','logistica','high')">+ Tarefa</button>
+      <span>Formalizar a passagem de António Marques para Gestão de Frota (Motoristas) e o handover das funções anteriores.</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Avançar com a admissão da Administrativa de Expedição para a Sobrissul.','logistica','medium')">+ Tarefa</button>
+      <span>Avançar com a admissão da Administrativa de Expedição para a Sobrissul.</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Definir as implicações salariais do alargamento de funções da Susete (incl. deslocações).','logistica','medium')">+ Tarefa</button>
+      <span>Definir as implicações salariais do alargamento de funções da Susete (incl. deslocações).</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Estruturar o modelo Agentes de combinação de cargas de porta-máquinas e ligar ao CPSA Smart Logistics.','logistica','high')">+ Tarefa</button>
+      <span>Estruturar o modelo Agentes de combinação de cargas de porta-máquinas e ligar ao CPSA Smart Logistics.</span>
+    </div>
+  </div>
+</div>
+<div class="m-card">
+  <div class="m-header">
+    <div class="m-title">Candidatura DL 110-A/2026 (Dept. Jurídico)</div>
+    <div class="m-date">03 Ago 2026</div>
+  </div>
+  <div class="m-body">Apoio financeiro extraordinário, não reembolsável, pago de uma só vez pelo IMT, para operadores de transporte de mercadorias por conta de outrem — mitigação da subida do gasóleo e do AdBlue em abril de 2026. Valor fixo por veículo consoante o peso (114–420 € combustível + AdBlue; até 457,80 €/veículo ≥ 35 t). Candidatura em nome da Pragosa Transportes e da Construções Pragosa. Sujeito a de minimis (teto 300.000 €/3 anos) e à dotação de 30 M€ por ordem de submissão. Prazo: 28/08/2026. Ponto crítico: elegibilidade da CPSA (conta própria vs. conta de outrem).</div>
+  <div class="tags mb8">
+    <span class="tag b-info">Candidatura</span>
+    <span class="tag b-gray">Combustível</span>
+    <span class="tag b-warn">Jurídico</span>
+  </div>
+  <div class="m-actions">
+    <div class="m-actions-title">Acções identificadas</div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Confirmar com o Jurídico a elegibilidade da CPSA (conta de outrem vs. conta própria) — bloqueante.','logistica','high')">+ Tarefa</button>
+      <span>Confirmar com o Jurídico a elegibilidade da CPSA (conta de outrem vs. conta própria) — bloqueante.</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Compilar a listagem de veículos por empresa (matrícula, peso, IPO, licença IMT) para PT e CPSA.','logistica','high')">+ Tarefa</button>
+      <span>Compilar a listagem de veículos por empresa (matrícula, peso, IPO, licença IMT) para PT e CPSA.</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Reunir certidões (SS e AT), alvará, IBAN, certidão permanente e declarações de minimis.','logistica','medium')">+ Tarefa</button>
+      <span>Reunir certidões (SS e AT), alvará, IBAN, certidão permanente e declarações de minimis.</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Submeter a candidatura DL 110-A/2026 até 28/08 (dotação por ordem de chegada).','logistica','high')">+ Tarefa</button>
+      <span>Submeter a candidatura DL 110-A/2026 até 28/08 (dotação por ordem de chegada).</span>
+    </div>
+  </div>
+</div>
+<div class="m-card">
+  <div class="m-header">
+    <div class="m-title">CE Indústria</div>
+    <div class="m-date">03 Ago 2026</div>
+  </div>
+  <div class="m-body">Gestão operacional de Agosto, marcada pelo planeamento de paragens e turnos de férias. Vale Rodrigues reforçou Brita 1 e 2 (não o Bago de Arroz), com enrocamento a produzir de 03 a 13/08; Carbomin passa a 1 turno de 10 a 28/08. Moleanos fecha na 2.ª quinzena de Agosto (circular informativa), iniciando a bancada AB6 em Setembro. No Cano, a avaria da central de lavagem limitou o reforço de agregados lavados. Em Santa Eulália há paragem 5.ª e 6.ª feira (tapete) e o tema central foi a valorização do tout-venant, que não cumpre ensaios (LA30 vs. LA28; Azul de metileno) para Sub-balastro.</div>
+  <div class="tags mb8">
+    <span class="tag b-info">Comissão Executiva</span>
+    <span class="tag b-gray">Indústria</span>
+    <span class="tag b-gray">Pedreiras</span>
+  </div>
+  <div class="m-actions">
+    <div class="m-actions-title">Acções identificadas</div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Informar os motoristas do caminho alternativo em Vale Rodrigues a 14/08.','logistica','medium')">+ Tarefa</button>
+      <span>Informar os motoristas do caminho alternativo em Vale Rodrigues a 14/08.</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Comunicar aos motoristas que 20/08 é feriado na pedreira de Vale Rodrigues.','logistica','medium')">+ Tarefa</button>
+      <span>Comunicar aos motoristas que 20/08 é feriado na pedreira de Vale Rodrigues.</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Apoiar a circular informativa do fecho de Moleanos (2.ª quinzena de Agosto).','logistica','medium')">+ Tarefa</button>
+      <span>Apoiar a circular informativa do fecho de Moleanos (2.ª quinzena de Agosto).</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Estudar as propostas de valorização do tout-venant de Santa Eulália (LA28, Azul de metileno).','ops','medium')">+ Tarefa</button>
+      <span>Estudar as propostas de valorização do tout-venant de Santa Eulália (LA28, Azul de metileno).</span>
+    </div>
+  </div>
+</div>
+<div class="m-card">
+  <div class="m-header">
+    <div class="m-title">Ponto de Situação — João Campos</div>
+    <div class="m-date">31 Jul 2026</div>
+  </div>
+  <div class="m-body">Ponto de situação sobre Combustíveis e Mobilizações. Foco na adesão à App de Combustíveis: motoristas por instalar (Pedro Santos), ativos mas sem nome na App (Lúcia e Leonardo), alargamento aos motoristas do Betão (via Jordão, tanque de Xévora) e novo cartão Eco Impact (Malveira) por associar a motorista. O encarregado António Peralta passou apenas para App (feito). Nas Mobilizações, sinalizado que o Francisco Leitão não está a fazer mobilização.</div>
+  <div class="tags mb8">
+    <span class="tag b-info">Equipa</span>
+    <span class="tag b-gray">Combustível</span>
+    <span class="tag b-gray">Mobilizações</span>
+  </div>
+  <div class="m-actions">
+    <div class="m-actions-title">Acções identificadas</div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Contactar o Pedro Santos para instalar a App de Combustíveis.','logistica','medium')">+ Tarefa</button>
+      <span>Contactar o Pedro Santos para instalar a App de Combustíveis.</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Acrescentar a Lúcia e o Leonardo na App de Combustíveis.','logistica','medium')">+ Tarefa</button>
+      <span>Acrescentar a Lúcia e o Leonardo na App de Combustíveis.</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Informar o Jordão do procedimento de instalação da App nos motoristas do Betão (tanque de Xévora).','logistica','medium')">+ Tarefa</button>
+      <span>Informar o Jordão do procedimento de instalação da App nos motoristas do Betão (tanque de Xévora).</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Identificar o motorista do novo cartão Eco Impact da Malveira.','logistica','medium')">+ Tarefa</button>
+      <span>Identificar o motorista do novo cartão Eco Impact da Malveira.</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Apurar e corrigir a mobilização em falta do Francisco Leitão.','logistica','medium')">+ Tarefa</button>
+      <span>Apurar e corrigir a mobilização em falta do Francisco Leitão.</span>
+    </div>
+  </div>
+</div>
+<div class="m-card">
+  <div class="m-header">
+    <div class="m-title">Ponto de Situação — António Marques</div>
+    <div class="m-date">31 Jul 2026</div>
+  </div>
+  <div class="m-body">Com a entrada da Vera Bairros (Administrativa, 03/08), reestruturação das funções e reenquadramento do António Marques. Estavam 9 funções a repartir. A Vera acompanha o António na semana (integração administrativa); o António assume as funções técnicas — Licenças/Sinistros, Manutenções (ponte motoristas ↔ oficina) e Tacógrafo (descargas e conformidades) — e partilha com a Vera a imputação de custos às obras (CPSA) e os pontos dos motoristas PTSA e do pessoal do departamento.</div>
+  <div class="tags mb8">
+    <span class="tag b-info">Equipa</span>
+    <span class="tag b-gray">Reestruturação</span>
+    <span class="tag b-warn">Frota</span>
+  </div>
+  <div class="m-actions">
+    <div class="m-actions-title">Acções identificadas</div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Formalizar a matriz de responsabilidades António/Vera e comunicá-la ao departamento.','logistica','high')">+ Tarefa</button>
+      <span>Formalizar a matriz de responsabilidades António/Vera e comunicá-la ao departamento.</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Passar a António as funções de Licenças/Sinistros, Manutenções (ponte oficina) e Tacógrafo.','logistica','medium')">+ Tarefa</button>
+      <span>Passar a António as funções de Licenças/Sinistros, Manutenções (ponte oficina) e Tacógrafo.</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Definir as fronteiras das funções partilhadas (imputação de custos e pontos de motoristas/pessoal).','logistica','medium')">+ Tarefa</button>
+      <span>Definir as fronteiras das funções partilhadas (imputação de custos e pontos de motoristas/pessoal).</span>
+    </div>
+  </div>
+</div>
+<div class="m-card">
+  <div class="m-header">
+    <div class="m-title">Controlo de Obras</div>
+    <div class="m-date">27 Jul 2026</div>
+  </div>
+  <div class="m-body">Controlo operacional centrado em combustível e frota. Tema dominante: o PHC não está a ser atualizado com os KMs reais, o que descredibiliza os consumos por viatura — caso do AJ49BP, com 206.054 km reais (20/07) contra 168.638 km na ficha de equipamento (~37.400 km de desvio). Atribuídos à Logística três levantamentos: motoristas com requisições de gasóleo externo (PTSA + Pragosa Betão), capacidade e data de entrada do tanque de Xévora, e alargamento da App de Combustíveis a Santa Eulália, Cano e Moleanos (com Emanuel). Passar a identificar os transportes prestados à JCBento.</div>
+  <div class="tags mb8">
+    <span class="tag b-info">Controlo de Obras</span>
+    <span class="tag b-gray">Combustível</span>
+    <span class="tag b-warn">Frota</span>
+  </div>
+  <div class="m-actions">
+    <div class="m-actions-title">Acções identificadas</div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Reconciliar os KMs reais no PHC com a ficha de equipamento, a começar pelo AJ49BP (206.054 vs. 168.638 km).','frota','high')">+ Tarefa</button>
+      <span>Reconciliar os KMs reais no PHC com a ficha de equipamento, a começar pelo AJ49BP (206.054 vs. 168.638 km).</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Esclarecer se os abastecimentos são fechados todos no mesmo dia e normalizar o processo de fecho.','logistica','medium')">+ Tarefa</button>
+      <span>Esclarecer se os abastecimentos são fechados todos no mesmo dia e normalizar o processo de fecho.</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Levantar a capacidade (litros) e a data de entrada do tanque grande de Xévora.','logistica','medium')">+ Tarefa</button>
+      <span>Levantar a capacidade (litros) e a data de entrada do tanque grande de Xévora.</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Passar a identificar os transportes prestados à JCBento (Tojal-JCBento e JCBento-Tojal).','logistica','medium')">+ Tarefa</button>
+      <span>Passar a identificar os transportes prestados à JCBento (Tojal-JCBento e JCBento-Tojal).</span>
+    </div>
+  </div>
+</div>
+<div class="m-card">
+  <div class="m-header">
+    <div class="m-title">CE Indústria</div>
+    <div class="m-date">27 Jul 2026</div>
+  </div>
+  <div class="m-body">Ponto de situação por pedreira com vários produtos em zona crítica. Em Vale Rodrigues, a Brita 1 entra em crítico e o Bago de Arroz cai para stock mínimo. No Cano são precisas 16 h de produção para repor mínimos e o consumo da semana está acima da projeção do semestre — Ricardo Santos apresentou dois cenários (8 h vs. 12 h/1,5 turnos), sendo o Cenário B o único que garante consumos com reforço. Em Santa Eulália a Brita 1 Betão está em crítico, com produção direcionada a MBQ e Pó de Pedra. Sobrissul projeta stocks mínimos em ~1 mês. JMP propôs digitalizar o primário com leitura dos tempos de espera dos dumpers.</div>
+  <div class="tags mb8">
+    <span class="tag b-info">Comissão Executiva</span>
+    <span class="tag b-gray">Indústria</span>
+    <span class="tag b-warn">Crítico</span>
+  </div>
+  <div class="m-actions">
+    <div class="m-actions-title">Acções identificadas</div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Cano — planear as 16 h de produção necessárias e alinhar com o Cenário B (12 h / 1,5 turnos).','ops','high')">+ Tarefa</button>
+      <span>Cano — planear as 16 h de produção necessárias e alinhar com o Cenário B (12 h / 1,5 turnos).</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Santa Eulália — estruturar o plano de paragens da produção.','ops','medium')">+ Tarefa</button>
+      <span>Santa Eulália — estruturar o plano de paragens da produção.</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Tratar a reclamação de excesso de humidade na Areia Britada Lavada do Cano (Montemor-o-Novo).','ops','medium')">+ Tarefa</button>
+      <span>Tratar a reclamação de excesso de humidade na Areia Britada Lavada do Cano (Montemor-o-Novo).</span>
+    </div>
+    <div class="m-action-item">
+      <button class="btn-add-task" onclick="addFromMeeting(this,'Digitalizar o primário com leitura dos tempos de espera dos dumpers (meta final do ano).','ops','medium')">+ Tarefa</button>
+      <span>Digitalizar o primário com leitura dos tempos de espera dos dumpers (meta final do ano).</span>
+    </div>
+  </div>
+</div>
 <div class="m-card">
   <div class="m-header">
     <div class="m-title">Reunião Comercial Indústria</div>
@@ -959,7 +1275,8 @@ table.ft tr:hover td{background:#f9f9f7}
   <div class="okr-card mb12"><div class="okr-title">O1 — Eficiencia Operacional da Frota</div>
     <div class="kr"><div class="kr-icon">+</div><div class="kr-text">Taxa de disponibilidade &gt;= 95%</div><span class="badge b-warn">A medir</span></div>
     <div class="kr"><div class="kr-icon">+</div><div class="kr-text">Reduzir manutencoes corretivas em 20%</div><span class="badge b-err">Cisternas com avarias a subir</span></div>
-    <div class="kr"><div class="kr-icon">+</div><div class="kr-text">Projeto Tacografos — formacao concluida (20/06). Conformidade G2V2 a verificar urgentemente (prazo legal 11/07 ja passou)</div><span class="badge b-err">Acao urgente</span></div>
+    <div class="kr"><div class="kr-icon">+</div><div class="kr-text">Projeto Tacografos — formacao concluida (20/06). Conformidade G2V2 a verificar urgentemente (prazo legal 11/07 ja passou). Responsabilidade de descargas e conformidades atribuida a Antonio Marques (ponto 31/07)</div><span class="badge b-err">Acao urgente</span></div>
+    <div class="kr"><div class="kr-icon">+</div><div class="kr-text">Candidatura DL 110-A/2026 (apoio combustivel + AdBlue, IMT) — PT e CPSA, submissao ate 28/08 por ordem de chegada. Bloqueante: elegibilidade da CPSA (conta de outrem vs propria)</div><span class="badge b-warn">Prazo 28/08</span></div>
   </div>
   <div class="okr-card mb12"><div class="okr-title">O2 — Crescimento Comercial</div>
     <div class="kr"><div class="kr-icon">+</div><div class="kr-text">Industria — preco alvo €9,50/t confirmado (CE Comercial 09/07). Teste de aceitacao com clientes-chave pendente</div><span class="badge b-ok">Definido</span></div>
@@ -968,6 +1285,8 @@ table.ft tr:hover td{background:#f9f9f7}
   <div class="okr-card mb20"><div class="okr-title">O3 — Digitalizacao</div>
     <div class="kr"><div class="kr-icon">+</div><div class="kr-text">OLACmd em producao</div><span class="badge b-info">Ativo</span></div>
     <div class="kr"><div class="kr-icon">+</div><div class="kr-text">Telematica — App analise de paragens (Traccar) operacional. 86% das paragens em locais recorrentes. Decisao Fase I (API) pendente CE 14/07</div><span class="badge b-warn">Decisao pendente</span></div>
+    <div class="kr"><div class="kr-icon">+</div><div class="kr-text">Agentes — combinacao de cargas de porta-maquinas (fretes, capacidades), ligado ao CPSA Smart Logistics. Arranque CE Logistica 07/08</div><span class="badge b-info">Em arranque</span></div>
+    <div class="kr"><div class="kr-icon">+</div><div class="kr-text">Digitalizar o primario — leitura dos tempos de espera dos dumpers (Industria). Meta: final do ano (CE Industria 27/07)</div><span class="badge b-gray">A definir</span></div>
   </div>
   <div class="grid-4 mb16">
     <div class="card"><div class="kpi-lbl">Disponib. Frota</div><div class="kpi-num">—</div><div class="kpi-sub">Meta: &gt;= 95%</div><div class="mt8"><span class="badge b-gray">A medir</span></div></div>
@@ -1107,8 +1426,7 @@ var AREA_RESP={
   ac:['Expedicao — Santa Eulalia','Controlo de cargas e guias de transporte'],
   st:['Expedicao — Sobrissul (co-responsavel)','Controlo de cargas, guias e comunicacao com motoristas'],
   pl:['Expedicao — Sobrissul (co-responsavel)','Controlo de cargas, guias e comunicacao com motoristas'],
-  vg:['[Vaga] A definir no processo de recrutamento'],
-  gmf:['Plano de manutenção preventiva (km/horas/tempo) e controlo de prazos','Ciclo da manutenção corretiva — da comunicação ao encerramento','Ponto de contacto único com oficinas (internas e externas)','Base de dados técnica dos equipamentos e referências de peças','Especificação de peças a Compras e ligação com o Tráfego','Relatório mensal e KPIs (disponibilidade, MTTR, custo/km)','Classificação de prioridades P1–P4 e autoridade de segurança (recusar regresso à operação)']
+  vg:['[Vaga] A definir no processo de recrutamento']
 };
 // ── Competências & Desenvolvimento ──
 var COMP_DATA={
@@ -1220,7 +1538,7 @@ function buildCompSection(pid){
   h+='</tbody></table>';
   return h;
 }
-function getTeamData(){var s=localStorage.getItem('pragosa_team_v1');if(!s)return JSON.parse(JSON.stringify(TEAM_DATA_DEFAULT));var team=JSON.parse(s);var ids={};team.forEach(function(p){ids[p.id]=true;});TEAM_DATA_DEFAULT.forEach(function(p){if(!ids[p.id])team.push(JSON.parse(JSON.stringify(p)));});return team;}
+function getTeamData(){var s=localStorage.getItem('pragosa_team_v1');return s?JSON.parse(s):JSON.parse(JSON.stringify(TEAM_DATA_DEFAULT));}
 function saveTeamData(d){localStorage.setItem('pragosa_team_v1',JSON.stringify(d));}
 function getPersonNotes(){return JSON.parse(localStorage.getItem('pragosa_person_notes')||'{}');}
 function savePersonNote(id,note){var n=getPersonNotes();n[id]=note;localStorage.setItem('pragosa_person_notes',JSON.stringify(n));}
@@ -1228,7 +1546,7 @@ function getPersonPending(){return JSON.parse(localStorage.getItem('pragosa_pers
 function savePersonPending(id,items){var a=getPersonPending();a[id]=items;localStorage.setItem('pragosa_person_pending',JSON.stringify(a));}
 
 // ── Card view ──
-var GROUPS=[{area:'direcao',label:'Direcao'},{area:'trafego',label:'Gestao de Trafego'},{area:'manutencao',label:'Manutenção & Frota'},{area:'comercial',label:'Comercial'},{area:'admin',label:'Administrativo & Custos'},{area:'expedicao',label:'Expedicao'}];
+var GROUPS=[{area:'direcao',label:'Direcao'},{area:'trafego',label:'Gestao de Trafego'},{area:'comercial',label:'Comercial'},{area:'admin',label:'Administrativo & Custos'},{area:'expedicao',label:'Expedicao'}];
 
 function getPersonResp(id){var s=JSON.parse(localStorage.getItem('pragosa_resp_v1')||'{}');if(s[id]){return s[id].map(function(r){if(r.periodicidade===undefined)r.periodicidade='';return r;});}var base=AREA_RESP[id]||[];return base.map(function(r){return{text:r,rating:'',shared:'',periodicidade:''};});}
 function savePersonResp(id,data){var s=JSON.parse(localStorage.getItem('pragosa_resp_v1')||'{}');s[id]=data;localStorage.setItem('pragosa_resp_v1',JSON.stringify(s));}
@@ -1236,16 +1554,22 @@ function setRespRating(pid,idx,val){var d=getPersonResp(pid);d[idx].rating=val;s
 function setRespShared(pid,idx,val){var d=getPersonResp(pid);d[idx].shared=val;savePersonResp(pid,d);}
 function setRespText(pid,idx,val){var d=getPersonResp(pid);d[idx].text=val;savePersonResp(pid,d);}
 function setRespPeriodicidade(pid,idx,val){var d=getPersonResp(pid);d[idx].periodicidade=val;savePersonResp(pid,d);}
-function addResp(pid){var d=getPersonResp(pid);d.push({text:'Nova responsabilidade',rating:'',shared:'',periodicidade:''});savePersonResp(pid,d);refreshRespTable(pid);setTimeout(function(){var inputs=document.querySelectorAll('#eresp-'+pid+' .resp-text-input');if(inputs.length){var last=inputs[inputs.length-1];last.focus();last.select();}},30);}
+function addResp(pid){
+  // Ensure we load from localStorage only, not AREA_RESP defaults that could leak into wrong person
+  var raw=JSON.parse(localStorage.getItem('pragosa_resp_v1')||'{}');
+  var d=raw[pid]?raw[pid].map(function(r){if(r.periodicidade===undefined)r.periodicidade='';return r;}):[];
+  d.push({text:'Nova responsabilidade',rating:'',shared:'',periodicidade:''});savePersonResp(pid,d);refreshRespTable(pid);setTimeout(function(){var inputs=document.querySelectorAll('#eresp-'+pid+' .resp-text-input');if(inputs.length){var last=inputs[inputs.length-1];last.focus();last.select();}},30);}
 var _pendingResp=null;
 function deleteResp(pid,idx){var key=pid+'-'+idx;if(_pendingResp!==key){_pendingResp=key;showToast('Clique novamente para confirmar a eliminação.');setTimeout(function(){if(_pendingResp===key)_pendingResp=null;},3000);return;}_pendingResp=null;var d=getPersonResp(pid);d.splice(idx,1);savePersonResp(pid,d);refreshRespTable(pid);showToast('Responsabilidade eliminada.');}
 function transferResp(pid,idx,targetPid){if(!targetPid)return;var src=getPersonResp(pid);var tgt=getPersonResp(targetPid);var item=src.splice(idx,1)[0];item.shared='';tgt.push(item);savePersonResp(pid,src);savePersonResp(targetPid,tgt);refreshRespTable(pid);refreshRespTable(targetPid);var team=getTeamData();var t=team.find(function(x){return x.id===targetPid;});showToast('Transferida para '+(t?t.name.split(' ')[0]:'colega')+'.');}
 function buildRespTable(pid,resp,team,inPanel){
   var ratingVals=['Excelente','Bom','Satisfatório','A Melhorar','Crítico'];
-  var h='<div id="eresp-'+pid+'"><div class="e-section-title">Responsabilidades</div>';
+  var h='<div id="eresp-'+pid+'">'
+    +'<div class="e-section-title">Funções <span style="font-size:11px;font-weight:400;color:var(--text-3)">('+resp.length+')</span></div>';
+  h+='<div id="resp-body-'+pid+'">';
   if(!resp.length){
     h+='<button class="resp-add-btn" data-pid="'+pid+'" onclick="addResp(this.dataset.pid)">+ Responsabilidade</button>';
-    return h+'</div>';
+    return h+'</div></div>';
   }
   var colleagues=team.filter(function(x){return x.id!==pid&&x.id!=='vg';});
   var periodVals=['Diário','Semanal','Quinzenal','Mensal'];
@@ -1268,7 +1592,18 @@ function buildRespTable(pid,resp,team,inPanel){
   });
   h+='</tbody></table>';
   h+='<button class="resp-add-btn" data-pid="'+pid+'" onclick="addResp(this.dataset.pid)">+ Responsabilidade</button>';
+  h+='</div>'; // close resp-body
   return h+'</div>';
+}
+function toggleRespSection(pid){
+  var body=document.getElementById('resp-body-'+pid);
+  if(!body)return;
+  var open=body.style.display!=='none';
+  body.style.display=open?'none':'block';
+  // Update button text
+  var btn=body.previousElementSibling&&body.previousElementSibling.querySelector('button[data-pid]');
+  if(btn)btn.textContent=(open?'▸ Expandir':'▾ Colapsar');
+  localStorage.setItem('pragosa_resp_open_'+pid,open?'0':'1');
 }
 function refreshRespTable(pid){
   var team=getTeamData(),resp=getPersonResp(pid),html=buildRespTable(pid,resp,team,false);
@@ -1941,7 +2276,7 @@ function renderGantts(){
   if(ed)o+='<div class="alert alert-info mb12"><strong>Modo edicao.</strong> Altere titulos e tarefas nos campos, use <strong>+</strong> para acrescentar objetivos, tarefas ou criterios e <strong>&times;</strong> para remover. A caixa <strong>Marco</strong> pinta a tarefa a vermelho (avaliacao). Clique numa celula do gantt para marcar/desmarcar a barra.</div>';
 
   // Gantt
-  o+='<div class="sh"><div class="sh-title">Plano semanal</div><div style="font-size:11.5px;color:var(--text-3)">Clique nas celulas para marcar as barras</div></div>';
+  o+='<div class="sh"><div class="sh-title">Plano semanal</div><div style="display:flex;align-items:center;gap:10px"><span style="font-size:11.5px;color:var(--text-3)">Clique nas celulas para marcar as barras</span><button onclick="exportarGanttPlanoPDF()" style="padding:4px 12px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text-2);cursor:pointer;font-size:11.5px;font-family:inherit;display:flex;align-items:center;gap:4px">&#128461; Exportar PDF</button></div></div>';
   o+='<div class="fc-wrap mb16"><table class="fc-gantt"><thead><tr><th class="fc-th-task">Tarefa</th>';
   p.semanas.forEach(function(w){o+='<th'+(w.n===cur?' class="fc-now"':'')+'>Sem. '+w.n+'<br>'+escHtml(w.per)+'</th>';});
   if(ed)o+='<th style="min-width:96px">Editar</th>';
@@ -2716,13 +3051,6 @@ var OBJ_DEFAULT={
     {id:'fc-obj2',titulo:'Obj.2 — Rotina de contacto diário com motoristas',resultado:'Mapa de interlocutores completo',prazo:'14 ago 2026',progresso:65,estado:'Em curso',cor:'#eab308'},
     {id:'fc-obj3',titulo:'Obj.3 — Autonomia basculantes',resultado:'Gerir basculantes sem supervisão',prazo:'11 set 2026',progresso:20,estado:'Em risco',cor:'#f97316'},
     {id:'fc-obj4',titulo:'Obj.4 — Transportes especiais (grua, porta-máquinas)',resultado:'Autonomia transportes especiais',prazo:'26 set 2026',progresso:0,estado:'Não iniciado',cor:'#a1a1aa'}
-  ],
-  gmf:[
-    {id:'gmf-f0',titulo:'Fase 0 — Decisão e Enquadramento',resultado:'Função aprovada, perímetro fechado, ferramenta escolhida, limite € e via de recrutamento definidos',prazo:'Pré-M0 (2–4 sem.)',progresso:10,estado:'Em curso',cor:'#eab308'},
-    {id:'gmf-f1',titulo:'Fase 1 — Fundação de Informação',resultado:'Inventário técnico + estado da frota + baseline de KPIs (fonte única de verdade)',prazo:'M0 → M3',progresso:0,estado:'Não iniciado',cor:'#a1a1aa'},
-    {id:'gmf-f2',titulo:'Fase 2 — Preventiva a Rolar',resultado:'Plano preventivo a correr + corretiva com prioridades P1–P4',prazo:'M3 → M6',progresso:0,estado:'Não iniciado',cor:'#a1a1aa'},
-    {id:'gmf-f3',titulo:'Fase 3 — Gestão por Dados',resultado:'Relatório mensal fiável + KPIs com metas vs. baseline',prazo:'M6 → M12',progresso:0,estado:'Não iniciado',cor:'#a1a1aa'},
-    {id:'gmf-f4',titulo:'Fase 4 — Manutenção Preditiva',resultado:'Antecipação de falhas por telemetria e histórico consolidado',prazo:'M12+',progresso:0,estado:'Não iniciado',cor:'#a1a1aa'}
   ]
 };
 function getObjetivos(id){
@@ -3073,230 +3401,6 @@ function renderPerfil(id){
   return out;
 }
 
-// ── Bloco rico: Função Gestão de Manutenção e Frota ──
-function funcaoGMFBlock(){
-  var CARD='background:var(--surface,#fff);border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin-top:12px';
-  var LBL='font-size:10.5px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px';
-  var LI='font-size:12px;color:var(--text-2);line-height:1.55;margin:0 0 2px 0';
-  function block(label,items){
-    var s='<div style="margin-bottom:10px"><div style="'+LBL+'">'+label+'</div><ul style="margin:0;padding-left:16px">';
-    items.forEach(function(t){s+='<li style="'+LI+'">'+t+'</li>';});
-    return s+'</ul></div>';
-  }
-  var h='';
-  // Banner
-  h+='<div style="'+CARD+';border-left:3px solid #7c3aed">'
-    +'<div style="font-size:13px;font-weight:700;color:var(--text)">Função de Gestão — não é uma oficina</div>'
-    +'<div style="font-size:12px;color:var(--text-2);margin-top:4px;line-height:1.5">O objetivo não é reparar veículos, mas garantir que são reparados corretamente, no momento certo, pela oficina certa, com o menor impacto na operação e com toda a informação registada.</div>'
-    +'</div>';
-  // Perfil-alvo
-  h+='<div style="'+CARD+'"><div class="card-title">Perfil-alvo de recrutamento</div>';
-  h+=block('Formação',['Técnica em Mecânica / Manutenção Industrial / Automóvel / Eng. Mecânica (técnico-profissional a licenciatura)','Alternativa: experiência sólida equivalente em gestão de frota / oficina']);
-  h+=block('Experiência',['Gestão de frota, oficina ou manutenção de pesados / equipamento de obra','Vantagem: construção, pedreiras, transportes ou aluguer de equipamento','Experiência a lidar com oficinas externas (orçamentos, prazos, negociação)']);
-  h+=block('Conhecimentos técnicos',['Interpretar diagnósticos e orçamentos e questionar oficinas','Peças e referências (OEM vs. alternativas), consumíveis, pneus, filtros, óleos','Manutenção preventiva por km / horas e inspeções periódicas']);
-  h+=block('Ferramentas e dados',['Folha de cálculo e, idealmente, software de gestão de frota / manutenção','Telemetria (Traccar) e registo de avarias','Construir e ler KPIs (disponibilidade, MTTR, custo/km)']);
-  h+=block('Competências comportamentais (as decisivas)',['<strong>Organização e método</strong> — a função vive de registo consistente','<strong>Firmeza e assertividade</strong> — exigir prazos e impor prioridades','<strong>Comunicação</strong> — traduzir técnico em operacional','<strong>Orientação a dados</strong> — decidir por factos','<strong>Autonomia e proatividade</strong> — antecipar, não esperar pela avaria','<strong>Integridade e coragem</strong> — recusar regresso por segurança']);
-  h+='</div>';
-  // Autoridade vs Limites
-  h+='<div class="grid-2" style="gap:12px">';
-  h+='<div style="'+CARD+';border-left:3px solid #16a34a"><div class="card-title">Autoridade da função</div>'
-    +'<ul style="margin:0;padding-left:16px">'
-    +['Definir a prioridade técnica das intervenções','Encaminhar para oficinas aprovadas','Pedir diagnósticos e orçamentos','Exigir estado das reparações','Questionar prazos','Recomendar prioridades ao Tráfego','<strong>Recusar regresso à operação por segurança</strong>'].map(function(t){return'<li style="'+LI+'">'+t+'</li>';}).join('')
-    +'</ul></div>';
-  h+='<div style="'+CARD+';border-left:3px solid #dc2626"><div class="card-title">Limites (sem autoridade autónoma)</div>'
-    +'<ul style="margin:0;padding-left:16px">'
-    +['Aprovar despesas acima do limite definido','Escolher fornecedores fora da política','Contratar oficinas sem aprovação','Alterar rotas / escalas / horas extra','Decidir substituição definitiva de equipamento','Comprar fora do processo definido'].map(function(t){return'<li style="'+LI+'">'+t+'</li>';}).join('')
-    +'</ul></div>';
-  h+='</div>';
-  // Via de recrutamento
-  h+='<div style="'+CARD+'"><div class="card-title">Via de recrutamento</div>'
-    +'<div style="font-size:12px;color:var(--text-2);line-height:1.55"><span class="badge b-info">Recomendação</span> Privilegiar um <strong>perfil interno com base técnica forte</strong> que demonstre apetência para gestão e dados, reforçado com formação na componente de KPIs e método. Só ir a externo se não existir candidato interno com o perfil comportamental (organização, firmeza, orientação a dados).</div></div>';
-  // Guião de entrevista
-  h+='<div style="'+CARD+'"><div class="card-title">Guião de entrevista</div><ol style="margin:0;padding-left:18px">'
-    +['Descreva como acompanharia uma avaria crítica, da comunicação ao regresso à operação.','Uma oficina diz "fica pronto amanhã". O que faz a seguir?','Como decidiria a prioridade entre dois equipamentos avariados ao mesmo tempo?','Que informação manteria sobre cada equipamento e porquê?','Como convenceria o Tráfego a libertar um equipamento para uma preventiva?','Dê um exemplo em que teve de impor uma decisão técnica contra pressão operacional.','Que indicadores usaria para avaliar se a frota está bem gerida?'].map(function(t){return'<li style="'+LI+'">'+t+'</li>';}).join('')
-    +'</ol></div>';
-  // Resultado esperado
-  h+='<div style="'+CARD+'"><div class="card-title">Resultado esperado</div><ul style="margin:0;padding-left:16px">'
-    +['Maior disponibilidade da frota','Menos avarias inesperadas','Menor tempo de imobilização','Menor risco de erro (informação técnica centralizada)','Melhor decisão de gestão (dados de custos, avarias, oficinas)'].map(function(t){return'<li style="'+LI+'">'+t+'</li>';}).join('')
-    +'</ul></div>';
-  // Ligações
-  h+='<div style="'+CARD+';font-size:11.5px;color:var(--text-3);line-height:1.6">'
-    +'<strong>Notas completas no Vault Obsidian (06 Operações):</strong><br>'
-    +'• Função — Gestão de Manutenções e Frota (proposta + avaliação)<br>'
-    +'• Roadmap — Implementação Gestão de Manutenções e Frota<br>'
-    +'• Perfil de Recrutamento — Gestor de Manutenção e Frota</div>';
-  return h;
-}
-
-// ── FUNÇÕES / Roles Hub ──
-var FUNCTIONS=[{"id": "tec_cist", "nome": "Técnico Cisterna", "estado": "Função ativa", "pessoas": [{"pid": "gs", "papel": "Técnica Cisternas"}], "sections": [{"titulo": "Gestão de Tráfego e Logística da Cisternas", "itens": ["Planeamento", "Gestão Diária,", "Gestão de prioridades,", "Gestão de incidencias", "Controlo operacional.", "Levantamento das necessidade e contratação de terceiros."]}, {"titulo": "Gestão Operacional da Frota", "itens": ["Afetação de Viaturas", "Gestão de disponibilidades", "Acompanhamento de Avarias", "Substituições: Frota e Motoristas", "Produtividade da Frota", "Acompanhamento de Consumos (Combustivel)"]}, {"titulo": "Gestão Comercial", "itens": ["Negociação", "Acompanhamento e Controlo de Encomendas", "Acompanhamento de Clientes"]}, {"titulo": "Gestão do Administrativo", "itens": ["Acompanhamento dos processos executados pelo Administrativo", "Validação de Horários", "Validação de Férias", "Validação do Ponto", "Atribuição de Prémios", "Avaliação"]}, {"titulo": "Gestão dos Motoristas", "itens": ["Validação de Horários", "Validaçãp de Férias", "Validação do Ponto", "Acompanhamento e avaliação"]}, {"titulo": "KPIS Operacionais", "itens": ["Produtivdade", "Ocupação da Frota", "Eficiência", "Rentabilidade Operacional", "Análise de Performance Motorista/Viatura"]}, {"titulo": "Gestão do E-mail", "itens": []}]}, {"id": "tec_cpsa", "nome": "Técnico Construções Pragosa", "estado": "Função ativa", "pessoas": [{"pid": "fc", "papel": "Técnico Construções Pragosa"}], "sections": [{"titulo": "Gestão de Tráfego e Logística de Transportes para Obras(T.Basculantes e Especiais)", "itens": ["Planeamento", "Gestão Diária,", "Gestão de prioridades em coordenação com Direção de Produção,", "Gestão de incidencias", "Controlo operacional.", "Levantamento das necessidade e contratação de terceiros."]}, {"titulo": "Gestão Operacional da Frota", "itens": ["Afetação de Viaturas", "Gestão de disponibilidades", "Acompanhamento de Avarias", "Substituições: Frota e Motoristas", "Produtividade da Frota", "Acompanhamento de Consumos (Combustivel)"]}, {"titulo": "Gestão de Pedidos", "itens": []}, {"titulo": "Acompanhamento e Controlo dos pedidos de", "itens": ["Transporte de Materiais", "Transporte de Máquinas", "Viatura ao serviço da Obra"]}, {"titulo": "Gestão dos Motoristas", "itens": ["Validação de Horários", "Validaçãp de Férias", "Validação do Ponto", "Acompanhamento e avaliação"]}, {"titulo": "KPIS Operacionais", "itens": ["Produtivdade", "Ocupação da Frota", "Eficiência", "Rentabilidade Operacional", "Análise de Performance Motorista/Viatura"]}, {"titulo": "Gestão do E-mail", "itens": []}]}, {"id": "tec_ind", "nome": "Técnico Indústria", "estado": "Função ativa", "pessoas": [{"pid": "bc", "papel": "Técnica Indústria"}], "sections": [{"titulo": "Gestão de Tráfego e Logística da Indústria", "itens": ["Planeamento", "Gestão Diária,", "Gestão de prioridades,", "Gestão de incidencias", "Controlo operacional.", "Levantamento das necessidade e contratação de terceiros."]}, {"titulo": "Gestão Operacional da Frota", "itens": ["Afetação de Viaturas", "Gestão de disponibilidades", "Acompanhamento de Avarias", "Substituições: Frota e Motoristas", "Produtividade da Frota", "Acompanhamento de Consumos (Combustivel)"]}, {"titulo": "Gestão Comercial", "itens": ["Acompanhamento e Controlo de Encomendas"]}, {"titulo": "Gestão das Expediões", "itens": ["Acompanhamento dos processos executados", "Validação de Horários", "Validação de Férias", "Validação do Ponto", "Atribuição de Prémios", "Avaliação"]}, {"titulo": "Gestão do Administrativo", "itens": ["Acompanhamento dos processos executados pelo Administrativo", "Validação de Horários", "Validação de Férias", "Validação do Ponto", "Atribuição de Prémios", "Avaliação"]}, {"titulo": "Gestão dos Motoristas", "itens": ["Validação de Horários", "Validaçãp de Férias", "Validação do Ponto", "Acompanhamento e avaliação"]}, {"titulo": "KPIS Operacionais", "itens": ["Produtivdade", "Ocupação da Frota", "Eficiência", "Rentabilidade Operacional", "Análise de Performance Motorista/Viatura"]}, {"titulo": "Gestão do E-mail", "itens": []}]}, {"id": "adm_ind", "nome": "Administrativo Indústria", "estado": "Função ativa", "pessoas": [{"pid": "mn", "papel": "Administrativa Indústria"}], "sections": [{"titulo": "", "itens": ["Emissão e envio das propostas de fornecimento", "Abertura de notas de encomenda referentes a pedidos de Agregados", "Atualização do CRM (Trello Indústria Comercial)", "Apoio às Expedições no âmbito de Encomendas e Faturação", "Substituição de Expedição em caso de necessidade.", "Apoio ao Comercial Indústria.", "Apoio administrativo ao técnico responsável.", "Contacto e gestão de pequenos clientes", "Feedback ao Cliente Interno (CPSA)", "Emissão de Guias de Blocos e Folha de desperdicio", "Emissão de Relatórios de Ocorrência"]}]}, {"id": "exp_ind", "nome": "Expedição Indústria", "estado": "Função ativa", "pessoas": [{"pid": "nd", "papel": "Vale Rodrigues + Moleanos"}, {"pid": "le", "papel": "Cano"}, {"pid": "ac", "papel": "Santa Eulália"}, {"pid": "st", "papel": "Sobrissul"}, {"pid": "pl", "papel": "Sobrissul"}], "sections": [{"titulo": "", "itens": ["Assegurar o cumprimento do planeamento definido pelo Técnico.", "Garantir conformidade com pesos, tolerâncias e regras da balança", "Emitir/validar guias de transporte/remessa no local e preparar documentação de expedição", "Informar as regras de segurança e procedimentos dentro da pedreira a terceiros(motoristas).", "Lançamento de Guias de Fornecedores (Transportadores)", "Emissão de Relatórios de Ocorrência.", "Contactar pequenos clientes", "Abertura de propostas de fornecimento", "Emissão de Faturas Proforma", "Abertura de encomendas PHC", "Controlo de PLAFONDS de Clientes", "Receção de Materiais", "Gestão de Consumíveis (Produtos de Higiene e Limpeza, Àguas, Economato e Roupas de camas)"]}]}, {"id": "adm_cist", "nome": "Administrativo Cisterna", "estado": "Função ativa", "pessoas": [{"pid": "vb", "papel": "Administrativa Cisternas"}, {"pid": "am", "papel": "Supervisão"}], "sections": [{"titulo": "", "itens": ["Emissão e envio das propostas de fornecimento", "Abertura de notas de encomenda referentes a pedidos de transporte", "Verificação e lançamento das guias de transporte", "Preparação de documentação para faturação (validação das listagens)", "Apoio administrativo ao técnico responsável", "Envio de Notas de Encomenda ao Dep.Compras", "Lançamento do Ponto do Departamento de Logística (Pessoal administrativo, Expedições, Motoristas)"]}]}, {"id": "adm_comb", "nome": "Administrativo de Combustíveis/Energia e Equipamentos", "estado": "Função ativa", "pessoas": [{"pid": "jc", "papel": "Adm. Combustíveis/Energia"}], "sections": [{"titulo": "Combustíveis", "itens": []}, {"titulo": "Lançamento e Controlo de Combustíveis", "itens": ["Controlo diário de Consumos", "Abastecimento", "Análise de Desvios", "Controlo de Cartões de Combustível/Energia", "Auditoria -Mapas de Apoio à Gestão", "Tanques Fixos e Móveis", "Abastecimento de Máquinas e Equipamentos", "Monitorização dos postos de carregamento elétrico de todos os complexos", "Gestão do E-mail combustíveis"]}, {"titulo": "Mobilizações", "itens": ["Registo e Controlo de Mobilização de Máquinas", "Lançamento de Grandes Equipamentos afetos à Obra"]}]}, {"id": "gmf", "nome": "Gestor de Frota e Apoio Operacional", "estado": "Ativa — proposta de dedicação", "pessoas": [{"pid": "am", "papel": "Gestor de Frota (em acumulação)"}, {"pid": null, "papel": "Vaga dedicada proposta — a recrutar / consolidar"}], "sections": [{"titulo": "Gestão de Frota", "itens": ["Coordenação entre Oficina e Técnicos de Logística", "Manutenções Preditivas, Preventivas e Corretivas", "Controlo de Avarias, Pneus, etc.", "Gestão de Marcações", "Inspeções de Veiculos", "Aferição de Tacógragos", "Documentação", "Agendamento de intervenções", "Pedidos de peças", "Acompanhamento das Viaturas em oficinas externas", "Controlo e acompanhamento de Sinistros", "Licenças", "Implementação/Monotorização de sistemas de verificação pré-saida da viatura (check-list diário)"]}, {"titulo": "Gestão Administrativa de Motoristas", "itens": ["Controlo de Horas", "Preparação do Ponto", "Disponibilidades", "Registo de Férias", "Licenças"]}, {"titulo": "Custos de Obra", "itens": ["Imputação homem/obra", "Imputação camião/obra"]}, {"titulo": "Tacógrafos", "itens": ["Confirmação de descargas e registos de tacógrafo (camião e motorista)", "Análise e Validação dos dados.", "Informar o motorista em caso de anomalia ou infração.", "Formação e Apoio aos Motoristas", "Disponibilização de informação essencial ao lançamento do ponto.", "Report"]}, {"titulo": "Apoio Operacional", "itens": ["Atualização de Mapas", "Alertas, Reports", "Apoio aos Técnicos gestores de Tráfego"]}], "rich": true, "objetivo": "Consolidar numa função dedicada de GESTÃO (não é oficina) a gestão de frota, manutenções e tacógrafos: planear e acompanhar manutenções (preventiva, preditiva, corretiva), coordenar oficinas e peças, centralizar a informação técnica e integrar o controlo de tacógrafos. Hoje em acumulação/distribuída; proposta de dedicação. Objetivo: maximizar a disponibilidade da frota, reduzir imobilizações e controlar custos.", "tacografos": "Ligar ao projeto em desenvolvimento \"Tacógrafos\" (dashboard + formação, DL 84/2026 em vigor desde 12/07/2026). A vertente de tacógrafos integra-se nesta função à medida que o projeto avança.", "tarefas": ["Decidir a relação da função com os Gestores de Frota por área (coordena vs. absorve)", "Definir a ferramenta de suporte (App Avarias / Smart Logistics / Traccar)", "Delimitar o perímetro da frota abrangida", "Fixar o limite de valor de aprovação autónoma (€)", "Medir baseline de disponibilidade e dias de imobilização", "Definir a via de recrutamento (interno vs. externo)", "Escrever o descritivo / anúncio de recrutamento", "Apresentar a proposta à Direção"], "roadmap": [{"titulo": "Fase 0 — Decisão e Enquadramento", "resultado": "Função aprovada, perímetro fechado, ferramenta escolhida, limite € e via de recrutamento definidos", "prazo": "Pré-M0 (2–4 sem.)", "progresso": 10, "estado": "Em curso", "cor": "#eab308"}, {"titulo": "Fase 1 — Fundação de Informação", "resultado": "Inventário técnico + estado da frota + baseline de KPIs", "prazo": "M0 → M3", "progresso": 0, "estado": "Não iniciado", "cor": "#a1a1aa"}, {"titulo": "Fase 2 — Preventiva a Rolar", "resultado": "Plano preventivo a correr + corretiva com prioridades P1–P4", "prazo": "M3 → M6", "progresso": 0, "estado": "Não iniciado", "cor": "#a1a1aa"}, {"titulo": "Fase 3 — Gestão por Dados", "resultado": "Relatório mensal fiável + KPIs com metas vs. baseline", "prazo": "M6 → M12", "progresso": 0, "estado": "Não iniciado", "cor": "#a1a1aa"}, {"titulo": "Fase 4 — Manutenção Preditiva", "resultado": "Antecipação de falhas por telemetria e histórico consolidado", "prazo": "M12+", "progresso": 0, "estado": "Não iniciado", "cor": "#a1a1aa"}], "blocos": [{"titulo": "Perfil-alvo — Formação", "itens": ["Técnica em Mecânica / Manutenção Industrial / Automóvel / Eng. Mecânica (técnico-profissional a licenciatura)", "Alternativa: experiência sólida equivalente em gestão de frota / oficina"]}, {"titulo": "Perfil-alvo — Experiência", "itens": ["Gestão de frota, oficina ou manutenção de pesados / equipamento de obra", "Vantagem: construção, pedreiras, transportes ou aluguer de equipamento", "Experiência a lidar com oficinas externas (orçamentos, prazos, negociação)"]}, {"titulo": "Perfil-alvo — Conhecimentos técnicos", "itens": ["Interpretar diagnósticos e orçamentos e questionar oficinas", "Peças e referências (OEM vs. alternativas), consumíveis, pneus, filtros, óleos", "Manutenção preventiva por km / horas e inspeções periódicas"]}, {"titulo": "Perfil-alvo — Ferramentas e dados", "itens": ["Folha de cálculo e, idealmente, software de gestão de frota / manutenção", "Telemetria (Traccar) e registo de avarias", "Construir e ler KPIs (disponibilidade, MTTR, custo/km)"]}, {"titulo": "Perfil-alvo — Competências comportamentais", "itens": ["Organização e método — a função vive de registo consistente", "Firmeza e assertividade — exigir prazos e impor prioridades", "Comunicação — traduzir técnico em operacional", "Orientação a dados — decidir por factos", "Autonomia e proatividade — antecipar, não esperar pela avaria", "Integridade e coragem — recusar regresso por segurança"]}, {"titulo": "Autoridade da função", "itens": ["Definir a prioridade técnica das intervenções", "Encaminhar para oficinas aprovadas", "Pedir diagnósticos e orçamentos", "Exigir estado das reparações", "Questionar prazos", "Recomendar prioridades ao Tráfego", "Recusar regresso à operação por segurança"]}, {"titulo": "Limites (sem autoridade autónoma)", "itens": ["Aprovar despesas acima do limite definido", "Escolher fornecedores fora da política", "Contratar oficinas sem aprovação", "Alterar rotas / escalas / horas extra", "Decidir substituição definitiva de equipamento", "Comprar fora do processo definido"]}, {"titulo": "Via de recrutamento", "itens": ["Recomendação: privilegiar um perfil interno com base técnica forte que demonstre apetência para gestão e dados, reforçado com formação em KPIs e método. Só ir a externo se não existir candidato interno com o perfil comportamental."]}, {"titulo": "Guião de entrevista", "itens": ["Descreva como acompanharia uma avaria crítica, da comunicação ao regresso à operação.", "Uma oficina diz \"fica pronto amanhã\". O que faz a seguir?", "Como decidiria a prioridade entre dois equipamentos avariados ao mesmo tempo?", "Que informação manteria sobre cada equipamento e porquê?", "Como convenceria o Tráfego a libertar um equipamento para uma preventiva?", "Dê um exemplo em que teve de impor uma decisão técnica contra pressão operacional.", "Que indicadores usaria para avaliar se a frota está bem gerida?"]}, {"titulo": "Resultado esperado", "itens": ["Maior disponibilidade da frota", "Menos avarias inesperadas", "Menor tempo de imobilização", "Menor risco de erro (informação técnica centralizada)", "Melhor decisão de gestão (dados de custos, avarias, oficinas)"]}]}, {"id": "adm_custos", "nome": "Administrativo de Custos Operacionais", "estado": "Função ativa", "pessoas": [{"pid": "jc", "papel": "Custos operacionais (em acumulação)"}], "sections": [{"titulo": "Custos de Obra", "itens": ["Imputação homem/obra", "Imputação camião/obra"]}, {"titulo": "Gestão Administrativa de Motoristas", "itens": ["Controlo de Horas", "Preparação do Ponto", "Disponibilidades", "Registo de Férias", "Licenças"]}]}];
-var _selFuncao=null;
-var FN_INP='border:1px solid var(--border);border-radius:5px;padding:5px 7px;font-size:12px;width:100%;box-sizing:border-box;background:var(--bg);color:var(--text)';
-var _pendingDelFunc=null;
-// ── Persistência ──
-function getFunctions(){var s=localStorage.getItem('pragosa_funcoes_v1');if(!s)return JSON.parse(JSON.stringify(FUNCTIONS));var arr=JSON.parse(s);var ids={};arr.forEach(function(f){ids[f.id]=true;});FUNCTIONS.forEach(function(f){if(!ids[f.id])arr.push(JSON.parse(JSON.stringify(f)));});return arr;}
-function saveFunctions(arr){localStorage.setItem('pragosa_funcoes_v1',JSON.stringify(arr));}
-function getFuncao(id){return getFunctions().find(function(x){return x.id===id;});}
-function _funcMut(fid,fn){var arr=getFunctions();var f=arr.find(function(x){return x.id===fid;});if(!f)return;fn(f);saveFunctions(arr);}
-function gotoPessoa(id){var b=document.querySelector('.nav-btn[onclick*="pessoas"]');if(b)showTab('pessoas',b);selectPerson(id);}
-function funcHeaderHTML(f){return '<div class="p-main-av '+(f.rich?'av-purple':'av-blue')+'">'+(f.rich?'🔧':'📋')+'</div>'
-  +'<div><div class="p-main-name">'+escHtml(f.nome)+'</div><div class="p-main-role">'+escHtml(f.estado||'')+'</div></div>'
-  +'<div style="margin-left:auto"><span class="badge b-info" style="font-size:10.5px">'+escHtml(f.estado||'')+'</span></div>';}
-// ── Sidebar ──
-function renderFuncoesList(){
-  var sb=document.getElementById('funcoes-sidebar');if(!sb)return;
-  var arr=getFunctions();
-  var h='<div class="psi-head">Funções</div>';
-  arr.forEach(function(f){
-    var ac=(_selFuncao===f.id)?' active':'';
-    h+='<div class="p-item'+ac+'" id="fi-'+f.id+'" onclick="selectFuncao(\''+f.id+'\')">'
-      +'<div class="p-item-av '+(f.rich?'av-purple':'av-blue')+'">'+(f.rich?'🔧':'📋')+'</div>'
-      +'<div class="p-item-info"><div class="p-item-name">'+escHtml(f.nome)+'</div><div class="p-item-role">'+escHtml(f.estado||'')+'</div></div>'
-      +'<div class="p-status-dot" style="background:var(--accent)"></div></div>';
-  });
-  h+='<div class="psi-divider"></div>';
-  h+='<div style="padding:8px 12px"><button class="btn-sec" onclick="funcAddFuncao()">＋ Nova função</button></div>';
-  sb.innerHTML=h;
-}
-function renderFuncoes(){renderFuncoesList();var arr=getFunctions();if(!_selFuncao||!arr.some(function(f){return f.id===_selFuncao;}))_selFuncao=arr.length?arr[0].id:null;if(_selFuncao)selectFuncao(_selFuncao);}
-function selectFuncao(id){
-  _selFuncao=id;
-  document.querySelectorAll('#funcoes-sidebar .p-item').forEach(function(el){el.classList.remove('active');});
-  var el=document.getElementById('fi-'+id);if(el)el.classList.add('active');
-  var f=getFuncao(id);
-  var hdr=document.getElementById('funcoes-header');if(hdr&&f)hdr.innerHTML=funcHeaderHTML(f);
-  var c=document.getElementById('funcoes-content');if(c)c.innerHTML=renderFuncaoDetail(id);
-}
-function funcRefresh(fid){
-  var c=document.getElementById('funcoes-content');var st=c?c.scrollTop:0;
-  renderFuncoesList();
-  var el=document.getElementById('fi-'+fid);if(el)el.classList.add('active');
-  var f=getFuncao(fid);var hdr=document.getElementById('funcoes-header');if(hdr&&f)hdr.innerHTML=funcHeaderHTML(f);
-  if(c&&f){c.innerHTML=renderFuncaoDetail(fid);c.scrollTop=st;}
-}
-// ── Handlers ──
-function funcSetNome(fid,val){_funcMut(fid,function(f){f.nome=val;});var it=document.querySelector('#fi-'+fid+' .p-item-name');if(it)it.textContent=val;var hn=document.querySelector('#funcoes-header .p-main-name');if(hn)hn.textContent=val;}
-function funcSetEstado(fid,val){_funcMut(fid,function(f){f.estado=val;});var it=document.querySelector('#fi-'+fid+' .p-item-role');if(it)it.textContent=val;var f=getFuncao(fid);var hdr=document.getElementById('funcoes-header');if(hdr&&f)hdr.innerHTML=funcHeaderHTML(f);}
-function funcSetField(fid,field,val){_funcMut(fid,function(f){f[field]=val;});}
-function funcSetPid(fid,i,val){_funcMut(fid,function(f){f.pessoas[i].pid=(val==='__vaga'?null:(val||''));});funcRefresh(fid);}
-function funcSetPapel(fid,i,val){_funcMut(fid,function(f){f.pessoas[i].papel=val;});}
-function funcAddPessoa(fid){_funcMut(fid,function(f){(f.pessoas=f.pessoas||[]).push({pid:'',papel:''});});funcRefresh(fid);}
-function funcDelPessoa(fid,i){_funcMut(fid,function(f){f.pessoas.splice(i,1);});funcRefresh(fid);}
-function funcSecTitle(fid,key,si,val){_funcMut(fid,function(f){f[key][si].titulo=val;});}
-function funcItem(fid,key,si,ii,val){_funcMut(fid,function(f){f[key][si].itens[ii]=val;});}
-function funcAddItem(fid,key,si){_funcMut(fid,function(f){(f[key][si].itens=f[key][si].itens||[]).push('');});funcRefresh(fid);}
-function funcDelItem(fid,key,si,ii){_funcMut(fid,function(f){f[key][si].itens.splice(ii,1);});funcRefresh(fid);}
-function funcAddSec(fid,key){_funcMut(fid,function(f){(f[key]=f[key]||[]).push({titulo:'Nova secção',itens:['']});});funcRefresh(fid);}
-function funcDelSec(fid,key,si){_funcMut(fid,function(f){f[key].splice(si,1);});funcRefresh(fid);}
-function funcRoad(fid,ri,field,val){_funcMut(fid,function(f){f.roadmap[ri][field]=(field==='progresso'?Math.max(0,Math.min(100,+val||0)):val);});}
-function funcRoadRe(fid,ri,field,val){funcRoad(fid,ri,field,val);funcRefresh(fid);}
-function funcAddRoad(fid){_funcMut(fid,function(f){(f.roadmap=f.roadmap||[]).push({titulo:'Nova fase',resultado:'',prazo:'',progresso:0,estado:'Não iniciado',cor:'#a1a1aa'});});funcRefresh(fid);}
-function funcDelRoad(fid,ri){_funcMut(fid,function(f){f.roadmap.splice(ri,1);});funcRefresh(fid);}
-function funcTarefa(fid,i,val){_funcMut(fid,function(f){f.tarefas[i]=val;});}
-function funcAddTarefa(fid){_funcMut(fid,function(f){(f.tarefas=f.tarefas||[]).push('');});funcRefresh(fid);}
-function funcDelTarefa(fid,i){_funcMut(fid,function(f){f.tarefas.splice(i,1);});funcRefresh(fid);}
-function funcToggleRich(fid,val){_funcMut(fid,function(f){f.rich=!!val;if(f.rich){if(!f.roadmap)f.roadmap=[];if(!f.blocos)f.blocos=[];}});funcRefresh(fid);}
-function funcAddFuncao(){var arr=getFunctions();var id='fn'+Date.now();arr.push({id:id,nome:'Nova função',estado:'Função ativa',pessoas:[],sections:[{titulo:'',itens:['']}]});saveFunctions(arr);_selFuncao=id;renderFuncoes();showToast('Função criada.');}
-function funcDelFuncao(fid){if(_pendingDelFunc!==fid){_pendingDelFunc=fid;showToast('Clique novamente para eliminar esta função.');setTimeout(function(){if(_pendingDelFunc===fid)_pendingDelFunc=null;},3000);return;}_pendingDelFunc=null;var arr=getFunctions().filter(function(x){return x.id!==fid;});saveFunctions(arr);_selFuncao=arr.length?arr[0].id:null;renderFuncoes();showToast('Função eliminada.');}
-function funcResetAll(){if(_pendingDelFunc!=='__reset'){_pendingDelFunc='__reset';showToast('Clique novamente para repor as funções originais (perde edições).');setTimeout(function(){if(_pendingDelFunc==='__reset')_pendingDelFunc=null;},3000);return;}_pendingDelFunc=null;localStorage.removeItem('pragosa_funcoes_v1');_selFuncao=null;renderFuncoes();showToast('Funções repostas.');}
-// ── Editores reutilizáveis ──
-function renderEditSections(fid,key,secs){
-  var q="'"+fid+"','"+key+"'";
-  var h='';
-  (secs||[]).forEach(function(s,si){
-    h+='<div style="border:1px solid var(--border);border-radius:6px;padding:8px;margin-bottom:8px;background:var(--bg)">';
-    h+='<div style="display:flex;gap:6px;margin-bottom:6px;align-items:center">'
-      +'<input style="'+FN_INP+';font-weight:600" value="'+escHtml(s.titulo||'')+'" placeholder="Título da secção (opcional)" onchange="funcSecTitle('+q+','+si+',this.value)">'
-      +'<button class="g-x" title="Eliminar secção" onclick="funcDelSec('+q+','+si+')">×</button></div>';
-    (s.itens||[]).forEach(function(it,ii){
-      h+='<div style="display:flex;gap:6px;margin-bottom:4px;align-items:center">'
-        +'<span style="color:var(--text-3);font-size:11px">•</span>'
-        +'<input style="'+FN_INP+'" value="'+escHtml(it||'')+'" onchange="funcItem('+q+','+si+','+ii+',this.value)">'
-        +'<button class="g-x" title="Eliminar item" onclick="funcDelItem('+q+','+si+','+ii+')">×</button></div>';
-    });
-    h+='<button class="btn-sec" style="margin-top:4px" onclick="funcAddItem('+q+','+si+')">＋ Item</button>';
-    h+='</div>';
-  });
-  return h;
-}
-function renderEditRoadmap(fid,road){
-  var q="'"+fid+"'";var h='';
-  (road||[]).forEach(function(o,ri){
-    h+='<div style="border:1px solid var(--border);border-radius:6px;padding:8px;margin-bottom:8px;background:var(--bg)">';
-    h+='<div style="display:flex;gap:6px;margin-bottom:5px;align-items:center">'
-      +'<input style="'+FN_INP+';font-weight:600" value="'+escHtml(o.titulo||'')+'" placeholder="Título da fase" onchange="funcRoad('+q+','+ri+',\'titulo\',this.value)">'
-      +'<button class="g-x" onclick="funcDelRoad('+q+','+ri+')">×</button></div>';
-    h+='<input style="'+FN_INP+';margin-bottom:5px" value="'+escHtml(o.resultado||'')+'" placeholder="Resultado esperado" onchange="funcRoad('+q+','+ri+',\'resultado\',this.value)">';
-    h+='<div style="display:flex;gap:6px;margin-bottom:5px">'
-      +'<input style="'+FN_INP+'" value="'+escHtml(o.prazo||'')+'" placeholder="Prazo (ex: M0 → M3)" onchange="funcRoad('+q+','+ri+',\'prazo\',this.value)">'
-      +'<select style="'+FN_INP+';width:auto" onchange="funcRoadRe('+q+','+ri+',\'estado\',this.value)">'
-      +['Não iniciado','Em curso','Em risco','Concluído'].map(function(st){return'<option'+(o.estado===st?' selected':'')+'>'+st+'</option>';}).join('')
-      +'</select>'
-      +'<input type="number" min="0" max="100" style="width:64px;'+FN_INP+'" value="'+(o.progresso||0)+'" onchange="funcRoadRe('+q+','+ri+',\'progresso\',this.value)"></div>';
-    h+='<div class="obj-prog-track"><div class="obj-prog-fill" style="width:'+(o.progresso||0)+'%;background:'+(o.cor||'#a1a1aa')+'"></div></div>';
-    h+='</div>';
-  });
-  return h;
-}
-function renderEditList(fid,arr,setter,delr){
-  var q="'"+fid+"'";var h='';
-  (arr||[]).forEach(function(t,i){
-    h+='<div style="display:flex;gap:6px;margin-bottom:4px;align-items:center">'
-      +'<span style="color:var(--text-3);font-size:11px">•</span>'
-      +'<input style="'+FN_INP+'" value="'+escHtml(t||'')+'" onchange="'+setter+'('+q+','+i+',this.value)">'
-      +'<button class="g-x" onclick="'+delr+'('+q+','+i+')">×</button></div>';
-  });
-  return h;
-}
-// ── Detalhe editável ──
-function renderFuncaoDetail(id){
-  var f=getFuncao(id);if(!f)return '';
-  var team=getTeamData();var q="'"+id+"'";
-  var CARD='background:var(--surface,#fff);border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin-top:12px';
-  var LBL='font-size:10.5px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px';
-  var out='';
-  out+='<div style="font-size:11px;color:var(--text-3);margin-bottom:2px">✎ Todos os campos são editáveis — as alterações guardam-se automaticamente neste computador.</div>';
-  // Identificação
-  out+='<div style="'+CARD+';margin-top:6px">';
-  out+='<div style="display:flex;justify-content:space-between;align-items:center"><div class="card-title">Identificação</div><button class="g-x" title="Eliminar função" onclick="funcDelFuncao('+q+')">🗑 Eliminar</button></div>';
-  out+='<div style="margin-bottom:8px"><div style="'+LBL+'">Nome da função</div><input style="'+FN_INP+';font-weight:600" value="'+escHtml(f.nome||'')+'" onchange="funcSetNome('+q+',this.value)"></div>';
-  out+='<div style="margin-bottom:8px"><div style="'+LBL+'">Estado</div><input style="'+FN_INP+'" value="'+escHtml(f.estado||'')+'" onchange="funcSetEstado('+q+',this.value)"></div>';
-  out+='<div style="margin-bottom:8px"><div style="'+LBL+'">Objetivo</div><textarea style="'+FN_INP+';min-height:56px;resize:vertical" placeholder="Objetivo da função (opcional)" onchange="funcSetField('+q+',\'objetivo\',this.value)">'+escHtml(f.objetivo||'')+'</textarea></div>';
-  out+='<div><label style="font-size:11.5px;color:var(--text-2);display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox"'+(f.rich?' checked':'')+' onchange="funcToggleRich('+q+',this.checked)"> Função com roadmap + perfil de recrutamento</label></div>';
-  out+='</div>';
-  // Pessoas ligadas
-  out+='<div style="'+CARD+'"><div class="card-title">Pessoas ligadas</div>';
-  (f.pessoas||[]).forEach(function(pl,i){
-    var cur=(pl.pid===null)?'__vaga':(pl.pid||'');
-    var opts='<option value=""'+(cur===''?' selected':'')+'>— selecionar pessoa —</option>';
-    team.forEach(function(p){opts+='<option value="'+p.id+'"'+(cur===p.id?' selected':'')+'>'+escHtml(p.name)+'</option>';});
-    opts+='<option value="__vaga"'+(cur==='__vaga'?' selected':'')+'>＋ Vaga dedicada (sem pessoa)</option>';
-    out+='<div style="border:1px solid var(--border);border-radius:6px;padding:8px;margin-bottom:8px;background:var(--bg)">'
-      +'<div style="display:flex;gap:6px;margin-bottom:5px;align-items:center">'
-      +'<select style="'+FN_INP+'" onchange="funcSetPid('+q+','+i+',this.value)">'+opts+'</select>'
-      +(pl.pid?'<button class="btn-sec" title="Abrir ficha" onclick="gotoPessoa(\''+pl.pid+'\')">↗</button>':'')
-      +'<button class="g-x" onclick="funcDelPessoa('+q+','+i+')">×</button></div>'
-      +'<input style="'+FN_INP+'" value="'+escHtml(pl.papel||'')+'" placeholder="Papel nesta função" onchange="funcSetPapel('+q+','+i+',this.value)"></div>';
-  });
-  out+='<button class="btn-sec" onclick="funcAddPessoa('+q+')">＋ Pessoa</button></div>';
-  // Responsabilidades
-  out+='<div style="'+CARD+'"><div class="card-title">Responsabilidades</div>'+renderEditSections(id,'sections',f.sections||[])
-    +'<button class="btn-sec" onclick="funcAddSec('+q+',\'sections\')">＋ Secção</button></div>';
-  // Rich extras
-  if(f.rich){
-    out+='<div style="'+CARD+'"><div class="card-title">Roadmap de implementação</div>'+renderEditRoadmap(id,f.roadmap||[])
-      +'<button class="btn-sec" onclick="funcAddRoad('+q+')">＋ Fase</button></div>';
-    out+='<div style="'+CARD+'"><div class="card-title">Perfil de recrutamento</div>'+renderEditSections(id,'blocos',f.blocos||[])
-      +'<button class="btn-sec" onclick="funcAddSec('+q+',\'blocos\')">＋ Bloco</button></div>';
-    out+='<div style="'+CARD+';border-left:3px solid #0ea5e9"><div class="card-title">Ligação futura — Tacógrafos</div>'
-      +'<textarea style="'+FN_INP+';min-height:56px;resize:vertical" onchange="funcSetField('+q+',\'tacografos\',this.value)">'+escHtml(f.tacografos||'')+'</textarea></div>';
-    out+='<div style="'+CARD+'"><div class="card-title">Decisões e tarefas por fechar</div>'+renderEditList(id,f.tarefas||[],'funcTarefa','funcDelTarefa')
-      +'<button class="btn-sec" onclick="funcAddTarefa('+q+')">＋ Tarefa</button></div>';
-  }
-  out+='<div style="margin-top:14px;text-align:right"><button class="btn-sec" style="color:var(--text-3)" onclick="funcResetAll()">↺ Repor funções originais</button></div>';
-  return out;
-}
-
 // ── Competências Matrix ──
 var COMP_COLS=['Comunicação','Organização e planeamento','Autonomia','Adaptabilidade','Trabalho em equipa','Resolução de problemas','Conhecimento técnico','Gestão proc. op.','Ferramentas digitais'];
 function getCompVal(id,col){
@@ -3373,9 +3477,9 @@ function showTab(name,btn){
   document.querySelectorAll('.section').forEach(function(s){s.classList.remove('active');});
   document.querySelectorAll('.nav-btn').forEach(function(b){b.classList.remove('active');});
   document.getElementById('tab-'+name).classList.add('active');btn.classList.add('active');
-  if(name==='geral')renderVistaGeral();
+  if(name==='geral')renderVistaGeral();else if(name==='funcoes')renderFuncoes();
+  renderFuncoes();
   if(name==='pessoas')renderPessoas();
-  if(name==='funcoes')renderFuncoes();
   if(name==='competencias')renderCompetencias();
   if(name==='frota'){buildTypeFilter(currentCat);renderFleet();}
   if(name==='tarefas'){renderTasks();syncMeetingButtons();}
@@ -3614,12 +3718,392 @@ async function aiSend(){
   msgsArea.scrollTop=msgsArea.scrollHeight;
 }
 function showToast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},2200);}
+function _pdfEsc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function _pdfWrap(title,subtitle,body){
+  var date=new Date().toLocaleDateString('pt-PT',{day:'2-digit',month:'long',year:'numeric'});
+  return'<!DOCTYPE html><html lang="pt"><head><meta charset="UTF-8"><title>'+_pdfEsc(title)+'</title><style>'
+  +'body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:12px;color:#18181b;margin:0;padding:0;background:#fff}'
+  +'.pg{max-width:820px;margin:0 auto;padding:32px 40px}'
+  +'.hdr{border-bottom:2px solid #2563eb;padding-bottom:12px;margin-bottom:24px}'
+  +'.hdr h1{font-size:20px;font-weight:700;margin:0 0 4px;color:#2563eb}'
+  +'.hdr p{margin:0;font-size:11px;color:#71717a}'
+  +'.meta{display:flex;gap:24px;margin-bottom:20px;font-size:11px;color:#52525b}'
+  +'.meta span{background:#f4f4f5;padding:4px 10px;border-radius:20px}'
+  +'.block{margin-bottom:20px;break-inside:avoid;page-break-inside:avoid}'
+  +'.block h2{font-size:13px;font-weight:700;color:#fff;background:#2563eb;padding:6px 12px;border-radius:4px;margin:0 0 8px}'
+  +'.block h3{font-size:12px;font-weight:600;color:#2563eb;border-left:3px solid #2563eb;padding-left:8px;margin:12px 0 6px}'
+  +'.block ul{margin:0;padding:0 0 0 16px;list-style:disc}'
+  +'.block ul li{margin-bottom:3px;line-height:1.5}'
+  +'table{width:100%;border-collapse:collapse;font-size:11px;margin-top:6px}'
+  +'th{background:#f4f4f5;text-align:left;padding:5px 8px;font-size:10px;font-weight:600;color:#52525b}'
+  +'td{padding:5px 8px;border-bottom:1px solid #e4e4e7;vertical-align:top}'
+  +'.badge{display:inline-block;padding:2px 7px;border-radius:10px;font-size:10px;font-weight:600}'
+  +'.ok{background:#dcfce7;color:#166534}.pend{background:#fef9c3;color:#854d0e}.block-g{background:#eff6ff;color:#1e40af}.blk{background:#fee2e2;color:#991b1b}.prog{background:#dbeafe;color:#1e40af}'
+  +'@media print{.pg{padding:20px 28px}}'
+  +'</style></head><body><div class="pg">'
+  +'<div class="hdr"><h1>'+_pdfEsc(title)+'</h1><p>Construções Pragosa, S.A. — Departamento de Logística & Frota'+(subtitle?' · '+_pdfEsc(subtitle):'')+'<br>Exportado em '+date+'</p></div>'
+  +body+'</div></body></html>';}
+
+function _pdfOpenPrint(html,title){
+  var win=window.open('','_pdf_'+Date.now(),'width=960,height=720');
+  if(!win){alert('Autorize popups para exportar PDF.');return;}
+  win.document.write(html);win.document.close();
+  win.focus();setTimeout(function(){win.print();},600);}
+
+function _pdfFuncoes(){
+  var data=getFuncoesData();
+  var f=_fcSelectedId?data.find(function(x){return x.id===_fcSelectedId;}):null;
+  if(!f&&data.length)f=data[0];
+  if(!f)return _pdfWrap('Funções Dept.','','<p>Sem dados.</p>');
+  var title=f.title.replace(/^FUNÇÕES\s*[-–]?\s*/i,'');
+  var meta='<div class="meta">'
+    +(f.pessoa?'<span>Responsável: <strong>'+_pdfEsc(f.pessoa)+'</strong></span>':'')
+    +(f.responsavel?'<span>Gestor: <strong>'+_pdfEsc(f.responsavel)+'</strong></span>':'')
+    +'</div>';
+  var body=meta;
+  f.sections.forEach(function(sec){
+    var items=sec.items.filter(function(i){return i.trim();});
+    body+='<div class="block"><h3>'+_pdfEsc(sec.cat)+'</h3>';
+    if(items.length){body+='<ul>';items.forEach(function(i){body+='<li>'+_pdfEsc(i)+'</li>';});body+='</ul>';}
+    else body+='<p style="color:#a1a1aa;font-style:italic;font-size:11px">Sem itens definidos.</p>';
+    body+='</div>';
+  });
+  if(_fcSubTab==='roadmap'&&f.roadmap&&f.roadmap.length){
+    body+='<div class="block"><h2>Roadmap</h2><table><thead><tr><th>Marco / Ação</th><th>Prazo</th><th>Estado</th></tr></thead><tbody>';
+    var sc={'Pendente':'pend','Em curso':'prog','Concluído':'ok','Bloqueado':'blk'};
+    f.roadmap.forEach(function(r){
+      body+='<tr><td>'+_pdfEsc(r.text||'')+'</td><td>'+(r.prazo||'—')+'</td><td><span class="badge '+(sc[r.estado]||'pend')+'">'+_pdfEsc(r.estado||'Pendente')+'</span></td></tr>';
+    });
+    body+='</tbody></table></div>';
+  }
+  return _pdfWrap(title,'',body);}
+
+function _pdfGanttObj(planId,oi){
+  var d=gLoad();
+  var plan=d.plans.find(function(x){return x.id===planId;})||gPlan();
+  var obj=plan.objetivos[oi];
+  if(!obj)return '';
+  var body='<div class="meta"><span>'+_pdfEsc(plan.titulo)+'</span><span>Início: '+_pdfEsc(plan.inicio||'')+'</span><span>'+plan.semanas.length+' semanas</span></div>';
+  body+='<div class="block"><table><thead><tr><th style="min-width:320px">Tarefa</th>';
+  plan.semanas.forEach(function(w){body+='<th style="font-size:9px;text-align:center;padding:4px">Sem.'+w.n+'<br>'+_pdfEsc(w.per)+'</th>';});
+  body+='</tr></thead><tbody>';
+  obj.tarefas.forEach(function(t){
+    body+='<tr'+(t.marco?' style="font-weight:600;background:#fff7ed"':'')+'><td>'+(t.marco?'★ ':'')+_pdfEsc(t.t)+'</td>';
+    plan.semanas.forEach(function(w){
+      var on=(t.w||[]).indexOf(w.n)>=0;
+      body+='<td style="text-align:center;'+(on?'background:'+(t.marco?'#f87171':'#93c5fd')+';':'')+'">'+(on?'●':'')+'</td>';
+    });
+    body+='</tr>';
+  });
+  body+='</tbody></table></div>';
+  if(plan.avTitulo&&oi===plan.objetivos.length-1){
+    body+='<div class="block"><h2>Avaliação Final</h2><p style="font-size:11px;margin-bottom:8px">'+_pdfEsc(plan.avTitulo)+'</p><ul>';
+    (plan.avCrit||[]).forEach(function(c){body+='<li>'+_pdfEsc(c)+'</li>';});
+    body+='</ul></div>';
+  }
+  return _pdfWrap(obj.titulo,plan.titulo,body);}
+
+function exportarGanttObjPDF(planId,oi){_pdfOpenPrint(_pdfGanttObj(planId,oi));}
+function exportarGanttPlanoPDF(){_pdfOpenPrint(_pdfGantt());}
+function exportarFuncaoPDF(fid){
+  var prev=_fcSelectedId;_fcSelectedId=fid;
+  var html=_pdfFuncoes();
+  _fcSelectedId=prev;
+  _pdfOpenPrint(html);
+}
+
+function _pdfGantt(){
+  var d=gLoad();
+  var plan=gPlan();
+  var body='<div class="meta"><span>Início: '+_pdfEsc(plan.inicio||'')+'</span><span>'+plan.semanas.length+' semanas</span></div>';
+  plan.objetivos.forEach(function(obj,oi){
+    body+='<div class="block"><h2>'+_pdfEsc(obj.titulo)+'</h2>';
+    body+='<table><thead><tr><th style="min-width:280px">Tarefa</th>';
+    plan.semanas.forEach(function(w){body+='<th style="font-size:9px;text-align:center;padding:4px">S'+w.n+'<br>'+_pdfEsc(w.per)+'</th>';});
+    body+='</tr></thead><tbody>';
+    obj.tarefas.forEach(function(t){
+      body+='<tr'+(t.marco?' style="font-weight:600"':'')+'><td>'+(t.marco?'★ ':'')+_pdfEsc(t.t)+'</td>';
+      plan.semanas.forEach(function(w){var on=(t.w||[]).indexOf(w.n)>=0;body+='<td style="text-align:center;'+(on?'background:'+(t.marco?'#f87171':'#93c5fd')+';':'')+'font-size:11px">'+(on?'●':'')+'</td>';});
+      body+='</tr>';
+    });
+    body+='</tbody></table></div>';
+  });
+  if(plan.avTitulo){body+='<div class="block"><h2>Avaliação Final</h2><p style="font-size:11px;margin-bottom:8px">'+_pdfEsc(plan.avTitulo)+'</p><ul>';(plan.avCrit||[]).forEach(function(c){body+='<li>'+_pdfEsc(c)+'</li>';});body+='</ul></div>';}
+  return _pdfWrap(plan.titulo,plan.sub||'',body);}
+
+function _pdfTarefas(){
+  var tasks=loadTasks();
+  var areas={};
+  tasks.forEach(function(t){var a=t.area||'geral';if(!areas[a])areas[a]={open:[],done:[]};(t.done?areas[a].done:areas[a].open).push(t);});
+  var pc={'high':'#dc2626','medium':'#d97706','low':'#16a34a'};
+  var body='';
+  Object.keys(areas).forEach(function(a){
+    var g=areas[a];
+    body+='<div class="block"><h2>'+_pdfEsc(a.charAt(0).toUpperCase()+a.slice(1))+'</h2>';
+    if(g.open.length){
+      body+='<h3>Pendentes ('+g.open.length+')</h3><table><thead><tr><th>Tarefa</th><th>Prioridade</th><th>Meta / Prazo</th><th>Fonte</th></tr></thead><tbody>';
+      g.open.forEach(function(t){body+='<tr><td>'+_pdfEsc(t.text)+'</td><td style="color:'+( pc[t.priority]||'#52525b')+';font-weight:600">'+_pdfEsc(t.priority||'')+'</td><td>'+_pdfEsc(t.meta||'')+'</td><td style="color:#71717a">'+_pdfEsc(t.source||'')+'</td></tr>';});
+      body+='</tbody></table>';
+    }
+    if(g.done.length){
+      body+='<h3>Concluídas ('+g.done.length+')</h3><table><thead><tr><th>Tarefa</th><th>Concluída</th></tr></thead><tbody>';
+      g.done.forEach(function(t){body+='<tr style="color:#6b7280"><td>'+_pdfEsc(t.text)+'</td><td>'+(t.completedAt||'')+'</td></tr>';});
+      body+='</tbody></table>';
+    }
+    body+='</div>';
+  });
+  return _pdfWrap('Tarefas','',body);}
+
+function _pdfPessoas(){
+  var team=getTeamData();
+  var body='';
+  team.forEach(function(p){
+    var nm=p.name||p.nome||'';
+    if(!nm)return;
+    body+='<div class="block"><h2>'+_pdfEsc(nm)+'</h2>';
+    body+='<div class="meta">'+(p.cargo?'<span>'+_pdfEsc(p.cargo)+'</span>':'')+(p.area?'<span>'+_pdfEsc(p.area)+'</span>':'')+'</div>';
+    var resp=getPersonResp(p.id);
+    if(resp&&resp.length){
+      body+='<h3>Responsabilidades</h3><table><thead><tr><th>Responsabilidade</th><th>Avaliação</th><th>Partilhado</th></tr></thead><tbody>';
+      resp.forEach(function(r){if(r.text&&r.text.trim())body+='<tr><td>'+_pdfEsc(r.text||'')+'</td><td>'+_pdfEsc(r.rating||'')+'</td><td>'+_pdfEsc(r.shared||'')+'</td></tr>';});
+      body+='</tbody></table>';
+    }
+    var notes=getPersonNotes();
+    if(notes[p.id]&&notes[p.id].trim()){body+='<h3>Notas</h3><p style="white-space:pre-wrap;font-size:11px">'+_pdfEsc(notes[p.id])+'</p>';}
+    body+='</div>';
+  });
+  return _pdfWrap('Equipa — Pessoas','',body);}
+
+function _pdfPessoaSingle(pid){
+  var team=getTeamData();
+  var p=team.find(function(x){return x.id===pid;});
+  if(!p)return _pdfPessoas();
+  var nm=p.name||p.nome||'';
+  var body='<div class="meta">'+(p.cargo?'<span>'+_pdfEsc(p.cargo)+'</span>':'')+(p.area?'<span>'+_pdfEsc(p.area)+'</span>':'')+(p.status?'<span>'+_pdfEsc(p.status)+'</span>':'')+'</div>';
+  var resp=getPersonResp(p.id);
+  if(resp&&resp.length){
+    body+='<div class="block"><h2>Responsabilidades</h2><table><thead><tr><th>Responsabilidade</th><th>Avaliação</th><th>Partilhado</th><th>Periodicidade</th></tr></thead><tbody>';
+    resp.forEach(function(r){if(r.text&&r.text.trim())body+='<tr><td>'+_pdfEsc(r.text)+'</td><td>'+_pdfEsc(r.rating||'')+'</td><td>'+_pdfEsc(r.shared||'')+'</td><td>'+_pdfEsc(r.periodicidade||'')+'</td></tr>';});
+    body+='</tbody></table></div>';
+  }
+  var notes=getPersonNotes();
+  if(notes[p.id]&&notes[p.id].trim())body+='<div class="block"><h2>Notas</h2><p style="white-space:pre-wrap;font-size:11px">'+_pdfEsc(notes[p.id])+'</p></div>';
+  return _pdfWrap(nm,p.cargo||'',body);}
+
+function exportarPessoaPDF(pid){_pdfOpenPrint(_pdfPessoaSingle(pid));}
+
+function exportarPDF(){
+  var activeTab=document.querySelector('.section.active');
+  var tabName=activeTab?activeTab.id.replace('tab-',''):'';
+  var html;
+  if(tabName==='funcoes') html=_pdfFuncoes();
+  else if(tabName==='frota') html=_pdfGantt();
+  else if(tabName==='tarefas') html=_pdfTarefas();
+  else if(tabName==='pessoas') html=_pdfPessoas();
+  else{
+    var labels={geral:'Vista Geral',competencias:'Competências',reunioes:'Reuniões',assistente:'Assistente',kpis:'KPIs'};
+    var content=activeTab?activeTab.innerText:'';
+    html=_pdfWrap(labels[tabName]||tabName,'','<pre style="white-space:pre-wrap;font-size:11px;line-height:1.6">'+_pdfEsc(content)+'</pre>');
+  }
+  _pdfOpenPrint(html);
+}
 function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+// ── FUNÇÕES DEPARTAMENTO ──
+var FUNCOES_DEFAULT=[{"title":"FUNÇÕES - Técnico Cisterna","sections":[{"cat":"Gestão de Tráfego e Logística da Cisternas","items":["Planeamento","Gestão Diária","Gestão de prioridades","Gestão de incidencias","Controlo operacional","Levantamento das necessidade e contratação de terceiros"]},{"cat":"Gestão Operacional da Frota","items":["Afetação de Viaturas","Gestão de disponibilidades","Acompanhamento de Avarias","Substituições: Frota e Motoristas","Produtividade da Frota","Acompanhamento de Consumos (Combustivel)"]},{"cat":"Gestão Comercial","items":["Negociação","Acompanhamento e Controlo de Encomendas","Acompanhamento de Clientes"]},{"cat":"Gestão do Administrativo","items":["Acompanhamento dos processos executados pelo Administrativo","Validação de Horários","Validação de Férias","Validação do Ponto","Atribuição de Prémios","Avaliação"]},{"cat":"Gestão dos Motoristas","items":["Validação de Horários","Validação de Férias","Validação do Ponto","Acompanhamento e avaliação"]},{"cat":"KPIS Operacionais","items":["Produtividade","Ocupação da Frota","Eficiência","Rentabilidade Operacional","Análise de Performance Motorista/Viatura","Gestão do E-mail"]}],"color":"#3b82f6","id":"f1","pessoa":"gs","responsavel":"","roadmap":[]},{"title":"FUNÇÕES Técnico Construções Pragosa","sections":[{"cat":"Gestão de Tráfego e Logística de Transportes para Obras","items":["Planeamento","Gestão Diária","Gestão de prioridades em coordenação com Direção de Produção","Gestão de incidencias","Controlo operacional","Levantamento das necessidade e contratação de terceiros"]},{"cat":"Gestão Operacional da Frota","items":["Afetação de Viaturas","Gestão de disponibilidades","Acompanhamento de Avarias","Substituições: Frota e Motoristas","Produtividade da Frota","Acompanhamento de Consumos (Combustivel)"]},{"cat":"Gestão de Pedidos","items":["Transporte de Materiais","Transporte de Máquinas","Viatura ao serviço da Obra"]},{"cat":"Gestão dos Motoristas","items":["Validação de Horários","Validação de Férias","Validação do Ponto","Acompanhamento e avaliação"]},{"cat":"KPIS Operacionais","items":["Produtividade","Ocupação da Frota","Eficiência","Rentabilidade Operacional","Análise de Performance Motorista/Viatura","Gestão do E-mail"]}],"color":"#10b981","id":"f2","pessoa":"fc","responsavel":"","roadmap":[]},{"title":"FUNÇÕES Técnico Indústria","sections":[{"cat":"Gestão de Tráfego e Logística da Indústria","items":["Planeamento","Gestão Diária","Gestão de prioridades","Gestão de incidencias","Controlo operacional","Levantamento das necessidade e contratação de terceiros"]},{"cat":"Gestão Operacional da Frota","items":["Afetação de Viaturas","Gestão de disponibilidades","Acompanhamento de Avarias","Substituições: Frota e Motoristas","Produtividade da Frota","Acompanhamento de Consumos (Combustivel)"]},{"cat":"Gestão Comercial","items":["Acompanhamento e Controlo de Encomendas","Gestão das Expedições","Acompanhamento dos processos executados"]},{"cat":"Gestão do Administrativo","items":["Validação de Horários","Validação de Férias","Validação do Ponto","Atribuição de Prémios","Avaliação"]},{"cat":"Gestão dos Motoristas","items":["Validação de Horários","Validação de Férias","Validação do Ponto","Acompanhamento e avaliação"]},{"cat":"KPIS Operacionais","items":["Produtividade","Ocupação da Frota","Eficiência","Rentabilidade Operacional","Análise de Performance Motorista/Viatura","Gestão do E-mail"]}],"color":"#f59e0b","id":"f3","pessoa":"bc","responsavel":"","roadmap":[]},{"title":"FUNÇÕES Administrativo Indústria","sections":[{"cat":"Geral","items":["Emissão e envio das propostas de fornecimento","Abertura de notas de encomenda referentes a pedidos de Agregados","Atualização do CRM (Trello Indústria Comercial)","Apoio às Expedições no âmbito de Encomendas e Faturação","Substituição de Expedição em caso de necessidade","Apoio ao Comercial Indústria","Apoio administrativo ao técnico responsável","Contacto e gestão de pequenos clientes","Feedback ao Cliente Interno (CPSA)","Emissão de Guias de Blocos e Folha de desperdicio","Emissão de Relatórios de Ocorrência"]}],"color":"#8b5cf6","id":"f4","pessoa":"mn","responsavel":"","roadmap":[]},{"title":"Expedição Indústria","sections":[{"cat":"Geral","items":["Assegurar o cumprimento do planeamento definido pelo Técnico","Garantir conformidade com pesos, tolerâncias e regras da balança","Emitir/validar guias de transporte/remessa no local","Informar as regras de segurança e procedimentos dentro da pedreira a terceiros","Lançamento de Guias de Fornecedores (Transportadores)","Emissão de Relatórios de Ocorrência","Abertura de propostas de fornecimento","Emissão de Faturas Proforma","Abertura de encomendas PHC","Controlo de PLAFONDS de Clientes","Receção de Materiais","Gestão de Consumíveis"]}],"color":"#ef4444","id":"f5","pessoa":"nd","responsavel":"","roadmap":[]},{"title":"Administrativo Cisterna","sections":[{"cat":"Geral","items":["Emissão e envio das propostas de fornecimento","Abertura de notas de encomenda referentes a pedidos de transporte","Verificação e lançamento das guias de transporte","Preparação de documentação para faturação","Apoio administrativo ao técnico responsável","Envio de Notas de Encomenda ao Dep.Compras","Lançamento do Ponto do Departamento de Logística"]}],"color":"#06b6d4","id":"f6","pessoa":"vb","responsavel":"","roadmap":[]},{"title":"Adm. Combustíveis/Energia e Equipamentos","sections":[{"cat":"Lançamento e Controlo de Combustíveis","items":["Controlo diário de Consumos","Abastecimento","Análise de Desvios","Controlo de Cartões de Combustível/Energia","Auditoria - Mapas de Apoio à Gestão","Tanques Fixos e Móveis","Abastecimento de Máquinas e Equipamentos","Monitorização dos postos de carregamento elétrico","Gestão do E-mail combustíveis"]},{"cat":"Mobilizações","items":["Registo e Controlo de Mobilização de Máquinas","Lançamento de Grandes Equipamentos afetos à Obra"]}],"color":"#f97316","id":"f7","pessoa":"jc","responsavel":"","roadmap":[]},{"title":"Gestor de Frota e Apoio Operacional","sections":[{"cat":"Gestão de Frota","items":["Coordenação entre Oficina e Técnicos de Logística","Manutenções Preditivas, Preventivas e Corretivas","Controlo de Avarias, Pneus, etc.","Gestão de Marcações","Inspeções de Veiculos","Aferição de Tacógrafos","Agendamento de intervenções","Pedidos de peças","Acompanhamento de Viaturas em oficinas externas","Controlo e acompanhamento de Sinistros","Licenças","Implementação de sistemas de verificação pré-saída da viatura"]},{"cat":"Gestão Administrativa de Motoristas","items":["Controlo de Horas","Preparação do Ponto","Disponibilidades","Registo de Férias","Licenças"]},{"cat":"Tacógrafos","items":["Confirmação de descargas e registos de tacógrafo","Análise e Validação dos dados","Informar o motorista em caso de anomalia ou infração","Formação e Apoio aos Motoristas","Report"]},{"cat":"Apoio Operacional","items":["Atualização de Mapas","Alertas, Reports","Apoio aos Técnicos gestores de Tráfego"]}],"color":"#6366f1","id":"f8","pessoa":"am","responsavel":"","roadmap":[]},{"title":"Administrativo de Custos Operacionais","sections":[{"cat":"Custos de Obra","items":["Imputação homem/obra","Imputação camião/obra"]},{"cat":"Gestão Administrativa de Motoristas","items":["Controlo de Horas","Preparação do Ponto","Disponibilidades","Registo de Férias","Licenças"]}],"color":"#14b8a6","id":"f9","pessoa":"jc","responsavel":"","roadmap":[]},{"id":"f-manut","title":"Gestor/a de Manutenção e Frota","color":"#dc2626","pessoa":"","responsavel":"","sections":[{"cat":"Objetivo da Função","items":["Garantir disponibilidade, fiabilidade, segurança e eficiência dos veículos e equipamentos","Planear e controlar manutenções preventivas, preditivas e corretivas","Acompanhar oficinas internas e externas","Articular entre Tráfego, Compras, Oficinas e restantes intervenientes","Evoluir de abordagem reativa (avaria→reparar) para planeada (prever→prevenir→acompanhar→analisar→melhorar)"]},{"cat":"Manutenção Preventiva","items":["Criar, manter e acompanhar o plano de manutenção preventiva","Controlar revisões por quilometragem, horas ou tempo","Controlar inspeções e intervenções periódicas","Antecipar necessidades de manutenção","Programar entradas em oficina","Articular intervenções com o Tráfego","Garantir que as manutenções são realizadas dentro dos prazos","Registar todas as intervenções realizadas","Identificar manutenções em atraso"]},{"cat":"Manutenção Preditiva","items":["Acompanhar indicadores para antecipar falhas","Monitorizar: quilometragem, horas de funcionamento, consumos, desgaste","Analisar histórico de avarias e diagnósticos","Monitorizar telemetria quando disponível","Identificar padrões de falhas recorrentes"]},{"cat":"Manutenção Corretiva","items":["Assumir controlo do processo desde a comunicação até ao regresso à operação","Triagem e definição da prioridade (P1 a P4)","Diagnóstico e decisão: oficina interna / externa / assistência","Solicitar orçamento e aprovação","Acompanhar peças, reparação, testes e validação","Registo e encerramento"]},{"cat":"Gestão das Oficinas","items":["Principal ponto de contacto com oficinas (interlocutor único)","Encaminhar equipamentos e solicitar diagnósticos e orçamentos","Acompanhar reparações e negociar prazos","Confirmar conclusão e avaliar qualidade da intervenção","Controlar tempos de imobilização e manter histórico por oficina","Oficinas internas: planeamento, prioridades, capacidade, peças","Oficinas externas: seleção, orçamentação, negociação, qualidade, custos"]},{"cat":"Gestão de Peças e Informação Técnica","items":["Criar e manter base de dados técnica dos equipamentos","Por equipamento: marca, modelo, VIN/chassis, motor, ano, quilometragem","Referências OEM e alternativas, peças compatíveis","Controlar consumíveis: pneus, baterias, filtros, óleos, componentes críticos"]},{"cat":"Interface com Tráfego e Compras","items":["Informar o Tráfego: equipamentos indisponíveis, estado da reparação, previsão realista de conclusão","Receber do Tráfego: necessidades operacionais, equipamentos críticos, horários","Manutenção identifica a necessidade técnica — Compras trata o processo de aquisição","Fornecer referências OEM e alternativas ao Dep. Compras"]},{"cat":"Tarefas Diárias","items":["Verificar equipamentos imobilizados e em oficina","Verificar avarias novas, reparações em curso, peças e orçamentos pendentes","Contactar oficinas, atualizar estados e dar feedback ao Tráfego","Encaminhar novas avarias e atualizar histórico"]},{"cat":"Tarefas Semanais","items":["Rever preventivas da semana e da semana seguinte","Manutenções em atraso e avarias abertas","Estado de oficinas: reparações atrasadas, peças e orçamentos pendentes","Necessidades especiais do Tráfego e equipamentos críticos"]},{"cat":"KPIs Mensais","items":["Disponibilidade da frota (%) — KPI principal","Dias de imobilização / MTTR — tempo médio de reparação","N.º de avarias e % preventivas realizadas no prazo","% reparações dentro do prazo / % avarias repetidas","Custo de manutenção/km — custo por equipamento","Relatório mensal: disponibilidade, manutenção, custos, análise"]},{"cat":"Autoridade e Limites","items":["Autoridade: definir prioridade técnica das intervenções","Autoridade: encaminhar equipamentos para oficinas aprovadas","Autoridade: solicitar diagnósticos e orçamentos sem autorização prévia","Autoridade: recusar regresso à operação por motivos de segurança","Limite: não aprova despesas acima do limite definido","Limite: não escolhe fornecedores fora da política da empresa","Limite: não altera rotas, escalas ou horas extras de motoristas"]},{"cat":"Integração Futura — Tacógrafos","items":["Confirmação de descargas e registos de tacógrafo (camião e motorista)","Análise e validação dos dados de tacógrafo","Informar motorista em caso de anomalia ou infração (DL 84/2026)","Formação e apoio aos motoristas","Disponibilização de informação para lançamento do ponto","Report de conformidade tacográfica"]}],"roadmap":[{"text":"Definir responsável pela função","prazo":"2026-09-30","estado":"Pendente"},{"text":"Criar base de dados técnica de equipamentos","prazo":"2026-10-31","estado":"Pendente"},{"text":"Implementar plano de manutenção preventiva","prazo":"2026-11-30","estado":"Pendente"},{"text":"Integrar gestão de tacógrafos na função","prazo":"2027-01-31","estado":"Pendente"},{"text":"Primeiro relatório mensal de KPIs","prazo":"2026-12-31","estado":"Pendente"}]}];
+
+var _fcSelectedId=null;
+var _fcSubTab='funcoes';
+
+function getFuncoesData(){
+  var s=localStorage.getItem('pragosa_funcoes_v1');
+  if(s){try{var d=JSON.parse(s);if(Array.isArray(d)&&d.length&&d[0].title!==undefined)return d;}catch(e){}}
+  var def=JSON.parse(JSON.stringify(FUNCOES_DEFAULT));
+  localStorage.setItem('pragosa_funcoes_v1',JSON.stringify(def));
+  return def;
+}
+function saveFuncoesData(d){localStorage.setItem('pragosa_funcoes_v1',JSON.stringify(d));}
+
+function renderFuncoes(){
+  var data=getFuncoesData();
+  var team=getTeamData();
+  var container=document.getElementById('fc-left');
+  if(!container)return;
+  // Left panel
+  var lp='<div style="display:flex;flex-direction:column;height:100%">';
+  data.forEach(function(f){
+    var p=f.pessoa?team.find(function(x){return x.id===f.pessoa;}):null;
+    var isActive=f.id===_fcSelectedId;
+    lp+='<div data-fcid="'+f.id+'" onclick="selectFuncao(\''+f.id+'\')" style="cursor:pointer;padding:10px 12px;border-left:3px solid '+(isActive?f.color:'transparent')+';background:'+(isActive?'rgba(0,0,0,0.04)':'transparent')+';border-radius:0 6px 6px 0;margin-bottom:2px;transition:background .1s">'
+      +'<div style="font-size:12px;font-weight:'+(isActive?'600':'400')+';color:'+(isActive?f.color:'var(--text)')+';line-height:1.3;display:flex;align-items:center;gap:6px">'
+      +'<span style="width:8px;height:8px;border-radius:50%;background:'+f.color+';flex-shrink:0;display:inline-block"></span>'
+      +escHtml(f.title.replace(/^FUNÇÕES\s*[-–]?\s*/i,''))+'</div>'
+      +'</div>';
+  });
+  lp+='<div style="margin-top:8px;padding:0 8px">'
+    +'<button onclick="addFuncao()" style="width:100%;padding:7px;border:1.5px dashed var(--border);border-radius:6px;background:none;cursor:pointer;font-size:12px;color:var(--text-3);font-family:inherit">+ Função</button>'
+    +'</div></div>';
+  document.getElementById('fc-left').innerHTML=lp;
+  // Right panel
+  if(!_fcSelectedId&&data.length){_fcSelectedId=data[0].id;}
+  var f=data.find(function(x){return x.id===_fcSelectedId;});
+  if(!f){document.getElementById('fc-right').innerHTML='<div style="color:var(--text-3);font-size:13px;padding:24px">Seleciona uma função à esquerda.</div>';return;}
+  renderFuncaoDetail(f,team,data);
+}
+
+function renderFuncaoDetail(f,team,data){
+  var rp='';
+  // Header
+  var teamOpts='<option value="">— Não atribuído —</option>'+team.filter(function(x){return x.id!=='vg';}).map(function(x){return'<option value="'+x.id+'"'+(f.pessoa===x.id?' selected':'')+'>'+escHtml(x.name.split(' ').slice(0,2).join(' '))+'</option>';}).join('');
+  var respOpts='<option value="">— Não definido —</option>'+team.filter(function(x){return x.id!=='vg';}).map(function(x){return'<option value="'+x.id+'"'+(f.responsavel===x.id?' selected':'')+'>'+escHtml(x.name.split(' ').slice(0,2).join(' '))+'</option>';}).join('');
+  rp+='<div style="border-bottom:1px solid var(--border);padding-bottom:12px;margin-bottom:12px">'
+    +'<div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px">'
+    +'<div style="width:4px;height:40px;border-radius:2px;background:'+f.color+';flex-shrink:0;margin-top:2px"></div>'
+    +'<input id="fc-title-input" value="'+escHtml(f.title)+'" data-fcid="'+f.id+'" onchange="setFuncaoField(this.dataset.fcid,\'title\',this.value)" style="flex:1;font-size:16px;font-weight:600;border:none;background:transparent;outline:none;color:var(--text);font-family:inherit;padding:2px 0">'
+    +'<button onclick="exportarFuncaoPDF(\''+f.id+'\')" style="flex-shrink:0;padding:4px 10px;border:1px solid var(--border);border-radius:6px;background:none;cursor:pointer;color:var(--text-2);font-size:12px;font-family:inherit">&#128461; PDF</button>'
+    +'<button onclick="deleteFuncaoConfirm(\''+f.id+'\')" style="flex-shrink:0;padding:4px 10px;border:1px solid #fee2e2;border-radius:6px;background:none;cursor:pointer;color:#ef4444;font-size:12px">Eliminar</button>'
+    +'</div>'
+    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">'
+    +'<div><div style="font-size:10.5px;color:var(--text-3);margin-bottom:3px;font-weight:500">Pessoa atribuída</div>'
+    +'<select data-fcid="'+f.id+'" onchange="setFuncaoField(this.dataset.fcid,\'pessoa\',this.value)" style="width:100%;font-size:12px;padding:5px 7px;border:1px solid var(--border);border-radius:5px;background:var(--surface);color:var(--text);font-family:inherit">'+teamOpts+'</select></div>'
+    +'<div><div style="font-size:10.5px;color:var(--text-3);margin-bottom:3px;font-weight:500">Responsável</div>'
+    +'<select data-fcid="'+f.id+'" onchange="setFuncaoField(this.dataset.fcid,\'responsavel\',this.value)" style="width:100%;font-size:12px;padding:5px 7px;border:1px solid var(--border);border-radius:5px;background:var(--surface);color:var(--text);font-family:inherit">'+respOpts+'</select></div>'
+    +'</div></div>';
+  // Sub-tabs
+  rp+='<div style="display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:12px">'
+    +'<button onclick="switchFcTab(\''+f.id+'\',\'funcoes\')" style="padding:7px 16px;font-size:12px;font-weight:500;border:none;background:none;cursor:pointer;border-bottom:2px solid '+(_fcSubTab==='funcoes'?f.color:'transparent')+';color:'+(_fcSubTab==='funcoes'?f.color:'var(--text-3)')+';font-family:inherit">Funções</button>'
+    +'<button onclick="switchFcTab(\''+f.id+'\',\'roadmap\')" style="padding:7px 16px;font-size:12px;font-weight:500;border:none;background:none;cursor:pointer;border-bottom:2px solid '+(_fcSubTab==='roadmap'?f.color:'transparent')+';color:'+(_fcSubTab==='roadmap'?f.color:'var(--text-3)')+';font-family:inherit">Roadmap</button>'
+    +'</div>';
+  if(_fcSubTab==='funcoes'){
+    rp+=renderFuncaoSections(f);
+  } else {
+    rp+=renderFuncaoRoadmap(f,team);
+  }
+  document.getElementById('fc-right').innerHTML=rp;
+}
+
+function renderFuncaoSections(f){
+  var data=getFuncoesData();
+  var others=data.filter(function(x){return x.id!==f.id;});
+  var transferOpts='<option value="">Transferir para →</option>'+others.map(function(x){return'<option value="'+x.id+'">'+escHtml(x.title.replace('FUNÇÕES ','').replace('FUNÇÕES - ',''))+'</option>';}).join('');
+  var h='';
+  f.sections.forEach(function(sec,si){
+    h+='<div draggable="true" ondragstart="fcDragStart(event,\''+f.id+'\','+si+')" ondragover="fcDragOver(event)" ondrop="fcDrop(event,\''+f.id+'\','+si+')" ondragend="fcDragEnd(event)" style="background:var(--surface);border:1px solid var(--border);border-radius:8px;margin-bottom:8px;overflow:hidden;transition:opacity .15s">'
+      +'<div style="display:flex;align-items:center;gap:6px;padding:8px 10px;background:rgba(0,0,0,0.02);border-bottom:1px solid var(--border)">'
+      +'<span style="cursor:grab;color:var(--text-3);font-size:14px;line-height:1;flex-shrink:0;user-select:none" title="Arrastar para reordenar">⠿</span>'
+      +'<input value="'+escHtml(sec.cat)+'" data-fcid="'+f.id+'" data-si="'+si+'" onchange="setFuncaoSecCat(this.dataset.fcid,+this.dataset.si,this.value)" style="flex:1;font-size:12px;font-weight:600;border:none;background:transparent;outline:none;color:'+f.color+';font-family:inherit">'
+      +'<select data-fcid="'+f.id+'" data-si="'+si+'" onchange="transferFuncaoSec(this.dataset.fcid,+this.dataset.si,this.value);this.value=\'\'" style="font-size:10.5px;border:1px solid var(--border);border-radius:4px;padding:2px 4px;background:var(--surface);color:var(--text-3);font-family:inherit;max-width:130px">'+transferOpts+'</select>'
+      +'<button onclick="deleteFuncaoSec(\''+f.id+'\','+si+')" style="padding:2px 7px;border:1px solid var(--border);border-radius:4px;background:none;cursor:pointer;font-size:11px;color:var(--text-3)">✕</button>'
+      +'</div>'
+      +'<div style="padding:8px 10px">';
+    sec.items.forEach(function(item,ii){
+      h+='<div draggable="true" ondragstart="fiDragStart(event,\''+f.id+'\','+si+','+ii+')" ondragover="fiDragOver(event)" ondrop="fiDrop(event,\''+f.id+'\','+si+','+ii+')" ondragend="fiDragEnd(event)" style="display:flex;align-items:center;gap:6px;margin-bottom:4px;transition:opacity .15s">'
+        +'<span style="cursor:grab;color:var(--text-3);font-size:11px;flex-shrink:0;user-select:none;line-height:1" title="Arrastar para reordenar">⠿</span>'
+        +'<input value="'+escHtml(item)+'" data-fcid="'+f.id+'" data-si="'+si+'" data-ii="'+ii+'" onchange="setFuncaoItem(this.dataset.fcid,+this.dataset.si,+this.dataset.ii,this.value)" style="flex:1;font-size:12px;border:none;border-bottom:1px solid transparent;background:transparent;outline:none;color:var(--text);font-family:inherit;padding:1px 2px" onfocus="this.style.borderBottomColor=\''+f.color+'\'" onblur="this.style.borderBottomColor=\'transparent\'">'
+        +'<button onclick="deleteFuncaoItem(\''+f.id+'\','+si+','+ii+')" style="opacity:0.4;padding:0 5px;border:none;background:none;cursor:pointer;font-size:12px;color:var(--text-3)" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.4">✕</button>'
+        +'</div>';
+    });
+    h+='<button onclick="addFuncaoItem(\''+f.id+'\','+si+')" style="margin-top:4px;padding:3px 8px;border:1px dashed var(--border);border-radius:4px;background:none;cursor:pointer;font-size:11.5px;color:var(--text-3);font-family:inherit">+ item</button>'
+      +'</div></div>';
+  });
+  h+='<button onclick="addFuncaoSec(\''+f.id+'\')" style="padding:6px 14px;border:1.5px dashed var(--border);border-radius:6px;background:none;cursor:pointer;font-size:12px;color:var(--text-3);font-family:inherit;margin-top:4px">+ Categoria</button>';
+  return h;
+}
+
+function renderFuncaoRoadmap(f,team){
+  var estadoColors={'Pendente':'#eab308','Em curso':'#3b82f6','Concluído':'#22c55e','Bloqueado':'#ef4444'};
+  var estadoVals=['Pendente','Em curso','Concluído','Bloqueado'];
+  var h='<table style="width:100%;border-collapse:collapse;font-size:12px"><thead><tr style="background:rgba(0,0,0,0.03)">'
+    +'<th style="text-align:left;padding:7px 8px;font-size:10.5px;color:var(--text-3);font-weight:500">Marco / Ação</th>'
+    +'<th style="text-align:left;padding:7px 8px;font-size:10.5px;color:var(--text-3);font-weight:500;width:110px">Prazo</th>'
+    +'<th style="text-align:left;padding:7px 8px;font-size:10.5px;color:var(--text-3);font-weight:500;width:100px">Estado</th>'
+    +'<th style="width:32px"></th></tr></thead><tbody>';
+  if(!f.roadmap||!f.roadmap.length){
+    h+='<tr><td colspan="4" style="padding:16px 8px;color:var(--text-3);font-style:italic;font-size:12px">Sem marcos definidos. Adiciona abaixo.</td></tr>';
+  } else {
+    f.roadmap.forEach(function(r,ri){
+      var estadoColor=estadoColors[r.estado]||'#6b7280';
+      var eOpts=estadoVals.map(function(v){return'<option value="'+v+'"'+(r.estado===v?' selected':'')+'>'+v+'</option>';}).join('');
+      h+='<tr style="border-bottom:1px solid var(--border)">'
+        +'<td style="padding:5px 8px"><input value="'+escHtml(r.text||'')+'" data-fcid="'+f.id+'" data-ri="'+ri+'" onchange="setRoadmapField(this.dataset.fcid,+this.dataset.ri,\'text\',this.value)" style="width:100%;border:none;background:transparent;font-size:12px;outline:none;font-family:inherit;color:var(--text)"></td>'
+        +'<td style="padding:5px 8px"><input type="date" value="'+(r.prazo||'')+'" data-fcid="'+f.id+'" data-ri="'+ri+'" onchange="setRoadmapField(this.dataset.fcid,+this.dataset.ri,\'prazo\',this.value)" style="width:100%;border:1px solid var(--border);border-radius:4px;padding:3px 5px;font-size:11.5px;font-family:inherit;background:var(--surface);color:var(--text)"></td>'
+        +'<td style="padding:5px 8px"><select data-fcid="'+f.id+'" data-ri="'+ri+'" onchange="setRoadmapField(this.dataset.fcid,+this.dataset.ri,\'estado\',this.value)" style="width:100%;border:1px solid var(--border);border-radius:4px;padding:3px 5px;font-size:11.5px;font-family:inherit;background:var(--surface);color:'+estadoColor+'">'+eOpts+'</select></td>'
+        +'<td style="padding:5px 4px;text-align:center"><button data-fcid="'+f.id+'" data-ri="'+ri+'" onclick="deleteRoadmapItem(this.dataset.fcid,+this.dataset.ri)" style="border:none;background:none;cursor:pointer;color:var(--text-3);font-size:13px;padding:2px 4px">✕</button></td>'
+        +'</tr>';
+    });
+  }
+  h+='</tbody></table>';
+  h+='<button onclick="addRoadmapItem(\''+f.id+'\')" style="margin-top:8px;padding:6px 14px;border:1.5px dashed var(--border);border-radius:6px;background:none;cursor:pointer;font-size:12px;color:var(--text-3);font-family:inherit">+ Marco</button>';
+  return h;
+}
+
+function selectFuncao(id){_fcSelectedId=id;_fcSubTab='funcoes';renderFuncoes();}
+function switchFcTab(id,tab){_fcSubTab=tab;var data=getFuncoesData();var team=getTeamData();var f=data.find(function(x){return x.id===id;});if(f)renderFuncaoDetail(f,team,data);}
+
+function setFuncaoField(id,field,val){
+  var d=getFuncoesData();var f=d.find(function(x){return x.id===id;});if(!f)return;
+  f[field]=val;saveFuncoesData(d);
+  if(field==='pessoa'||field==='responsavel'||field==='title')renderFuncoes();
+}
+function setFuncaoSecCat(id,si,val){var d=getFuncoesData();var f=d.find(function(x){return x.id===id;});if(!f||!f.sections[si])return;f.sections[si].cat=val;saveFuncoesData(d);}
+function setFuncaoItem(id,si,ii,val){var d=getFuncoesData();var f=d.find(function(x){return x.id===id;});if(!f||!f.sections[si])return;f.sections[si].items[ii]=val;saveFuncoesData(d);}
+function addFuncaoItem(id,si){var d=getFuncoesData();var f=d.find(function(x){return x.id===id;});if(!f||!f.sections[si])return;f.sections[si].items.push('');saveFuncoesData(d);var team=getTeamData();renderFuncaoDetail(f,team,d);setTimeout(function(){var inputs=document.querySelectorAll('#fc-right input');if(inputs.length)inputs[inputs.length-2].focus();},20);}
+function deleteFuncaoItem(id,si,ii){var d=getFuncoesData();var f=d.find(function(x){return x.id===id;});if(!f||!f.sections[si])return;f.sections[si].items.splice(ii,1);saveFuncoesData(d);var team=getTeamData();renderFuncaoDetail(f,team,d);}
+function addFuncaoSec(id){var d=getFuncoesData();var f=d.find(function(x){return x.id===id;});if(!f)return;f.sections.push({cat:'Nova categoria',items:[]});saveFuncoesData(d);var team=getTeamData();renderFuncaoDetail(f,team,d);}
+function deleteFuncaoSec(id,si){var d=getFuncoesData();var f=d.find(function(x){return x.id===id;});if(!f)return;f.sections.splice(si,1);saveFuncoesData(d);var team=getTeamData();renderFuncaoDetail(f,team,d);}
+function transferFuncaoSec(srcId,si,targetId){if(!targetId)return;var d=getFuncoesData();var src=d.find(function(x){return x.id===srcId;});var tgt=d.find(function(x){return x.id===targetId;});if(!src||!tgt)return;var sec=src.sections.splice(si,1)[0];tgt.sections.push(sec);saveFuncoesData(d);showToast('Categoria "'+sec.cat+'" transferida.');var team=getTeamData();renderFuncaoDetail(src,team,d);}
+var _fcDragSrc=null;
+function fcDragStart(e,id,si){_fcDragSrc={id:id,si:si};e.dataTransfer.effectAllowed='move';e.currentTarget.style.opacity='0.4';}
+function fcDragOver(e){e.preventDefault();e.dataTransfer.dropEffect='move';}
+function fcDrop(e,id,si){e.preventDefault();if(!_fcDragSrc||_fcDragSrc.id!==id||_fcDragSrc.si===si)return;var d=getFuncoesData();var f=d.find(function(x){return x.id===id;});if(!f)return;var sec=f.sections.splice(_fcDragSrc.si,1)[0];f.sections.splice(si,0,sec);saveFuncoesData(d);_fcDragSrc=null;var team=getTeamData();renderFuncaoDetail(f,team,d);}
+function fcDragEnd(e){e.currentTarget.style.opacity='1';_fcDragSrc=null;}
+var _fiDragSrc=null;
+function fiDragStart(e,id,si,ii){_fiDragSrc={id:id,si:si,ii:ii};e.dataTransfer.effectAllowed='move';e.currentTarget.style.opacity='0.4';e.stopPropagation();}
+function fiDragOver(e){e.preventDefault();e.stopPropagation();e.dataTransfer.dropEffect='move';}
+function fiDrop(e,id,si,ii){e.preventDefault();e.stopPropagation();if(!_fiDragSrc||_fiDragSrc.id!==id||_fiDragSrc.si!==si||_fiDragSrc.ii===ii)return;var d=getFuncoesData();var f=d.find(function(x){return x.id===id;});if(!f||!f.sections[si])return;var item=f.sections[si].items.splice(_fiDragSrc.ii,1)[0];f.sections[si].items.splice(ii,0,item);saveFuncoesData(d);_fiDragSrc=null;var team=getTeamData();renderFuncaoDetail(f,team,d);}
+function fiDragEnd(e){e.currentTarget.style.opacity='1';_fiDragSrc=null;}
+function addFuncao(){
+  var d=getFuncoesData();
+  var newId='f'+Date.now();
+  var colors=['#3b82f6','#10b981','#f59e0b','#8b5cf6','#ef4444','#06b6d4','#f97316','#6366f1','#14b8a6'];
+  var c=colors[d.length%colors.length];
+  d.push({id:newId,title:'Nova Função',sections:[{cat:'Geral',items:[]}],color:c,pessoa:'',responsavel:'',roadmap:[]});
+  saveFuncoesData(d);_fcSelectedId=newId;_fcSubTab='funcoes';renderFuncoes();
+  setTimeout(function(){var inp=document.getElementById('fc-title-input');if(inp){inp.focus();inp.select();}},30);
+}
+var _fcDeletePending=null;
+function deleteFuncaoConfirm(id){
+  if(_fcDeletePending!==id){_fcDeletePending=id;showToast('Clica novamente para confirmar eliminação.');setTimeout(function(){if(_fcDeletePending===id)_fcDeletePending=null;},3000);return;}
+  _fcDeletePending=null;
+  var d=getFuncoesData();d=d.filter(function(x){return x.id!==id;});
+  saveFuncoesData(d);_fcSelectedId=d.length?d[0].id:null;renderFuncoes();
+}
+function addRoadmapItem(id){var d=getFuncoesData();var f=d.find(function(x){return x.id===id;});if(!f)return;if(!f.roadmap)f.roadmap=[];f.roadmap.push({text:'',prazo:'',estado:'Pendente'});saveFuncoesData(d);var team=getTeamData();renderFuncaoDetail(f,team,d);}
+function setRoadmapField(id,ri,field,val){var d=getFuncoesData();var f=d.find(function(x){return x.id===id;});if(!f||!f.roadmap||!f.roadmap[ri])return;f.roadmap[ri][field]=val;saveFuncoesData(d);}
+function deleteRoadmapItem(id,ri){var d=getFuncoesData();var f=d.find(function(x){return x.id===id;});if(!f||!f.roadmap)return;f.roadmap.splice(ri,1);saveFuncoesData(d);var team=getTeamData();renderFuncaoDetail(f,team,d);}
+
 
 // ── Init ──
 (function(){
+  // Clear any collapsed-resp state from previous sessions
+  Object.keys(localStorage).forEach(function(k){
+    if(k.indexOf('pragosa_resp_open_')===0)localStorage.removeItem(k);
+  });
+
+  // Migrate: add new default functions not yet in localStorage
+  (function(){
+    var d=getFuncoesData();
+    var changed=false;
+    FUNCOES_DEFAULT.forEach(function(def){
+      if(!d.find(function(x){return x.id===def.id;})){
+        d.push(JSON.parse(JSON.stringify(def)));changed=true;
+      }
+    });
+    if(changed)saveFuncoesData(d);
+  })();
   renderVistaGeral();
   renderPessoas();
+  renderFuncoes();
   renderDeptKpis();
   var tasks=loadTasks();updateBadge(tasks);
   var url=localStorage.getItem('pragosa_avarias_url')||'';
@@ -3629,6 +4113,14 @@ function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').
 </script>
 
 <!-- ASSISTENTE -->
+<div id="tab-funcoes" class="section section-wrap"><button class="fs-btn" onclick="fsToggle('tab-funcoes')" title="Maximizar / Fechar (Esc)">&#x26F6;</button>
+<div style="display:flex;height:calc(100vh - 120px);min-height:500px;gap:0">
+  <!-- Left panel -->
+  <div id="fc-left" style="width:220px;flex-shrink:0;border-right:1px solid var(--border);overflow-y:auto;padding:12px 8px 12px 0"></div>
+  <!-- Right panel -->
+  <div id="fc-right" style="flex:1;overflow-y:auto;padding:16px 20px"></div>
+</div>
+</div>
 <div id="tab-assistente" class="section section-wrap"><button class="fs-btn" onclick="fsToggle('tab-assistente')" title="Maximizar / Fechar (Esc)">⛶</button></div>
 
 <!-- Hidden containers for legacy views -->

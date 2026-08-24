@@ -55,7 +55,7 @@ Reunião com forte componente de **RH e organização do departamento**. Entra a
 ## Tarefas
 
 **[[03 Pessoas/Rita Fialho|Logística]]**
-- [ ] **António Marques** — formalizar a passagem para **Gestão de Frota (Motoristas)** e o handover das funções anteriores.
+- [x] **António Marques** — formalizar a passagem para **Gestão de Frota (Motoristas)** e o handover das funções anteriores.
 - [ ] **Sobrissul** — avançar com a **admissão da Administrativa de Expedição**.
 - [ ] **[[03 Pessoas/Susete|Susete]]** — definir/negociar as **implicações salariais** do alargamento de funções (incl. deslocações).
 - [ ] **Caixa Sobrissul** — assegurar o **pagamento das faturas em dinheiro ao [[03 Pessoas/Jorge Ferreira|Jorge Ferreira]]**.

@@ -18,7 +18,7 @@ tags:
 ## Função e Responsabilidades
 **Administrativa de Expedição** na **Sobrissul** (pedreira). Reporta a **[[03 Pessoas/Rita Fialho|Ana Rita]]** (Diretora de Logística).
 
-Em [[02 Reuniões/2026/2026-08-04 - CE Logística]] ficou registado que **aceita assumir outras funções**, incluindo **deslocações**.
+Em [[02 Reuniões/2026/2026-08-07 - CE Logística]] ficou registado que **aceita assumir outras funções**, incluindo **deslocações**.
 
 > [!warning] Pendente
 > **Implicações no salário** do alargamento de funções (novas responsabilidades + deslocações) — **por definir/negociar**.
