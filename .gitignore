@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Dashboard local-only (dados sensiveis da empresa/equipa/frota) — nunca versionar/publicar
+dashboard-master.html
