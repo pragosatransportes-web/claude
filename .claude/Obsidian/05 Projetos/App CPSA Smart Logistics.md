@@ -75,4 +75,5 @@ SORT data DESC
 ## Notas
 - Catálogo e histórico reconstruíveis por `catalog_build.py` → `parse_hist.py` → `build_app.py`.
 - SharePoint (Gestão de Viaturas) inacessível por login — exportar para CSV se necessário.
+- **2026-10-06 — DL 195/2026:** altura máxima geral 4,00 → 4,25 m a partir de 24/03/2027. O motor (`legalAt`/`classify`) aplica 4,25 m conforme a data do transporte (Planeador: entrega/disponibilidade; Consulta rápida: hoje). Ver [[Alteração às dimensões e Peso de Carga]].
 </content>
