@@ -282,6 +282,7 @@
   <div class="card">
     <h2>Parâmetros legais</h2>
     <div class="warnbox">⚠️ Valores <b>indicativos</b>. Confirmar com o Código da Estrada e o Regulamento de Transporte Especial em vigor (IMT) antes de decisões operacionais.</div>
+    <div class="note" style="margin-top:8px">📜 <b>DL 195/2026</b> — a altura máxima geral (incl. carga) passa de <b>4,00 m</b> para <b>4,25 m</b> a partir de <b>24/03/2027</b>. O motor aplica automaticamente 4,25 m aos transportes com data (entrega/disponibilidade no Planeador; hoje na Consulta rápida) a partir dessa data. O campo «Altura normal máx» abaixo é o valor até lá.</div>
     <div class="grid g3" id="legalParams"></div>
   </div>
   <div class="card">
@@ -471,6 +472,16 @@ const DEFAULT_LEGAL = {
   piloto_larg:3.00, piloto_alt:4.50, piloto_comp:25.0, piloto_peso:48000,
   piloto2_larg:4.50, piloto2_comp:30.0
 };
+// DL 195/2026 (altera art. 3.º, n.º 4, a) do anexo ao DL 132/2017): altura máxima geral
+// passa de 4,00 m para 4,25 m — produz efeitos a 24/03/2027 (180 dias após 25/09/2026).
+const DL195_DATA='2027-03-24', DL195_ALT=4.25;
+function hojeLocal(){const v=new Date();return v.getFullYear()+'-'+String(v.getMonth()+1).padStart(2,'0')+'-'+String(v.getDate()).padStart(2,'0');}
+function legalAt(d){
+  // Parâmetros legais aplicáveis à data do transporte (sem data → hoje)
+  const g=ST.legal, dia=String(d||hojeLocal()).slice(0,10);
+  if(dia>=DL195_DATA && g.alt_normal<DL195_ALT) return Object.assign({},g,{alt_normal:DL195_ALT});
+  return g;
+}
 
 /* ================= STATE / STORAGE ================= */
 const LS='cpsa_smartlog_v1';
@@ -759,8 +770,8 @@ function applyGroup(gid){
 }
 
 /* ================= DECISION ENGINE ================= */
-function classify(L){
-  const g=ST.legal, altT=ST.deckH+L.alt, w=L.larg, comp=ST.baseL, pesoBruto=L.peso; // carga; PB real depende do PM
+function classify(L,d){
+  const g=legalAt(d), altT=ST.deckH+L.alt, w=L.larg, comp=ST.baseL, pesoBruto=L.peso; // carga; PB real depende do PM
   let level='normal', reasons=[];
   const check=(val,norm,esp,exc,unit,name)=>{
     if(val>exc){level='excecional';reasons.push(`${name} ${val}${unit} > ${exc}${unit}`);}
@@ -769,7 +780,7 @@ function classify(L){
   };
   check(w,g.larg_normal,g.larg_espec,g.larg_excec,'m','Largura');
   check(altT,g.alt_normal,g.alt_espec,g.alt_excec,'m','Altura');
-  return {level,reasons,altT,w};
+  return {level,reasons,altT,w,altLim:g.alt_normal};
 }
 function pilotCar(L,pm){
   // Carro-piloto / veículo batedor é exigido por DIMENSÕES (largura, altura, comprimento),
@@ -1402,7 +1413,7 @@ function planRoutes(){
     rtrips.forEach(t=>trips.push(t));
   });
   trips.forEach(t=>{const pm=pickPMfor(t.peso,t.comp);t.pm=pm;t.excede=!pm;
-    const L=combinedLoad(t.items.map(i=>i.num));t.legal=classify(L);t.pilot=pilotCar(L,pm||ST.pm[0]);
+    const L=combinedLoad(t.items.map(i=>i.num));t.legal=classify(L,t.entregar||t.disp);t.pilot=pilotCar(L,pm||ST.pm[0]);
     t.km=kmBetween(t.orig,t.dest);});
   trips.sort((a,b)=>{const ea=a.entregar||'9999',eb=b.entregar||'9999';if(ea!==eb)return ea<eb?-1:1;return (a.disp||'')<(b.disp||'')?-1:1;});
   // atribuição inicial otimizada (encadeamento por proximidade) → t.assigned
